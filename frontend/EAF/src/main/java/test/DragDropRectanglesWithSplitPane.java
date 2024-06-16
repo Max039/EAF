@@ -30,14 +30,19 @@ public class DragDropRectanglesWithSplitPane extends JPanel {
             int width = random.nextInt(100) + 50;
             int height = random.nextInt(50) + 30;
             Color color = new Color(random.nextInt(256), random.nextInt(256), random.nextInt(256));
+            Rect r;
 
             if (i == 1) {
-                rightPanel.addRect(new RectWithColorAndTextBox(10, currentY, width, height, color));
-            } else {
-                rightPanel.addRect(new RectWithColor(10, currentY, width, height, color));
-            }
+                r = new RectWithColorAndTextBox(10, currentY, width, height, color);
 
-            currentY += height + RECT_SPACING;
+            } else if (i == 2) {
+                r = new RectWithRects(10, currentY, width, height, color, new String[]{"1", "2"});
+            }
+            else {
+                r = new RectWithColor(10, currentY, width, height, color);
+            }
+            rightPanel.addRect(r);
+            currentY += r.getHeight() + RECT_SPACING;
         }
 
         MouseAdapter mouseAdapter = new MouseAdapter() {
@@ -47,7 +52,7 @@ public class DragDropRectanglesWithSplitPane extends JPanel {
                 for (Rect rect : rightPanel.getRects()) {
                     if (rect.contains(point)) {
                         draggedRect = rect.clone();
-                        dragOffset = new Point(point.x - rect.x, point.y - rect.y);
+                        dragOffset = new Point(point.x - rect.getX(), point.y - rect.getY());
                         rightPanel.setDraggingRect(draggedRect);
                         leftPanel.setDraggingRect(draggedRect.clone());
                         break;
@@ -60,10 +65,22 @@ public class DragDropRectanglesWithSplitPane extends JPanel {
                 if (draggedRect != null) {
                     Point releasePoint = SwingUtilities.convertPoint((Component) e.getSource(), e.getPoint(), leftPanel);
                     if (leftPanel.contains(releasePoint)) {
-                        int currentY = leftPanel.getRects().stream().mapToInt(r -> r.y + r.height + RECT_SPACING).max().orElse(0);
-                        draggedRect.setPosition(10, currentY);
-                        leftPanel.addRect(draggedRect);
-                        rightPanel.removeRect(draggedRect);
+                        Rect matchingRect = leftPanel.getRect(releasePoint);
+                        if (matchingRect instanceof RectWithRects) {
+                            System.out.println("Rect found and RectWithRects");
+                            if (((RectWithRects)matchingRect).setIndex(releasePoint, draggedRect)) {
+                                rightPanel.removeRect(draggedRect);
+                                leftPanel.revalidate();
+                                leftPanel.repaint();
+                            }
+                        }
+                        else {
+                            int currentY = leftPanel.getRects().stream().mapToInt(r -> r.getY() + r.getHeight() + RECT_SPACING).max().orElse(0);
+                            draggedRect.setPosition(10, currentY);
+                            leftPanel.addRect(draggedRect);
+                            rightPanel.removeRect(draggedRect);
+                        }
+
                     }
                     draggedRect = null;
                     dragOffset = null;

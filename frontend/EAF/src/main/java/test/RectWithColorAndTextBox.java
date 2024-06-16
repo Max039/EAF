@@ -6,6 +6,8 @@ import java.awt.*;
 class RectWithColorAndTextBox extends Rect {
     JTextField textBox;
 
+    public static int spacing = 5;
+
     public RectWithColorAndTextBox(int x, int y, int width, int height, Color color) {
         super(x, y, width, height, color);
         textBox = new JTextField("Insert Text Here");
@@ -19,13 +21,13 @@ class RectWithColorAndTextBox extends Rect {
     @Override
     void draw(Graphics g) {
         g.setColor(color);
-        g.fillRect(x, y, width, height);
-        textBox.setBounds(x + 2, y + 2, width - 4, height - 4);
+        g.fillRect(getX(), getY(), getWidth(), getHeight());
+        textBox.setBounds(getX() + spacing, getY() + spacing, getWidth() - spacing * 2, getHeight() - spacing * 2);
     }
 
     @Override
     public Rect clone() {
-        return new RectWithColorAndTextBox(x, y, width, height, color, textBox);
+        return new RectWithColorAndTextBox(getX(), getY(), getWidth(), getHeight(), color, textBox);
     }
 
     @Override

@@ -3,7 +3,7 @@ package test;
 import javax.swing.*;
 import java.awt.*;
 
-class RectWithColor extends Rect {
+public class RectWithColor extends Rect {
     public RectWithColor(int x, int y, int width, int height, Color color) {
         super(x, y, width, height, color);
     }
@@ -11,12 +11,12 @@ class RectWithColor extends Rect {
     @Override
     void draw(Graphics g) {
         g.setColor(color);
-        g.fillRect(x, y, width, height);
+        g.fillRect(getX(), getY(), getWidth(), getHeight());
     }
 
     @Override
     public Rect clone() {
-        return new RectWithColor(x, y, width, height, color);
+        return new RectWithColor(getX(), getY(), getWidth(), getHeight(), color);
     }
 
     @Override

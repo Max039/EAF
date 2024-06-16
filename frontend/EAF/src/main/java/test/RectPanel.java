@@ -44,6 +44,16 @@ class RectPanel extends JScrollPane {
         draggingRect = null;
     }
 
+    public Rect getRect(Point p) {
+        for (Rect r : rects) {
+            if (r.contains(p)) {
+                return r;
+            }
+        }
+        System.out.println("No rect found :(");
+        return null;
+    }
+
     class DrawingPanel extends JPanel {
         private Rect draggingRect = null;
 
@@ -82,8 +92,8 @@ class RectPanel extends JScrollPane {
 
         @Override
         public Dimension getPreferredSize() {
-            int maxWidth = rects.stream().mapToInt(rect -> rect.width).max().orElse(0) + 20;
-            int totalHeight = rects.stream().mapToInt(rect -> rect.y + rect.height).max().orElse(0) + 20;
+            int maxWidth = rects.stream().mapToInt(rect -> rect.getWidth()).max().orElse(0) + 20;
+            int totalHeight = rects.stream().mapToInt(rect -> rect.getY() + rect.getHeight()).max().orElse(0) + 20;
             return new Dimension(maxWidth, totalHeight);
         }
     }

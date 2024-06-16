@@ -3,9 +3,25 @@ package test;
 import javax.swing.*;
 import java.awt.*;
 
-abstract class Rect {
-    int x, y, width, height;
+public abstract class Rect {
+    private int x, y, width, height;
     Color color;
+
+    public int getX() {
+        return x;
+    }
+
+    public int getY() {
+        return y;
+    }
+
+    public int getWidth() {
+        return width;
+    }
+
+    public int getHeight() {
+        return height;
+    }
 
     public Rect(int x, int y, int width, int height, Color color) {
         this.x = x;
@@ -18,7 +34,7 @@ abstract class Rect {
     abstract void draw(Graphics g);
 
     public boolean contains(Point p) {
-        return (p.x >= x && p.x <= x + width && p.y >= y && p.y <= y + height);
+        return (p.x >= x && p.x <= x + getWidth() && p.y >= y && p.y <= y + getHeight());
     }
 
     public void setPosition(int x, int y) {
