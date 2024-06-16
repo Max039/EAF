@@ -67,9 +67,9 @@ public class DragDropRectanglesWithSplitPane extends JPanel {
                     if (leftPanel.contains(releasePoint)) {
                         Rect matchingRect = leftPanel.getRect(releasePoint);
                         if (matchingRect instanceof RectWithRects) {
-                            System.out.println("Rect found and RectWithRects");
                             if (((RectWithRects)matchingRect).setIndex(releasePoint, draggedRect)) {
                                 rightPanel.removeRect(draggedRect);
+                                draggedRect.addTo(leftPanel.drawingPanel);
                                 leftPanel.revalidate();
                                 leftPanel.repaint();
                             }

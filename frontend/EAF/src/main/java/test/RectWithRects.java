@@ -60,7 +60,6 @@ public class RectWithRects extends Rect {
         for (int i = 0; i < subRects.length; i++) {
             Rect r = subRects[i];
             if (r != null) {
-                System.out.println("test");
                 r.setPosition(getX() + spacing, getY() + offset);
                 r.draw(g);
                 offset += r.getHeight() + spacing;
@@ -100,7 +99,6 @@ public class RectWithRects extends Rect {
 
     public boolean setIndex(Point p, Rect rec) {
         if (contains(p) && p.x >= getX() + spacing && p.x <= getX() + getWidth() - spacing) {
-            System.out.println(getY() + getHeight());
             int heightAcc = super.getHeight();
             for (int i = 0; i < subRects.length && getY() + heightAcc <= p.y; i++) {
                 Rect r = subRects[i];
@@ -121,7 +119,6 @@ public class RectWithRects extends Rect {
                     heightAcc += emptyRowSize + spacing;
                 }
             }
-            System.out.println(getY() + heightAcc);
         }
         return false;
     }
@@ -131,8 +128,7 @@ public class RectWithRects extends Rect {
             System.out.println("Error trying to add null rect");
         }
         else {
-            System.out.println(i + " = " + r);
-            subRects[i] = r.clone();
+            subRects[i] = r;
         }
     }
 
