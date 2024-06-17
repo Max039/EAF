@@ -61,6 +61,9 @@ public class RectWithRects extends Rect {
             Rect r = subRects[i];
             if (r != null) {
                 r.setPosition(getX() + spacing, getY() + offset);
+                if (!(r instanceof RectWithRects)) {
+                    r.setWidth(getWidth() - spacing * 2);
+                }
                 r.draw(g);
                 offset += r.getHeight() + spacing;
             }

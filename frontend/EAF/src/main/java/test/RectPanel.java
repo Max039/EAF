@@ -50,7 +50,6 @@ class RectPanel extends JScrollPane {
                 return r;
             }
         }
-        System.out.println("No rect found :(");
         return null;
     }
 

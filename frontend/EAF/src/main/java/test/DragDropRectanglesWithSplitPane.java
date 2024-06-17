@@ -63,7 +63,7 @@ public class DragDropRectanglesWithSplitPane extends JPanel {
             @Override
             public void mouseReleased(MouseEvent e) {
                 if (draggedRect != null) {
-                    Point releasePoint = SwingUtilities.convertPoint((Component) e.getSource(), e.getPoint(), leftPanel);
+                    Point releasePoint = SwingUtilities.convertPoint(e.getComponent(), e.getPoint(), leftPanel.getViewport().getView());
                     if (leftPanel.contains(releasePoint)) {
                         Rect matchingRect = leftPanel.getRect(releasePoint);
                         if (matchingRect instanceof RectWithRects) {
