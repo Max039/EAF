@@ -4,8 +4,12 @@ import javax.swing.*;
 import java.awt.*;
 
 public class RectWithColor extends Rect {
-    public RectWithColor(int x, int y, int width, int height, Color color) {
-        super(x, y, width, height, color);
+    private RectWithColor(int width, int height, Color color) {
+        super(width, height, color);
+    }
+
+    public static RectWithColor createRectWithColor(int width, int height, Color color) {
+        return new RectWithColor(width, height, color);
     }
 
     @Override
@@ -16,7 +20,7 @@ public class RectWithColor extends Rect {
 
     @Override
     public Rect clone() {
-        return new RectWithColor(getX(), getY(), getWidth(), getHeight(), color);
+        return createRectWithColor(getWidth(), getHeight(), color);
     }
 
     @Override

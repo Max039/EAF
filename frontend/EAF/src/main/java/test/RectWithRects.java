@@ -11,8 +11,8 @@ public class RectWithRects extends Rect {
 
     Rect[] subRects;
     String[] names;
-    public RectWithRects(int x, int y, int width, int height, Color color, String[] names) {
-        super(x, y, width, height, color);
+    public RectWithRects(int width, int height, Color color, String[] names) {
+        super(width, height, color);
         this.names = names.clone();
         this.subRects = new Rect[names.length];
         for (int i = 0; i < names.length; i++) {
@@ -20,8 +20,8 @@ public class RectWithRects extends Rect {
         }
     }
 
-    public RectWithRects(int x, int y, int width, int height, Color color, String[] names, Rect[] subRects) {
-        this(x, y, width, height, color, names);
+    public RectWithRects(int width, int height, Color color, String[] names, Rect[] subRects) {
+        this(width, height, color, names);
         this.subRects = subRects.clone();
     }
 
@@ -77,7 +77,7 @@ public class RectWithRects extends Rect {
 
     @Override
     public Rect clone() {
-        return new RectWithRects(getX(), getY(), super.getWidth(), super.getHeight(), color, names, subRects);
+        return new RectWithRects(super.getWidth(), super.getHeight(), color, names, subRects);
     }
 
     @Override

@@ -10,6 +10,10 @@ class RectPanel extends JScrollPane {
     public final DrawingPanel drawingPanel;
     public Rect draggingRect = null;
 
+    public static int horizontalSpacing = 10;
+
+    public static int verticalSpacing = 5;
+
     public RectPanel() {
         super();
         drawingPanel = new DrawingPanel();
@@ -53,6 +57,24 @@ class RectPanel extends JScrollPane {
         return null;
     }
 
+    @Override
+    public void repaint() {
+        if (drawingPanel != null) {
+            drawingPanel.repaint();
+        }
+        super.repaint();
+
+    }
+
+    @Override
+    public void revalidate() {
+        if (drawingPanel != null) {
+            drawingPanel.revalidate();
+        }
+        super.revalidate();
+
+    }
+
     class DrawingPanel extends JPanel {
         private Rect draggingRect = null;
 
@@ -81,8 +103,11 @@ class RectPanel extends JScrollPane {
         @Override
         protected void paintComponent(Graphics g) {
             super.paintComponent(g);
+            int y = verticalSpacing;
             for (Rect rect : rects) {
+                rect.setPosition(horizontalSpacing, y);
                 rect.draw(g);
+                y += rect.getHeight() + verticalSpacing;
             }
             if (draggingRect != null) {
                 draggingRect.draw(g);

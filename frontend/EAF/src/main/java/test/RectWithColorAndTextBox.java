@@ -8,13 +8,13 @@ class RectWithColorAndTextBox extends Rect {
 
     public static int spacing = 5;
 
-    public RectWithColorAndTextBox(int x, int y, int width, int height, Color color) {
-        super(x, y, width, height, color);
+    public RectWithColorAndTextBox(int width, int height, Color color) {
+        super(width, height, color);
         textBox = new JTextField("Insert Text Here");
     }
 
-    public RectWithColorAndTextBox(int x, int y, int width, int height, Color color, JTextField field) {
-        super(x, y, width, height, color);
+    public RectWithColorAndTextBox(int width, int height, Color color, JTextField field) {
+        super(width, height, color);
         textBox = new JTextField(field.getText());
     }
 
@@ -27,7 +27,7 @@ class RectWithColorAndTextBox extends Rect {
 
     @Override
     public Rect clone() {
-        return new RectWithColorAndTextBox(getX(), getY(), getWidth(), getHeight(), color, textBox);
+        return new RectWithColorAndTextBox(getWidth(), getHeight(), color, textBox);
     }
 
     @Override

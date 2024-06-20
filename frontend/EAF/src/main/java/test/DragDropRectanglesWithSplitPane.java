@@ -25,7 +25,6 @@ public class DragDropRectanglesWithSplitPane extends JPanel {
         splitPane.setResizeWeight(0.5); // Evenly split the panels
         add(splitPane, BorderLayout.CENTER);
 
-        int currentY = 0;
         Random random = new Random();
         for (int i = 0; i < numRects; i++) {
             int width = random.nextInt(100) + 50;
@@ -34,16 +33,15 @@ public class DragDropRectanglesWithSplitPane extends JPanel {
             Rect r;
 
             if (i == 1) {
-                r = new RectWithColorAndTextBox(10, currentY, width, height, color);
+                r = new RectWithColorAndTextBox(width, height, color);
 
             } else if (i == 2) {
-                r = new RectWithRects(10, currentY, width, height, color, new String[]{"1", "2"});
+                r = new RectWithRects(width, height, color, new String[]{"1", "2"});
             }
             else {
-                r = new RectWithColor(10, currentY, width, height, color);
+                r = RectWithColor.createRectWithColor(width, height, color);
             }
             rightPanel.addRect(r);
-            currentY += r.getHeight() + RECT_SPACING;
         }
 
         MouseAdapter mouseAdapter = new MouseAdapter() {

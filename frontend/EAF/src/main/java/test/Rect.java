@@ -35,9 +35,9 @@ public abstract class Rect {
         this.height = height;
     }
 
-    public Rect(int x, int y, int width, int height, Color color) {
-        this.x = x;
-        this.y = y;
+    public Rect(int width, int height, Color color) {
+        this.x = 0;
+        this.y = 0;
         this.width = width;
         this.height = height;
         this.color = color;
