@@ -27,6 +27,10 @@ public abstract class Rect {
         this.width = width;
     }
 
+    public void setColor(int r, int g, int b) {
+        color = new Color(r, g, b);
+    }
+
     public void setHeight(int height) {
         this.height = height;
     }

@@ -1,6 +1,7 @@
 package test;
 
 import javax.swing.*;
+import javax.swing.plaf.basic.BasicSliderUI;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -49,22 +50,25 @@ public class DragDropRectanglesWithSplitPane extends JPanel {
             @Override
             public void mousePressed(MouseEvent e) {
                 Point point = SwingUtilities.convertPoint(e.getComponent(), e.getPoint(), rightPanel.getViewport().getView());
-                for (Rect rect : rightPanel.getRects()) {
-                    if (rect.contains(point)) {
-                        draggedRect = rect.clone();
-                        dragOffset = new Point(point.x - rect.getX(), point.y - rect.getY());
-                        rightPanel.setDraggingRect(draggedRect);
-                        leftPanel.setDraggingRect(draggedRect.clone());
-                        break;
-                    }
+
+                Rect rect = rightPanel.getRect(point);
+
+                if (rect != null && rect.contains(point)) {
+                    draggedRect = rect.clone();
+                    dragOffset = new Point(point.x - rect.getX(), point.y - rect.getY());
+                    rightPanel.setDraggingRect(draggedRect);
+                    leftPanel.setDraggingRect(draggedRect.clone());
+
                 }
+
             }
 
             @Override
             public void mouseReleased(MouseEvent e) {
                 if (draggedRect != null) {
                     Point releasePoint = SwingUtilities.convertPoint(e.getComponent(), e.getPoint(), leftPanel.getViewport().getView());
-                    if (leftPanel.contains(releasePoint)) {
+                    Point pointFromLeft = SwingUtilities.convertPoint(e.getComponent(), e.getPoint(), leftPanel);
+                    if (leftPanel.contains(pointFromLeft)) {
                         Rect matchingRect = leftPanel.getRect(releasePoint);
                         if (matchingRect instanceof RectWithRects) {
                             if (((RectWithRects)matchingRect).setIndex(releasePoint, draggedRect)) {
@@ -106,8 +110,8 @@ public class DragDropRectanglesWithSplitPane extends JPanel {
 
         rightPanel.getViewport().getView().addMouseListener(mouseAdapter);
         rightPanel.getViewport().getView().addMouseMotionListener(mouseAdapter);
-        leftPanel.getViewport().getView().addMouseListener(mouseAdapter);
-        leftPanel.getViewport().getView().addMouseMotionListener(mouseAdapter);
+        //leftPanel.getViewport().getView().addMouseListener(mouseAdapter);
+        //leftPanel.getViewport().getView().addMouseMotionListener(mouseAdapter);
     }
 
     private static void createAndShowGUI(int numRects) {
