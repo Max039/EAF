@@ -36,7 +36,9 @@ public class DragDropRectanglesWithSplitPane extends JPanel {
                 r = new RectWithColorAndTextBox(width, height, color);
 
             } else if (i == 2) {
-                r = new RectWithRects(width, height, color, new String[]{"1", "2"});
+                r = new ClassRect(width, height, color, new String[]{"11111", "2222222222"});
+            } else if (i == 3) {
+                r = new ArrayRect(width, height, color, 3);
             }
             else {
                 r = RectWithColor.createRectWithColor(width, height, color);
