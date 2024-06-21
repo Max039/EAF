@@ -17,6 +17,8 @@ public class DragDropRectanglesWithSplitPane extends JPanel {
 
     private JSplitPane splitPane = null;
 
+    public static JFrame mainFrame = null;
+
     public DragDropRectanglesWithSplitPane(int numRects) {
         setLayout(new BorderLayout());
 
@@ -115,14 +117,14 @@ public class DragDropRectanglesWithSplitPane extends JPanel {
     }
 
     private static void createAndShowGUI(int numRects) {
-        JFrame frame = new JFrame("Drag and Drop Rectangles with Split Pane");
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        mainFrame = new JFrame("Drag and Drop Rectangles with Split Pane");
+        mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         DragDropRectanglesWithSplitPane dragDropRectangles = new DragDropRectanglesWithSplitPane(numRects);
-        frame.add(dragDropRectangles);
-        frame.setSize(new Dimension(800, 600));
-        frame.setLocationRelativeTo(null);
-        frame.setVisible(true);
+        mainFrame.add(dragDropRectangles);
+        mainFrame.setSize(new Dimension(800, 600));
+        mainFrame.setLocationRelativeTo(null);
+        mainFrame.setVisible(true);
     }
 
     public static void main(String[] args) {
