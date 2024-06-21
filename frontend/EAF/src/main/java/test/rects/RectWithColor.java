@@ -1,4 +1,4 @@
-package test;
+package test.rects;
 
 import javax.swing.*;
 import java.awt.*;
@@ -13,7 +13,7 @@ public class RectWithColor extends Rect {
     }
 
     @Override
-    void draw(Graphics g) {
+    public void draw(Graphics g) {
         g.setColor(color);
         g.fillRect(getX(), getY(), getWidth(), getHeight());
     }
@@ -32,6 +32,16 @@ public class RectWithColor extends Rect {
     public void removeFrom(JPanel p) {
 
     }
+
+    @Override
+    public void onHover(Point p) {
+
+    };
+
+    @Override
+    public void onMouseReleased() {
+
+    };
 
 }
 

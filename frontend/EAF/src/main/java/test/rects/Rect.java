@@ -1,11 +1,11 @@
-package test;
+package test.rects;
 
 import javax.swing.*;
 import java.awt.*;
 
 public abstract class Rect {
     private int x, y, width, height;
-    Color color;
+    public Color color;
 
     public int getX() {
         return x;
@@ -43,7 +43,7 @@ public abstract class Rect {
         this.color = color;
     }
 
-    abstract void draw(Graphics g);
+    public abstract void draw(Graphics g);
 
     public boolean contains(Point p) {
         return (p.x >= x && p.x <= x + getWidth() && p.y >= y && p.y <= y + getHeight());
@@ -59,6 +59,10 @@ public abstract class Rect {
     public abstract void addTo(JPanel p);
 
     public abstract void removeFrom(JPanel p);
+
+    public abstract void onHover(Point p);
+
+    public abstract void onMouseReleased();
 
 }
 

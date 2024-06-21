@@ -1,4 +1,6 @@
-package test;
+package test.rects.multi;
+
+import test.rects.Rect;
 
 import java.awt.*;
 

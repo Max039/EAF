@@ -1,11 +1,13 @@
-package test;
+package test.rects;
+
+import test.DragDropRectanglesWithSplitPane;
 
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import java.awt.*;
 
-class RectWithColorAndTextBox extends Rect {
+public class RectWithColorAndTextBox extends Rect {
     JTextField textBox;
 
     Graphics gr = null;
@@ -43,7 +45,7 @@ class RectWithColorAndTextBox extends Rect {
     }
 
     @Override
-    void draw(Graphics g) {
+    public void draw(Graphics g) {
         g.setColor(color);
         g.fillRect(getX(), getY(), getWidth(), getHeight());
         textBox.setBounds(getX() + spacing, getY() + spacing, getWidth() - spacing * 2, getHeight() - spacing * 2);
@@ -76,6 +78,15 @@ class RectWithColorAndTextBox extends Rect {
 
     }
 
+    @Override
+    public void onHover(Point p) {
+
+    };
+
+    @Override
+    public void onMouseReleased() {
+
+    };
 
     @Override
     public void removeFrom(JPanel p) {

@@ -1,5 +1,7 @@
 package test;
 
+import test.rects.Rect;
+
 import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
@@ -55,6 +57,12 @@ class RectPanel extends JScrollPane {
             }
         }
         return null;
+    }
+
+    public void mouseReleased() {
+        for (Rect rect : rects) {
+            rect.onMouseReleased();
+        }
     }
 
     @Override

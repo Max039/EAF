@@ -1,7 +1,11 @@
 package test;
 
+import test.rects.*;
+import test.rects.multi.ArrayRect;
+import test.rects.multi.ClassRect;
+import test.rects.multi.RectWithRects;
+
 import javax.swing.*;
-import javax.swing.plaf.basic.BasicSliderUI;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -16,6 +20,8 @@ public class DragDropRectanglesWithSplitPane extends JPanel {
     private Point dragOffset = null;
 
     public JSplitPane splitPane = null;
+
+    public static DragDropRectanglesWithSplitPane subFrame = null;
 
     public static JFrame mainFrame = null;
 
@@ -74,6 +80,16 @@ public class DragDropRectanglesWithSplitPane extends JPanel {
                     int newY = rightPanelPos.y - dragOffset.y;
                     leftPanel.draggingRect.setPosition(newX + leftPanel.getWidth() + splitPane.getDividerSize(), leftPanelPos.y  - dragOffset.y);
                     rightPanel.draggingRect.setPosition(newX, newY);
+
+                    Rect matchingRect = leftPanel.getRect(leftPanelPos);
+                    if (matchingRect instanceof RectWithRects) {
+                        matchingRect = ((RectWithRects) matchingRect).getSubRect(leftPanelPos);
+                        if (matchingRect != null) {
+                            matchingRect.onHover(leftPanelPos);
+                        }
+                    }
+
+
                     repaint();
                 }
             }
@@ -101,10 +117,14 @@ public class DragDropRectanglesWithSplitPane extends JPanel {
                         }
 
                     }
+
+
                     draggedRect = null;
                     dragOffset = null;
                     leftPanel.clearDraggingRect();
                     rightPanel.clearDraggingRect();
+                    leftPanel.mouseReleased();
+                    rightPanel.mouseReleased();
                     repaint();
                 }
             }
@@ -122,7 +142,7 @@ public class DragDropRectanglesWithSplitPane extends JPanel {
         mainFrame = new JFrame("Drag and Drop Rectangles with Split Pane");
         mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-        DragDropRectanglesWithSplitPane subFrame = new DragDropRectanglesWithSplitPane(numRects);
+        subFrame = new DragDropRectanglesWithSplitPane(numRects);
         mainFrame.add(subFrame);
         mainFrame.setSize(new Dimension(800, 600));
         mainFrame.setLocationRelativeTo(null);
