@@ -74,6 +74,9 @@ public class DragDropRectanglesWithSplitPane extends JPanel {
             @Override
             public void mouseDragged(MouseEvent e) {
                 if (draggedRect != null) {
+                    leftPanel.drawDragging = true;
+                    rightPanel.drawDragging = true;
+
                     Point rightPanelPos = SwingUtilities.convertPoint(e.getComponent(), e.getPoint(), rightPanel.getViewport().getView());
                     Point leftPanelPos = SwingUtilities.convertPoint(e.getComponent(), e.getPoint(), leftPanel.getViewport().getView());
                     int newX = rightPanelPos.x - dragOffset.x;
@@ -86,6 +89,8 @@ public class DragDropRectanglesWithSplitPane extends JPanel {
                         matchingRect = ((RectWithRects) matchingRect).getSubRect(leftPanelPos);
                         if (matchingRect != null) {
                             matchingRect.onHover(leftPanelPos);
+                            leftPanel.drawDragging = false;
+                            rightPanel.drawDragging = false;
                         }
                     }
 

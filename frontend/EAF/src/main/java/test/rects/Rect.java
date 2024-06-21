@@ -35,6 +35,8 @@ public abstract class Rect {
         this.height = height;
     }
 
+
+
     public Rect(int width, int height, Color color) {
         this.x = 0;
         this.y = 0;
@@ -43,7 +45,11 @@ public abstract class Rect {
         this.color = color;
     }
 
-    public abstract void draw(Graphics g);
+    public void draw(Graphics g) {
+        draw(g, 1.0);
+    };
+
+    public abstract void draw(Graphics g, double a);
 
     public boolean contains(Point p) {
         return (p.x >= x && p.x <= x + getWidth() && p.y >= y && p.y <= y + getHeight());

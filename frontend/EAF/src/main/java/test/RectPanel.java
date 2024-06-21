@@ -8,6 +8,8 @@ import java.util.ArrayList;
 
 public class RectPanel extends JScrollPane {
 
+    public boolean drawDragging = true;
+
     private final ArrayList<Rect> rects = new ArrayList<>();
     public final DrawingPanel drawingPanel;
     public Rect draggingRect = null;
@@ -117,7 +119,7 @@ public class RectPanel extends JScrollPane {
                 rect.draw(g);
                 y += rect.getHeight() + verticalSpacing;
             }
-            if (draggingRect != null) {
+            if (draggingRect != null && drawDragging) {
                 draggingRect.draw(g);
             }
         }

@@ -11,7 +11,7 @@ public abstract class RectWithRects extends Rect {
 
     public static int spacing = 5;
 
-    public static int emptyRowSize = 12;
+    public static int emptyRowSize = 25;
 
     public static int fontSize = 21;
 
@@ -110,7 +110,7 @@ public abstract class RectWithRects extends Rect {
     }
 
     @Override
-    public void draw(Graphics g) {
+    public void draw(Graphics g, double a) {
         if(g instanceof Graphics2D)
         {
             Graphics2D g2d = (Graphics2D)g;
@@ -119,42 +119,43 @@ public abstract class RectWithRects extends Rect {
         }
         context = ((Graphics2D)g).getFontRenderContext();
 
-        g.setColor(color);
-        g.fillRect(getX(), getY(), getWidth(), getHeight());
+        var g2 = (Graphics2D) g;
+        g2.setColor(new Color(color.getRed(), color.getGreen(), color.getBlue(), (int)(255 * a)));
+        g2.fillRect(getX(), getY(), getWidth(), getHeight());
         int offset = realHeight();
         for (int i = 0; i < subRects.length; i++) {
             Rect r = subRects[i];
             String name = names[i];
             if (r != null) {
-                offset = drawSubRect(g, r, name, offset, i);
+                offset = drawSubRect(g, r, name, offset, i, a);
             }
             else {
-                offset = drawEmptyBox(g, name, offset, i);
+                offset = drawEmptyBox(g, name, offset, i, a);
             }
         }
     }
 
-    private int drawEmptyBox(Graphics g, String name, int offset, int index) {
+    private int drawEmptyBox(Graphics g, String name, int offset, int index, double a) {
         if (index != hoveringIndex) {
             if (!name.isEmpty()) {
                 offset += (int) (fontSize * fontSizeMultiplier);
             }
 
-            g.setColor(emptyRectsColor);
+            g.setColor(new Color(emptyRectsColor.getRed(), emptyRectsColor.getGreen(), emptyRectsColor.getBlue(), (int)(255 * a)));
             g.fillRect(getX() + spacing, getY() + offset, getWidth() - spacing * 2, emptyRowSize);
 
-            g.setColor(textColor);
+            g.setColor(new Color(textColor.getRed(), textColor.getGreen(), textColor.getBlue(), (int)(255 * a)));
             if (!name.isEmpty()) {
                 g.drawString(name, getX() + spacing, getY() + offset - (int)(fontSize * fontOffsetMultiplier));
             }
             return offset + emptyRowSize + spacing;
         }
         else {
-            return drawSubRect(g, DragDropRectanglesWithSplitPane.subFrame.leftPanel.draggingRect, name, offset, index);
+            return drawSubRect(g, DragDropRectanglesWithSplitPane.subFrame.leftPanel.draggingRect, name, offset, index, 0.5);
         }
     }
 
-    private int drawSubRect(Graphics g, Rect r, String name, int offset, int index) {
+    private int drawSubRect(Graphics g, Rect r, String name, int offset, int index, double a) {
         if (!name.isEmpty()) {
             offset += (int) (fontSize * fontSizeMultiplier);
         }
@@ -162,9 +163,13 @@ public abstract class RectWithRects extends Rect {
         if (!(r instanceof RectWithRects)) {
             r.setWidth(getWidth() - spacing * 2);
         }
-        r.draw(g);
 
-        g.setColor(textColor);
+        g.setColor(new Color(emptyRectsColor.getRed(), emptyRectsColor.getGreen(), emptyRectsColor.getBlue(), 255));
+        g.fillRect(getX() + spacing, getY() + offset, getWidth() - spacing * 2, r.getHeight());
+
+        r.draw(g, a);
+
+        g.setColor(new Color(textColor.getRed(), textColor.getGreen(), textColor.getBlue(), (int)(255 * a)));
         if (!name.isEmpty()) {
             g.drawString(name, getX() + spacing, getY() + offset - (int)(fontSize * fontOffsetMultiplier));
         }
@@ -224,7 +229,7 @@ public abstract class RectWithRects extends Rect {
     }
 
     public Rect getSubRect(Point p) {
-        if (p.x >= getX() + spacing && p.x <= getX() + getWidth() - spacing) {
+        if (contains(p) && p.x >= getX() + spacing && p.x <= getX() + getWidth() - spacing) {
             int heightAcc = realHeight();
             for (int i = 0; i < subRects.length && getY() + heightAcc <= p.y; i++) {
                 Rect r = subRects[i];
@@ -269,10 +274,7 @@ public abstract class RectWithRects extends Rect {
             }
             else {
                 if (p.y >= getY() + heightAcc && p.y <= getY() + heightAcc + emptyRowSize) {
-
                     hoveringIndex = i;
-
-                    System.out.println(hoveringIndex);
                     break;
                 }
                 heightAcc += emptyRowSize + spacing;

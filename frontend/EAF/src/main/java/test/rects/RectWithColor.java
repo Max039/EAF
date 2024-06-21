@@ -13,9 +13,11 @@ public class RectWithColor extends Rect {
     }
 
     @Override
-    public void draw(Graphics g) {
-        g.setColor(color);
-        g.fillRect(getX(), getY(), getWidth(), getHeight());
+    public void draw(Graphics g, double a) {
+        var g2 = (Graphics2D) g;
+
+        g2.setColor(new Color(color.getRed(), color.getGreen(), color.getBlue(), (int)(255 * a)));
+        g2.fillRect(getX(), getY(), getWidth(), getHeight());
     }
 
     @Override
