@@ -111,6 +111,10 @@ public abstract class RectWithRects extends Rect {
 
     @Override
     public void draw(Graphics g, double a) {
+        draw(g, a, 1);
+    }
+
+    public void draw(Graphics g, double a, int depth) {
         if(g instanceof Graphics2D)
         {
             Graphics2D g2d = (Graphics2D)g;
@@ -127,15 +131,15 @@ public abstract class RectWithRects extends Rect {
             Rect r = subRects[i];
             String name = names[i];
             if (r != null) {
-                offset = drawSubRect(g, r, name, offset, i, a);
+                offset = drawSubRect(g, r, name, offset, i, a, depth + 1);
             }
             else {
-                offset = drawEmptyBox(g, name, offset, i, a);
+                offset = drawEmptyBox(g, name, offset, i, a, depth);
             }
         }
     }
 
-    private int drawEmptyBox(Graphics g, String name, int offset, int index, double a) {
+    private int drawEmptyBox(Graphics g, String name, int offset, int index, double a, int depth) {
         if (index != hoveringIndex) {
             if (!name.isEmpty()) {
                 offset += (int) (fontSize * fontSizeMultiplier);
@@ -151,11 +155,11 @@ public abstract class RectWithRects extends Rect {
             return offset + emptyRowSize + spacing;
         }
         else {
-            return drawSubRect(g, DragDropRectanglesWithSplitPane.subFrame.leftPanel.draggingRect, name, offset, index, 0.5);
+            return drawSubRect(g, DragDropRectanglesWithSplitPane.subFrame.leftPanel.draggingRect, name, offset, index, 0.5, depth + 1);
         }
     }
 
-    private int drawSubRect(Graphics g, Rect r, String name, int offset, int index, double a) {
+    private int drawSubRect(Graphics g, Rect r, String name, int offset, int index, double a, int depth) {
         if (!name.isEmpty()) {
             offset += (int) (fontSize * fontSizeMultiplier);
         }
@@ -163,13 +167,17 @@ public abstract class RectWithRects extends Rect {
         if (!(r instanceof RectWithRects)) {
             r.setWidth(getWidth() - spacing * 2);
         }
-
         g.setColor(new Color(emptyRectsColor.getRed(), emptyRectsColor.getGreen(), emptyRectsColor.getBlue(), 255));
-        g.fillRect(getX() + spacing, getY() + offset, getWidth() - spacing * 2, r.getHeight());
+        g.fillRect(getX() + spacing, getY() + offset, r.getWidth(), r.getHeight());
 
         r.draw(g, a);
 
-        g.setColor(new Color(textColor.getRed(), textColor.getGreen(), textColor.getBlue(), (int)(255 * a)));
+        if (depth == 2) {
+            g.setColor(new Color(textColor.getRed(), textColor.getGreen(), textColor.getBlue(), 255));
+        }
+        else {
+            g.setColor(new Color(textColor.getRed(), textColor.getGreen(), textColor.getBlue(), (int)(255 * a)));
+        }
         if (!name.isEmpty()) {
             g.drawString(name, getX() + spacing, getY() + offset - (int)(fontSize * fontOffsetMultiplier));
         }
