@@ -14,7 +14,16 @@ class RectWithColorAndTextBox extends Rect {
 
     public RectWithColorAndTextBox(int width, int height, Color color) {
         super(width, height, color);
-        textBox = new JTextField("Insert Text Here");
+        setTextBox("Insert Text Here");
+    }
+
+    public RectWithColorAndTextBox(int width, int height, Color color, JTextField field) {
+        super(width, height, color);
+        setTextBox(field.getText());
+    }
+
+    public void setTextBox(String input) {
+        textBox = new JTextField(input);
         textBox.getDocument().addDocumentListener(new DocumentListener() {
             @Override
             public void insertUpdate(DocumentEvent e) {
@@ -31,11 +40,6 @@ class RectWithColorAndTextBox extends Rect {
                 DragDropRectanglesWithSplitPane.mainFrame.repaint();
             }
         });
-    }
-
-    public RectWithColorAndTextBox(int width, int height, Color color, JTextField field) {
-        super(width, height, color);
-        textBox = new JTextField(field.getText());
     }
 
     @Override
