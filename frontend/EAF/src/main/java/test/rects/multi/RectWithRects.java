@@ -25,7 +25,6 @@ public abstract class RectWithRects extends Rect {
 
     Color emptyRectsColor = new Color(255, 255, 255);
 
-    Color hoveringRectsColor = new Color(0, 255, 255);
 
     FontRenderContext context = null;
 
@@ -63,6 +62,9 @@ public abstract class RectWithRects extends Rect {
             if (r != null) {
                 maxWidth = Math.max(maxWidth, r.getWidth());
             }
+            if (i == hoveringIndex) {
+                maxWidth = Math.max(maxWidth, DragDropRectanglesWithSplitPane.subFrame.leftPanel.draggingRect.getWidth());
+            }
             if (context != null) {
                 maxWidth = Math.max(maxWidth, (int) getFont().getStringBounds(name, context).getWidth());
             }
@@ -76,12 +78,18 @@ public abstract class RectWithRects extends Rect {
         for (int i = 0; i < subRects.length; i++) {
             Rect r = subRects[i];
             String name = names[i];
-            if (r != null) {
-                heightAcc += r.getHeight() + spacing;
+            if (i == hoveringIndex) {
+                heightAcc += DragDropRectanglesWithSplitPane.subFrame.leftPanel.draggingRect.getHeight() + spacing;
             }
             else {
-                heightAcc += emptyRowSize + spacing;
+                if (r != null) {
+                    heightAcc += r.getHeight() + spacing;
+                }
+                else {
+                    heightAcc += emptyRowSize + spacing;
+                }
             }
+
             if (!name.isEmpty()) {
                 heightAcc += (int) (fontSize * fontSizeMultiplier);
             }
@@ -118,44 +126,50 @@ public abstract class RectWithRects extends Rect {
             Rect r = subRects[i];
             String name = names[i];
             if (r != null) {
-                if (!name.isEmpty()) {
-                    offset += (int) (fontSize * fontSizeMultiplier);
-                }
-                r.setPosition(getX() + spacing, getY() + offset);
-                if (!(r instanceof RectWithRects)) {
-                    r.setWidth(getWidth() - spacing * 2);
-                }
-                r.draw(g);
-
-                g.setColor(textColor);
-                if (!name.isEmpty()) {
-                    g.drawString(name, getX() + spacing, getY() + offset - (int)(fontSize * fontOffsetMultiplier));
-                }
-                offset += r.getHeight() + spacing;
+                offset = drawSubRect(g, r, name, offset, i);
             }
             else {
-                if (!name.isEmpty()) {
-                    offset += (int) (fontSize * fontSizeMultiplier);
-                }
-
-                if (i == hoveringIndex) {
-                    g.setColor(hoveringRectsColor);
-                }
-                else {
-                    g.setColor(emptyRectsColor);
-                }
-
-                g.fillRect(getX() + spacing, getY() + offset, getWidth() - spacing * 2, emptyRowSize);
-
-                g.setColor(textColor);
-                if (!name.isEmpty()) {
-                    g.drawString(name, getX() + spacing, getY() + offset - (int)(fontSize * fontOffsetMultiplier));
-                }
-                offset += emptyRowSize + spacing;
+                offset = drawEmptyBox(g, name, offset, i);
             }
         }
     }
 
+    private int drawEmptyBox(Graphics g, String name, int offset, int index) {
+        if (index != hoveringIndex) {
+            if (!name.isEmpty()) {
+                offset += (int) (fontSize * fontSizeMultiplier);
+            }
+
+            g.setColor(emptyRectsColor);
+            g.fillRect(getX() + spacing, getY() + offset, getWidth() - spacing * 2, emptyRowSize);
+
+            g.setColor(textColor);
+            if (!name.isEmpty()) {
+                g.drawString(name, getX() + spacing, getY() + offset - (int)(fontSize * fontOffsetMultiplier));
+            }
+            return offset + emptyRowSize + spacing;
+        }
+        else {
+            return drawSubRect(g, DragDropRectanglesWithSplitPane.subFrame.leftPanel.draggingRect, name, offset, index);
+        }
+    }
+
+    private int drawSubRect(Graphics g, Rect r, String name, int offset, int index) {
+        if (!name.isEmpty()) {
+            offset += (int) (fontSize * fontSizeMultiplier);
+        }
+        r.setPosition(getX() + spacing, getY() + offset);
+        if (!(r instanceof RectWithRects)) {
+            r.setWidth(getWidth() - spacing * 2);
+        }
+        r.draw(g);
+
+        g.setColor(textColor);
+        if (!name.isEmpty()) {
+            g.drawString(name, getX() + spacing, getY() + offset - (int)(fontSize * fontOffsetMultiplier));
+        }
+        return offset + r.getHeight() + spacing;
+    }
 
 
     @Override
@@ -218,13 +232,13 @@ public abstract class RectWithRects extends Rect {
                 if (!name.isEmpty()) {
                     heightAcc += (int) (fontSize * fontSizeMultiplier);
                 }
-                if (r != null) {
+                if (r != null && r.contains(p)) {
                     if (r instanceof RectWithRects) {
                         return ((RectWithRects) r).getSubRect(p);
                     }
                     heightAcc += r.getHeight() + spacing;
                 } else {
-                    return this;
+                    heightAcc += emptyRowSize + spacing;
                 }
             }
         }
@@ -255,7 +269,11 @@ public abstract class RectWithRects extends Rect {
             }
             else {
                 if (p.y >= getY() + heightAcc && p.y <= getY() + heightAcc + emptyRowSize) {
+
                     hoveringIndex = i;
+
+                    System.out.println(hoveringIndex);
+                    break;
                 }
                 heightAcc += emptyRowSize + spacing;
             }
@@ -270,8 +288,9 @@ public abstract class RectWithRects extends Rect {
                 r.onMouseReleased();
             }
         }
-
         hoveringIndex = -1;
     };
+
+
 
 }

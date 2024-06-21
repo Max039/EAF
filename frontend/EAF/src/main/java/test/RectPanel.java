@@ -6,7 +6,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
 
-class RectPanel extends JScrollPane {
+public class RectPanel extends JScrollPane {
 
     private final ArrayList<Rect> rects = new ArrayList<>();
     public final DrawingPanel drawingPanel;
