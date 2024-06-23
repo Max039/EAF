@@ -288,7 +288,7 @@ public abstract class RectWithRects extends Rect {
     }
 
     @Override
-    public void onHover(Point p) {
+    public boolean onHover(Point p) {
         int heightAcc = realHeight();
         hoveringIndex = -1;
         for (int i = 0; i < subRects.length && getY() + heightAcc <= p.y; i++) {
@@ -303,11 +303,12 @@ public abstract class RectWithRects extends Rect {
             else {
                 if (p.y >= getY() + heightAcc && p.y <= getY() + heightAcc + emptyRowSize) {
                     hoveringIndex = i;
-                    break;
+                    return false;
                 }
                 heightAcc += emptyRowSize + spacing;
             }
         }
+        return true;
     };
 
     @Override

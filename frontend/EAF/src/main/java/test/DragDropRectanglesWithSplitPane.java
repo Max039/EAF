@@ -88,9 +88,10 @@ public class DragDropRectanglesWithSplitPane extends JPanel {
                     if (matchingRect instanceof RectWithRects) {
                         matchingRect = ((RectWithRects) matchingRect).getSubRect(leftPanelPos);
                         if (matchingRect != null) {
-                            matchingRect.onHover(leftPanelPos);
-                            leftPanel.drawDragging = false;
-                            rightPanel.drawDragging = false;
+                            if (!matchingRect.onHover(leftPanelPos)) {
+                                leftPanel.drawDragging = false;
+                                rightPanel.drawDragging = false;
+                            }
                         }
                     }
 

@@ -66,7 +66,7 @@ public abstract class Rect {
 
     public abstract void removeFrom(JPanel p);
 
-    public abstract void onHover(Point p);
+    public abstract boolean onHover(Point p);
 
     public abstract void onMouseReleased();
 

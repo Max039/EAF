@@ -86,8 +86,8 @@ public class RectWithColorAndTextBox extends Rect {
     }
 
     @Override
-    public void onHover(Point p) {
-
+    public boolean onHover(Point p) {
+        return true;
     };
 
     @Override
