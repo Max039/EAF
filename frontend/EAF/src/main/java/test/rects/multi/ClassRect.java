@@ -6,16 +6,25 @@ import java.awt.*;
 
 public class ClassRect extends RectWithRects {
 
-    public ClassRect(int width, int height, Color color, String[] names) {
-        super(width, height, color, names);
+    public ClassRect() {
+        super();
     }
 
-    public ClassRect(int width, int height, Color color, String[] names, Rect[] rects) {
-        super(width, height, color, names, rects);
+    public ClassRect(int width, int height, Color color, String[] names, Class<?>[] types) {
+        super(width, height, color, names, types);
+    }
+
+    public ClassRect(int width, int height, Color color, String[] names, Rect[] rects, Class<?>[] types) {
+        super(width, height, color, names, rects, types);
     }
 
     @Override
     public Rect clone() {
-        return new ClassRect(realWidth(), realHeight(), color, names, subRects);
+        return new ClassRect(realWidth(), realHeight(), color, names, subRects, types);
+    }
+
+    @Override
+    public Rect newInstance() {
+        return new ClassRect();
     }
 }

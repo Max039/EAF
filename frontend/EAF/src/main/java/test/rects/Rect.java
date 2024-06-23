@@ -70,5 +70,7 @@ public abstract class Rect {
 
     public abstract void onMouseReleased();
 
+    public abstract Rect newInstance();
+
 }
 

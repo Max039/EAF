@@ -1,6 +1,8 @@
 package test.rects;
 
 import test.DragDropRectanglesWithSplitPane;
+import test.rects.multi.ArrayRect;
+import test.rects.multi.RectWithRects;
 
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;
@@ -10,9 +12,12 @@ import java.awt.*;
 public class RectWithColorAndTextBox extends Rect {
     JTextField textBox;
 
-    Graphics gr = null;
-
     public static int spacing = 5;
+
+    public RectWithColorAndTextBox() {
+        super(50, RectWithRects.emptyRowSize, new Color(255, 255, 255));
+        setTextBox("Insert Text Here");
+    }
 
     public RectWithColorAndTextBox(int width, int height, Color color) {
         super(width, height, color);
@@ -93,5 +98,10 @@ public class RectWithColorAndTextBox extends Rect {
     @Override
     public void removeFrom(JPanel p) {
         p.remove(textBox);
+    }
+
+    @Override
+    public Rect newInstance() {
+        return new RectWithColorAndTextBox();
     }
 }

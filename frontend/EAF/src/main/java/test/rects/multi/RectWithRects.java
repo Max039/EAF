@@ -2,10 +2,12 @@ package test.rects.multi;
 
 import test.DragDropRectanglesWithSplitPane;
 import test.rects.Rect;
+import test.rects.RectWithColorAndTextBox;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.font.FontRenderContext;
+import java.lang.reflect.Method;
 
 public abstract class RectWithRects extends Rect {
 
@@ -31,22 +33,40 @@ public abstract class RectWithRects extends Rect {
     Rect[] subRects = new Rect[0];
     String[] names = new String[0];
 
-    public RectWithRects(int width, int height, Color color, String[] names) {
-        this(width, height, color);
-        setNames(names);
+    Class<?>[] types = new Class<?>[0];
+
+
+    public RectWithRects() {
+        super(50, RectWithRects.emptyRowSize, new Color(255, 255, 255));
     }
 
-    public void setNames(String[] names) {
+    public RectWithRects(int width, int height, Color color, String[] names, Class<?>[] types) {
+        this(width, height, color);
+        setNamesAndTypes(names, types);
+    }
+
+    public RectWithRects(int width, int height, Color color, String[] names, Rect[] subRects, Class<?>[] types) {
+        this(width, height, color, names, types);
+        setRects(subRects);
+    }
+
+    public void setNamesAndTypes(String[] names, Class<?>[] types) {
         this.names = names.clone();
         this.subRects = new Rect[names.length];
+        this.types = types;
         for (int i = 0; i < names.length; i++) {
             subRects[i] = null;
         }
     }
 
-    public RectWithRects(int width, int height, Color color, String[] names, Rect[] subRects) {
-        this(width, height, color, names);
-        this.subRects = subRects.clone();
+    public void setRects(Rect[] subRects) {
+        this.subRects = new Rect[subRects.length];
+        for (int i = 0; i < subRects.length; i++) {
+            var r = subRects[i];
+            if (r != null) {
+                this.subRects[i] = r.clone();
+            }
+        }
     }
 
     public RectWithRects(int width, int height, Color color) {
@@ -301,6 +321,25 @@ public abstract class RectWithRects extends Rect {
         hoveringIndex = -1;
     };
 
+    public void fillIfNecessary() {
+        try {
+            for (int i = 0; i < types.length; i++) {
+                var r = subRects[i];
+                if (r == null) {
+                    var c = types[i];
+                    Object instance = c.getDeclaredConstructor().newInstance();
 
+                    Method newInstanceMethod = c.getMethod("newInstance");
+                    subRects[i] = (Rect) newInstanceMethod.invoke(instance);
+                }
+            }
+        } catch (NoSuchMethodException e) {
+            System.err.println("The class does not have a no-argument constructor or newInstance method.");
+            e.printStackTrace();
+        } catch (Exception e) {
+            System.err.println("The class does not have a no-argument constructor or newInstance method.");
+            e.printStackTrace();
+        }
+    }
 
 }
