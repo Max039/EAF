@@ -264,7 +264,7 @@ public abstract class RectWithRects extends Rect {
                     heightAcc += r.getHeight() + spacing;
                 }
                 else {
-                    if (p.y >= getY() + heightAcc && p.y <= getY() + heightAcc + emptyRowSize) {
+                    if (p.y >= getY() + heightAcc && p.y <= getY() + heightAcc + emptyRowSize && !indexDoesNotMatchesDragged(i)) {
                         setIndex(i, rec);
                         return true;
                     }
