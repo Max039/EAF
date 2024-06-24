@@ -96,12 +96,12 @@ public class DragDropRectanglesWithSplitPane extends JPanel {
                                 rightPanel.drawDragging = false;
                             }
                             if (res.getSecond()) {
-                                leftPanel.draggingRect.opacity = 0.5;
-                                rightPanel.draggingRect.opacity = 0.5;
+                                leftPanel.draggingRect.setTransparent();
+                                rightPanel.draggingRect.setTransparent();
                             }
                             else {
-                                leftPanel.draggingRect.opacity = 1.0;
-                                rightPanel.draggingRect.opacity = 1.0;
+                                leftPanel.draggingRect.setOpace();
+                                rightPanel.draggingRect.setOpace();
                             }
                         }
                     }

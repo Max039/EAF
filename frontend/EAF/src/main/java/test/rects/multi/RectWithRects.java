@@ -22,6 +22,8 @@ public abstract class RectWithRects extends Rect {
 
     public static float fontOffsetMultiplier = 0.5F;
 
+
+
     private int hoveringIndex = -1;
 
 
@@ -31,12 +33,16 @@ public abstract class RectWithRects extends Rect {
 
     Color invalidRectsColor = new Color(255, 0, 0);
 
+
+
     FontRenderContext context = null;
 
     Rect[] subRects = new Rect[0];
     String[] names = new String[0];
 
     Class<?>[] types = new Class<?>[0];
+
+
 
 
     public RectWithRects() {
@@ -194,7 +200,7 @@ public abstract class RectWithRects extends Rect {
             return offset + emptyRowSize + spacing;
         }
         else {
-            return drawSubRect(g, DragDropRectanglesWithSplitPane.subFrame.leftPanel.draggingRect, name, offset, index, 0.5, depth + 1);
+            return drawSubRect(g, DragDropRectanglesWithSplitPane.subFrame.leftPanel.draggingRect, name, offset, index, transparencyFactor, depth + 1);
 
         }
     }

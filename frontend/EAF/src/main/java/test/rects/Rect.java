@@ -39,7 +39,15 @@ public abstract class Rect {
         this.height = height;
     }
 
+    public static double transparencyFactor = 0.5;
 
+    public void setTransparent() {
+        opacity = transparencyFactor;
+    }
+
+    public void setOpace() {
+        opacity = 1.0;
+    }
 
     public Rect(int width, int height, Color color) {
         this.x = 0;
