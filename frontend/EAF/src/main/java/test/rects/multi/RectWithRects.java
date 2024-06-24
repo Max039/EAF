@@ -80,7 +80,12 @@ public abstract class RectWithRects extends Rect {
             Rect r = subRects[i];
             String name = names[i];
             if (r != null) {
-                maxWidth = Math.max(maxWidth, r.getWidth());
+                if (r instanceof RectWithColorAndTextBox) {
+                    maxWidth = Math.max(maxWidth, ((RectWithColorAndTextBox) r).getTextWidth());
+                }
+                else {
+                    maxWidth = Math.max(maxWidth, r.getWidth());
+                }
             }
             if (i == hoveringIndex) {
                 maxWidth = Math.max(maxWidth, DragDropRectanglesWithSplitPane.subFrame.leftPanel.draggingRect.getWidth());

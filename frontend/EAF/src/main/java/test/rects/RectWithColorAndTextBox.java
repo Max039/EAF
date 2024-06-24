@@ -12,7 +12,7 @@ import java.awt.*;
 public class RectWithColorAndTextBox extends Rect {
     JTextField textBox;
 
-    public static int spacing = 5;
+    public static int spacing = 0;
 
     public RectWithColorAndTextBox() {
         super(50, RectWithRects.emptyRowSize, new Color(255, 255, 255));
@@ -69,6 +69,12 @@ public class RectWithColorAndTextBox extends Rect {
     }
     @Override
     public int getWidth() {
+        int textWidth = getTextWidth();
+
+        return Math.max(super.getWidth(), textWidth);
+    }
+
+    public int getTextWidth() {
         // Get the font metrics for the font used in the JTextField
         FontMetrics fontMetrics = textBox.getFontMetrics(textBox.getFont());
 
@@ -78,11 +84,7 @@ public class RectWithColorAndTextBox extends Rect {
         Insets insets = textBox.getInsets();
         int padding = insets.left + insets.right;
 
-        // Measure the width of the text
-        int textWidth = (int) (fontMetrics.stringWidth(text) + padding * 1.5F + spacing * 2);
-
-        return Math.max(super.getWidth(), textWidth);
-
+        return (int) (fontMetrics.stringWidth(text) + padding * 1.5F + spacing * 2);
     }
 
     @Override
