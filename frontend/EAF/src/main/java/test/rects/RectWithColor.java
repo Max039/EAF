@@ -1,5 +1,6 @@
 package test.rects;
 
+import test.Pair;
 import test.rects.multi.ArrayRect;
 import test.rects.multi.RectWithRects;
 
@@ -44,8 +45,8 @@ public class RectWithColor extends Rect {
     }
 
     @Override
-    public boolean onHover(Point p) {
-        return true;
+    public Pair<Boolean, Boolean> onHover(Point p) {
+        return new Pair<>(true, false);
     };
 
     @Override

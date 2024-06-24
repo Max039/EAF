@@ -1,6 +1,7 @@
 package test.rects.multi;
 
 import test.DragDropRectanglesWithSplitPane;
+import test.Pair;
 import test.rects.Rect;
 import test.rects.RectWithColorAndTextBox;
 
@@ -23,10 +24,12 @@ public abstract class RectWithRects extends Rect {
 
     private int hoveringIndex = -1;
 
+
     Color textColor = new Color(255, 255, 255);
 
     Color emptyRectsColor = new Color(255, 255, 255);
 
+    Color invalidRectsColor = new Color(255, 0, 0);
 
     FontRenderContext context = null;
 
@@ -87,7 +90,7 @@ public abstract class RectWithRects extends Rect {
                     maxWidth = Math.max(maxWidth, r.getWidth());
                 }
             }
-            if (i == hoveringIndex) {
+            if (i == hoveringIndex && !indexDoesNotMatchesDragged(i)) {
                 maxWidth = Math.max(maxWidth, DragDropRectanglesWithSplitPane.subFrame.leftPanel.draggingRect.getWidth());
             }
             if (context != null) {
@@ -103,7 +106,7 @@ public abstract class RectWithRects extends Rect {
         for (int i = 0; i < subRects.length; i++) {
             Rect r = subRects[i];
             String name = names[i];
-            if (i == hoveringIndex) {
+            if (i == hoveringIndex && !indexDoesNotMatchesDragged(i)) {
                 heightAcc += DragDropRectanglesWithSplitPane.subFrame.leftPanel.draggingRect.getHeight() + spacing;
             }
             else {
@@ -164,13 +167,24 @@ public abstract class RectWithRects extends Rect {
         }
     }
 
+    private boolean indexDoesNotMatchesDragged(int index) {
+        Class<?> classOfHoveringIndex = types[index];
+        return DragDropRectanglesWithSplitPane.subFrame.draggedRect != null && !classOfHoveringIndex.isInstance(DragDropRectanglesWithSplitPane.subFrame.draggedRect);
+    }
+
     private int drawEmptyBox(Graphics g, String name, int offset, int index, double a, int depth) {
-        if (index != hoveringIndex) {
+        boolean typeIndexMatch = indexDoesNotMatchesDragged(index);
+        if (index != hoveringIndex || typeIndexMatch) {
             if (!name.isEmpty()) {
                 offset += (int) (fontSize * fontSizeMultiplier);
             }
 
-            g.setColor(new Color(emptyRectsColor.getRed(), emptyRectsColor.getGreen(), emptyRectsColor.getBlue(), (int)(255 * a)));
+            if (typeIndexMatch && index == hoveringIndex) {
+                g.setColor(new Color(invalidRectsColor.getRed(), invalidRectsColor.getGreen(), invalidRectsColor.getBlue(), (int)(255 * a)));
+            }
+            else {
+                g.setColor(new Color(emptyRectsColor.getRed(), emptyRectsColor.getGreen(), emptyRectsColor.getBlue(), (int)(255 * a)));
+            }
             g.fillRect(getX() + spacing, getY() + offset, getWidth() - spacing * 2, emptyRowSize);
 
             g.setColor(new Color(textColor.getRed(), textColor.getGreen(), textColor.getBlue(), (int)(255 * a)));
@@ -181,6 +195,7 @@ public abstract class RectWithRects extends Rect {
         }
         else {
             return drawSubRect(g, DragDropRectanglesWithSplitPane.subFrame.leftPanel.draggingRect, name, offset, index, 0.5, depth + 1);
+
         }
     }
 
@@ -293,7 +308,7 @@ public abstract class RectWithRects extends Rect {
     }
 
     @Override
-    public boolean onHover(Point p) {
+    public Pair<Boolean, Boolean> onHover(Point p) {
         int heightAcc = realHeight();
         hoveringIndex = -1;
         if (p.x >= getX() + spacing && p.x <= getX() + getWidth() - spacing) {
@@ -309,13 +324,20 @@ public abstract class RectWithRects extends Rect {
                 else {
                     if (p.y >= getY() + heightAcc && p.y <= getY() + heightAcc + emptyRowSize) {
                         hoveringIndex = i;
-                        return false;
+                        Class<?> classOfHoveringIndex = types[i];
+                        if (indexDoesNotMatchesDragged(i)) {
+                            return new Pair<>(true, true);
+                        }
+                        else {
+                            return new Pair<>(false, false);
+                        }
+
                     }
                     heightAcc += emptyRowSize + spacing;
                 }
             }
         }
-        return true;
+        return new Pair<>(true, false);
     };
 
     @Override

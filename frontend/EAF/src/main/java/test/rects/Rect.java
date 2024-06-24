@@ -1,11 +1,15 @@
 package test.rects;
 
+import test.Pair;
+
 import javax.swing.*;
 import java.awt.*;
 
 public abstract class Rect {
     private int x, y, width, height;
     public Color color;
+
+    public double opacity = 1.0;
 
     public int getX() {
         return x;
@@ -46,7 +50,7 @@ public abstract class Rect {
     }
 
     public void draw(Graphics g) {
-        draw(g, 1.0);
+        draw(g, opacity);
     };
 
     public abstract void draw(Graphics g, double a);
@@ -66,7 +70,7 @@ public abstract class Rect {
 
     public abstract void removeFrom(JPanel p);
 
-    public abstract boolean onHover(Point p);
+    public abstract Pair<Boolean, Boolean> onHover(Point p);
 
     public abstract void onMouseReleased();
 

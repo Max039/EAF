@@ -45,7 +45,7 @@ public class DragDropRectanglesWithSplitPane extends JPanel {
                 r = new RectWithColorAndTextBox(width, height, color);
 
             } else if (i == 2) {
-                r = new ClassRect(width, height, color, new String[]{"11111", "2222222222"}, new Class<?>[]{Rect.class, Rect.class});
+                r = new ClassRect(width, height, color, new String[]{"11111", "2222222222"}, new Class<?>[]{RectWithColorAndTextBox.class, Rect.class});
             } else if (i == 3) {
                 r = new ArrayRect<RectWithColorAndTextBox>(width, height, color, 3, RectWithColorAndTextBox.class, true);
             }
@@ -88,9 +88,20 @@ public class DragDropRectanglesWithSplitPane extends JPanel {
                     if (matchingRect instanceof RectWithRects) {
                         matchingRect = ((RectWithRects) matchingRect).getSubRect(leftPanelPos);
                         if (matchingRect != null) {
-                            if (!matchingRect.onHover(leftPanelPos)) {
+                            var res = matchingRect.onHover(leftPanelPos);
+
+
+                            if (!res.getFirst()) {
                                 leftPanel.drawDragging = false;
                                 rightPanel.drawDragging = false;
+                            }
+                            if (res.getSecond()) {
+                                leftPanel.draggingRect.opacity = 0.5;
+                                rightPanel.draggingRect.opacity = 0.5;
+                            }
+                            else {
+                                leftPanel.draggingRect.opacity = 1.0;
+                                rightPanel.draggingRect.opacity = 1.0;
                             }
                         }
                     }
