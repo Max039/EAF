@@ -94,8 +94,6 @@ public class DragDropRectanglesWithSplitPane extends JPanel {
                             }
                         }
                     }
-
-
                     repaint();
                 }
             }

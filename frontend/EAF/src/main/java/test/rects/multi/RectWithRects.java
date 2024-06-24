@@ -291,21 +291,23 @@ public abstract class RectWithRects extends Rect {
     public boolean onHover(Point p) {
         int heightAcc = realHeight();
         hoveringIndex = -1;
-        for (int i = 0; i < subRects.length && getY() + heightAcc <= p.y; i++) {
-            Rect r = subRects[i];
-            String name = names[i];
-            if (!name.isEmpty()) {
-                heightAcc += (int) (fontSize * fontSizeMultiplier);;
-            }
-            if (r != null) {
-                heightAcc += r.getHeight() + spacing;
-            }
-            else {
-                if (p.y >= getY() + heightAcc && p.y <= getY() + heightAcc + emptyRowSize) {
-                    hoveringIndex = i;
-                    return false;
+        if (p.x >= getX() + spacing && p.x <= getX() + getWidth() - spacing) {
+            for (int i = 0; i < subRects.length && getY() + heightAcc <= p.y; i++) {
+                Rect r = subRects[i];
+                String name = names[i];
+                if (!name.isEmpty()) {
+                    heightAcc += (int) (fontSize * fontSizeMultiplier);;
                 }
-                heightAcc += emptyRowSize + spacing;
+                if (r != null) {
+                    heightAcc += r.getHeight() + spacing;
+                }
+                else {
+                    if (p.y >= getY() + heightAcc && p.y <= getY() + heightAcc + emptyRowSize) {
+                        hoveringIndex = i;
+                        return false;
+                    }
+                    heightAcc += emptyRowSize + spacing;
+                }
             }
         }
         return true;
