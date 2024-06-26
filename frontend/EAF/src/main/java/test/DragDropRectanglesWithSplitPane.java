@@ -132,8 +132,6 @@ public class DragDropRectanglesWithSplitPane extends JPanel {
                             }
                         }
                         else {
-                            int currentY = leftPanel.getRects().stream().mapToInt(r -> r.getY() + r.getHeight() + RECT_SPACING).max().orElse(0);
-                            draggedRect.setPosition(10, currentY);
                             leftPanel.addRect(draggedRect);
                             rightPanel.removeRect(draggedRect);
                         }
