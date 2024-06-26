@@ -6,10 +6,21 @@ import javax.swing.*;
 import java.awt.*;
 
 public abstract class Rect {
+
+    public static double transparencyFactor = 0.5;
+
     private int x, y, width, height;
     public Color color;
 
-    public double opacity = 1.0;
+    private double opacity = 1.0;
+
+    public double getOpacity() {
+        return opacity;
+    }
+
+    public void setOpacity(double opacity) {
+        this.opacity = opacity;
+    }
 
     public int getX() {
         return x;
@@ -39,14 +50,14 @@ public abstract class Rect {
         this.height = height;
     }
 
-    public static double transparencyFactor = 0.5;
+
 
     public void setTransparent() {
-        opacity = transparencyFactor;
+        setOpacity(transparencyFactor);
     }
 
     public void setOpace() {
-        opacity = 1.0;
+        setOpacity(1.0);
     }
 
     public Rect(int width, int height, Color color) {

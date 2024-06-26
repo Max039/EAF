@@ -30,8 +30,32 @@ public class RectWithColorAndTextBox extends Rect {
         setTextBox(field.getText());
     }
 
+    @Override
+    public void setOpacity(double opacity) {
+        super.setOpacity(opacity);
+        adjustTextBoxColor();
+    }
+
+    private void adjustTextBoxColor() {
+        Color bg = textBox.getBackground();
+        textBox.setBackground(new Color(bg.getRed(), bg.getGreen(), bg.getBlue(), (int)(getOpacity()*255)));
+        Color fg = textBox.getForeground();
+        textBox.setForeground(new Color(fg.getRed(), fg.getGreen(), fg.getBlue(), (int)(getOpacity()*255)));
+        Color caret = textBox.getCaretColor();
+        textBox.setCaretColor(new Color(caret.getRed(), caret.getGreen(), caret.getBlue(), (int)(getOpacity()*255)));
+        Color selected = textBox.getSelectedTextColor();
+        textBox.setSelectedTextColor(new Color(selected.getRed(), selected.getGreen(), selected.getBlue(), (int)(getOpacity()*255)));
+        Color selection = textBox.getSelectionColor();
+        textBox.setSelectionColor(new Color(selection.getRed(), selection.getGreen(), selection.getBlue(), (int)(getOpacity()*255)));
+        Color disabled = textBox.getDisabledTextColor();
+        textBox.setDisabledTextColor(new Color(disabled.getRed(), disabled.getGreen(), disabled.getBlue(), (int)(getOpacity()*255)));
+        textBox.revalidate();
+    }
+
     public void setTextBox(String input) {
         textBox = new JTextField(input);
+        textBox.setOpaque(false);
+        textBox.setBackground(color);
         textBox.getDocument().addDocumentListener(new DocumentListener() {
             @Override
             public void insertUpdate(DocumentEvent e) {
@@ -48,6 +72,7 @@ public class RectWithColorAndTextBox extends Rect {
                 DragDropRectanglesWithSplitPane.mainFrame.repaint();
             }
         });
+        adjustTextBoxColor();
     }
 
     @Override
