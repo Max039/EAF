@@ -25,6 +25,14 @@ public class DragDropRectanglesWithSplitPane extends JPanel {
 
     public static JFrame mainFrame = null;
 
+    public void setPosOfDraggingRect(MouseEvent e) {
+        Point rightPanelPos = SwingUtilities.convertPoint(e.getComponent(), e.getPoint(), rightPanel.getViewport().getView());
+        Point leftPanelPos = SwingUtilities.convertPoint(e.getComponent(), e.getPoint(), leftPanel.getViewport().getView());
+        int newX = rightPanelPos.x - dragOffset.x;
+        int newY = rightPanelPos.y - dragOffset.y;
+        leftPanel.draggingRect.setPosition(newX + leftPanel.getWidth() + splitPane.getDividerSize(), leftPanelPos.y  - dragOffset.y);
+        rightPanel.draggingRect.setPosition(newX, newY);
+    }
 
     public DragDropRectanglesWithSplitPane(int numRects) {
         setLayout(new BorderLayout());
@@ -55,6 +63,8 @@ public class DragDropRectanglesWithSplitPane extends JPanel {
             rightPanel.addRect(r);
         }
 
+
+
         MouseAdapter mouseAdapter = new MouseAdapter() {
             @Override
             public void mousePressed(MouseEvent e) {
@@ -67,6 +77,7 @@ public class DragDropRectanglesWithSplitPane extends JPanel {
                     dragOffset = new Point(point.x - rect.getX(), point.y - rect.getY());
                     rightPanel.setDraggingRect(draggedRect);
                     leftPanel.setDraggingRect(draggedRect.clone());
+                    setPosOfDraggingRect(e);
 
                 }
             }
@@ -77,12 +88,8 @@ public class DragDropRectanglesWithSplitPane extends JPanel {
                     leftPanel.drawDragging = true;
                     rightPanel.drawDragging = true;
 
-                    Point rightPanelPos = SwingUtilities.convertPoint(e.getComponent(), e.getPoint(), rightPanel.getViewport().getView());
                     Point leftPanelPos = SwingUtilities.convertPoint(e.getComponent(), e.getPoint(), leftPanel.getViewport().getView());
-                    int newX = rightPanelPos.x - dragOffset.x;
-                    int newY = rightPanelPos.y - dragOffset.y;
-                    leftPanel.draggingRect.setPosition(newX + leftPanel.getWidth() + splitPane.getDividerSize(), leftPanelPos.y  - dragOffset.y);
-                    rightPanel.draggingRect.setPosition(newX, newY);
+                    setPosOfDraggingRect(e);
 
                     Rect matchingRect = leftPanel.getRect(leftPanelPos);
                     if (matchingRect instanceof RectWithRects) {
