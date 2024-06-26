@@ -4,6 +4,9 @@ import test.rects.Rect;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseMotionAdapter;
 import java.util.ArrayList;
 
 public class RectPanel extends JScrollPane {
@@ -13,6 +16,9 @@ public class RectPanel extends JScrollPane {
     private final ArrayList<Rect> rects = new ArrayList<>();
     public final DrawingPanel drawingPanel;
     public final DragPanel dragPanel;
+
+    public final JLayeredPane layeredPane;
+
     public Rect draggingRect = null;
 
     public static int horizontalSpacing = 10;
@@ -23,10 +29,9 @@ public class RectPanel extends JScrollPane {
         drawingPanel = new DrawingPanel();
         dragPanel = new DragPanel();
 
-        JLayeredPane layeredPane = new JLayeredPane();
+        layeredPane = new JLayeredPane();
         layeredPane.setLayout(new OverlayLayout(layeredPane));
         layeredPane.add(drawingPanel, JLayeredPane.DEFAULT_LAYER);
-        layeredPane.add(dragPanel, JLayeredPane.DRAG_LAYER);
 
         setViewportView(layeredPane);
     }
@@ -51,12 +56,18 @@ public class RectPanel extends JScrollPane {
 
     public void setDraggingRect(Rect rect) {
         draggingRect = rect;
+        layeredPane.add(dragPanel, JLayeredPane.DRAG_LAYER);
         dragPanel.setDraggingRect(rect);
+        revalidate();
+        repaint();
     }
 
     public void clearDraggingRect() {
         dragPanel.clearDraggingRect();
         draggingRect = null;
+        layeredPane.remove(dragPanel);
+        revalidate();
+        repaint();
     }
 
     public Rect getRect(Point p) {
@@ -96,7 +107,11 @@ public class RectPanel extends JScrollPane {
 
         public DrawingPanel() {
             setLayout(null);
+
         }
+
+
+
 
         public void add(Rect rect) {
             rect.addTo(this);
@@ -131,7 +146,11 @@ public class RectPanel extends JScrollPane {
 
         public DragPanel() {
             setOpaque(false);
+
+
+
         }
+
 
         public void add(Rect rect) {
             rect.addTo(this);
@@ -163,5 +182,6 @@ public class RectPanel extends JScrollPane {
         public Dimension getPreferredSize() {
             return drawingPanel.getPreferredSize();
         }
+
     }
 }
