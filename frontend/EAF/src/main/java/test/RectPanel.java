@@ -39,15 +39,15 @@ public class RectPanel extends JScrollPane {
     public void addRect(Rect rect) {
         rects.add(rect);
         drawingPanel.add(rect);
-        drawingPanel.revalidate();
-        drawingPanel.repaint();
+        revalidate();
+        repaint();
     }
 
     public void removeRect(Rect rect) {
         rects.remove(rect);
         drawingPanel.remove(rect);
-        drawingPanel.revalidate();
-        drawingPanel.repaint();
+        revalidate();
+        repaint();
     }
 
     public ArrayList<Rect> getRects() {
@@ -110,9 +110,6 @@ public class RectPanel extends JScrollPane {
 
         }
 
-
-
-
         public void add(Rect rect) {
             rect.addTo(this);
         }
@@ -147,10 +144,7 @@ public class RectPanel extends JScrollPane {
         public DragPanel() {
             setOpaque(false);
 
-
-
         }
-
 
         public void add(Rect rect) {
             rect.addTo(this);

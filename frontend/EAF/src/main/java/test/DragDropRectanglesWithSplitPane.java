@@ -127,15 +127,14 @@ public class DragDropRectanglesWithSplitPane extends JPanel {
                             if (((RectWithRects)matchingRect).setIndex(releasePoint, draggedRect)) {
                                 rightPanel.removeRect(draggedRect);
                                 draggedRect.addTo(leftPanel.drawingPanel);
-                                leftPanel.revalidate();
-                                leftPanel.repaint();
                             }
                         }
                         else {
                             leftPanel.addRect(draggedRect);
                             rightPanel.removeRect(draggedRect);
                         }
-
+                        revalidate();
+                        repaint();
                     }
 
 
@@ -145,6 +144,7 @@ public class DragDropRectanglesWithSplitPane extends JPanel {
                     rightPanel.clearDraggingRect();
                     leftPanel.mouseReleased();
                     rightPanel.mouseReleased();
+                    revalidate();
                     repaint();
                 }
             }
