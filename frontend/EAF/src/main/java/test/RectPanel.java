@@ -12,16 +12,23 @@ public class RectPanel extends JScrollPane {
 
     private final ArrayList<Rect> rects = new ArrayList<>();
     public final DrawingPanel drawingPanel;
+    public final DragPanel dragPanel;
     public Rect draggingRect = null;
 
     public static int horizontalSpacing = 10;
-
     public static int verticalSpacing = 5;
 
     public RectPanel() {
         super();
         drawingPanel = new DrawingPanel();
-        setViewportView(drawingPanel);
+        dragPanel = new DragPanel();
+
+        JLayeredPane layeredPane = new JLayeredPane();
+        layeredPane.setLayout(new OverlayLayout(layeredPane));
+        layeredPane.add(drawingPanel, JLayeredPane.DEFAULT_LAYER);
+        layeredPane.add(dragPanel, JLayeredPane.DRAG_LAYER);
+
+        setViewportView(layeredPane);
     }
 
     public void addRect(Rect rect) {
@@ -44,11 +51,11 @@ public class RectPanel extends JScrollPane {
 
     public void setDraggingRect(Rect rect) {
         draggingRect = rect;
-        drawingPanel.setDraggingRect(rect);
+        dragPanel.setDraggingRect(rect);
     }
 
     public void clearDraggingRect() {
-        drawingPanel.clearDraggingRect();
+        dragPanel.clearDraggingRect();
         draggingRect = null;
     }
 
@@ -86,10 +93,44 @@ public class RectPanel extends JScrollPane {
     }
 
     class DrawingPanel extends JPanel {
-        private Rect draggingRect = null;
 
         public DrawingPanel() {
             setLayout(null);
+        }
+
+        public void add(Rect rect) {
+            rect.addTo(this);
+        }
+
+        public void remove(Rect rect) {
+            rect.removeFrom(this);
+        }
+
+        @Override
+        protected void paintComponent(Graphics g) {
+            super.paintComponent(g);
+            int y = verticalSpacing;
+            for (Rect rect : rects) {
+                rect.setPosition(horizontalSpacing, y);
+                rect.draw(g);
+                y += rect.getHeight() + verticalSpacing;
+            }
+
+        }
+
+        @Override
+        public Dimension getPreferredSize() {
+            int maxWidth = rects.stream().mapToInt(rect -> rect.getWidth()).max().orElse(0) + 20;
+            int totalHeight = rects.stream().mapToInt(rect -> rect.getY() + rect.getHeight()).max().orElse(0) + 20;
+            return new Dimension(maxWidth, totalHeight);
+        }
+    }
+
+    class DragPanel extends JPanel {
+        private Rect draggingRect = null;
+
+        public DragPanel() {
+            setOpaque(false);
         }
 
         public void add(Rect rect) {
@@ -113,12 +154,6 @@ public class RectPanel extends JScrollPane {
         @Override
         protected void paintComponent(Graphics g) {
             super.paintComponent(g);
-            int y = verticalSpacing;
-            for (Rect rect : rects) {
-                rect.setPosition(horizontalSpacing, y);
-                rect.draw(g);
-                y += rect.getHeight() + verticalSpacing;
-            }
             if (draggingRect != null && drawDragging) {
                 draggingRect.draw(g);
             }
@@ -126,9 +161,7 @@ public class RectPanel extends JScrollPane {
 
         @Override
         public Dimension getPreferredSize() {
-            int maxWidth = rects.stream().mapToInt(rect -> rect.getWidth()).max().orElse(0) + 20;
-            int totalHeight = rects.stream().mapToInt(rect -> rect.getY() + rect.getHeight()).max().orElse(0) + 20;
-            return new Dimension(maxWidth, totalHeight);
+            return drawingPanel.getPreferredSize();
         }
     }
 }
