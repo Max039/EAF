@@ -34,6 +34,13 @@ public class RectPanel extends JScrollPane {
         layeredPane.add(drawingPanel, JLayeredPane.DEFAULT_LAYER);
 
         setViewportView(layeredPane);
+
+        drawingPanel.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                drawingPanel.requestFocusInWindow();
+            }
+        });
     }
 
     public void addRect(Rect rect) {
