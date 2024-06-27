@@ -10,6 +10,8 @@ import java.util.Arrays;
 
 public class ArrayRect <T extends Rect> extends RectWithRects {
 
+    Color removeButtonColor = new Color(255, 0, 0);
+
     boolean fillOnCreation = true;
 
     int buttonWidth = 5;
@@ -78,8 +80,9 @@ public class ArrayRect <T extends Rect> extends RectWithRects {
     }
 
     @Override
-    public void drawOnTopForEachRow(Graphics g, int x, int y, int width, int height) {
-        g.fillRect(x + width + spacing, y, buttonWidth, height); //replace with jbutton
+    public void drawOnTopForEachRow(Graphics g, int x, int y, int width, int height, int a) {
+        g.setColor(new Color(removeButtonColor.getRed(), removeButtonColor.getGreen(), removeButtonColor.getBlue(), a));
+        g.fillRect(x + width + spacing, y, buttonWidth, height); 
     };
 
     @Override

@@ -29,7 +29,7 @@ public class ClassRect extends RectWithRects {
     }
 
     @Override
-    public void drawOnTopForEachRow(Graphics g, int x, int y, int width, int height) {
+    public void drawOnTopForEachRow(Graphics g, int x, int y, int width, int height, int a) {
 
     };
 

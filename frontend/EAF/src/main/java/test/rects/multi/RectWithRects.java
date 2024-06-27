@@ -83,7 +83,7 @@ public abstract class RectWithRects extends Rect {
         super(width, height, color);
     }
 
-    public abstract void drawOnTopForEachRow(Graphics g, int x, int y, int width, int height);
+    public abstract void drawOnTopForEachRow(Graphics g, int x, int y, int width, int height, int a);
 
     @Override
     public int getWidth() {
@@ -200,7 +200,7 @@ public abstract class RectWithRects extends Rect {
             if (!name.isEmpty()) {
                 g.drawString(name, getX() + spacing, getY() + offset - (int)(fontSize * fontOffsetMultiplier));
             }
-            drawOnTopForEachRow(g, getX() + spacing, getY() + offset, getWidth() - spacing * 2, emptyRowSize);
+            drawOnTopForEachRow(g, getX() + spacing, getY() + offset, getWidth() - spacing * 2, emptyRowSize, (int)(255 * a));
             return offset + emptyRowSize + spacing;
         }
         else {
@@ -231,7 +231,7 @@ public abstract class RectWithRects extends Rect {
         if (!name.isEmpty()) {
             g.drawString(name, getX() + spacing, getY() + offset - (int)(fontSize * fontOffsetMultiplier));
         }
-        drawOnTopForEachRow(g, getX() + spacing, getY() + offset, r.getWidth(), r.getHeight());
+        drawOnTopForEachRow(g, getX() + spacing, getY() + offset, r.getWidth(), r.getHeight(), (int)(255 * a));
         return offset + r.getHeight() + spacing;
     }
 
