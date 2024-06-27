@@ -93,7 +93,7 @@ public abstract class RectWithRects extends Rect {
             String name = names[i];
             if (r != null) {
                 if (r instanceof RectWithColorAndTextBox) {
-                    maxWidth = Math.max(maxWidth, ((RectWithColorAndTextBox) r).getTextWidth());
+                    maxWidth = Math.max(maxWidth, ((RectWithColorAndTextBox) r).getTextWidth() - extraSpacing());
                 }
                 else {
                     maxWidth = Math.max(maxWidth, r.getWidth());
