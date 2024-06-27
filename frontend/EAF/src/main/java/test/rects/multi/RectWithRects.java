@@ -43,6 +43,7 @@ public abstract class RectWithRects extends Rect {
     Class<?>[] types = new Class<?>[0];
 
 
+    public abstract int extraSpacing();
 
 
     public RectWithRects() {
@@ -82,6 +83,8 @@ public abstract class RectWithRects extends Rect {
         super(width, height, color);
     }
 
+    public abstract void drawOnTopForEachRow(Graphics g, int x, int y, int width, int height);
+
     @Override
     public int getWidth() {
         int maxWidth = realWidth();
@@ -103,7 +106,7 @@ public abstract class RectWithRects extends Rect {
                 maxWidth = Math.max(maxWidth, (int) getFont().getStringBounds(name, context).getWidth());
             }
         }
-        return spacing * 2 + maxWidth;
+        return spacing * 2 + maxWidth + extraSpacing();
     }
 
     @Override
@@ -191,12 +194,13 @@ public abstract class RectWithRects extends Rect {
             else {
                 g.setColor(new Color(emptyRectsColor.getRed(), emptyRectsColor.getGreen(), emptyRectsColor.getBlue(), (int)(255 * a)));
             }
-            g.fillRect(getX() + spacing, getY() + offset, getWidth() - spacing * 2, emptyRowSize);
+            g.fillRect(getX() + spacing, getY() + offset, getWidth() - spacing * 2 - extraSpacing(), emptyRowSize);
 
             g.setColor(new Color(textColor.getRed(), textColor.getGreen(), textColor.getBlue(), (int)(255 * a)));
             if (!name.isEmpty()) {
                 g.drawString(name, getX() + spacing, getY() + offset - (int)(fontSize * fontOffsetMultiplier));
             }
+            drawOnTopForEachRow(g, getX() + spacing, getY() + offset, getWidth() - spacing * 2, emptyRowSize);
             return offset + emptyRowSize + spacing;
         }
         else {
@@ -211,7 +215,7 @@ public abstract class RectWithRects extends Rect {
         }
         r.setPosition(getX() + spacing, getY() + offset);
         if (!(r instanceof RectWithRects)) {
-            r.setWidth(getWidth() - spacing * 2);
+            r.setWidth(getWidth() - spacing * 2 - extraSpacing());
         }
         g.setColor(new Color(emptyRectsColor.getRed(), emptyRectsColor.getGreen(), emptyRectsColor.getBlue(), 255));
         g.fillRect(getX() + spacing, getY() + offset, r.getWidth(), r.getHeight());
@@ -227,6 +231,7 @@ public abstract class RectWithRects extends Rect {
         if (!name.isEmpty()) {
             g.drawString(name, getX() + spacing, getY() + offset - (int)(fontSize * fontOffsetMultiplier));
         }
+        drawOnTopForEachRow(g, getX() + spacing, getY() + offset, r.getWidth(), r.getHeight());
         return offset + r.getHeight() + spacing;
     }
 

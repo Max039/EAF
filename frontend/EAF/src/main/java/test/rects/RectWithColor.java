@@ -59,6 +59,8 @@ public class RectWithColor extends Rect {
         return new RectWithColor();
     }
 
+
+
 }
 
 

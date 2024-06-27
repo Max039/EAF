@@ -27,4 +27,14 @@ public class ClassRect extends RectWithRects {
     public Rect newInstance() {
         return new ClassRect();
     }
+
+    @Override
+    public void drawOnTopForEachRow(Graphics g, int x, int y, int width, int height) {
+
+    };
+
+    @Override
+    public int extraSpacing() {
+        return 0;
+    }
 }

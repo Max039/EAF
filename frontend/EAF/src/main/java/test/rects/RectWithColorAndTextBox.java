@@ -132,4 +132,7 @@ public class RectWithColorAndTextBox extends Rect {
     public Rect newInstance() {
         return new RectWithColorAndTextBox();
     }
+
+
+
 }

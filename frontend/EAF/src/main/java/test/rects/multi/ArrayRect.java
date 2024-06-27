@@ -12,6 +12,8 @@ public class ArrayRect <T extends Rect> extends RectWithRects {
 
     boolean fillOnCreation = true;
 
+    int buttonWidth = 5;
+
     Class<T> clazz;
     public ArrayRect() {
         super();
@@ -40,7 +42,10 @@ public class ArrayRect <T extends Rect> extends RectWithRects {
         this.fillOnCreation = fillOnCreation;
     }
 
-
+    @Override
+    public int getWidth() {
+        return super.getWidth() + buttonWidth + spacing;
+    }
 
     public String[] getEmptyNames(int num) {
         ArrayList<String> l = new ArrayList<>();
@@ -72,4 +77,13 @@ public class ArrayRect <T extends Rect> extends RectWithRects {
         return new ArrayRect<>();
     }
 
+    @Override
+    public void drawOnTopForEachRow(Graphics g, int x, int y, int width, int height) {
+        g.fillRect(x + width + spacing, y, buttonWidth, height); //replace with jbutton
+    };
+
+    @Override
+    public int extraSpacing() {
+        return spacing + buttonWidth;
+    }
 }
