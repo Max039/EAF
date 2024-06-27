@@ -104,6 +104,7 @@ public class RectPanel extends JScrollPane {
 
     }
 
+
     class DrawingPanel extends JPanel {
 
         public DrawingPanel() {
@@ -133,8 +134,8 @@ public class RectPanel extends JScrollPane {
 
         @Override
         public Dimension getPreferredSize() {
-            int maxWidth = rects.stream().mapToInt(rect -> rect.getWidth()).max().orElse(0) + 20;
-            int totalHeight = rects.stream().mapToInt(rect -> rect.getY() + rect.getHeight()).max().orElse(0) + 20;
+            int maxWidth = rects.stream().mapToInt(Rect::getWidth).max().orElse(0) + horizontalSpacing * 2;
+            int totalHeight = rects.stream().mapToInt(rect -> rect.getY() + rect.getHeight()).max().orElse(0) + verticalSpacing * 2;
             return new Dimension(maxWidth, totalHeight);
         }
     }
