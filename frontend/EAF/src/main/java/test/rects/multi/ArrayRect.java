@@ -1,5 +1,6 @@
 package test.rects.multi;
 
+import test.DragDropRectanglesWithSplitPane;
 import test.rects.Rect;
 import test.rects.RectWithColorAndTextBox;
 
@@ -57,7 +58,12 @@ public class ArrayRect <T extends Rect> extends RectWithRects {
 
     @Override
     public int getWidth() {
-        return super.getWidth() + buttonWidth + spacing;
+        if (DragDropRectanglesWithSplitPane.showButtons) {
+            return super.getWidth() + buttonWidth + spacing;
+        }
+        else {
+            return super.getWidth();
+        }
     }
 
     public String[] getEmptyNames(int num) {
@@ -98,7 +104,12 @@ public class ArrayRect <T extends Rect> extends RectWithRects {
 
     @Override
     public int extraSpacingToRight() {
-        return spacing + buttonWidth;
+        if (DragDropRectanglesWithSplitPane.showButtons) {
+            return spacing + buttonWidth;
+        }
+        else {
+            return 0;
+        }
     }
 
     @Override
@@ -108,17 +119,24 @@ public class ArrayRect <T extends Rect> extends RectWithRects {
 
     @Override
     public int extraSpacingBelow() {
-        return spacing + emptyRowSize;
+        if (DragDropRectanglesWithSplitPane.showButtons) {
+            return spacing + emptyRowSize;
+        }
+        else {
+            return 0;
+        }
     }
 
     private void drawButtonAt(Graphics g, int x, int y, int height, Color c, int a, ButtonType type) {
-        g.setColor(new Color(c.getRed(), c.getGreen(), c.getBlue(), a));
-        g.fillRect(x, y, buttonWidth, height);
+        if (DragDropRectanglesWithSplitPane.showButtons) {
+            g.setColor(new Color(c.getRed(), c.getGreen(), c.getBlue(), a));
+            g.fillRect(x, y, buttonWidth, height);
 
-        g.setColor(new Color(buttonBorder.getRed(), buttonBorder.getGreen(), buttonBorder.getBlue(), a));
-        Graphics2D g2 = (Graphics2D) g;
-        g2.setStroke(new BasicStroke(buttonBorderSize));
-        g2.drawRect(x, y, buttonWidth, height);
+            g.setColor(new Color(buttonBorder.getRed(), buttonBorder.getGreen(), buttonBorder.getBlue(), a));
+            Graphics2D g2 = (Graphics2D) g;
+            g2.setStroke(new BasicStroke(buttonBorderSize));
+            g2.drawRect(x, y, buttonWidth, height);
+        }
 
         /**
         if (type == ButtonType.remove) {

@@ -7,8 +7,7 @@ import test.rects.multi.RectWithRects;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
+import java.awt.event.*;
 import java.util.Random;
 
 public class DragDropRectanglesWithSplitPane extends JPanel {
@@ -25,6 +24,8 @@ public class DragDropRectanglesWithSplitPane extends JPanel {
 
     public static JFrame mainFrame = null;
 
+    public static boolean showButtons = false;
+
     public void setPosOfDraggingRect(MouseEvent e) {
         Point rightPanelPos = SwingUtilities.convertPoint(e.getComponent(), e.getPoint(), rightPanel.getViewport().getView());
         Point leftPanelPos = SwingUtilities.convertPoint(e.getComponent(), e.getPoint(), leftPanel.getViewport().getView());
@@ -36,6 +37,9 @@ public class DragDropRectanglesWithSplitPane extends JPanel {
 
     public DragDropRectanglesWithSplitPane(int numRects) {
         setLayout(new BorderLayout());
+
+
+
 
         splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, leftPanel, rightPanel);
         splitPane.setDividerLocation(400); // Initial divider location
@@ -176,6 +180,8 @@ public class DragDropRectanglesWithSplitPane extends JPanel {
         rightPanel.getViewport().getView().addMouseMotionListener(mouseAdapter);
         leftPanel.getViewport().getView().addMouseListener(mouseAdapter2);
         leftPanel.getViewport().getView().addMouseMotionListener(mouseAdapter2);
+        addKeyListener(leftPanel);
+        addKeyListener(rightPanel);
     }
 
     private static void createAndShowGUI(int numRects) {
@@ -187,7 +193,40 @@ public class DragDropRectanglesWithSplitPane extends JPanel {
         mainFrame.setSize(new Dimension(800, 600));
         mainFrame.setLocationRelativeTo(null);
         mainFrame.setVisible(true);
+
     }
+
+    public <T extends JScrollPane> void addKeyListener(T j) {
+        j.addKeyListener(new KeyAdapter() {
+            @Override
+            public void keyPressed(KeyEvent e) {
+                if (e.getKeyCode() == KeyEvent.VK_CONTROL) {
+                    showButtons = true;
+                    revalidate();
+                    repaint();
+                }
+            }
+
+            @Override
+            public void keyReleased(KeyEvent e) {
+                if (e.getKeyCode() == KeyEvent.VK_CONTROL) {
+                    showButtons = false;
+                    revalidate();
+                    repaint();
+                }
+            }
+        });
+
+        j.addFocusListener(new FocusAdapter() {
+            @Override
+            public void focusLost(FocusEvent e) {
+                showButtons = false;
+                revalidate();
+                repaint();
+            }
+        });
+    }
+
 
     public static void main(String[] args) {
         int numRects = 20;  // Change this number to create more or fewer rectangles
