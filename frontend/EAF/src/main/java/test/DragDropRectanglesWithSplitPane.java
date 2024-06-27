@@ -68,6 +68,8 @@ public class DragDropRectanglesWithSplitPane extends JPanel {
         MouseAdapter mouseAdapter = new MouseAdapter() {
             @Override
             public void mousePressed(MouseEvent e) {
+                rightPanel.requestFocusInWindow();
+
                 Point point = SwingUtilities.convertPoint(e.getComponent(), e.getPoint(), rightPanel.getViewport().getView());
 
                 Rect rect = rightPanel.getRect(point);
@@ -152,10 +154,30 @@ public class DragDropRectanglesWithSplitPane extends JPanel {
 
         };
 
+        MouseAdapter mouseAdapter2 = new MouseAdapter() {
+            @Override
+            public void mousePressed(MouseEvent e) {
+                leftPanel.requestFocusInWindow();
+
+            }
+
+            @Override
+            public void mouseDragged(MouseEvent e) {
+
+            }
+
+            @Override
+            public void mouseReleased(MouseEvent e) {
+
+            }
+
+
+        };
+
         rightPanel.getViewport().getView().addMouseListener(mouseAdapter);
         rightPanel.getViewport().getView().addMouseMotionListener(mouseAdapter);
-        //leftPanel.getViewport().getView().addMouseListener(mouseAdapter);
-        //leftPanel.getViewport().getView().addMouseMotionListener(mouseAdapter);
+        leftPanel.getViewport().getView().addMouseListener(mouseAdapter2);
+        leftPanel.getViewport().getView().addMouseMotionListener(mouseAdapter2);
     }
 
     private static void createAndShowGUI(int numRects) {
