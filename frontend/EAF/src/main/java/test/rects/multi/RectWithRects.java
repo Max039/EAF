@@ -43,7 +43,9 @@ public abstract class RectWithRects extends Rect {
     Class<?>[] types = new Class<?>[0];
 
 
-    public abstract int extraSpacing();
+    public abstract int extraSpacingToRight();
+
+    public abstract int extraSpacingBelow();
 
 
     public RectWithRects() {
@@ -85,6 +87,8 @@ public abstract class RectWithRects extends Rect {
 
     public abstract void drawOnTopForEachRow(Graphics g, int x, int y, int width, int height, int a);
 
+    public abstract void drawOnTopBelow(Graphics g, int x, int y, int width, int height, int a);
+
     @Override
     public int getWidth() {
         int maxWidth = realWidth();
@@ -93,7 +97,7 @@ public abstract class RectWithRects extends Rect {
             String name = names[i];
             if (r != null) {
                 if (r instanceof RectWithColorAndTextBox) {
-                    maxWidth = Math.max(maxWidth, ((RectWithColorAndTextBox) r).getTextWidth() - extraSpacing());
+                    maxWidth = Math.max(maxWidth, ((RectWithColorAndTextBox) r).getTextWidth() - extraSpacingToRight());
                 }
                 else {
                     maxWidth = Math.max(maxWidth, r.getWidth());
@@ -106,7 +110,7 @@ public abstract class RectWithRects extends Rect {
                 maxWidth = Math.max(maxWidth, (int) getFont().getStringBounds(name, context).getWidth());
             }
         }
-        return spacing * 2 + maxWidth + extraSpacing();
+        return spacing * 2 + maxWidth + extraSpacingToRight();
     }
 
     @Override
@@ -131,7 +135,7 @@ public abstract class RectWithRects extends Rect {
                 heightAcc += (int) (fontSize * fontSizeMultiplier);
             }
         }
-        return heightAcc;
+        return heightAcc + extraSpacingBelow();
     }
 
     public int realHeight() {
@@ -174,6 +178,7 @@ public abstract class RectWithRects extends Rect {
                 offset = drawEmptyBox(g, name, offset, i, a, depth);
             }
         }
+        drawOnTopBelow(g, getX() + getWidth(), getY() + getHeight() - extraSpacingBelow(), getWidth(), getHeight() - extraSpacingBelow(), (int)(255 * a));
     }
 
     private boolean indexDoesNotMatchesDragged(int index) {
@@ -194,13 +199,13 @@ public abstract class RectWithRects extends Rect {
             else {
                 g.setColor(new Color(emptyRectsColor.getRed(), emptyRectsColor.getGreen(), emptyRectsColor.getBlue(), (int)(255 * a)));
             }
-            g.fillRect(getX() + spacing, getY() + offset, getWidth() - spacing * 2 - extraSpacing(), emptyRowSize);
+            g.fillRect(getX() + spacing, getY() + offset, getWidth() - spacing * 2 - extraSpacingToRight(), emptyRowSize);
 
             g.setColor(new Color(textColor.getRed(), textColor.getGreen(), textColor.getBlue(), (int)(255 * a)));
             if (!name.isEmpty()) {
                 g.drawString(name, getX() + spacing, getY() + offset - (int)(fontSize * fontOffsetMultiplier));
             }
-            drawOnTopForEachRow(g, getX() + spacing, getY() + offset, getWidth() - spacing * 2, emptyRowSize, (int)(255 * a));
+            drawOnTopForEachRow(g, getX() + getWidth(), getY() + offset, getWidth() - spacing * 2, emptyRowSize, (int)(255 * a));
             return offset + emptyRowSize + spacing;
         }
         else {
@@ -215,7 +220,7 @@ public abstract class RectWithRects extends Rect {
         }
         r.setPosition(getX() + spacing, getY() + offset);
         if (!(r instanceof RectWithRects)) {
-            r.setWidth(getWidth() - spacing * 2 - extraSpacing());
+            r.setWidth(getWidth() - spacing * 2 - extraSpacingToRight());
         }
         g.setColor(new Color(emptyRectsColor.getRed(), emptyRectsColor.getGreen(), emptyRectsColor.getBlue(), 255));
         g.fillRect(getX() + spacing, getY() + offset, r.getWidth(), r.getHeight());
@@ -231,7 +236,7 @@ public abstract class RectWithRects extends Rect {
         if (!name.isEmpty()) {
             g.drawString(name, getX() + spacing, getY() + offset - (int)(fontSize * fontOffsetMultiplier));
         }
-        drawOnTopForEachRow(g, getX() + spacing, getY() + offset, r.getWidth(), r.getHeight(), (int)(255 * a));
+        drawOnTopForEachRow(g, getX() + getWidth(), getY() + offset, r.getWidth(), r.getHeight(), (int)(255 * a));
         return offset + r.getHeight() + spacing;
     }
 

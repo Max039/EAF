@@ -34,7 +34,17 @@ public class ClassRect extends RectWithRects {
     };
 
     @Override
-    public int extraSpacing() {
+    public int extraSpacingToRight() {
+        return 0;
+    }
+
+    @Override
+    public void drawOnTopBelow(Graphics g, int x, int y, int width, int height, int a) {
+
+    };
+
+    @Override
+    public int extraSpacingBelow() {
         return 0;
     }
 }
