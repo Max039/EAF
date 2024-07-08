@@ -75,7 +75,15 @@ public class gitlabGetter extends JFrame {
                 JSONObject pipeline = pipelines.getJSONObject(i);
                 String updatedAt = pipeline.getString("updated_at");
                 String versionName = getVersionNameFromDate(updatedAt);
-                versionComboBox.addItem(versionName);
+                String s = versionName;
+
+                if (Files.exists(Paths.get(DOWNLOAD_PATH + versionName))) {
+                    s += " (downloaded)";
+                }
+                if ( i == 0 ) {
+                    s += " (newest)";
+                }
+                versionComboBox.addItem(s);
             }
         } catch (IOException e) {
             e.printStackTrace();
