@@ -1,5 +1,8 @@
 package download;
 
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -18,8 +21,10 @@ import java.util.zip.ZipInputStream;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import javax.swing.*;
 
-public class gitlabGetter {
+
+public class gitlabGetter extends JFrame {
 
     private static final String GITLAB_URL = "https://gitlab.informatik.uni-bremen.de/api/v4";
     private static final String PROJECT_ID = "evoal%2Fsource%2Fevoal-core"; // URL-encoded project ID
@@ -28,68 +33,112 @@ public class gitlabGetter {
     private static final String DOWNLOAD_PATH = "evoalBuild/";
 
 
-    public static void main(String[] args) {
-        try {
-            JSONObject latestPipeline = getLatestSuccessfulPipeline();
-            int pipelineId = latestPipeline.getInt("id");
-            String updatedAt = latestPipeline.getString("updated_at");
-            String versionName = getVersionNameFromDate(updatedAt);
-            String outputFilePath = DOWNLOAD_PATH + versionName + "/all-package-archive.zip";
-            String extractToPath = DOWNLOAD_PATH + versionName + "/";
+    private JComboBox<String> versionComboBox;
+    private JButton downloadButton;
 
-            if (!Files.exists(Paths.get(outputFilePath))) {
-                Files.createDirectories(Paths.get(DOWNLOAD_PATH + versionName));
-                int jobId = getJobId(pipelineId, "all:package");
-                if (jobId != -1) {
-                    downloadArtifact(jobId, outputFilePath);
-                    extractZip(outputFilePath, extractToPath);
-                    System.out.println("Deleting zip...");
-                    File file = new File(outputFilePath);
-                    file.delete();
-                } else {
-                    System.out.println("Job with artifact 'all:package' not found.");
+    public gitlabGetter() {
+        setTitle("Artifact Downloader");
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setSize(400, 200);
+        setLocationRelativeTo(null);
+
+        JPanel panel = new JPanel();
+        panel.setLayout(new BorderLayout());
+
+        versionComboBox = new JComboBox<>();
+        panel.add(versionComboBox, BorderLayout.CENTER);
+
+        downloadButton = new JButton("Download Selected Version");
+        downloadButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                String selectedVersion = (String) versionComboBox.getSelectedItem();
+                if (selectedVersion != null) {
+                    try {
+                        downloadSelectedVersion(selectedVersion);
+                    } catch (IOException ex) {
+                        ex.printStackTrace();
+                        JOptionPane.showMessageDialog(gitlabGetter.this,
+                                "Failed to download artifact: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+                    }
                 }
-            } else {
-                System.out.println("The latest version is already downloaded.");
+            }
+        });
+        panel.add(downloadButton, BorderLayout.SOUTH);
+
+        add(panel);
+    }
+
+    private void populateVersions() {
+        try {
+            JSONArray pipelines = getSuccessfulPipelines();
+            for (int i = 0; i < pipelines.length(); i++) {
+                JSONObject pipeline = pipelines.getJSONObject(i);
+                String updatedAt = pipeline.getString("updated_at");
+                String versionName = getVersionNameFromDate(updatedAt);
+                versionComboBox.addItem(versionName);
             }
         } catch (IOException e) {
             e.printStackTrace();
+            JOptionPane.showMessageDialog(this, "Failed to fetch versions: " + e.getMessage(),
+                    "Error", JOptionPane.ERROR_MESSAGE);
         }
     }
 
-    private static JSONObject getLatestSuccessfulPipeline() throws IOException {
-        String url = GITLAB_URL + "/projects/" + PROJECT_ID + "/pipelines?status=success&order_by=id&sort=desc&per_page=1";
+    private JSONArray getSuccessfulPipelines() throws IOException {
+        String url = GITLAB_URL + "/projects/" + PROJECT_ID + "/pipelines?status=success&order_by=id&sort=desc&per_page=10";
         HttpURLConnection connection = (HttpURLConnection) new URL(url).openConnection();
         connection.setRequestProperty("PRIVATE-TOKEN", PRIVATE_TOKEN);
 
         if (connection.getResponseCode() == 200) {
             try (Scanner scanner = new Scanner(connection.getInputStream())) {
                 String response = scanner.useDelimiter("\\A").next();
-                JSONArray pipelines = new JSONArray(response);
-                if (pipelines.length() > 0) {
-                    return pipelines.getJSONObject(0);
-                } else {
-                    throw new IOException("No successful pipelines found.");
-                }
+                return new JSONArray(response);
             }
         } else {
             throw new IOException("Failed to get pipelines: " + connection.getResponseMessage());
         }
     }
 
-    private static String getVersionNameFromDate(String dateStr) {
-        try {
-            SimpleDateFormat inputFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
-            Date date = inputFormat.parse(dateStr);
-            SimpleDateFormat outputFormat = new SimpleDateFormat("yyyyMMdd-HHmmss");
-            return outputFormat.format(date);
-        } catch (Exception e) {
-            e.printStackTrace();
-            return "unknown-version";
+    private void downloadSelectedVersion(String selectedVersion) throws IOException {
+        String outputFilePath = DOWNLOAD_PATH + selectedVersion + "/all-package-archive.zip";
+        String extractToPath = DOWNLOAD_PATH + selectedVersion + "/";
+
+        if (!Files.exists(Paths.get(DOWNLOAD_PATH + selectedVersion))) {
+            Files.createDirectories(Paths.get(DOWNLOAD_PATH + selectedVersion));
+            JSONObject pipeline = findPipelineByVersion(selectedVersion);
+            int pipelineId = pipeline.getInt("id");
+            int jobId = getJobId(pipelineId, "all:package");
+
+            if (jobId != -1) {
+                downloadArtifact(jobId, outputFilePath);
+                extractZip(outputFilePath, extractToPath);
+                Files.deleteIfExists(Paths.get(outputFilePath));
+                JOptionPane.showMessageDialog(this, "Downloaded and extracted: " + selectedVersion,
+                        "Success", JOptionPane.INFORMATION_MESSAGE);
+            } else {
+                JOptionPane.showMessageDialog(this, "Job with artifact 'all:package' not found.",
+                        "Error", JOptionPane.ERROR_MESSAGE);
+            }
+        } else {
+            JOptionPane.showMessageDialog(this, "The selected version is already downloaded.",
+                    "Info", JOptionPane.INFORMATION_MESSAGE);
         }
     }
 
-    private static int getJobId(int pipelineId, String jobName) throws IOException {
+    private JSONObject findPipelineByVersion(String versionName) throws IOException {
+        JSONArray pipelines = getSuccessfulPipelines();
+        for (int i = 0; i < pipelines.length(); i++) {
+            JSONObject pipeline = pipelines.getJSONObject(i);
+            String updatedAt = pipeline.getString("updated_at");
+            String currentVersion = getVersionNameFromDate(updatedAt);
+            if (currentVersion.equals(versionName)) {
+                return pipeline;
+            }
+        }
+        throw new IOException("Pipeline for version " + versionName + " not found.");
+    }
+
+    private int getJobId(int pipelineId, String jobName) throws IOException {
         String url = GITLAB_URL + "/projects/" + PROJECT_ID + "/pipelines/" + pipelineId + "/jobs";
         HttpURLConnection connection = (HttpURLConnection) new URL(url).openConnection();
         connection.setRequestProperty("PRIVATE-TOKEN", PRIVATE_TOKEN);
@@ -111,7 +160,7 @@ public class gitlabGetter {
         return -1;
     }
 
-    private static void downloadArtifact(int jobId, String outputFileName) throws IOException {
+    private void downloadArtifact(int jobId, String outputFileName) throws IOException {
         String url = GITLAB_URL + "/projects/" + PROJECT_ID + "/jobs/" + jobId + "/artifacts";
         HttpURLConnection connection = (HttpURLConnection) new URL(url).openConnection();
         connection.setRequestProperty("PRIVATE-TOKEN", PRIVATE_TOKEN);
@@ -131,7 +180,7 @@ public class gitlabGetter {
         }
     }
 
-    private static void extractZip(String zipFilePath, String destDir) throws IOException {
+    private void extractZip(String zipFilePath, String destDir) throws IOException {
         File dir = new File(destDir);
         if (!dir.exists()) dir.mkdirs();
         byte[] buffer = new byte[1024];
@@ -162,7 +211,7 @@ public class gitlabGetter {
         System.out.println("Artifact extracted successfully to " + destDir);
     }
 
-    private static File newFile(File destinationDir, ZipEntry zipEntry) throws IOException {
+    private File newFile(File destinationDir, ZipEntry zipEntry) throws IOException {
         File destFile = new File(destinationDir, zipEntry.getName());
         String destDirPath = destinationDir.getCanonicalPath();
         String destFilePath = destFile.getCanonicalPath();
@@ -172,5 +221,27 @@ public class gitlabGetter {
         }
 
         return destFile;
+    }
+
+    private String getVersionNameFromDate(String dateStr) {
+        try {
+            SimpleDateFormat inputFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
+            Date date = inputFormat.parse(dateStr);
+            SimpleDateFormat outputFormat = new SimpleDateFormat("yyyyMMdd-HHmmss");
+            return outputFormat.format(date);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return "unknown-version";
+        }
+    }
+
+    public static void main(String[] args) {
+        SwingUtilities.invokeLater(new Runnable() {
+            public void run() {
+                gitlabGetter downloader = new gitlabGetter();
+                downloader.setVisible(true);
+                downloader.populateVersions(); // Fetch versions and populate UI
+            }
+        });
     }
 }
