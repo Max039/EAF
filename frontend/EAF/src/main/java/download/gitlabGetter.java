@@ -43,6 +43,9 @@ public class gitlabGetter {
                 if (jobId != -1) {
                     downloadArtifact(jobId, outputFilePath);
                     extractZip(outputFilePath, extractToPath);
+                    System.out.println("Deleting zip...");
+                    File file = new File(outputFilePath);
+                    file.delete();
                 } else {
                     System.out.println("Job with artifact 'all:package' not found.");
                 }
