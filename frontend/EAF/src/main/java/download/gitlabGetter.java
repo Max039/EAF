@@ -253,7 +253,6 @@ public class gitlabGetter extends JFrame {
                 // Initialize the progress bar variables
                 long totalTasks = pipelines.length();
                 int progressBarWidth = 40; // Width of the progress bar
-                System.out.print("Processing... [");
 
                 for (int i = 0; i < pipelines.length(); i++) {
                     int index = i;
@@ -312,7 +311,6 @@ public class gitlabGetter extends JFrame {
                     // Get existing items in the versionComboBox
                     Set<String> existingItems = new HashSet<>();
                     for (int i = 0; i < items.size(); i++) {
-                        System.out.println((String) items.get(i));
                         existingItems.add((String) items.get(i));
                     }
 
