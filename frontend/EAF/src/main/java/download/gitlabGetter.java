@@ -62,6 +62,11 @@ public class gitlabGetter extends JFrame {
 
     JSONArray allPipelines = null;
 
+    ArrayList<String> allPipelinesStings = null;
+
+    ArrayList<Pair<String, String>> allPipelinesApprovedStings = null;
+
+
     public gitlabGetter() {
         setTitle("Artifact Downloader");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -84,6 +89,7 @@ public class gitlabGetter extends JFrame {
                         JOptionPane.showMessageDialog(gitlabGetter.this,
                                 "Failed to download artifact: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
                     }
+                    populateVersions();
                 }
 
             }
@@ -180,6 +186,8 @@ public class gitlabGetter extends JFrame {
     public void refreshPipelinesOnNextRequest() {
         allPipelines = null;
         defaultBranchPipelines = null;
+        allPipelinesStings = null;
+        allPipelinesApprovedStings = null;
     }
 
     public void populateVersions() {
@@ -192,70 +200,89 @@ public class gitlabGetter extends JFrame {
         panel.add(versionComboBox, BorderLayout.CENTER);
 
         try {
-            JSONArray pipelines = getSuccessfulPipelines(false);
-            System.out.println("Retrieved " + pipelines.length() + " successful pipelines. Current limit for successful pipelines is set to: " + numberOfVersionsToShow);
+            getPipelinesWithValidPackage();
 
-            CountDownLatch latch = new CountDownLatch(pipelines.length());
-            AtomicInteger count = new AtomicInteger();
-            ArrayList<String> all = new ArrayList<>();
-            ArrayList<String> approved = new ArrayList<>();
+            for (var result : allPipelinesApprovedStings) {
+                String build = result.getFirst() + result.getSecond();
+                if (Files.exists(Paths.get(DOWNLOAD_PATH + result.getFirst()))) {
+                    build += " (<font color='green'>" + downloaded + "</font>)";
+                }
 
-            // Initialize the progress bar variables
-            long totalTasks = pipelines.length();
-            int progressBarWidth = 40; // Width of the progress bar
-            System.out.print("Processing... [");
-
-            for (int i = 0; i < pipelines.length(); i++) {
-                int index = i;
-                CompletableFuture.supplyAsync(() -> {
-                    JSONObject pipeline = pipelines.getJSONObject(index);
-                    String updatedAt = pipeline.getString("updated_at");
-                    String versionName = getVersionNameFromDate(updatedAt);
-                    all.add(versionName);
-                    String webUrl = pipeline.getString("web_url");
-                    Pair<Boolean, String> hasAllPackageJob;
-                    try {
-                        hasAllPackageJob = hasAllPackageJob(webUrl);
-                    } catch (IOException e) {
-                        throw new RuntimeException(e);
-                    }
-
-                    if (hasAllPackageJob.getFirst()) {
-                        String s = versionName;
-                        s += " [Branch=\"" + hasAllPackageJob.getSecond() + "\"]";
-
-                        if (Files.exists(Paths.get(DOWNLOAD_PATH + versionName))) {
-                            s += " (<font color='green'>" + downloaded + "</font>)";
-                        }
-                        return s;
-                    }
-                    return null;
-                }).thenAccept(result -> {
-                    if (result != null) {
-                        SwingUtilities.invokeLater(() -> versionComboBox.addItem("<html>" + result + "</html>"));
-                        approved.add(result);
-                        count.getAndIncrement();
-                    }
-                    latch.countDown();
-                    // Update the progress bar
-                    updateProgressBar(totalTasks - latch.getCount(), totalTasks, progressBarWidth);
-                }).exceptionally(ex -> {
-                    ex.printStackTrace();
-                    latch.countDown();
-                    updateProgressBar(totalTasks - latch.getCount(), totalTasks, progressBarWidth);
-                    return null;
-                });
+                String finalBuild = build;
+                SwingUtilities.invokeLater(() -> versionComboBox.addItem("<html>" + finalBuild + "</html>"));
             }
 
             versionComboBox.revalidate();
-            latch.await();
-            System.out.println();
-            addUniqueFoldersToComboBox(approved, all);
-            System.out.println("\nOf " + pipelines.length() + " pipelines only " + count + " are downloadable!");
 
-        } catch (IOException | InterruptedException e) {
+            ArrayList<String> approvedStrings = (ArrayList<String>) allPipelinesApprovedStings.stream()
+                    .map(t -> t.getFirst())
+                    .collect(Collectors.toList());
+
+
+            addUniqueFoldersToComboBox(approvedStrings, allPipelinesStings);
+        } catch (Exception e) {
             e.printStackTrace();
             JOptionPane.showMessageDialog(null, "Failed to fetch versions: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+    public void getPipelinesWithValidPackage() throws Exception {
+        if (allPipelinesStings == null || allPipelinesApprovedStings == null) {
+            allPipelinesStings = new ArrayList<>();
+            allPipelinesApprovedStings = new ArrayList<>();
+            try {
+                JSONArray pipelines = getSuccessfulPipelines(false);
+                System.out.println("Retrieved " + pipelines.length() + " successful pipelines. Current limit for successful pipelines is set to: " + numberOfVersionsToShow);
+
+                CountDownLatch latch = new CountDownLatch(pipelines.length());
+                AtomicInteger count = new AtomicInteger();
+
+                // Initialize the progress bar variables
+                long totalTasks = pipelines.length();
+                int progressBarWidth = 40; // Width of the progress bar
+                System.out.print("Processing... [");
+
+                for (int i = 0; i < pipelines.length(); i++) {
+                    int index = i;
+                    CompletableFuture.supplyAsync(() -> {
+                        JSONObject pipeline = pipelines.getJSONObject(index);
+                        String updatedAt = pipeline.getString("updated_at");
+                        String versionName = getVersionNameFromDate(updatedAt);
+                        allPipelinesStings.add(versionName);
+                        String webUrl = pipeline.getString("web_url");
+                        Pair<Boolean, String> hasAllPackageJob;
+                        try {
+                            hasAllPackageJob = hasAllPackageJob(webUrl);
+                        } catch (IOException e) {
+                            throw new RuntimeException(e);
+                        }
+
+                        if (hasAllPackageJob.getFirst()) {
+                            String s = versionName;
+                            return new Pair<>(s, " [Branch=\"" + hasAllPackageJob.getSecond() + "\"]");
+                        }
+                        return null;
+                    }).thenAccept(result -> {
+                        if (result != null) {
+                            allPipelinesApprovedStings.add(result);
+                            count.getAndIncrement();
+                        }
+                        latch.countDown();
+                        // Update the progress bar
+                        updateProgressBar(totalTasks - latch.getCount(), totalTasks, progressBarWidth);
+                    }).exceptionally(ex -> {
+                        ex.printStackTrace();
+                        latch.countDown();
+                        updateProgressBar(totalTasks - latch.getCount(), totalTasks, progressBarWidth);
+                        return null;
+                    });
+                }
+
+                latch.await();  // Wait for all tasks to complete
+                System.out.println();
+            } catch (Exception e) {
+                throw new Exception(e);
+            }
         }
     }
 
