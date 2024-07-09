@@ -50,17 +50,18 @@ public class gitlabGetter extends JFrame {
     private JComboBox<String> versionComboBox;
     private JButton downloadButton;
 
+    private JPanel panel;
+
     public gitlabGetter() {
         setTitle("Artifact Downloader");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setSize(400, 200);
         setLocationRelativeTo(null);
 
-        JPanel panel = new JPanel();
+        panel = new JPanel();
         panel.setLayout(new BorderLayout());
 
-        versionComboBox = new JComboBox<>();
-        panel.add(versionComboBox, BorderLayout.CENTER);
+
 
         downloadButton = new JButton("Download selected version");
         downloadButton.addActionListener(new ActionListener() {
@@ -76,6 +77,7 @@ public class gitlabGetter extends JFrame {
                                 "Failed to download artifact: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
                     }
                 }
+                populateVersions();
             }
         });
         panel.add(downloadButton, BorderLayout.SOUTH);
@@ -103,6 +105,7 @@ public class gitlabGetter extends JFrame {
                 } catch (Exception ex) {
                     throw new RuntimeException(ex);
                 }
+                populateVersions();
             }
         });
         panel.add(deleteOutdatedVersions, BorderLayout.WEST);
@@ -139,6 +142,13 @@ public class gitlabGetter extends JFrame {
     }
 
     public void populateVersions() {
+        if (versionComboBox != null) {
+            panel.remove(versionComboBox);
+        }
+
+        versionComboBox = new JComboBox<>();
+        panel.add(versionComboBox, BorderLayout.CENTER);
+
         try {
             JSONArray pipelines = getSuccessfulPipelines(false);
             System.out.println("Retrieved " + pipelines.length() + " successful pipelines. Current limit for successful pipelines is set to: " + numberOfVersionsToShow);
