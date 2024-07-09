@@ -53,9 +53,10 @@ public class gitlabGetter extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 String selectedVersion = (String) versionComboBox.getSelectedItem();
                 if (selectedVersion != null) {
+                    selectedVersion = selectedVersion.split(" ")[0];
                     try {
                         downloadSelectedVersion(selectedVersion);
-                    } catch (IOException ex) {
+                    } catch (Exception ex) {
                         ex.printStackTrace();
                         JOptionPane.showMessageDialog(gitlabGetter.this,
                                 "Failed to download artifact: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
@@ -106,8 +107,43 @@ public class gitlabGetter extends JFrame {
             throw new IOException("Failed to get pipelines: " + connection.getResponseMessage());
         }
     }
+    public static void deleteDirectory(File fileOrDirectory) throws Exception {
+        if (fileOrDirectory.isDirectory()) {
+            // List all files in the directory
+            File[] files = fileOrDirectory.listFiles();
+            if (files != null) {
+                for (File file : files) {
+                    // Recursively delete each file
+                    deleteDirectory(file);
+                }
+            }
+        }
 
-    private void downloadSelectedVersion(String selectedVersion) throws IOException {
+        // Delete the directory itself
+        if (!fileOrDirectory.delete()) {
+            throw new Exception("Failed to delete " + fileOrDirectory);
+        }
+    }
+
+
+    private void downloadSelectedVersion(String selectedVersion) throws Exception {
+        if (!Files.exists(Paths.get(DOWNLOAD_PATH + selectedVersion))) {
+            _downloadSelectedVersion(selectedVersion);
+        } else {
+            int choice = JOptionPane.showConfirmDialog(this,
+                    "The selected version is already downloaded. Do you want to re-download it now?",
+                    "Download Confirmation", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+
+            if (choice == JOptionPane.YES_OPTION) {
+                System.out.println("Deleting Artifact " + selectedVersion);
+                deleteDirectory(new File(DOWNLOAD_PATH + selectedVersion));
+                _downloadSelectedVersion(selectedVersion);
+            }
+        }
+
+    }
+
+    private void _downloadSelectedVersion(String selectedVersion) throws IOException {
         String outputFilePath = DOWNLOAD_PATH + selectedVersion + "/all-package-archive.zip";
         String extractToPath = DOWNLOAD_PATH + selectedVersion + "/";
 
@@ -118,18 +154,21 @@ public class gitlabGetter extends JFrame {
             int jobId = getJobId(pipelineId, "all:package");
 
             if (jobId != -1) {
+                System.out.println("Downloading Artifact " + selectedVersion + " ... ");
                 downloadArtifact(jobId, outputFilePath);
                 extractZip(outputFilePath, extractToPath);
                 Files.deleteIfExists(Paths.get(outputFilePath));
+                System.out.println("Download complete");
                 JOptionPane.showMessageDialog(this, "Downloaded and extracted: " + selectedVersion,
                         "Success", JOptionPane.INFORMATION_MESSAGE);
             } else {
                 JOptionPane.showMessageDialog(this, "Job with artifact 'all:package' not found.",
                         "Error", JOptionPane.ERROR_MESSAGE);
             }
-        } else {
-            JOptionPane.showMessageDialog(this, "The selected version is already downloaded.",
-                    "Info", JOptionPane.INFORMATION_MESSAGE);
+        }
+        else {
+            JOptionPane.showMessageDialog(this, "Artifact " + selectedVersion + " already downloaded!",
+                    "Error", JOptionPane.ERROR_MESSAGE);
         }
     }
 
