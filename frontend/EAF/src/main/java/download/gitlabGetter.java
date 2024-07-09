@@ -13,20 +13,17 @@ import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.Scanner;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Future;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
 import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
 
-import javax.sound.midi.SysexMessage;
 import javax.swing.*;
 
 
@@ -142,6 +139,11 @@ public class gitlabGetter extends JFrame {
             JSONArray pipelines = getSuccessfulPipelines();
             System.out.println("Retrieved " + pipelines.length() + " successful pipelines. Current limit for successful pipelines is set to: " + numberOfVersionsToShow);
 
+            // Create a CountDownLatch to track completion of all CompletableFuture tasks
+            CountDownLatch latch = new CountDownLatch(pipelines.length());
+
+            AtomicInteger count = new AtomicInteger();
+
             for (int i = 0; i < pipelines.length(); i++) {
                 int index = i;
                 CompletableFuture.supplyAsync(() -> {
@@ -171,15 +173,24 @@ public class gitlabGetter extends JFrame {
                 }).thenAccept(result -> {
                     if (result != null) {
                         SwingUtilities.invokeLater(() -> versionComboBox.addItem(result));
+                        count.getAndIncrement();
                     }
+                    // Count down the latch after each task completes
+                    latch.countDown();
                 }).exceptionally(ex -> {
                     ex.printStackTrace();
+                    // Count down the latch in case of exception
+                    latch.countDown();
                     return null;
                 });
             }
 
-            System.out.println("Of " + pipelines.length() + " only " + versionComboBox.getItemCount() + " are downloadable!");
-        } catch (IOException e) {
+            // Wait until all tasks are completed
+            latch.await();
+
+            // Print the final message
+            System.out.println("Of " + pipelines.length() + " pipelines only " + count + " are downloadable!");
+        } catch (IOException | InterruptedException e) {
             e.printStackTrace();
             JOptionPane.showMessageDialog(null, "Failed to fetch versions: " + e.getMessage(),
                     "Error", JOptionPane.ERROR_MESSAGE);
