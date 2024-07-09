@@ -52,7 +52,7 @@ public class gitlabGetter extends JFrame {
 
     private JPanel panel;
 
-    private String outdated = "outdated";
+    private String outdated = "outdated / unsupported";
 
     private String local = "local";
 
