@@ -89,11 +89,11 @@ public class gitlabGetter extends JFrame {
         });
         panel.add(mostRecentButton, BorderLayout.NORTH);
 
-        JButton deleteOutdatedVersions = new JButton("Delete everyting but newest");
+        JButton deleteOutdatedVersions = new JButton("Delete outdated versions");
         deleteOutdatedVersions.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 try {
-                    JSONArray pipelines = getSuccessfulPipelines(false);
+                    JSONArray pipelines = getSuccessfulPipelines(true);
                     System.out.println("Retrieved " + pipelines.length() + " successful pipelines. Current limit for successful pipelines is set to: " + numberOfVersionsToShow );
                     JSONObject pipeline = pipelines.getJSONObject(0);
                     String updatedAt = pipeline.getString("updated_at");
