@@ -19,8 +19,10 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
+import javax.sound.midi.SysexMessage;
 import javax.swing.*;
 
 
@@ -137,17 +139,22 @@ public class gitlabGetter extends JFrame {
             System.out.println("Retrieved " + pipelines.length() + " successful pipelines. Current limit for successful pipelines is set to: " + numberOfVersionsToShow );
             for (int i = 0; i < pipelines.length(); i++) {
                 JSONObject pipeline = pipelines.getJSONObject(i);
-                String updatedAt = pipeline.getString("updated_at");
-                String versionName = getVersionNameFromDate(updatedAt);
-                String s = versionName;
+                String webUrl = pipeline.getString("web_url");
+                boolean hasAllPackageJob = hasAllPackageJob(webUrl);
 
-                if (Files.exists(Paths.get(DOWNLOAD_PATH + versionName))) {
-                    s += " (downloaded)";
+                if (hasAllPackageJob) {
+                    String updatedAt = pipeline.getString("updated_at");
+                    String versionName = getVersionNameFromDate(updatedAt);
+                    String s = versionName;
+
+                    if (Files.exists(Paths.get(DOWNLOAD_PATH + versionName))) {
+                        s += " (downloaded)";
+                    }
+                    if (i == 0) {
+                        s += " (newest)";
+                    }
+                    versionComboBox.addItem(s);
                 }
-                if ( i == 0 ) {
-                    s += " (newest)";
-                }
-                versionComboBox.addItem(s);
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -156,8 +163,49 @@ public class gitlabGetter extends JFrame {
         }
     }
 
+    private boolean hasAllPackageJob(String webUrl) throws IOException {
+        String buildUrl = GITLAB_URL + "/projects/" + PROJECT_ID + "/pipelines/" + webUrl.split("pipelines")[1] + "/jobs";
+        System.out.println("Checking pipeline if artifact " + artifactName + " exists : " + buildUrl);
+
+        HttpURLConnection connection = (HttpURLConnection) new URL(buildUrl).openConnection();
+        connection.setRequestProperty("PRIVATE-TOKEN", PRIVATE_TOKEN);
+
+        try {
+            if (connection.getResponseCode() == 200) {
+                try (Scanner scanner = new Scanner(connection.getInputStream())) {
+                    String jsonResponse = scanner.useDelimiter("\\A").next();
+
+                    // Parse JSON response
+                    JSONArray jobsArray = new JSONArray(jsonResponse);
+
+                    // Check each job in the array
+                    for (int i = 0; i < jobsArray.length(); i++) {
+                        JSONObject job = jobsArray.getJSONObject(i);
+                        String jobName = job.getString("name");
+                        JSONArray artifacts = job.getJSONArray("artifacts");
+                        for (int j = 0; j < artifacts.length(); j++) {
+                            // Check if the job contains the artifactName
+                            JSONObject art = artifacts.getJSONObject(j);
+                            if (jobName.contains(artifactName) && art.getString("file_type").equals("archive")) {
+                                return true; // If any job doesn't have the artifactName, return false
+                            }
+                        }
+                    }
+                }
+            } else {
+                throw new IOException("Failed to get builds: " + connection.getResponseMessage());
+            }
+        } catch (Exception e) {
+            throw e; // Rethrow the exception to propagate it
+        } finally {
+            connection.disconnect();
+        }
+        return false;
+    }
+
     private JSONArray getSuccessfulPipelines() throws IOException {
         String url = GITLAB_URL + "/projects/" + PROJECT_ID + "/pipelines?status=success&ref=" + branchToConsider + "&order_by=id&sort=desc&per_page=" + numberOfVersionsToShow;
+       System.out.println("Requesting successful pipelines from branch " + branchToConsider + " requiring artifact " + artifactName + " : " + url);
         HttpURLConnection connection = (HttpURLConnection) new URL(url).openConnection();
         connection.setRequestProperty("PRIVATE-TOKEN", PRIVATE_TOKEN);
 
