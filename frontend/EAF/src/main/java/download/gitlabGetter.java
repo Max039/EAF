@@ -189,23 +189,21 @@ public class gitlabGetter extends JFrame {
 
         versionComboBox = new JComboBox<>();
         versionComboBox.setRenderer(new MyHtmlComboBoxRenderer());
-
         panel.add(versionComboBox, BorderLayout.CENTER);
 
         try {
             JSONArray pipelines = getSuccessfulPipelines(false);
             System.out.println("Retrieved " + pipelines.length() + " successful pipelines. Current limit for successful pipelines is set to: " + numberOfVersionsToShow);
 
-            // Create a CountDownLatch to track completion of all CompletableFuture tasks
             CountDownLatch latch = new CountDownLatch(pipelines.length());
-
             AtomicInteger count = new AtomicInteger();
-
             ArrayList<String> all = new ArrayList<>();
-
             ArrayList<String> approved = new ArrayList<>();
 
-
+            // Initialize the progress bar variables
+            long totalTasks = pipelines.length();
+            int progressBarWidth = 40; // Width of the progress bar
+            System.out.print("Processing... [");
 
             for (int i = 0; i < pipelines.length(); i++) {
                 int index = i;
@@ -223,9 +221,7 @@ public class gitlabGetter extends JFrame {
                     }
 
                     if (hasAllPackageJob.getFirst()) {
-
                         String s = versionName;
-
                         s += " [Branch=\"" + hasAllPackageJob.getSecond() + "\"]";
 
                         if (Files.exists(Paths.get(DOWNLOAD_PATH + versionName))) {
@@ -240,35 +236,29 @@ public class gitlabGetter extends JFrame {
                         approved.add(result);
                         count.getAndIncrement();
                     }
-                    // Count down the latch after each task completes
                     latch.countDown();
+                    // Update the progress bar
+                    updateProgressBar(totalTasks - latch.getCount(), totalTasks, progressBarWidth);
                 }).exceptionally(ex -> {
                     ex.printStackTrace();
-                    // Count down the latch in case of exception
                     latch.countDown();
+                    updateProgressBar(totalTasks - latch.getCount(), totalTasks, progressBarWidth);
                     return null;
                 });
             }
 
             versionComboBox.revalidate();
-
-            // Wait until all tasks are completed
             latch.await();
-
-            // Retrieve and process folder names to add to the versionComboBox
+            System.out.println();
             addUniqueFoldersToComboBox(approved, all);
-
-            // Print the final message
-            System.out.println("Of " + pipelines.length() + " pipelines only " + count + " are downloadable!");
-
-
+            System.out.println("\nOf " + pipelines.length() + " pipelines only " + count + " are downloadable!");
 
         } catch (IOException | InterruptedException e) {
             e.printStackTrace();
-            JOptionPane.showMessageDialog(null, "Failed to fetch versions: " + e.getMessage(),
-                    "Error", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(null, "Failed to fetch versions: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }
     }
+
 
     private void addUniqueFoldersToComboBox(ArrayList items, ArrayList all) {
         try {
@@ -330,7 +320,7 @@ public class gitlabGetter extends JFrame {
 
     private Pair<Boolean, String> hasAllPackageJob(String webUrl) throws IOException {
         String buildUrl = GITLAB_URL + "/projects/" + PROJECT_ID + "/pipelines" + webUrl.split("pipelines")[1] + "/jobs";
-        System.out.println("Checking pipeline if artifact " + artifactName + " exists : " + buildUrl);
+        //System.out.println("Checking pipeline if artifact " + artifactName + " exists : " + buildUrl);
 
         HttpURLConnection connection = (HttpURLConnection) new URL(buildUrl).openConnection();
         connection.setRequestProperty("PRIVATE-TOKEN", PRIVATE_TOKEN);
@@ -551,22 +541,13 @@ public class gitlabGetter extends JFrame {
                 int count;
                 long downloadedSize = 0;
                 int progressBarWidth = 40; // Width of the progress bar
+
                 System.out.print("Downloading... [");
 
                 while ((count = in.read(buffer)) != -1) {
                     out.write(buffer, 0, count);
                     downloadedSize += count;
-
-                    // Calculate percentage of downloaded data
-                    double progress = (double) downloadedSize / fileSize * 100;
-
-                    // Calculate number of '=' to display in the progress bar
-                    int progressChars = (int) (progress / (100.0 / progressBarWidth));
-                    String progressBar = "=" .repeat(progressChars);
-                    String emptyProgressBar = " " .repeat(progressBarWidth - progressChars);
-
-                    // Print progress bar with percentage
-                    System.out.printf("\r[%s%s] %.2f%%", progressBar, emptyProgressBar, progress);
+                    updateProgressBar(downloadedSize, fileSize, progressBarWidth);
                 }
 
                 System.out.println("\nArtifact downloaded successfully to " + outputFileName);
@@ -574,6 +555,14 @@ public class gitlabGetter extends JFrame {
         } else {
             throw new IOException("Failed to download artifacts: " + connection.getResponseMessage());
         }
+    }
+
+    private void updateProgressBar(long downloadedSize, long fileSize, int progressBarWidth) {
+        double progress = (double) downloadedSize / fileSize * 100;
+        int progressChars = (int) (progress / (100.0 / progressBarWidth));
+        String progressBar = "=".repeat(progressChars);
+        String emptyProgressBar = " ".repeat(progressBarWidth - progressChars);
+        System.out.printf("\r[%s%s] %.2f%%", progressBar, emptyProgressBar, progress);
     }
 
     private void extractZip(String zipFilePath, String destDir) throws IOException {
