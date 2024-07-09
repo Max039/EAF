@@ -1,6 +1,7 @@
 package download;
 
 import java.awt.*;
+import java.awt.List;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.BufferedInputStream;
@@ -11,13 +12,15 @@ import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Scanner;
+import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
@@ -38,7 +41,7 @@ public class gitlabGetter extends JFrame {
 
     private static final String DOWNLOAD_PATH = PATH + "/";
 
-    private static final String branchToConsider = "develop";
+    private static final String defaultBranch = "develop";
 
     private static final String artifactName = "all:package";
 
@@ -63,7 +66,7 @@ public class gitlabGetter extends JFrame {
         downloadButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 String selectedVersion = (String) versionComboBox.getSelectedItem();
-                if (selectedVersion != null) {
+                if (selectedVersion != null && !selectedVersion.contains("local")) {
                     selectedVersion = selectedVersion.split(" ")[0];
                     try {
                         downloadSelectedVersion(selectedVersion, false);
@@ -145,6 +148,8 @@ public class gitlabGetter extends JFrame {
 
             AtomicInteger count = new AtomicInteger();
 
+            ArrayList<String> arr = new ArrayList<>();
+
             for (int i = 0; i < pipelines.length(); i++) {
                 int index = i;
                 CompletableFuture.supplyAsync(() -> {
@@ -162,12 +167,7 @@ public class gitlabGetter extends JFrame {
                         String versionName = getVersionNameFromDate(updatedAt);
                         String s = versionName;
 
-
-                        /**
-                        if (index == 0) {
-                            s += " (newest)";
-                        }**/
-                        s += " [Branch=\"" + hasAllPackageJob.getSecond() +"\"]";
+                        s += " [Branch=\"" + hasAllPackageJob.getSecond() + "\"]";
 
                         if (Files.exists(Paths.get(DOWNLOAD_PATH + versionName))) {
                             s += " (downloaded)";
@@ -178,6 +178,7 @@ public class gitlabGetter extends JFrame {
                 }).thenAccept(result -> {
                     if (result != null) {
                         SwingUtilities.invokeLater(() -> versionComboBox.addItem(result));
+                        arr.add(result);
                         count.getAndIncrement();
                     }
                     // Count down the latch after each task completes
@@ -190,15 +191,66 @@ public class gitlabGetter extends JFrame {
                 });
             }
 
+            versionComboBox.revalidate();
+
             // Wait until all tasks are completed
             latch.await();
 
+            // Retrieve and process folder names to add to the versionComboBox
+            addUniqueFoldersToComboBox(arr);
+
             // Print the final message
             System.out.println("Of " + pipelines.length() + " pipelines only " + count + " are downloadable!");
+
+
+
         } catch (IOException | InterruptedException e) {
             e.printStackTrace();
             JOptionPane.showMessageDialog(null, "Failed to fetch versions: " + e.getMessage(),
                     "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+    private void addUniqueFoldersToComboBox(ArrayList items) {
+        try {
+            Path downloadPath = Paths.get(DOWNLOAD_PATH);
+            if (Files.exists(downloadPath) && Files.isDirectory(downloadPath)) {
+                try (Stream<Path> paths = Files.walk(downloadPath, 1)) {
+                    ArrayList<String> folderNames = (ArrayList<String>) paths.filter(Files::isDirectory)
+                            .map(path -> path.getFileName().toString())
+                            .collect(Collectors.toList());
+
+                    // Get existing items in the versionComboBox
+                    Set<String> existingItems = new HashSet<>();
+                    for (int i = 0; i < items.size(); i++) {
+                        System.out.println((String) items.get(i));
+                        existingItems.add((String) items.get(i));
+                    }
+
+                    boolean skipRoot = true;
+                    for (String folderName : folderNames) {
+                        if (!skipRoot) {
+                            boolean isContained = false;
+                            // Check if folder name is already contained in any of the existing items
+                            for (String item : existingItems) {
+                                if (item.contains(folderName)) {
+                                    System.out.println(item + " = " + folderName);
+                                    isContained = true;
+                                    break;
+                                }
+                            }
+                            if (!isContained) {
+                                SwingUtilities.invokeLater(() -> versionComboBox.addItem(folderName + " (local)"));
+                            }
+                        }
+                        else {
+                            skipRoot = false;
+                        }
+                    }
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 
@@ -250,10 +302,10 @@ public class gitlabGetter extends JFrame {
 
         String url = GITLAB_URL + "/projects/" + PROJECT_ID + "/pipelines?status=success";
         if (limitBranch) {
-            url += "&ref=" + branchToConsider ;
+            url += "&ref=" + defaultBranch;
         }
         url += "&order_by=id&sort=desc&per_page=" + numberOfVersionsToShow;
-        System.out.println("Requesting successful pipelines from branch " + branchToConsider + " requiring artifact " + artifactName + " : " + url);
+        System.out.println("Requesting successful pipelines from branch " + defaultBranch + " requiring artifact " + artifactName + " : " + url);
         HttpURLConnection connection = (HttpURLConnection) new URL(url).openConnection();
         connection.setRequestProperty("PRIVATE-TOKEN", PRIVATE_TOKEN);
 
