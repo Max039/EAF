@@ -66,6 +66,8 @@ public class gitlabGetter extends JFrame {
 
     ArrayList<Pair<String, String>> allPipelinesApprovedStings = null;
 
+     String lastAllResponse = "";
+
 
     public gitlabGetter() {
         setTitle("Artifact Downloader");
@@ -128,7 +130,11 @@ public class gitlabGetter extends JFrame {
         JButton refresh = new JButton("Refresh");
         refresh.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                refreshPipelinesOnNextRequest();
+                try {
+                    refreshPipelinesOnNextRequest();
+                } catch (IOException ex) {
+                    throw new RuntimeException(ex);
+                }
                 populateVersions();
             }
         });
@@ -183,11 +189,17 @@ public class gitlabGetter extends JFrame {
         }
     }
 
-    public void refreshPipelinesOnNextRequest() {
-        allPipelines = null;
-        defaultBranchPipelines = null;
-        allPipelinesStings = null;
-        allPipelinesApprovedStings = null;
+    public void refreshPipelinesOnNextRequest() throws IOException {
+        String lastAllResponseCopy = lastAllResponse;
+        getSuccessfulPipelines(false);
+        if (!lastAllResponseCopy.equals(lastAllResponse)) {
+            allPipelines = null;
+            defaultBranchPipelines = null;
+            allPipelinesStings = null;
+            allPipelinesApprovedStings = null;
+        }
+
+
     }
 
     public void populateVersions() {
@@ -228,12 +240,13 @@ public class gitlabGetter extends JFrame {
 
     public void getPipelinesWithValidPackage() throws Exception {
         if (allPipelinesStings == null || allPipelinesApprovedStings == null) {
+
             allPipelinesStings = new ArrayList<>();
             allPipelinesApprovedStings = new ArrayList<>();
             try {
                 JSONArray pipelines = getSuccessfulPipelines(false);
                 System.out.println("Retrieved " + pipelines.length() + " successful pipelines. Current limit for successful pipelines is set to: " + numberOfVersionsToShow);
-
+                System.out.println("Indexing pipelines that have valid artifact ...");
                 CountDownLatch latch = new CountDownLatch(pipelines.length());
                 AtomicInteger count = new AtomicInteger();
 
@@ -419,12 +432,16 @@ public class gitlabGetter extends JFrame {
                 }
                 else {
                     allPipelines = new JSONArray(response);
+                    lastAllResponse = response;
                 }
             }
         } else {
             throw new IOException("Failed to get pipelines: " + connection.getResponseMessage());
         }
     }
+
+
+
 
     public static void deleteDirectory(File fileOrDirectory) throws Exception {
         if (fileOrDirectory.isDirectory()) {
