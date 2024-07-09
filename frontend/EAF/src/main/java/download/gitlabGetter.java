@@ -32,6 +32,8 @@ public class gitlabGetter extends JFrame {
 
     private static final String DOWNLOAD_PATH = "evoalBuild/";
 
+    private static final String branchToConsider = "develop";
+
     private static int numberOfVersionsToShow = 20;
 
     private JComboBox<String> versionComboBox;
@@ -96,7 +98,7 @@ public class gitlabGetter extends JFrame {
     }
 
     private JSONArray getSuccessfulPipelines() throws IOException {
-        String url = GITLAB_URL + "/projects/" + PROJECT_ID + "/pipelines?status=success&order_by=id&sort=desc&per_page=" + numberOfVersionsToShow;
+        String url = GITLAB_URL + "/projects/" + PROJECT_ID + "/pipelines?status=success&ref=" + branchToConsider + "&order_by=id&sort=desc&per_page=" + numberOfVersionsToShow;
         HttpURLConnection connection = (HttpURLConnection) new URL(url).openConnection();
         connection.setRequestProperty("PRIVATE-TOKEN", PRIVATE_TOKEN);
 
@@ -109,6 +111,8 @@ public class gitlabGetter extends JFrame {
             throw new IOException("Failed to get pipelines: " + connection.getResponseMessage());
         }
     }
+
+
     public static void deleteDirectory(File fileOrDirectory) throws Exception {
         if (fileOrDirectory.isDirectory()) {
             // List all files in the directory
