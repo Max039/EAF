@@ -71,6 +71,25 @@ public class gitlabGetter extends JFrame {
         });
         panel.add(downloadButton, BorderLayout.SOUTH);
 
+        JButton mostRecentButton = new JButton("Download Selected Version");
+        mostRecentButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                try {
+                    JSONArray pipelines = getSuccessfulPipelines();
+                    System.out.println("Retrieved " + pipelines.length() + " successful pipelines. Current limit for successful pipelines is set to: " + numberOfVersionsToShow );
+                    JSONObject pipeline = pipelines.getJSONObject(0);
+                    String updatedAt = pipeline.getString("updated_at");
+                    String versionName = getVersionNameFromDate(updatedAt);
+                    downloadSelectedVersion(versionName);
+
+                } catch (Exception ex) {
+                    throw new RuntimeException(ex);
+                }
+
+            }
+        });
+        panel.add(mostRecentButton, BorderLayout.NORTH);
+
         add(panel);
     }
 
@@ -89,15 +108,6 @@ public class gitlabGetter extends JFrame {
                 }
                 if ( i == 0 ) {
                     s += " (newest)";
-                }
-                else {
-                    if ((!Files.exists(Paths.get(DOWNLOAD_PATH + versionName)))) {
-                        s += " (cannot be downloaded anymore)";
-                    }
-                    else {
-                        s += " (local)";
-                    }
-
                 }
                 versionComboBox.addItem(s);
             }
