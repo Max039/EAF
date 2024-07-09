@@ -206,13 +206,16 @@ public class gitlabGetter extends JFrame {
                     for (int i = 0; i < jobsArray.length(); i++) {
                         JSONObject job = jobsArray.getJSONObject(i);
                         String jobName = job.getString("name");
-                        JSONArray artifacts = job.getJSONArray("artifacts");
-                        for (int j = 0; j < artifacts.length(); j++) {
-                            // Check if the job contains the artifactName
-                            JSONObject art = artifacts.getJSONObject(j);
-                            if (jobName.contains(artifactName) && art.getString("file_type").equals("archive")) {
-                                return true; // If any job doesn't have the artifactName, return false
+                        if (jobName.contains(artifactName)) {
+                            JSONArray artifacts = job.getJSONArray("artifacts");
+                            for (int j = 0; j < artifacts.length(); j++) {
+                                // Check if the job contains the artifactName
+                                JSONObject art = artifacts.getJSONObject(j);
+                                if (art.getString("file_type").equals("archive")) {
+                                    return true; // If any job doesn't have the artifactName, return false
+                                }
                             }
+                            return false;
                         }
                     }
                 }
