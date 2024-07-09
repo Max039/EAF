@@ -382,12 +382,31 @@ public class gitlabGetter extends JFrame {
         if (connection.getResponseCode() == 200) {
             try (InputStream in = new BufferedInputStream(connection.getInputStream());
                  FileOutputStream out = new FileOutputStream(outputFileName)) {
+
+                long fileSize = connection.getContentLengthLong();
                 byte[] buffer = new byte[1024];
                 int count;
+                long downloadedSize = 0;
+                int progressBarWidth = 40; // Width of the progress bar
+                System.out.print("Downloading... [");
+
                 while ((count = in.read(buffer)) != -1) {
                     out.write(buffer, 0, count);
+                    downloadedSize += count;
+
+                    // Calculate percentage of downloaded data
+                    double progress = (double) downloadedSize / fileSize * 100;
+
+                    // Calculate number of '=' to display in the progress bar
+                    int progressChars = (int) (progress / (100.0 / progressBarWidth));
+                    String progressBar = "=" .repeat(progressChars);
+                    String emptyProgressBar = " " .repeat(progressBarWidth - progressChars);
+
+                    // Print progress bar with percentage
+                    System.out.printf("\r[%s%s] %.2f%%", progressBar, emptyProgressBar, progress);
                 }
-                System.out.println("Artifact downloaded successfully to " + outputFileName);
+
+                System.out.println("\nArtifact downloaded successfully to " + outputFileName);
             }
         } else {
             throw new IOException("Failed to download artifacts: " + connection.getResponseMessage());
