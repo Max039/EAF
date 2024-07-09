@@ -76,16 +76,7 @@ public class gitlabGetter extends JFrame {
         JButton mostRecentButton = new JButton("Download New Version");
         mostRecentButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                try {
-                    JSONArray pipelines = getSuccessfulPipelines();
-                    System.out.println("Retrieved " + pipelines.length() + " successful pipelines. Current limit for successful pipelines is set to: " + numberOfVersionsToShow );
-                    JSONObject pipeline = pipelines.getJSONObject(0);
-                    String updatedAt = pipeline.getString("updated_at");
-                    String versionName = getVersionNameFromDate(updatedAt);
-                    downloadIfNeeded(versionName);
-                } catch (Exception ex) {
-                    throw new RuntimeException(ex);
-                }
+                downloadNewestVersionIfNeeded();
 
             }
         });
@@ -112,6 +103,20 @@ public class gitlabGetter extends JFrame {
         add(panel);
     }
 
+    //Gets the newest nersion
+    public void downloadNewestVersionIfNeeded() {
+        try {
+            JSONArray pipelines = getSuccessfulPipelines();
+            System.out.println("Retrieved " + pipelines.length() + " successful pipelines. Current limit for successful pipelines is set to: " + numberOfVersionsToShow );
+            JSONObject pipeline = pipelines.getJSONObject(0);
+            String updatedAt = pipeline.getString("updated_at");
+            String versionName = getVersionNameFromDate(updatedAt);
+            downloadIfNeeded(versionName);
+        } catch (Exception ex) {
+            throw new RuntimeException(ex);
+        }
+    }
+
     private void downloadIfNeeded(String versionName) {
         if (!Files.exists(Paths.get(DOWNLOAD_PATH + versionName))) {
             try {
@@ -119,13 +124,9 @@ public class gitlabGetter extends JFrame {
             } catch (Exception ex) {
                 throw new RuntimeException(ex);
             }
-            JOptionPane.showMessageDialog(this, "Successfully downloaded new version",
-                    "Updated", JOptionPane.INFORMATION_MESSAGE);
         }
         else {
             System.out.println("Version " + versionName + " already present on filesystem!");
-            JOptionPane.showMessageDialog(this, "No new version available",
-                    "Info", JOptionPane.INFORMATION_MESSAGE);
         }
 
     }
