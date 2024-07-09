@@ -32,6 +32,7 @@ public class gitlabGetter extends JFrame {
 
     private static final String DOWNLOAD_PATH = "evoalBuild/";
 
+    private static int numberOfVersionsToShow = 20;
 
     private JComboBox<String> versionComboBox;
     private JButton downloadButton;
@@ -72,6 +73,7 @@ public class gitlabGetter extends JFrame {
     private void populateVersions() {
         try {
             JSONArray pipelines = getSuccessfulPipelines();
+            System.out.println("Retrieved " + pipelines.length() + " successful pipelines. Current limit for successful pipelines is set to: " + numberOfVersionsToShow );
             for (int i = 0; i < pipelines.length(); i++) {
                 JSONObject pipeline = pipelines.getJSONObject(i);
                 String updatedAt = pipeline.getString("updated_at");
@@ -94,7 +96,7 @@ public class gitlabGetter extends JFrame {
     }
 
     private JSONArray getSuccessfulPipelines() throws IOException {
-        String url = GITLAB_URL + "/projects/" + PROJECT_ID + "/pipelines?status=success&order_by=id&sort=desc&per_page=10";
+        String url = GITLAB_URL + "/projects/" + PROJECT_ID + "/pipelines?status=success&order_by=id&sort=desc&per_page=" + numberOfVersionsToShow;
         HttpURLConnection connection = (HttpURLConnection) new URL(url).openConnection();
         connection.setRequestProperty("PRIVATE-TOKEN", PRIVATE_TOKEN);
 
