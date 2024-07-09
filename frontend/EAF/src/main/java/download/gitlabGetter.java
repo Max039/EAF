@@ -52,6 +52,12 @@ public class gitlabGetter extends JFrame {
 
     private JPanel panel;
 
+    private String outdated = "outdated";
+
+    private String local = "local";
+
+    private String downloaded = "downloaded";
+
     public gitlabGetter() {
         setTitle("Artifact Downloader");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -67,7 +73,7 @@ public class gitlabGetter extends JFrame {
         downloadButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 String selectedVersion = (String) versionComboBox.getSelectedItem();
-                if (selectedVersion != null && !selectedVersion.contains("local")) {
+                if (selectedVersion != null && !selectedVersion.contains(local) && !selectedVersion.contains(outdated)) {
                     selectedVersion = selectedVersion.split(" ")[0];
                     try {
                         downloadSelectedVersion(selectedVersion, false);
@@ -178,12 +184,19 @@ public class gitlabGetter extends JFrame {
 
             AtomicInteger count = new AtomicInteger();
 
-            ArrayList<String> arr = new ArrayList<>();
+            ArrayList<String> all = new ArrayList<>();
+
+            ArrayList<String> approved = new ArrayList<>();
+
+
 
             for (int i = 0; i < pipelines.length(); i++) {
                 int index = i;
                 CompletableFuture.supplyAsync(() -> {
                     JSONObject pipeline = pipelines.getJSONObject(index);
+                    String updatedAt = pipeline.getString("updated_at");
+                    String versionName = getVersionNameFromDate(updatedAt);
+                    all.add(versionName);
                     String webUrl = pipeline.getString("web_url");
                     Pair<Boolean, String> hasAllPackageJob;
                     try {
@@ -193,14 +206,13 @@ public class gitlabGetter extends JFrame {
                     }
 
                     if (hasAllPackageJob.getFirst()) {
-                        String updatedAt = pipeline.getString("updated_at");
-                        String versionName = getVersionNameFromDate(updatedAt);
+
                         String s = versionName;
 
                         s += " [Branch=\"" + hasAllPackageJob.getSecond() + "\"]";
 
                         if (Files.exists(Paths.get(DOWNLOAD_PATH + versionName))) {
-                            s += " (<font color='green'>downloaded</font>)";
+                            s += " (<font color='green'>" + downloaded + "</font>)";
                         }
                         return s;
                     }
@@ -208,7 +220,7 @@ public class gitlabGetter extends JFrame {
                 }).thenAccept(result -> {
                     if (result != null) {
                         SwingUtilities.invokeLater(() -> versionComboBox.addItem("<html>" + result + "</html>"));
-                        arr.add(result);
+                        approved.add(result);
                         count.getAndIncrement();
                     }
                     // Count down the latch after each task completes
@@ -227,7 +239,7 @@ public class gitlabGetter extends JFrame {
             latch.await();
 
             // Retrieve and process folder names to add to the versionComboBox
-            addUniqueFoldersToComboBox(arr);
+            addUniqueFoldersToComboBox(approved, all);
 
             // Print the final message
             System.out.println("Of " + pipelines.length() + " pipelines only " + count + " are downloadable!");
@@ -241,7 +253,7 @@ public class gitlabGetter extends JFrame {
         }
     }
 
-    private void addUniqueFoldersToComboBox(ArrayList items) {
+    private void addUniqueFoldersToComboBox(ArrayList items, ArrayList all) {
         try {
             Path downloadPath = Paths.get(DOWNLOAD_PATH);
             if (Files.exists(downloadPath) && Files.isDirectory(downloadPath)) {
@@ -264,13 +276,27 @@ public class gitlabGetter extends JFrame {
                             // Check if folder name is already contained in any of the existing items
                             for (String item : existingItems) {
                                 if (item.contains(folderName)) {
-                                    System.out.println(item + " = " + folderName);
                                     isContained = true;
                                     break;
                                 }
                             }
                             if (!isContained) {
-                                SwingUtilities.invokeLater(() -> versionComboBox.addItem("<html>" + folderName + " (<font color='orange'>local</font>)</html> "));
+                                isContained = false;
+                                // Check if folder name is already contained in any of the existing items
+                                for (var item : all) {
+                                    String t = (String) item;
+                                    if (t.contains(folderName)) {
+                                        isContained = true;
+                                        break;
+                                    }
+                                }
+                                if (isContained) {
+                                    SwingUtilities.invokeLater(() -> versionComboBox.addItem("<html>" + folderName + " (<font color='red'>" + outdated + "</font>)</html> "));
+                                }
+                                else {
+                                    SwingUtilities.invokeLater(() -> versionComboBox.addItem("<html>" + folderName + " (<font color='orange'>" + local + "</font>)</html> "));
+
+                                }
                             }
                         }
                         else {
