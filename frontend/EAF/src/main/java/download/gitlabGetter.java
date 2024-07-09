@@ -162,14 +162,16 @@ public class gitlabGetter extends JFrame {
                         String versionName = getVersionNameFromDate(updatedAt);
                         String s = versionName;
 
-                        if (Files.exists(Paths.get(DOWNLOAD_PATH + versionName))) {
-                            s += " (downloaded)";
-                        }
+
                         /**
                         if (index == 0) {
                             s += " (newest)";
                         }**/
-                        s += " " + hasAllPackageJob.getSecond();
+                        s += " [Branch=\"" + hasAllPackageJob.getSecond() +"\"]";
+
+                        if (Files.exists(Paths.get(DOWNLOAD_PATH + versionName))) {
+                            s += " (downloaded)";
+                        }
                         return s;
                     }
                     return null;
