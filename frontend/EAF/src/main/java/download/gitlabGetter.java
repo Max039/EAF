@@ -30,7 +30,9 @@ public class gitlabGetter extends JFrame {
     private static final String PROJECT_ID = "evoal%2Fsource%2Fevoal-core"; // URL-encoded project ID
     private static final String PRIVATE_TOKEN = "oMAm4zMJVy9xc35PxQZg"; // Replace with your personal access token
 
-    private static final String DOWNLOAD_PATH = "evoalBuild/";
+    private static final String PATH = "evoalBuild";
+
+    private static final String DOWNLOAD_PATH = PATH + "/";
 
     private static final String branchToConsider = "develop";
 
@@ -71,7 +73,7 @@ public class gitlabGetter extends JFrame {
         });
         panel.add(downloadButton, BorderLayout.SOUTH);
 
-        JButton mostRecentButton = new JButton("Download Selected Version");
+        JButton mostRecentButton = new JButton("Download New Version");
         mostRecentButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 try {
@@ -80,8 +82,7 @@ public class gitlabGetter extends JFrame {
                     JSONObject pipeline = pipelines.getJSONObject(0);
                     String updatedAt = pipeline.getString("updated_at");
                     String versionName = getVersionNameFromDate(updatedAt);
-                    downloadSelectedVersion(versionName);
-
+                    downloadIfNeeded(versionName);
                 } catch (Exception ex) {
                     throw new RuntimeException(ex);
                 }
@@ -90,7 +91,43 @@ public class gitlabGetter extends JFrame {
         });
         panel.add(mostRecentButton, BorderLayout.NORTH);
 
+        JButton deleteOutdatedVersions = new JButton("Delete Outdated");
+        deleteOutdatedVersions.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                try {
+                    JSONArray pipelines = getSuccessfulPipelines();
+                    System.out.println("Retrieved " + pipelines.length() + " successful pipelines. Current limit for successful pipelines is set to: " + numberOfVersionsToShow );
+                    JSONObject pipeline = pipelines.getJSONObject(0);
+                    String updatedAt = pipeline.getString("updated_at");
+                    String versionName = getVersionNameFromDate(updatedAt);
+                    deleteNonMatchingFolders(new File(PATH), versionName);
+
+                } catch (Exception ex) {
+                    throw new RuntimeException(ex);
+                }
+            }
+        });
+        panel.add(deleteOutdatedVersions, BorderLayout.WEST);
+
         add(panel);
+    }
+
+    private void downloadIfNeeded(String versionName) {
+        if (!Files.exists(Paths.get(DOWNLOAD_PATH + versionName))) {
+            try {
+                downloadSelectedVersion(versionName);
+            } catch (Exception ex) {
+                throw new RuntimeException(ex);
+            }
+            JOptionPane.showMessageDialog(this, "Successfully downloaded new version",
+                    "Updated", JOptionPane.INFORMATION_MESSAGE);
+        }
+        else {
+            System.out.println("Version " + versionName + " already present on filesystem!");
+            JOptionPane.showMessageDialog(this, "No new version available",
+                    "Info", JOptionPane.INFORMATION_MESSAGE);
+        }
+
     }
 
     private void populateVersions() {
@@ -152,6 +189,25 @@ public class gitlabGetter extends JFrame {
         }
     }
 
+    public static void deleteNonMatchingFolders(File directory, String retainFolderNamed) throws Exception {
+        if (!directory.isDirectory()) {
+            throw new IllegalArgumentException("Parameter must be a directory.");
+        }
+
+        // List all files (folders) in the directory
+        File[] files = directory.listFiles();
+        if (files != null) {
+            for (File file : files) {
+                if (file.isDirectory()) {
+                    // Check if the folder name matches the retainFolderNamed
+                    if (!file.getName().equals(retainFolderNamed)) {
+                        // Recursively delete this folder and its contents
+                        deleteDirectory(file);
+                    }
+                }
+            }
+        }
+    }
 
     private void downloadSelectedVersion(String selectedVersion) throws Exception {
         if (!Files.exists(Paths.get(DOWNLOAD_PATH + selectedVersion))) {
