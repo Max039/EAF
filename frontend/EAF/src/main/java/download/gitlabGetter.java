@@ -90,6 +90,15 @@ public class gitlabGetter extends JFrame {
                 if ( i == 0 ) {
                     s += " (newest)";
                 }
+                else {
+                    if ((!Files.exists(Paths.get(DOWNLOAD_PATH + versionName)))) {
+                        s += " (cannot be downloaded anymore)";
+                    }
+                    else {
+                        s += " (local)";
+                    }
+
+                }
                 versionComboBox.addItem(s);
             }
         } catch (IOException e) {
@@ -151,7 +160,8 @@ public class gitlabGetter extends JFrame {
 
     }
 
-    private void _downloadSelectedVersion(String selectedVersion) throws IOException {
+
+    private void _downloadSelectedVersion(String selectedVersion) throws Exception {
         String outputFilePath = DOWNLOAD_PATH + selectedVersion + "/all-package-archive.zip";
         String extractToPath = DOWNLOAD_PATH + selectedVersion + "/";
 
@@ -162,14 +172,21 @@ public class gitlabGetter extends JFrame {
             int jobId = getJobId(pipelineId, artifactName);
 
             if (jobId != -1) {
-                System.out.println("Downloading Artifact " + selectedVersion + " ... ");
-                downloadArtifact(jobId, outputFilePath);
-                extractZip(outputFilePath, extractToPath);
-                Files.deleteIfExists(Paths.get(outputFilePath));
-                System.out.println("Download complete");
-                JOptionPane.showMessageDialog(this, "Downloaded and extracted: " + selectedVersion,
-                        "Success", JOptionPane.INFORMATION_MESSAGE);
+                try {
+                    System.out.println("Downloading Artifact " + selectedVersion + " ... ");
+                    downloadArtifact(jobId, outputFilePath);
+                    extractZip(outputFilePath, extractToPath);
+                    Files.deleteIfExists(Paths.get(outputFilePath));
+                    System.out.println("Download complete");
+                    JOptionPane.showMessageDialog(this, "Downloaded and extracted: " + selectedVersion,
+                            "Success", JOptionPane.INFORMATION_MESSAGE);
+                }
+                catch (Exception e) {
+                    deleteDirectory(new File(DOWNLOAD_PATH + selectedVersion));
+                    throw new Exception(e);
+                }
             } else {
+                deleteDirectory(new File(DOWNLOAD_PATH + selectedVersion));
                 JOptionPane.showMessageDialog(this, "Job with artifact '" + artifactName + "' not found.",
                         "Error", JOptionPane.ERROR_MESSAGE);
             }
