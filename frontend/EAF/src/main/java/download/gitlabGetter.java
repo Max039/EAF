@@ -66,8 +66,9 @@ public class gitlabGetter extends JFrame {
 
     ArrayList<Pair<String, String>> allPipelinesApprovedStings = null;
 
-     String lastAllResponse = "";
+    String lastAllResponse = "";
 
+    public static int progressBarWidth = 40;
 
     public gitlabGetter() {
         setTitle("Artifact Downloader");
@@ -252,7 +253,6 @@ public class gitlabGetter extends JFrame {
 
                 // Initialize the progress bar variables
                 long totalTasks = pipelines.length();
-                int progressBarWidth = 40; // Width of the progress bar
 
                 for (int i = 0; i < pipelines.length(); i++) {
                     int index = i;
@@ -582,7 +582,6 @@ public class gitlabGetter extends JFrame {
                 byte[] buffer = new byte[1024];
                 int count;
                 long downloadedSize = 0;
-                int progressBarWidth = 40; // Width of the progress bar
 
                 System.out.print("Downloading... [");
 
