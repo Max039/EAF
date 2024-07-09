@@ -13,8 +13,12 @@ import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.Scanner;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
@@ -57,7 +61,7 @@ public class gitlabGetter extends JFrame {
         versionComboBox = new JComboBox<>();
         panel.add(versionComboBox, BorderLayout.CENTER);
 
-        downloadButton = new JButton("Download Selected Version");
+        downloadButton = new JButton("Download selected version");
         downloadButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 String selectedVersion = (String) versionComboBox.getSelectedItem();
@@ -75,7 +79,7 @@ public class gitlabGetter extends JFrame {
         });
         panel.add(downloadButton, BorderLayout.SOUTH);
 
-        JButton mostRecentButton = new JButton("Download New Version");
+        JButton mostRecentButton = new JButton("Download newest version");
         mostRecentButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 downloadNewestVersionIfNeeded();
@@ -84,7 +88,7 @@ public class gitlabGetter extends JFrame {
         });
         panel.add(mostRecentButton, BorderLayout.NORTH);
 
-        JButton deleteOutdatedVersions = new JButton("Delete Outdated");
+        JButton deleteOutdatedVersions = new JButton("Delete outdated versions");
         deleteOutdatedVersions.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 try {
@@ -133,35 +137,55 @@ public class gitlabGetter extends JFrame {
 
     }
 
-    private void populateVersions() {
+    public void populateVersions() {
         try {
             JSONArray pipelines = getSuccessfulPipelines();
-            System.out.println("Retrieved " + pipelines.length() + " successful pipelines. Current limit for successful pipelines is set to: " + numberOfVersionsToShow );
+            System.out.println("Retrieved " + pipelines.length() + " successful pipelines. Current limit for successful pipelines is set to: " + numberOfVersionsToShow);
+
             for (int i = 0; i < pipelines.length(); i++) {
-                JSONObject pipeline = pipelines.getJSONObject(i);
-                String webUrl = pipeline.getString("web_url");
-                boolean hasAllPackageJob = hasAllPackageJob(webUrl);
-
-                if (hasAllPackageJob) {
-                    String updatedAt = pipeline.getString("updated_at");
-                    String versionName = getVersionNameFromDate(updatedAt);
-                    String s = versionName;
-
-                    if (Files.exists(Paths.get(DOWNLOAD_PATH + versionName))) {
-                        s += " (downloaded)";
+                int index = i;
+                CompletableFuture.supplyAsync(() -> {
+                    JSONObject pipeline = pipelines.getJSONObject(index);
+                    String webUrl = pipeline.getString("web_url");
+                    boolean hasAllPackageJob = false;
+                    try {
+                        hasAllPackageJob = hasAllPackageJob(webUrl);
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
                     }
-                    if (i == 0) {
-                        s += " (newest)";
+
+                    if (hasAllPackageJob) {
+                        String updatedAt = pipeline.getString("updated_at");
+                        String versionName = getVersionNameFromDate(updatedAt);
+                        String s = versionName;
+
+                        if (Files.exists(Paths.get(DOWNLOAD_PATH + versionName))) {
+                            s += " (downloaded)";
+                        }
+                        if (index == 0) {
+                            s += " (newest)";
+                        }
+                        return s;
                     }
-                    versionComboBox.addItem(s);
-                }
+                    return null;
+                }).thenAccept(result -> {
+                    if (result != null) {
+                        SwingUtilities.invokeLater(() -> versionComboBox.addItem(result));
+                    }
+                }).exceptionally(ex -> {
+                    ex.printStackTrace();
+                    return null;
+                });
             }
+
+            System.out.println("Of " + pipelines.length() + " only " + versionComboBox.getItemCount() + " are downloadable!");
         } catch (IOException e) {
             e.printStackTrace();
-            JOptionPane.showMessageDialog(this, "Failed to fetch versions: " + e.getMessage(),
+            JOptionPane.showMessageDialog(null, "Failed to fetch versions: " + e.getMessage(),
                     "Error", JOptionPane.ERROR_MESSAGE);
         }
     }
+
 
     private boolean hasAllPackageJob(String webUrl) throws IOException {
         String buildUrl = GITLAB_URL + "/projects/" + PROJECT_ID + "/pipelines" + webUrl.split("pipelines")[1] + "/jobs";
