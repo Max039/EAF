@@ -34,6 +34,8 @@ public class gitlabGetter extends JFrame {
 
     private static final String branchToConsider = "develop";
 
+    private static final String artifactName = "all:package";
+
     private static int numberOfVersionsToShow = 20;
 
     private JComboBox<String> versionComboBox;
@@ -157,7 +159,7 @@ public class gitlabGetter extends JFrame {
             Files.createDirectories(Paths.get(DOWNLOAD_PATH + selectedVersion));
             JSONObject pipeline = findPipelineByVersion(selectedVersion);
             int pipelineId = pipeline.getInt("id");
-            int jobId = getJobId(pipelineId, "all:package");
+            int jobId = getJobId(pipelineId, artifactName);
 
             if (jobId != -1) {
                 System.out.println("Downloading Artifact " + selectedVersion + " ... ");
@@ -168,7 +170,7 @@ public class gitlabGetter extends JFrame {
                 JOptionPane.showMessageDialog(this, "Downloaded and extracted: " + selectedVersion,
                         "Success", JOptionPane.INFORMATION_MESSAGE);
             } else {
-                JOptionPane.showMessageDialog(this, "Job with artifact 'all:package' not found.",
+                JOptionPane.showMessageDialog(this, "Job with artifact '" + artifactName + "' not found.",
                         "Error", JOptionPane.ERROR_MESSAGE);
             }
         }
