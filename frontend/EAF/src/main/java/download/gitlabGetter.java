@@ -77,7 +77,7 @@ public class gitlabGetter extends JFrame {
                                 "Failed to download artifact: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
                     }
                 }
-                populateVersions();
+
             }
         });
         panel.add(downloadButton, BorderLayout.SOUTH);
@@ -403,6 +403,7 @@ public class gitlabGetter extends JFrame {
                     extractZip(outputFilePath, extractToPath);
                     Files.deleteIfExists(Paths.get(outputFilePath));
                     System.out.println("Download complete");
+                    populateVersions();
                     JOptionPane.showMessageDialog(this, "Downloaded and extracted: " + selectedVersion,
                             "Success", JOptionPane.INFORMATION_MESSAGE);
                 }
