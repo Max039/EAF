@@ -71,8 +71,6 @@ public class gitlabGetter extends JFrame {
         panel = new JPanel();
         panel.setLayout(new BorderLayout());
 
-
-
         downloadButton = new JButton("Download selected version");
         downloadButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
@@ -119,6 +117,16 @@ public class gitlabGetter extends JFrame {
             }
         });
         panel.add(deleteOutdatedVersions, BorderLayout.WEST);
+
+
+        JButton refresh = new JButton("Refresh");
+        refresh.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                refreshPipelinesOnNextRequest();
+                populateVersions();
+            }
+        });
+        panel.add(refresh, BorderLayout.EAST);
 
         add(panel);
     }
@@ -167,6 +175,11 @@ public class gitlabGetter extends JFrame {
             }
             return c;
         }
+    }
+
+    public void refreshPipelinesOnNextRequest() {
+        allPipelines = null;
+        defaultBranchPipelines = null;
     }
 
     public void populateVersions() {
