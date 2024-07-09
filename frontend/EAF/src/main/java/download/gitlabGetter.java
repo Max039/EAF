@@ -23,6 +23,7 @@ import java.util.zip.ZipInputStream;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
+import test.Pair;
 
 import javax.swing.*;
 
@@ -41,7 +42,7 @@ public class gitlabGetter extends JFrame {
 
     private static final String artifactName = "all:package";
 
-    private static int numberOfVersionsToShow = 20;
+    private static int numberOfVersionsToShow = 100;
 
     private JComboBox<String> versionComboBox;
     private JButton downloadButton;
@@ -65,7 +66,7 @@ public class gitlabGetter extends JFrame {
                 if (selectedVersion != null) {
                     selectedVersion = selectedVersion.split(" ")[0];
                     try {
-                        downloadSelectedVersion(selectedVersion);
+                        downloadSelectedVersion(selectedVersion, false);
                     } catch (Exception ex) {
                         ex.printStackTrace();
                         JOptionPane.showMessageDialog(gitlabGetter.this,
@@ -89,7 +90,7 @@ public class gitlabGetter extends JFrame {
         deleteOutdatedVersions.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 try {
-                    JSONArray pipelines = getSuccessfulPipelines();
+                    JSONArray pipelines = getSuccessfulPipelines(false);
                     System.out.println("Retrieved " + pipelines.length() + " successful pipelines. Current limit for successful pipelines is set to: " + numberOfVersionsToShow );
                     JSONObject pipeline = pipelines.getJSONObject(0);
                     String updatedAt = pipeline.getString("updated_at");
@@ -109,7 +110,7 @@ public class gitlabGetter extends JFrame {
     //Gets the newest nersion
     public void downloadNewestVersionIfNeeded() {
         try {
-            JSONArray pipelines = getSuccessfulPipelines();
+            JSONArray pipelines = getSuccessfulPipelines(true);
             System.out.println("Retrieved " + pipelines.length() + " successful pipelines. Current limit for successful pipelines is set to: " + numberOfVersionsToShow );
             JSONObject pipeline = pipelines.getJSONObject(0);
             String updatedAt = pipeline.getString("updated_at");
@@ -123,7 +124,7 @@ public class gitlabGetter extends JFrame {
     private void downloadIfNeeded(String versionName) {
         if (!Files.exists(Paths.get(DOWNLOAD_PATH + versionName))) {
             try {
-                downloadSelectedVersion(versionName);
+                downloadSelectedVersion(versionName, true);
             } catch (Exception ex) {
                 throw new RuntimeException(ex);
             }
@@ -136,7 +137,7 @@ public class gitlabGetter extends JFrame {
 
     public void populateVersions() {
         try {
-            JSONArray pipelines = getSuccessfulPipelines();
+            JSONArray pipelines = getSuccessfulPipelines(false);
             System.out.println("Retrieved " + pipelines.length() + " successful pipelines. Current limit for successful pipelines is set to: " + numberOfVersionsToShow);
 
             // Create a CountDownLatch to track completion of all CompletableFuture tasks
@@ -149,14 +150,14 @@ public class gitlabGetter extends JFrame {
                 CompletableFuture.supplyAsync(() -> {
                     JSONObject pipeline = pipelines.getJSONObject(index);
                     String webUrl = pipeline.getString("web_url");
-                    boolean hasAllPackageJob = false;
+                    Pair<Boolean, String> hasAllPackageJob;
                     try {
                         hasAllPackageJob = hasAllPackageJob(webUrl);
                     } catch (IOException e) {
                         throw new RuntimeException(e);
                     }
 
-                    if (hasAllPackageJob) {
+                    if (hasAllPackageJob.getFirst()) {
                         String updatedAt = pipeline.getString("updated_at");
                         String versionName = getVersionNameFromDate(updatedAt);
                         String s = versionName;
@@ -164,9 +165,11 @@ public class gitlabGetter extends JFrame {
                         if (Files.exists(Paths.get(DOWNLOAD_PATH + versionName))) {
                             s += " (downloaded)";
                         }
+                        /**
                         if (index == 0) {
                             s += " (newest)";
-                        }
+                        }**/
+                        s += " " + hasAllPackageJob.getSecond();
                         return s;
                     }
                     return null;
@@ -198,7 +201,7 @@ public class gitlabGetter extends JFrame {
     }
 
 
-    private boolean hasAllPackageJob(String webUrl) throws IOException {
+    private Pair<Boolean, String> hasAllPackageJob(String webUrl) throws IOException {
         String buildUrl = GITLAB_URL + "/projects/" + PROJECT_ID + "/pipelines" + webUrl.split("pipelines")[1] + "/jobs";
         System.out.println("Checking pipeline if artifact " + artifactName + " exists : " + buildUrl);
 
@@ -223,10 +226,10 @@ public class gitlabGetter extends JFrame {
                                 // Check if the job contains the artifactName
                                 JSONObject art = artifacts.getJSONObject(j);
                                 if (art.getString("file_type").equals("archive")) {
-                                    return true; // If any job doesn't have the artifactName, return false
+                                    return new Pair<>(true, job.getString("ref")); // If any job doesn't have the artifactName, return false
                                 }
                             }
-                            return false;
+                            return new Pair<>(false, "");
                         }
                     }
                 }
@@ -238,12 +241,17 @@ public class gitlabGetter extends JFrame {
         } finally {
             connection.disconnect();
         }
-        return false;
+        return new Pair<>(false, "");
     }
 
-    private JSONArray getSuccessfulPipelines() throws IOException {
-        String url = GITLAB_URL + "/projects/" + PROJECT_ID + "/pipelines?status=success&ref=" + branchToConsider + "&order_by=id&sort=desc&per_page=" + numberOfVersionsToShow;
-       System.out.println("Requesting successful pipelines from branch " + branchToConsider + " requiring artifact " + artifactName + " : " + url);
+    private JSONArray getSuccessfulPipelines(boolean limitBranch) throws IOException {
+
+        String url = GITLAB_URL + "/projects/" + PROJECT_ID + "/pipelines?status=success";
+        if (limitBranch) {
+            url += "&ref=" + branchToConsider ;
+        }
+        url += "&order_by=id&sort=desc&per_page=" + numberOfVersionsToShow;
+        System.out.println("Requesting successful pipelines from branch " + branchToConsider + " requiring artifact " + artifactName + " : " + url);
         HttpURLConnection connection = (HttpURLConnection) new URL(url).openConnection();
         connection.setRequestProperty("PRIVATE-TOKEN", PRIVATE_TOKEN);
 
@@ -296,9 +304,9 @@ public class gitlabGetter extends JFrame {
         }
     }
 
-    private void downloadSelectedVersion(String selectedVersion) throws Exception {
+    private void downloadSelectedVersion(String selectedVersion, boolean limitBranch) throws Exception {
         if (!Files.exists(Paths.get(DOWNLOAD_PATH + selectedVersion))) {
-            _downloadSelectedVersion(selectedVersion);
+            _downloadSelectedVersion(selectedVersion, limitBranch);
         } else {
             int choice = JOptionPane.showConfirmDialog(this,
                     "The selected version is already downloaded. Do you want to re-download it now?",
@@ -307,20 +315,20 @@ public class gitlabGetter extends JFrame {
             if (choice == JOptionPane.YES_OPTION) {
                 System.out.println("Deleting Artifact " + selectedVersion);
                 deleteDirectory(new File(DOWNLOAD_PATH + selectedVersion));
-                _downloadSelectedVersion(selectedVersion);
+                _downloadSelectedVersion(selectedVersion, limitBranch);
             }
         }
 
     }
 
 
-    private void _downloadSelectedVersion(String selectedVersion) throws Exception {
+    private void _downloadSelectedVersion(String selectedVersion, boolean limitBranch) throws Exception {
         String outputFilePath = DOWNLOAD_PATH + selectedVersion + "/all-package-archive.zip";
         String extractToPath = DOWNLOAD_PATH + selectedVersion + "/";
 
         if (!Files.exists(Paths.get(DOWNLOAD_PATH + selectedVersion))) {
             Files.createDirectories(Paths.get(DOWNLOAD_PATH + selectedVersion));
-            JSONObject pipeline = findPipelineByVersion(selectedVersion);
+            JSONObject pipeline = findPipelineByVersion(selectedVersion, limitBranch);
             int pipelineId = pipeline.getInt("id");
             int jobId = getJobId(pipelineId, artifactName);
 
@@ -350,8 +358,8 @@ public class gitlabGetter extends JFrame {
         }
     }
 
-    private JSONObject findPipelineByVersion(String versionName) throws IOException {
-        JSONArray pipelines = getSuccessfulPipelines();
+    private JSONObject findPipelineByVersion(String versionName, boolean limitBranch) throws IOException {
+        JSONArray pipelines = getSuccessfulPipelines(limitBranch);
         for (int i = 0; i < pipelines.length(); i++) {
             JSONObject pipeline = pipelines.getJSONObject(i);
             String updatedAt = pipeline.getString("updated_at");
