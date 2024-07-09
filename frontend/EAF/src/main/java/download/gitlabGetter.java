@@ -89,7 +89,7 @@ public class gitlabGetter extends JFrame {
         });
         panel.add(mostRecentButton, BorderLayout.NORTH);
 
-        JButton deleteOutdatedVersions = new JButton("Delete outdated versions");
+        JButton deleteOutdatedVersions = new JButton("Delete everyting but newest");
         deleteOutdatedVersions.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 try {
