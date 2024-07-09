@@ -58,6 +58,10 @@ public class gitlabGetter extends JFrame {
 
     private String downloaded = "downloaded";
 
+    JSONArray defaultBranchPipelines = null;
+
+    JSONArray allPipelines = null;
+
     public gitlabGetter() {
         setTitle("Artifact Downloader");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -74,7 +78,7 @@ public class gitlabGetter extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 String selectedVersion = (String) versionComboBox.getSelectedItem();
                 if (selectedVersion != null && !selectedVersion.contains(local) && !selectedVersion.contains(outdated)) {
-                    selectedVersion = selectedVersion.split(" ")[0];
+                    selectedVersion = selectedVersion.split("<html>")[1].split(" ")[0];
                     try {
                         downloadSelectedVersion(selectedVersion, false);
                     } catch (Exception ex) {
@@ -355,7 +359,19 @@ public class gitlabGetter extends JFrame {
     }
 
     private JSONArray getSuccessfulPipelines(boolean limitBranch) throws IOException {
+        fetchPipeline(limitBranch);
+        if (limitBranch) {
+            return defaultBranchPipelines;
+        }
+        else {
+            return allPipelines;
+        }
+    }
 
+    private void fetchPipeline(boolean limitBranch) throws IOException {
+        if ((limitBranch && defaultBranchPipelines != null) || (!limitBranch && allPipelines != null)) {
+            return;
+        }
         String url = GITLAB_URL + "/projects/" + PROJECT_ID + "/pipelines?status=success";
         if (limitBranch) {
             url += "&ref=" + defaultBranch;
@@ -368,13 +384,17 @@ public class gitlabGetter extends JFrame {
         if (connection.getResponseCode() == 200) {
             try (Scanner scanner = new Scanner(connection.getInputStream())) {
                 String response = scanner.useDelimiter("\\A").next();
-                return new JSONArray(response);
+                if (limitBranch) {
+                    defaultBranchPipelines = new JSONArray(response);
+                }
+                else {
+                    allPipelines = new JSONArray(response);
+                }
             }
         } else {
             throw new IOException("Failed to get pipelines: " + connection.getResponseMessage());
         }
     }
-
 
     public static void deleteDirectory(File fileOrDirectory) throws Exception {
         if (fileOrDirectory.isDirectory()) {
