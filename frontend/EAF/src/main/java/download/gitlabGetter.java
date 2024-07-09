@@ -141,12 +141,32 @@ public class gitlabGetter extends JFrame {
 
     }
 
+    // Custom renderer class for HTML content
+    class MyHtmlComboBoxRenderer extends DefaultListCellRenderer {
+        @Override
+        public Component getListCellRendererComponent(JList<?> list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
+            Component c = super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
+            if (value != null) {
+                // Use the default rendering
+
+                if (c instanceof JLabel) {
+                    JLabel label = (JLabel) c;
+                    label.setText(value.toString()); // Set the text to HTML formatted string
+                }
+
+            }
+            return c;
+        }
+    }
+
     public void populateVersions() {
         if (versionComboBox != null) {
             panel.remove(versionComboBox);
         }
 
         versionComboBox = new JComboBox<>();
+        versionComboBox.setRenderer(new MyHtmlComboBoxRenderer());
+
         panel.add(versionComboBox, BorderLayout.CENTER);
 
         try {
@@ -180,14 +200,14 @@ public class gitlabGetter extends JFrame {
                         s += " [Branch=\"" + hasAllPackageJob.getSecond() + "\"]";
 
                         if (Files.exists(Paths.get(DOWNLOAD_PATH + versionName))) {
-                            s += " (downloaded)";
+                            s += " (<font color='green'>downloaded</font>)";
                         }
                         return s;
                     }
                     return null;
                 }).thenAccept(result -> {
                     if (result != null) {
-                        SwingUtilities.invokeLater(() -> versionComboBox.addItem(result));
+                        SwingUtilities.invokeLater(() -> versionComboBox.addItem("<html>" + result + "</html>"));
                         arr.add(result);
                         count.getAndIncrement();
                     }
@@ -250,7 +270,7 @@ public class gitlabGetter extends JFrame {
                                 }
                             }
                             if (!isContained) {
-                                SwingUtilities.invokeLater(() -> versionComboBox.addItem(folderName + " (local)"));
+                                SwingUtilities.invokeLater(() -> versionComboBox.addItem("<html>" + folderName + " (<font color='orange'>local</font>)</html> "));
                             }
                         }
                         else {
