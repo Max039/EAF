@@ -164,7 +164,7 @@ public class gitlabGetter extends JFrame {
     }
 
     private boolean hasAllPackageJob(String webUrl) throws IOException {
-        String buildUrl = GITLAB_URL + "/projects/" + PROJECT_ID + "/pipelines/" + webUrl.split("pipelines")[1] + "/jobs";
+        String buildUrl = GITLAB_URL + "/projects/" + PROJECT_ID + "/pipelines" + webUrl.split("pipelines")[1] + "/jobs";
         System.out.println("Checking pipeline if artifact " + artifactName + " exists : " + buildUrl);
 
         HttpURLConnection connection = (HttpURLConnection) new URL(buildUrl).openConnection();
