@@ -178,6 +178,8 @@ public class SyntaxTree {
             classTree.get(typeName).put(moduleName, c);
         }
         // Implement the actual function call here
+        parseInput(typeContent);
+
     }
 
     private static void callFunctionWithModuleTypeAndExtendedType(String moduleName, String typeName, String extendedType, boolean isAbstract, String typeContent) {
@@ -201,8 +203,83 @@ public class SyntaxTree {
         } else {
             classTree.get(typeName).put(moduleName, c);
         }
+
+        parseInput(typeContent);
         // Implement the actual function call here
     }
+
+    // Function declarations as per your requirement
+    static void DefiningField(String field, String typename, boolean isInstance) {
+        System.out.println("DefiningField called with field: " + field + ", typename: " + typename + ", isInstance: " + isInstance);
+    }
+
+    static void FieldSetterPrimitive(String field, String typename, String value) {
+        System.out.println("FieldSetterPrimitive called with field: " + field + ", typename: " + typename + ", value: " + value);
+    }
+
+    //Not propperly called yet
+    static void FieldSetterInstance(String field, String typename, String value) {
+        System.out.println("FieldSetterInstance called with field: " + field + ", typename: " + typename + ", value: " + value);
+    }
+
+    //Not propperly called yet
+    static void ArraySetter(String field, String value) {
+        System.out.println("ArraySetter called with field: " + field + ", value: " + value);
+    }
+
+    private static void matchAndCall(String input, String patternString, String functionName) {
+        Pattern pattern = Pattern.compile(patternString);
+        Matcher matcher = pattern.matcher(input);
+
+        while (matcher.find()) {
+            switch (functionName) {
+                case "DefiningField":
+                    String field = matcher.group(1);
+                    String typename = matcher.group(2) != null ? matcher.group(2) : matcher.group(3);
+                    boolean isInstance = matcher.group(2) != null;
+                    DefiningField(field, typename, isInstance);
+                    break;
+                case "FieldSetterPrimitive":
+                    field = matcher.group(1);
+                    typename = matcher.group(2);
+                    String value = matcher.group(3);
+                    FieldSetterPrimitive(field, typename, value);
+                    break;
+                case "FieldSetterInstance":
+                    field = matcher.group(1);
+                    typename = matcher.group(2);
+                    value = matcher.group(0); // Full match for recursive call
+                    FieldSetterInstance(field, typename, value);
+                    break;
+                case "ArraySetter":
+                    field = matcher.group(1);
+                    value = matcher.group(0); // Full match including []
+                    ArraySetter(field, value);
+                    break;
+            }
+        }
+    }
+
+    // Method to parse the input string
+    static void parseInput(String input) {
+        // Patterns
+        String definingFieldPattern = "(?:')?(\\w+)(?:')?\\s*:\\s*(?:array\\s*)?(?:instance\\s*(?:')?(\\w+)(?:')?|(?:')?(\\w+)(?:')?);";
+        String fieldSetterPrimitivePattern = "(?:')?(\\w+)(?:')?\\s*:\\s*(?:')?(\\w+)(?:')?\\s*:=\\s*(\\w+);";
+        String fieldSetterInstancePattern = "(?:')?(\\w+)(?:')?\\s*:\\s*(?:')?(\\w+)(?:')?\\s*:=\\s*\\{[^}]*\\};";
+        String arraySetterPattern = "(?:')?(\\w+)(?:')?\\s*:=\\s*\\[[^\\]]*\\];";
+
+        // Match and call functions
+        matchAndCall(input, definingFieldPattern, "DefiningField");
+        matchAndCall(input, fieldSetterPrimitivePattern, "FieldSetterPrimitive");
+        matchAndCall(input, fieldSetterInstancePattern, "FieldSetterInstance");
+        matchAndCall(input, arraySetterPattern, "ArraySetter");
+    }
+    public static String sanitizeGroup(Matcher matcher, int groupIndex) {
+        String group = matcher.group(groupIndex);
+        return group != null ? group.replace("'", "") : "";
+    }
+
+
 
     public static void processLine(String line, String definitions, String generator) throws IOException {
         // Replace this with your actual processing logic
