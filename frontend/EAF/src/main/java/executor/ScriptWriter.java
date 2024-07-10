@@ -2,27 +2,28 @@ package executor;
 
 import java.io.*;
 import java.nio.file.Files;
-import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
-public class StartCombinedJavaApp {
+public class ScriptWriter {
+
+    public enum ScriptType {
+        SEARCH
+    }
 
     public static String evoalVersion = "20240708-152016";
     public static String projectName = "genetic-programming";
 
-    public static void createScript(String path2, String build) {
+    public static ScriptType projectType = ScriptType.SEARCH;
+
+    public static void createScript(String path2, String build, ScriptType type) {
         String outputFilePath = path2;
 
         try {
             List<String> lines = new ArrayList<>();
-            lines.add(getReplacementLines(build));
+            lines.add(getReplacementLines(build, type));
 
             Files.write(Paths.get(outputFilePath), lines, StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING);
         } catch (IOException e) {
@@ -30,7 +31,7 @@ public class StartCombinedJavaApp {
         }
     }
 
-    private static String getReplacementLines(String build) {
+    private static String getReplacementLines(String build, ScriptType type) {
         return "#!/bin/sh\n" +
                 "export DISPLAY=localhost:0.0\n" +
                 "export EVOAL_HOME=$( cd -- \"$(dirname $0)/../../EvoAlBuilds/" + build + "/evoal\" >/dev/null 2>&1 ; pwd -P )\n" +
@@ -41,14 +42,26 @@ public class StartCombinedJavaApp {
                 "SCRIPT_DIR=$(dirname \"$(readlink -f \"$0\")\")\n" +
                 "# Change the working directory to the script's directory\n" +
                 "cd \"$SCRIPT_DIR\"\n" +
-                "$SHELL $EVOAL_HOME/bin/evoal-search.sh . config.ol output";
+                getExecutionLine(type);
     }
-    
+
+    private static String getExecutionLine(ScriptType type) {
+        switch (type) {
+            case SEARCH -> {
+                return  "$SHELL $EVOAL_HOME/bin/evoal-search.sh . config.ol output";
+            }
+            default ->
+            {
+                return "";
+            }
+        }
+    }
+
     public static void main(String[] args) throws IOException, InterruptedException {
         String currentPath = System.getProperty("user.dir");
 
 
-        createScript(currentPath + "\\EvoAlScripts\\" + projectName + "\\run.sh", evoalVersion);
+        createScript(currentPath + "\\EvoAlScripts\\" + projectName + "\\run.sh", evoalVersion, projectType);
         try {
 
             String scriptPath = currentPath + "\\EvoAlScripts\\genetic-programming\\run.sh";

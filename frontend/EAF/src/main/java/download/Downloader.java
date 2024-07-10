@@ -1,7 +1,6 @@
 package download;
 
 import java.awt.*;
-import java.awt.List;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.BufferedInputStream;
@@ -31,7 +30,7 @@ import test.Pair;
 import javax.swing.*;
 
 
-public class gitlabGetter extends JFrame {
+public class Downloader extends JFrame {
 
     private static final String GITLAB_URL = "https://gitlab.informatik.uni-bremen.de/api/v4";
     private static final String PROJECT_ID = "evoal%2Fsource%2Fevoal-core"; // URL-encoded project ID
@@ -70,7 +69,7 @@ public class gitlabGetter extends JFrame {
 
     public static int progressBarWidth = 40;
 
-    public gitlabGetter() {
+    public Downloader() {
         setTitle("Artifact Downloader");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setSize(400, 200);
@@ -89,7 +88,7 @@ public class gitlabGetter extends JFrame {
                         downloadSelectedVersion(selectedVersion, false);
                     } catch (Exception ex) {
                         ex.printStackTrace();
-                        JOptionPane.showMessageDialog(gitlabGetter.this,
+                        JOptionPane.showMessageDialog(Downloader.this,
                                 "Failed to download artifact: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
                     }
                     populateVersions();
@@ -664,7 +663,7 @@ public class gitlabGetter extends JFrame {
     public static void main(String[] args) {
         SwingUtilities.invokeLater(new Runnable() {
             public void run() {
-                gitlabGetter downloader = new gitlabGetter();
+                Downloader downloader = new Downloader();
                 downloader.setVisible(true);
                 downloader.populateVersions(); // Fetch versions and populate UI
             }
