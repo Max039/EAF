@@ -6,10 +6,10 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-
+import java.util.stream.Collectors;
 
 
 public class SyntaxTree {
@@ -59,7 +59,14 @@ public class SyntaxTree {
 
         processFile("EvoAlScripts\\genetic-programming\\config.ol", "script", false);
 
-        System.out.println("Hashmap size = " + definitionsInMemory.size());
+        System.out.println("Loaded modules count = " + definitionsInMemory.size());
+        System.out.println("Loaded modules: ");
+        System.out.println("============================");
+        for (var im : definitionsInMemory.keySet().stream().sorted().toList()) {
+            System.out.println(im);
+        }
+        System.out.println("============================");
+
     }
 
     private static void buildFileTree(TreeNode parentNode, File node) {
