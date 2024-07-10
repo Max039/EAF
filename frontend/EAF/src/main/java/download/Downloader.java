@@ -111,12 +111,8 @@ public class Downloader extends JFrame {
         deleteOutdatedVersions.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 try {
-                    JSONArray pipelines = getSuccessfulPipelines(true);
-                    System.out.println("Retrieved " + pipelines.length() + " successful pipelines. Current limit for successful pipelines is set to: " + numberOfVersionsToShow );
-                    JSONObject pipeline = pipelines.getJSONObject(0);
-                    String updatedAt = pipeline.getString("updated_at");
-                    String versionName = getVersionNameFromDate(updatedAt);
-                    deleteNonMatchingFolders(new File(PATH), versionName);
+
+                    deleteNonMatchingFolders(new File(PATH), allPipelinesApprovedStings);
 
                 } catch (Exception ex) {
                     throw new RuntimeException(ex);
@@ -458,7 +454,7 @@ public class Downloader extends JFrame {
         }
     }
 
-    public static void deleteNonMatchingFolders(File directory, String retainFolderNamed) throws Exception {
+    public void deleteNonMatchingFolders(File directory, ArrayList<Pair<String, String>> retainFolderNames) throws Exception {
         if (!directory.isDirectory()) {
             throw new IllegalArgumentException("Parameter must be a directory.");
         }
@@ -469,7 +465,7 @@ public class Downloader extends JFrame {
             for (File file : files) {
                 if (file.isDirectory()) {
                     // Check if the folder name matches the retainFolderNamed
-                    if (!file.getName().equals(retainFolderNamed)) {
+                    if (allPipelinesStings.stream().anyMatch(t -> t.contains(file.getName())) && !retainFolderNames.stream().map(t -> t.getFirst()).collect(Collectors.toList()).stream().anyMatch(t -> t.equals(file.getName()))) {
                         // Recursively delete this folder and its contents
                         deleteDirectory(file);
                     }
