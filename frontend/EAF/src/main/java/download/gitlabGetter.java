@@ -37,7 +37,7 @@ public class gitlabGetter extends JFrame {
     private static final String PROJECT_ID = "evoal%2Fsource%2Fevoal-core"; // URL-encoded project ID
     private static final String PRIVATE_TOKEN = "oMAm4zMJVy9xc35PxQZg"; // Replace with your personal access token
 
-    private static final String PATH = "evoalBuild";
+    private static final String PATH = "EvoAlBuilds";
 
     private static final String DOWNLOAD_PATH = PATH + "/";
 
