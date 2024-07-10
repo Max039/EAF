@@ -143,7 +143,8 @@ public class SyntaxTree {
 
         while (typeMatcher.find()) {
             boolean isAbstract = typeMatcher.group(1) != null;
-            String typeName = typeMatcher.group(2);
+            String typeName = typeMatcher.group(2).split("\\{")[0];
+
             String extendedType = typeMatcher.group(3);
 
             if (extendedType == null) {
