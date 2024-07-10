@@ -20,6 +20,12 @@ public class SyntaxTree {
 
     public static HashMap<String, DataObject> definitionsInMemory = new HashMap<>();
 
+    //=======================================================================
+    public static HashMap<String, ClazzInstance> classTree = new HashMap<>();
+    // Next use this to make class trees by when calling extends add a child (but also put new entry that is the same object so same refference in child as in hashmap)
+    // When only new type and no extend only put
+    //=======================================================================
+
     public static void main(String[] args) throws IOException {
         String currentPath = System.getProperty("user.dir");
         pathToSyntax.add(currentPath + "\\EvoAlBuilds\\" + evoalBuild + "\\evoal\\definitions\\de");
@@ -101,7 +107,7 @@ public class SyntaxTree {
 
             processRestOfFile(reader);
         }
-        
+
 
     }
 
