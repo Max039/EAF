@@ -1,0 +1,10 @@
+import "definitions" from de.evoal.optimisation.ea.optimisation;
+import "definitions" from de.evoal.optimisation.core;
+
+
+module de.evoal.routenoptimierung.comparators.generationPrintComparator {
+	type 'generation-print-comparator' extends comparator  {
+		'child-comparator' : instance comparator;
+	}
+}
+

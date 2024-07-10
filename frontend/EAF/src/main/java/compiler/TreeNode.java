@@ -19,6 +19,23 @@ class TreeNode {
         return toStringHelper(this, 0);
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (o instanceof TreeNode) {
+            return ((TreeNode) o).name.equals(name);
+        }
+        return false;
+    }
+
+    public TreeNode getChild(String s) {
+        for (var c : children) {
+            if (c.name.equals(s)) {
+                return c;
+            }
+        }
+        return null;
+    }
+
     private String toStringHelper(TreeNode node, int level) {
         StringBuilder sb = new StringBuilder();
         sb.append(getIndent(level)).append("- ").append(node.name).append("\n");

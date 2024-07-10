@@ -1,0 +1,11 @@
+import "definitions" from de.evoal.optimisation.ea.optimisation;
+import "definitions" from de.evoal.optimisation.core;
+
+module de.evoal.routenoptimierung.chromosomes.pathChromosome {
+
+	
+	type 'path-chromosome' extends 'chromosome'  {
+
+	}
+}
+

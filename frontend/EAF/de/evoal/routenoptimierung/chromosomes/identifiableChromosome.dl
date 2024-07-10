@@ -1,0 +1,11 @@
+import "definitions" from de.evoal.optimisation.ea.optimisation;
+import "definitions" from de.evoal.optimisation.core;
+
+module de.evoal.routenoptimierung.chromosomes.identifiableChromosome {
+
+	
+	type 'identifiable-chromosome' extends 'chromosome'  {
+		'jenetics-chromosome' : string;
+	}
+}
+

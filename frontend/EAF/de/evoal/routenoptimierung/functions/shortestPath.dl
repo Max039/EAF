@@ -1,0 +1,10 @@
+import "definitions" from de.evoal.generator.generator;
+
+module de.evoal.routenoptimierung.functions.shortestPath {
+	type 'shortest-path' extends benchmark {
+		'jenetics-chromosome' : string;
+		'fitness-function-class' : string;
+		'fitness-function-name' : string;
+	}
+}
+

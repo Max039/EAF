@@ -1,0 +1,9 @@
+import "definitions" from de.evoal.optimisation.ea.optimisation;
+
+
+module de.evoal.routenoptimierung.alterers.generationPrintMutator {
+	type 'generation-print-mutator' extends mutator  {
+		'child-alterer' : instance mutator;
+	}
+}
+

@@ -7,9 +7,26 @@ import "definitions" from de.evoal.generator.generator;
 import "definitions" from de.evoal.optimisation.ea.optimisation;
 import "definitions" from de.evoal.optimisation.ea.'genetic-programming';
 
+import "definitions" from de.evoal.routenoptimierung.functions.shortestPath;
+import "definitions" from de.evoal.routenoptimierung.selectors.generationPrintSelector;
+import "definitions" from de.evoal.routenoptimierung.alterers.generationPrintMutator;
+import "definitions" from de.evoal.routenoptimierung.alterers.generationPrintCrossover;
+import "definitions" from de.evoal.routenoptimierung.alterers.pathCrossover;
+import "definitions" from de.evoal.routenoptimierung.algorithms.evolutionaryAlgorithmOptimisation;
+import "definitions" from de.evoal.routenoptimierung.statistics.generationPrintStatisticsWriter;
+import "definitions" from de.evoal.routenoptimierung.comparators.generationPrintComparator;
+import "definitions" from de.evoal.routenoptimierung.initials.generationPrintInitial;
+import "definitions" from de.evoal.routenoptimierung.chromosomes.identifiableChromosome;
+import "definitions" from de.evoal.routenoptimierung.chromosomes.pathChromosome;
+import "definitions" from de.evoal.routenoptimierung.definitions;
+import "definitions" from de.evoal.routenoptimierung.initials.emptyStringInitial;
+import "definitions" from de.evoal.routenoptimierung.initials.fixedValueInitial;
+import "definitions" from de.evoal.routenoptimierung.alterers.pathMutator;
+
+
 import "data" from 'config';
 
-module example {
+module config {
   specify problem 'regression-function-search' {
     description := "Genetic Programming Example";
     'search-space' := [data 'regression-function'];

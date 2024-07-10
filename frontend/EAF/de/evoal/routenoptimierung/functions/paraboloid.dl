@@ -1,0 +1,7 @@
+import "definitions" from de.evoal.generator.generator;
+
+module de.evoal.routenoptimierung.functions.paraboloid {
+	type 'paraboloid' extends benchmark {
+	}
+}
+

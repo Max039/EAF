@@ -43,7 +43,7 @@ public class SyntaxTree {
     public static void main(String[] args) throws IOException {
         String currentPath = System.getProperty("user.dir");
         pathToSyntax.add(currentPath + "\\EvoAlBuilds\\" + evoalBuild + "\\evoal\\definitions\\de");
-
+        pathToSyntax.add(currentPath + "\\de");
         for (String path : pathToSyntax) {
             File rootDir = new File(path);
             if (rootDir.exists() && rootDir.isDirectory()) {
@@ -65,7 +65,13 @@ public class SyntaxTree {
     private static void buildFileTree(TreeNode parentNode, File node) {
         if (node.isDirectory()) {
             TreeNode dirNode = new TreeNode(node.getName(), node.getAbsolutePath());
-            parentNode.children.add(dirNode);
+            if (parentNode != null && !parentNode.children.contains(dirNode)) {
+                parentNode.children.add(dirNode);
+            }
+            else {
+                dirNode = parentNode.getChild(node.getName());
+            }
+
             File[] subFiles = node.listFiles();
             if (subFiles != null) {
                 for (File file : subFiles) {
@@ -76,7 +82,9 @@ public class SyntaxTree {
             // Process .dl files
             if (node.getName().endsWith(".dl") || node.getName().endsWith(".ddl")) {
                 TreeNode fileNode = new TreeNode(node.getName(), node.getAbsolutePath());
-                parentNode.children.add(fileNode);
+                if (!parentNode.children.contains(fileNode)) {
+                    parentNode.children.add(fileNode);
+                }
             }
         }
     }
@@ -240,6 +248,10 @@ public class SyntaxTree {
     //Not propperly called yet
     static void ArraySetter(String field, String value) {
         System.out.println(fieldPrefix + "ArraySetter called with field: " + field + ", value: " + value);
+
+        //==================
+        //Later recusivly call parsseInput(content)
+        //==================
     }
 
     private static void matchAndCall(String input, String patternString, String functionName) {
@@ -290,11 +302,6 @@ public class SyntaxTree {
         matchAndCall(input, fieldSetterInstancePattern, "FieldSetterInstance");
         matchAndCall(input, arraySetterPattern, "ArraySetter");
     }
-    public static String sanitizeGroup(Matcher matcher, int groupIndex) {
-        String group = matcher.group(groupIndex);
-        return group != null ? group.replace("'", "") : "";
-    }
-
 
 
     public static void processLine(String line, String definitions, String generator) throws IOException {
