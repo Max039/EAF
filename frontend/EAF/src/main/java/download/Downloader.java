@@ -118,6 +118,19 @@ public class Downloader extends JFrame {
         });
         popupMenu.add(deleteOutdatedVersionsItem);
 
+        JMenuItem openFileExplorer = new JMenuItem("Open in file explorer");
+        openFileExplorer.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                String selectedVersion = (String) versionComboBox.getSelectedItem();
+                selectedVersion = selectedVersion.split("<html>")[1].split(" ")[0];
+                if (Files.exists(Paths.get(DOWNLOAD_PATH + selectedVersion))) {
+                    openExplorer(DOWNLOAD_PATH + selectedVersion);
+                }
+                populateVersions();
+            }
+        });
+        popupMenu.add(openFileExplorer);
+
         // Delete outdated versions menu item
         JMenuItem delete = new JMenuItem("Delete selected installation");
         delete.addActionListener(new ActionListener() {
@@ -170,6 +183,24 @@ public class Downloader extends JFrame {
         panel.add(refresh, BorderLayout.EAST);
 
         add(panel);
+    }
+
+    public static void openExplorer(String path) {
+        File file = new File(path);
+        if (!file.exists()) {
+            System.out.println("Directory or file does not exist.");
+            return;
+        }
+
+        try {
+            if (Desktop.isDesktopSupported()) {
+                Desktop.getDesktop().open(file);
+            } else {
+                System.out.println("Desktop is not supported.");
+            }
+        } catch (IOException e) {
+            System.out.println("Error opening file explorer: " + e.getMessage());
+        }
     }
 
 
