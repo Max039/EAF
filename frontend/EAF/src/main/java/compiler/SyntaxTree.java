@@ -17,6 +17,20 @@ public class SyntaxTree {
     public static String evoalBuild = "20240709-152420";
     public static TreeNode root = new TreeNode("Root", "");
 
+    // ANSI escape codes for colors
+    public static final String RESET = "\u001B[0m";
+    public static final String BLACK = "\u001B[30m";
+    public static final String GREEN = "\u001B[32m";
+    public static final String BLUE = "\u001B[34m";
+    public static final String ORANGE = "\u001B[38;5;214m"; // Note: Standard ANSI doesn't support orange, so this uses an extended code
+
+    // Colored prefixes
+    public static String importPrefix = "[" + RESET + GREEN + "Import" + RESET + "] ";
+    public static String typePrefix = "[" + RESET + BLUE + "Type" + RESET + "] ";
+    public static String fieldPrefix = "[" + RESET + ORANGE + "Field" + RESET + "] ";
+
+
+
     public static HashMap<String, Definition> definitionsInMemory = new HashMap<>();
 
     //=======================================================================
@@ -67,7 +81,7 @@ public class SyntaxTree {
     }
 
     public static void processFile(String filename, String definitionName, boolean index) throws IOException {
-        System.out.println("Processing definition " + definitionName + " under path " + filename);
+        System.out.println(importPrefix + "Processing definition " + definitionName + " under path " + filename);
         try (BufferedReader reader = new BufferedReader(new FileReader(filename))) {
             String line;
             while ((line = reader.readLine()) != null) {
@@ -166,7 +180,7 @@ public class SyntaxTree {
     }
 
     private static void callFunctionWithModuleAndType(String moduleName, String typeName, boolean isAbstract, String typeContent) {
-        System.out.println("Calling function with Module: " + moduleName + ", Type: " + typeName + ", isAbstract: " + isAbstract);
+        System.out.println(typePrefix + "Registering Type: " + moduleName + ", Type: " + typeName + ", isAbstract: " + isAbstract);
         ClazzInstance c = new ClazzInstance();
         c.setAbstract(isAbstract);
 
@@ -183,7 +197,7 @@ public class SyntaxTree {
     }
 
     private static void callFunctionWithModuleTypeAndExtendedType(String moduleName, String typeName, String extendedType, boolean isAbstract, String typeContent) {
-        System.out.println("Calling function with Module: " + moduleName + ", Type: " + typeName + ", Extended Type: " + extendedType + ", isAbstract: " + isAbstract);
+        System.out.println(typePrefix + "Registering Type: " + moduleName + ", Type: " + typeName + ", Extended Type: " + extendedType + ", isAbstract: " + isAbstract);
         ClazzInstance c = new ClazzInstance();
         c.setAbstract(isAbstract);
 
@@ -210,21 +224,21 @@ public class SyntaxTree {
 
     // Function declarations as per your requirement
     static void DefiningField(String field, String typename, boolean isInstance, boolean isArray) {
-        System.out.println("DefiningField called with field: " + field + ", typename: " + typename + ", isInstance: " + isInstance+ ", isArray: " + isArray);
+        System.out.println(fieldPrefix + " DefiningField called with field: " + field + ", typename: " + typename + ", isInstance: " + isInstance+ ", isArray: " + isArray);
     }
 
     static void FieldSetterPrimitive(String field, String typename, String value) {
-        System.out.println("FieldSetterPrimitive called with field: " + field + ", typename: " + typename + ", value: " + value);
+        System.out.println(fieldPrefix + " FieldSetterPrimitive called with field: " + field + ", typename: " + typename + ", value: " + value);
     }
 
     //Not propperly called yet
     static void FieldSetterInstance(String field, String typename, String value) {
-        System.out.println("FieldSetterInstance called with field: " + field + ", typename: " + typename + ", value: " + value);
+        System.out.println(fieldPrefix + " FieldSetterInstance called with field: " + field + ", typename: " + typename + ", value: " + value);
     }
 
     //Not propperly called yet
     static void ArraySetter(String field, String value) {
-        System.out.println("ArraySetter called with field: " + field + ", value: " + value);
+        System.out.println(fieldPrefix + " ArraySetter called with field: " + field + ", value: " + value);
     }
 
     private static void matchAndCall(String input, String patternString, String functionName) {
@@ -283,25 +297,20 @@ public class SyntaxTree {
 
 
     public static void processLine(String line, String definitions, String generator) throws IOException {
-        // Replace this with your actual processing logic
-        System.out.println("Definitions: " + definitions);
-        System.out.println("Generator: " + generator);
+
 
         switch (definitions) {
             case "definitions" :
-                System.out.println("definitions found");
                 if (definitionsInMemory.get(generator) == null) {
-                    System.out.println(generator + " is not yet in memory!");
+                    System.out.println(importPrefix + generator + " is not yet in memory!");
                     TreeNode foundNode = root.findNodeByPath(generator);
                     processFile(foundNode.fullPath, generator, true);
                 }
                 else {
-                    System.out.println(generator + " is already in memory!");
+                    System.out.println(importPrefix + generator + " is already in memory!");
                 }
-
                 return;
             case "data" :
-                System.out.println("data found");
                 return;
             default:
                 throw new RuntimeException("Invalid import statement: " + line);
