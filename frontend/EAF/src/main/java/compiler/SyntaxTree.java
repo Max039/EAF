@@ -209,8 +209,8 @@ public class SyntaxTree {
     }
 
     // Function declarations as per your requirement
-    static void DefiningField(String field, String typename, boolean isInstance) {
-        System.out.println("DefiningField called with field: " + field + ", typename: " + typename + ", isInstance: " + isInstance);
+    static void DefiningField(String field, String typename, boolean isInstance, boolean isArray) {
+        System.out.println("DefiningField called with field: " + field + ", typename: " + typename + ", isInstance: " + isInstance+ ", isArray: " + isArray);
     }
 
     static void FieldSetterPrimitive(String field, String typename, String value) {
@@ -235,9 +235,10 @@ public class SyntaxTree {
             switch (functionName) {
                 case "DefiningField":
                     String field = matcher.group(1);
-                    String typename = matcher.group(2) != null ? matcher.group(2) : matcher.group(3);
-                    boolean isInstance = matcher.group(2) != null;
-                    DefiningField(field, typename, isInstance);
+                    boolean isArray = matcher.group(2) != null;
+                    String typename = matcher.group(3) != null ? matcher.group(3) : matcher.group(4);
+                    boolean isInstance = matcher.group(3) != null;
+                    DefiningField(field, typename, isInstance, isArray);
                     break;
                 case "FieldSetterPrimitive":
                     field = matcher.group(1);
@@ -263,7 +264,7 @@ public class SyntaxTree {
     // Method to parse the input string
     static void parseInput(String input) {
         // Patterns
-        String definingFieldPattern = "(?:')?(\\w+)(?:')?\\s*:\\s*(?:array\\s*)?(?:instance\\s*(?:')?(\\w+)(?:')?|(?:')?(\\w+)(?:')?);";
+        String definingFieldPattern = "(?:')?(\\w+)(?:')?\\s*:\\s*(array\\s*)?(?:instance\\s*(?:')?(\\w+)(?:')?|(?:')?(\\w+)(?:')?);";
         String fieldSetterPrimitivePattern = "(?:')?(\\w+)(?:')?\\s*:\\s*(?:')?(\\w+)(?:')?\\s*:=\\s*(\\w+);";
         String fieldSetterInstancePattern = "(?:')?(\\w+)(?:')?\\s*:\\s*(?:')?(\\w+)(?:')?\\s*:=\\s*\\{[^}]*\\};";
         String arraySetterPattern = "(?:')?(\\w+)(?:')?\\s*:=\\s*\\[[^\\]]*\\];";
