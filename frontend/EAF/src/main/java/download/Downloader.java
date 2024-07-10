@@ -47,7 +47,7 @@ public class Downloader extends JFrame {
     private static int numberOfVersionsToShow = 100;
 
     private JComboBox<String> versionComboBox;
-    private JButton downloadButton;
+    private JButton mainButton;
 
     private JPanel panel;
 
@@ -78,11 +78,16 @@ public class Downloader extends JFrame {
         panel = new JPanel();
         panel.setLayout(new BorderLayout());
 
-        downloadButton = new JButton("Download selected version");
-        downloadButton.addActionListener(new ActionListener() {
+        // Create the main button that will show the dropdown menu
+        mainButton = new JButton("Options");
+        JPopupMenu popupMenu = new JPopupMenu();
+
+        // Download selected version menu item
+        JMenuItem downloadSelectedVersionItem = new JMenuItem("Download selected version");
+        downloadSelectedVersionItem.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 String selectedVersion = (String) versionComboBox.getSelectedItem();
-                if (selectedVersion != null && !selectedVersion.contains(local) && !selectedVersion.contains(outdated)) {
+                if (selectedVersion != null && !selectedVersion.contains("local") && !selectedVersion.contains("outdated")) {
                     selectedVersion = selectedVersion.split("<html>")[1].split(" ")[0];
                     try {
                         downloadSelectedVersion(selectedVersion, false);
@@ -93,22 +98,13 @@ public class Downloader extends JFrame {
                     }
                     populateVersions();
                 }
-
             }
         });
-        panel.add(downloadButton, BorderLayout.SOUTH);
+        popupMenu.add(downloadSelectedVersionItem);
 
-        JButton mostRecentButton = new JButton("Download newest version");
-        mostRecentButton.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                downloadNewestVersionIfNeeded();
-
-            }
-        });
-        panel.add(mostRecentButton, BorderLayout.NORTH);
-
-        JButton deleteOutdatedVersions = new JButton("Delete outdated versions");
-        deleteOutdatedVersions.addActionListener(new ActionListener() {
+        // Delete outdated versions menu item
+        JMenuItem deleteOutdatedVersionsItem = new JMenuItem("Delete outdated versions");
+        deleteOutdatedVersionsItem.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 try {
 
@@ -120,9 +116,46 @@ public class Downloader extends JFrame {
                 populateVersions();
             }
         });
-        panel.add(deleteOutdatedVersions, BorderLayout.WEST);
+        popupMenu.add(deleteOutdatedVersionsItem);
 
+        // Delete outdated versions menu item
+        JMenuItem delete = new JMenuItem("Delete selected installation");
+        delete.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                String selectedVersion = (String) versionComboBox.getSelectedItem();
+                selectedVersion = selectedVersion.split("<html>")[1].split(" ")[0];
+                if (Files.exists(Paths.get(DOWNLOAD_PATH + selectedVersion))) {
 
+                    try {
+                        deleteDirectory(new File(DOWNLOAD_PATH + selectedVersion));
+                    } catch (Exception ex) {
+                        throw new RuntimeException(ex);
+                    }
+                    populateVersions();
+                }
+
+            }
+        });
+        popupMenu.add(delete);
+
+        // Add action listener to the main button to show the popup menu
+        mainButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                popupMenu.show(mainButton, mainButton.getWidth() / 2, mainButton.getHeight() / 2);
+            }
+        });
+        panel.add(mainButton, BorderLayout.SOUTH);
+
+        // Most recent button
+        JButton mostRecentButton = new JButton("Download newest version");
+        mostRecentButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                downloadNewestVersionIfNeeded();
+            }
+        });
+        panel.add(mostRecentButton, BorderLayout.NORTH);
+
+        // Refresh button
         JButton refresh = new JButton("Refresh");
         refresh.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
@@ -138,6 +171,7 @@ public class Downloader extends JFrame {
 
         add(panel);
     }
+
 
     //Gets the newest nersion
     public void downloadNewestVersionIfNeeded() {
