@@ -19,7 +19,8 @@ public class SyntaxTree {
 
     // ANSI escape codes for colors
     public static final String RESET = "\u001B[0m";
-    public static final String BLACK = "\u001B[30m";
+
+    public static final String RED = "\u001B[31m";
     public static final String GREEN = "\u001B[32m";
     public static final String BLUE = "\u001B[34m";
     public static final String ORANGE = "\u001B[38;5;214m"; // Note: Standard ANSI doesn't support orange, so this uses an extended code
@@ -302,12 +303,12 @@ public class SyntaxTree {
         switch (definitions) {
             case "definitions" :
                 if (definitionsInMemory.get(generator) == null) {
-                    System.out.println(importPrefix + generator + " is not yet in memory!");
+                    System.out.println(importPrefix + generator + RED + " is not " + RESET + "yet in memory!");
                     TreeNode foundNode = root.findNodeByPath(generator);
                     processFile(foundNode.fullPath, generator, true);
                 }
                 else {
-                    System.out.println(importPrefix + generator + " is already in memory!");
+                    System.out.println(importPrefix + generator +  GREEN + " is " + RESET + "already in memory!");
                 }
                 return;
             case "data" :
