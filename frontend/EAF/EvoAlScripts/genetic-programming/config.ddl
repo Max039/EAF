@@ -1,6 +1,6 @@
 import "definitions" from de.evoal.optimisation.ea.'genetic-programming';
 
-module 'gp-example' {
+module 'config' {
   data:
     /**
      * Quality measure of the generated function.

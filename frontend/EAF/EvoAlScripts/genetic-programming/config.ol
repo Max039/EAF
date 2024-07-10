@@ -7,7 +7,7 @@ import "definitions" from de.evoal.generator.generator;
 import "definitions" from de.evoal.optimisation.ea.optimisation;
 import "definitions" from de.evoal.optimisation.ea.'genetic-programming';
 
-import "data" from 'gp-example';
+import "data" from 'config';
 
 module example {
   specify problem 'regression-function-search' {

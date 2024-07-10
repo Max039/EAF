@@ -8,4 +8,4 @@ echo "EVOAL_HOME in second script: $EVOAL_HOME"
 SCRIPT_DIR=$(dirname "$(readlink -f "$0")")
 # Change the working directory to the script's directory
 cd "$SCRIPT_DIR"
-$SHELL $EVOAL_HOME/bin/evoal-search.sh . gp-example.ol output
+$SHELL $EVOAL_HOME/bin/evoal-search.sh . config.ol output

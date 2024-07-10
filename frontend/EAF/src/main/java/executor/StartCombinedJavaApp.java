@@ -41,7 +41,7 @@ public class StartCombinedJavaApp {
                 "SCRIPT_DIR=$(dirname \"$(readlink -f \"$0\")\")\n" +
                 "# Change the working directory to the script's directory\n" +
                 "cd \"$SCRIPT_DIR\"\n" +
-                "$SHELL $EVOAL_HOME/bin/evoal-search.sh . gp-example.ol output";
+                "$SHELL $EVOAL_HOME/bin/evoal-search.sh . config.ol output";
     }
     
     public static void main(String[] args) throws IOException, InterruptedException {
