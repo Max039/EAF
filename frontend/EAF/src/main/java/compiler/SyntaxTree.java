@@ -137,20 +137,20 @@ public class SyntaxTree {
             return;
         }
 
-        // Extract types and extended types
-        Pattern typePattern = Pattern.compile("(abstract\\s+)?type\\s+['\"]?([^'\"\\s]+)['\"]?(?:\\s+extends\\s+['\"]?([^'\"\\s]+)['\"]?)?");
+        // Extract types, extended types, and content within braces
+        Pattern typePattern = Pattern.compile("(abstract\\s+)?type\\s+['\"]?([^'\"\\s]+)['\"]?(?:\\s+extends\\s+['\"]?([^'\"\\s]+)['\"]?)?\\s*\\{([^\\{\\}]|\\{[^\\{\\}]*\\})*\\}");
         Matcher typeMatcher = typePattern.matcher(content);
 
         while (typeMatcher.find()) {
             boolean isAbstract = typeMatcher.group(1) != null;
-            String typeName = typeMatcher.group(2).split("\\{")[0];
-
+            String typeName = typeMatcher.group(2);
             String extendedType = typeMatcher.group(3);
+            String typeContent = typeMatcher.group(0).substring(typeMatcher.group(0).indexOf("{"));
 
             if (extendedType == null) {
-                callFunctionWithModuleAndType(moduleName, typeName, isAbstract);
+                callFunctionWithModuleAndType(moduleName, typeName, isAbstract, typeContent);
             } else {
-                callFunctionWithModuleTypeAndExtendedType(moduleName, typeName, extendedType, isAbstract);
+                callFunctionWithModuleTypeAndExtendedType(moduleName, typeName, extendedType, isAbstract, typeContent);
             }
         }
     }
@@ -158,7 +158,6 @@ public class SyntaxTree {
     private static String removeComments(String content) {
         return content.replaceAll("(?s)/\\*\\*.*?\\*/", "");
     }
-
 
     private static String extractModuleName(String content) {
         Pattern modulePattern = Pattern.compile("module\\s+([\\w.]+)\\s*\\{");
@@ -169,7 +168,7 @@ public class SyntaxTree {
         return null;
     }
 
-    private static void callFunctionWithModuleAndType(String moduleName, String typeName, boolean isAbstract) {
+    private static void callFunctionWithModuleAndType(String moduleName, String typeName, boolean isAbstract, String typeContent) {
         System.out.println("Calling function with Module: " + moduleName + ", Type: " + typeName + ", isAbstract: " + isAbstract);
         ClazzInstance c = new ClazzInstance();
         c.setAbstract(isAbstract);
@@ -184,7 +183,7 @@ public class SyntaxTree {
         // Implement the actual function call here
     }
 
-    private static void callFunctionWithModuleTypeAndExtendedType(String moduleName, String typeName, String extendedType, boolean isAbstract) {
+    private static void callFunctionWithModuleTypeAndExtendedType(String moduleName, String typeName, String extendedType, boolean isAbstract, String typeContent) {
         System.out.println("Calling function with Module: " + moduleName + ", Type: " + typeName + ", Extended Type: " + extendedType + ", isAbstract: " + isAbstract);
         ClazzInstance c = new ClazzInstance();
         c.setAbstract(isAbstract);
@@ -207,7 +206,6 @@ public class SyntaxTree {
         }
         // Implement the actual function call here
     }
-
 
     public static void processLine(String line, String definitions, String generator) throws IOException {
         // Replace this with your actual processing logic
