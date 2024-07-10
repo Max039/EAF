@@ -1,5 +1,7 @@
 package compiler;
 
+import test.Pair;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
@@ -21,7 +23,7 @@ public class SyntaxTree {
     public static HashMap<String, DataObject> definitionsInMemory = new HashMap<>();
 
     //=======================================================================
-    public static HashMap<String, ClazzInstance> classTree = new HashMap<>();
+    public static HashMap<String, HashMap<String, ClazzInstance>> classTree = new HashMap<>();
     // Next use this to make class trees by when calling extends add a child (but also put new entry that is the same object so same refference in child as in hashmap)
     // When only new type and no extend only put
     //=======================================================================
@@ -103,17 +105,108 @@ public class SyntaxTree {
 
             if (index) {
                 definitionsInMemory.put(definitionName, new DataObject());
+                processRestOfFile(new BufferedReader(new FileReader(filename)));
             }
 
-            processRestOfFile(reader);
+
         }
 
 
     }
 
-    public static void processRestOfFile(BufferedReader r) {
-
+    public static void processRestOfFile(BufferedReader r) throws IOException {
+        parseFileContent(r);
     }
+
+
+    public static void parseFileContent(BufferedReader reader) throws IOException {
+        StringBuilder contentBuilder = new StringBuilder();
+        String line;
+        while ((line = reader.readLine()) != null) {
+            contentBuilder.append(line).append("\n");
+        }
+        String content = contentBuilder.toString();
+
+        // Remove comments delimited by /** */
+        content = removeComments(content);
+
+        // Extract module name
+        String moduleName = extractModuleName(content);
+        if (moduleName == null) {
+            System.out.println("Module name not found!");
+            return;
+        }
+
+        // Extract types and extended types
+        Pattern typePattern = Pattern.compile("(abstract\\s+)?type\\s+['\"]?([^'\"\\s]+)['\"]?(?:\\s+extends\\s+['\"]?([^'\"\\s]+)['\"]?)?");
+        Matcher typeMatcher = typePattern.matcher(content);
+
+        while (typeMatcher.find()) {
+            boolean isAbstract = typeMatcher.group(1) != null;
+            String typeName = typeMatcher.group(2);
+            String extendedType = typeMatcher.group(3);
+
+            if (extendedType == null) {
+                callFunctionWithModuleAndType(moduleName, typeName, isAbstract);
+            } else {
+                callFunctionWithModuleTypeAndExtendedType(moduleName, typeName, extendedType, isAbstract);
+            }
+        }
+    }
+
+    private static String removeComments(String content) {
+        return content.replaceAll("(?s)/\\*\\*.*?\\*/", "");
+    }
+
+
+    private static String extractModuleName(String content) {
+        Pattern modulePattern = Pattern.compile("module\\s+([\\w.]+)\\s*\\{");
+        Matcher moduleMatcher = modulePattern.matcher(content);
+        if (moduleMatcher.find()) {
+            return moduleMatcher.group(1);
+        }
+        return null;
+    }
+
+    private static void callFunctionWithModuleAndType(String moduleName, String typeName, boolean isAbstract) {
+        System.out.println("Calling function with Module: " + moduleName + ", Type: " + typeName + ", isAbstract: " + isAbstract);
+        ClazzInstance c = new ClazzInstance();
+        c.setAbstract(isAbstract);
+
+        if (classTree.get(typeName) == null) {
+            HashMap<String, ClazzInstance> h = new HashMap<>();
+            h.put(moduleName, c);
+            classTree.put(typeName, h);
+        } else {
+            classTree.get(typeName).put(moduleName, c);
+        }
+        // Implement the actual function call here
+    }
+
+    private static void callFunctionWithModuleTypeAndExtendedType(String moduleName, String typeName, String extendedType, boolean isAbstract) {
+        System.out.println("Calling function with Module: " + moduleName + ", Type: " + typeName + ", Extended Type: " + extendedType + ", isAbstract: " + isAbstract);
+        ClazzInstance c = new ClazzInstance();
+        c.setAbstract(isAbstract);
+
+        if (classTree.get(extendedType) == null) {
+            throw new RuntimeException("Cannot extend " + extendedType + " class was not found!");
+        } else {
+            var s = classTree.get(extendedType);
+            for (var sub : s.entrySet()) {
+                sub.getValue().addChild(c);
+            }
+        }
+
+        if (classTree.get(typeName) == null) {
+            HashMap<String, ClazzInstance> h = new HashMap<>();
+            h.put(moduleName, c);
+            classTree.put(typeName, h);
+        } else {
+            classTree.get(typeName).put(moduleName, c);
+        }
+        // Implement the actual function call here
+    }
+
 
     public static void processLine(String line, String definitions, String generator) throws IOException {
         // Replace this with your actual processing logic
