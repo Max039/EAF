@@ -224,21 +224,21 @@ public class SyntaxTree {
 
     // Function declarations as per your requirement
     static void DefiningField(String field, String typename, boolean isInstance, boolean isArray) {
-        System.out.println(fieldPrefix + " DefiningField called with field: " + field + ", typename: " + typename + ", isInstance: " + isInstance+ ", isArray: " + isArray);
+        System.out.println(fieldPrefix + "DefiningField called with field: " + field + ", typename: " + typename + ", isInstance: " + isInstance+ ", isArray: " + isArray);
     }
 
     static void FieldSetterPrimitive(String field, String typename, String value) {
-        System.out.println(fieldPrefix + " FieldSetterPrimitive called with field: " + field + ", typename: " + typename + ", value: " + value);
+        System.out.println(fieldPrefix + "FieldSetterPrimitive called with field: " + field + ", typename: " + typename + ", value: " + value);
     }
 
     //Not propperly called yet
     static void FieldSetterInstance(String field, String typename, String value) {
-        System.out.println(fieldPrefix + " FieldSetterInstance called with field: " + field + ", typename: " + typename + ", value: " + value);
+        System.out.println(fieldPrefix + "FieldSetterInstance called with field: " + field + ", typename: " + typename + ", value: " + value);
     }
 
     //Not propperly called yet
     static void ArraySetter(String field, String value) {
-        System.out.println(fieldPrefix + " ArraySetter called with field: " + field + ", value: " + value);
+        System.out.println(fieldPrefix + "ArraySetter called with field: " + field + ", value: " + value);
     }
 
     private static void matchAndCall(String input, String patternString, String functionName) {
