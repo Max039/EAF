@@ -4,7 +4,7 @@ import test.Pair;
 
 import java.util.HashMap;
 
-public class DataObject {
+public class Data {
     public enum Type {
         OBJECT,
         ARRAY,
@@ -13,9 +13,6 @@ public class DataObject {
     }
 
     public String clazzName;
-
-
-    HashMap<String, Pair<Type, DataObject>> content = new HashMap<>();
 
 
 }

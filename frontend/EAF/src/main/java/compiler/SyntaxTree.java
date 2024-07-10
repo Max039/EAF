@@ -1,14 +1,11 @@
 package compiler;
 
-import test.Pair;
-
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -20,7 +17,7 @@ public class SyntaxTree {
     public static String evoalBuild = "20240709-152420";
     public static TreeNode root = new TreeNode("Root", "");
 
-    public static HashMap<String, DataObject> definitionsInMemory = new HashMap<>();
+    public static HashMap<String, Definition> definitionsInMemory = new HashMap<>();
 
     //=======================================================================
     public static HashMap<String, HashMap<String, ClazzInstance>> classTree = new HashMap<>();
@@ -104,7 +101,7 @@ public class SyntaxTree {
             }
 
             if (index) {
-                definitionsInMemory.put(definitionName, new DataObject());
+                definitionsInMemory.put(definitionName, new Definition());
                 processRestOfFile(new BufferedReader(new FileReader(filename)));
             }
 
