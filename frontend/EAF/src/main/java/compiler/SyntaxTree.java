@@ -299,6 +299,8 @@ public class SyntaxTree {
     }
 
     private static void matchAndCall(String input, String patternString, String functionName) {
+        input = input.replace("'", "");
+
         Pattern pattern = Pattern.compile(patternString);
         Matcher matcher = pattern.matcher(input);
 
@@ -336,6 +338,7 @@ public class SyntaxTree {
     // Method to parse the input string
     static void parseInput(String input) {
         System.out.println(input);
+
 
         // Patterns
         String definingFieldPattern = "(?:['\"])?(\\S+)(?:['\"])?\\s*:\\s*((?:array\\s+)*)((instance\\s+)?(?:['\"])?(\\S+)(?:['\"])?);";
