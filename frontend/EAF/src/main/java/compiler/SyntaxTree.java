@@ -328,7 +328,7 @@ public class SyntaxTree {
                     break;
                 case "ArraySetter":
                     field = matcher.group(1);
-                    value = matcher.group(0); // Full match including []
+                    value = matcher.group().split(":=", 2)[1]; // Full match including []
                     ArraySetter(field, value);
                     break;
             }
