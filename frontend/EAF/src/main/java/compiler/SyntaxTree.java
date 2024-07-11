@@ -309,7 +309,7 @@ public class SyntaxTree {
                     String arrayPart = matcher.group(2);
                     int arrayCount = arrayPart == null ? 0 : arrayPart.split("array").length - 1;
                     String typename = matcher.group(3) != null ? matcher.group(3) : matcher.group(4);
-                    boolean isInstance = matcher.group(3) != null;
+                    boolean isInstance = matcher.group().contains("instance");
                     DefiningField(field, typename, isInstance, arrayCount);
                     break;
                 case "FieldSetterPrimitive":
