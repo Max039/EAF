@@ -67,6 +67,43 @@ public class SyntaxTree {
         }
         System.out.println("============================");
 
+        parseInput("alterers := alterers {\n" +
+                "      crossover := [\n" +
+                "        'single-node-crossover' {\n" +
+                "          probability := 0.3;\n" +
+                "        }\n" +
+                "      ];\n" +
+                "      mutator := [\n" +
+                "        'probability-mutator' {\n" +
+                "          probability := 0.2;\n" +
+                "        },\n" +
+                "        'mathematical-expression-rewriter' {\n" +
+                "          probability := 0.4;\n" +
+                "        }\n" +
+                "      ];      \n" +
+                "    };");
+
+        parseInput("type test { alterers := alterers {\n" +
+                "      crossover := [\n" +
+                "        'single-node-crossover' {\n" +
+                "          probability := 0.3;\n" +
+                "        }\n" +
+                "      ];\n" +
+                "      mutator := [\n" +
+                "        'probability-mutator' {\n" +
+                "          probability := 0.2;\n" +
+                "        },\n" +
+                "        'mathematical-expression-rewriter' {\n" +
+                "          probability := 0.4;\n" +
+                "        }\n" +
+                "      ];      \n" +
+                "    };}");
+
+
+
+
+
+
     }
 
     private static void buildFileTree(TreeNode parentNode, File node) {
@@ -251,8 +288,7 @@ public class SyntaxTree {
     static void FieldSetterInstance(String field, String typename, String value) {
         System.out.println(fieldPrefix + "FieldSetterInstance called with field: " + field + ", typename: " + typename + ", value: " + value);
     }
-
-    //Not propperly called yet
+    
     static void ArraySetter(String field, String value) {
         System.out.println(fieldPrefix + "ArraySetter called with field: " + field + ", value: " + value);
 
@@ -297,11 +333,13 @@ public class SyntaxTree {
 
     // Method to parse the input string
     static void parseInput(String input) {
+        System.out.println(input);
+
         // Patterns
         String definingFieldPattern = "(?:')?(\\w+)(?:')?\\s*:\\s*(array\\s*)?(?:instance\\s*(?:')?(\\w+)(?:')?|(?:')?(\\w+)(?:')?);";
         String fieldSetterPrimitivePattern = "(?:')?(\\w+)(?:')?\\s*:\\s*(?:')?(\\w+)(?:')?\\s*:=\\s*(\\w+);";
-        String fieldSetterInstancePattern = "(?:')?(\\w+)(?:')?\\s*:\\s*(?:')?(\\w+)(?:')?\\s*:=\\s*\\{[^}]*\\};";
-        String arraySetterPattern = "(?:')?(\\w+)(?:')?\\s*:=\\s*\\[[^\\]]*\\];";
+        String fieldSetterInstancePattern = "([\\w]+)\\s*:=\\s*([\\w]+)\\s*\\{([^{}]*)\\};";
+        String arraySetterPattern = "'?([^']+)'?\\s*:\\s*array(?:\\s+instance\\s+'?([^']+)'?)?";
 
         // Match and call functions
         matchAndCall(input, definingFieldPattern, "DefiningField");

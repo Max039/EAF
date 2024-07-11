@@ -7,5 +7,6 @@ module de.evoal.routenoptimierung.chromosomes.identifiableChromosome {
 	type 'identifiable-chromosome' extends 'chromosome'  {
 		'jenetics-chromosome' : string;
 	}
+
 }
 
