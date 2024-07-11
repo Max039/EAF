@@ -339,7 +339,7 @@ public class SyntaxTree {
 
         // Patterns
         String definingFieldPattern = "(?:['\"])?(\\S+)(?:['\"])?\\s*:\\s*((?:array\\s+)*)((instance\\s+)?(?:['\"])?(\\S+)(?:['\"])?);";
-        String fieldSetterPrimitivePattern = "(?:')?(\\w+)(?:')?\\s*:\\s*(\\w+(?:\\s*[*\\/+-]\\s*\\w+)*)\\s*:=\\s*(\"(?:[^\"]|\"\")*\"|[-+]?\\d*\\.?\\d+|\\w+(?:\\s*[*\\/+-]\\s*\\w+)*)\\s*;";
+        String fieldSetterPrimitivePattern = "(?:')?(\\w+)(?:')?\\s*(?::\\s*(\\w+(?:\\s*[*\\/+-]\\s*\\w+)*))?\\s*:=\\s*(\"(?:[^\"]|\"\")*\"|[-+]?\\d*\\.?\\d+|\\w+(?:\\s*[*\\/+-]\\s*\\w+)*)\\s*;";
         String fieldSetterInstancePattern = "([\\w]+)\\s*:=\\s*([\\w]+)\\s*\\{([^{}]*)\\};";
         String arraySetterPattern = "(?:')?(\\w+)(?:')?\\s*:=\\s*\\[[^\\]]*\\];";
 
