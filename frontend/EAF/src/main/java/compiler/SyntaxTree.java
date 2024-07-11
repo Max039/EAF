@@ -288,7 +288,8 @@ public class SyntaxTree {
     static void FieldSetterInstance(String field, String typename, String value) {
         System.out.println(fieldPrefix + "FieldSetterInstance called with field: " + field + ", typename: " + typename + ", value: " + value);
     }
-    
+
+    //Not propperly called yet
     static void ArraySetter(String field, String value) {
         System.out.println(fieldPrefix + "ArraySetter called with field: " + field + ", value: " + value);
 
@@ -336,10 +337,10 @@ public class SyntaxTree {
         System.out.println(input);
 
         // Patterns
-        String definingFieldPattern = "(?:')?(\\w+)(?:')?\\s*:\\s*(array\\s*)?(?:instance\\s*(?:')?(\\w+)(?:')?|(?:')?(\\w+)(?:')?);";
+        String definingFieldPattern = "(?:')?(\\w+)(?:')?\\s*:\\s*(array\\s+)?(instance\\s+)?(?:')?(\\w+)(?:')?;";
         String fieldSetterPrimitivePattern = "(?:')?(\\w+)(?:')?\\s*:\\s*(?:')?(\\w+)(?:')?\\s*:=\\s*(\\w+);";
         String fieldSetterInstancePattern = "([\\w]+)\\s*:=\\s*([\\w]+)\\s*\\{([^{}]*)\\};";
-        String arraySetterPattern = "'?([^']+)'?\\s*:\\s*array(?:\\s+instance\\s+'?([^']+)'?)?";
+        String arraySetterPattern = "(?:')?(\\w+)(?:')?\\s*:=\\s*\\[[^\\]]*\\];";
 
         // Match and call functions
         matchAndCall(input, definingFieldPattern, "DefiningField");
