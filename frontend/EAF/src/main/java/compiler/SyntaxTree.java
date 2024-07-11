@@ -276,7 +276,7 @@ public class SyntaxTree {
     }
 
     // Function declarations as per your requirement
-    static void DefiningField(String field, String typename, boolean isInstance, boolean isArray) {
+    static void DefiningField(String field, String typename, boolean isInstance, int isArray) {
         System.out.println(fieldPrefix + "DefiningField called with field: " + field + ", typename: " + typename + ", isInstance: " + isInstance+ ", isArray: " + isArray);
     }
 
@@ -306,10 +306,11 @@ public class SyntaxTree {
             switch (functionName) {
                 case "DefiningField":
                     String field = matcher.group(1);
-                    boolean isArray = matcher.group(2) != null;
+                    String arrayPart = matcher.group(2);
+                    int arrayCount = arrayPart == null ? 0 : arrayPart.split("array").length - 1;
                     String typename = matcher.group(3) != null ? matcher.group(3) : matcher.group(4);
                     boolean isInstance = matcher.group(3) != null;
-                    DefiningField(field, typename, isInstance, isArray);
+                    DefiningField(field, typename, isInstance, arrayCount);
                     break;
                 case "FieldSetterPrimitive":
                     field = matcher.group(1);
@@ -337,7 +338,7 @@ public class SyntaxTree {
         System.out.println(input);
 
         // Patterns
-        String definingFieldPattern = "(?:['\"])?(\\S+)(?:['\"])?\\s*:\\s*(array\\s+)?(instance\\s+)?(?:['\"])?(\\S+)(?:['\"])?;";
+        String definingFieldPattern = "(?:['\"])?(\\S+)(?:['\"])?\\s*:\\s*((?:array\\s+)*)((instance\\s+)?(?:['\"])?(\\S+)(?:['\"])?);";
         String fieldSetterPrimitivePattern = "(?:')?(\\w+)(?:')?\\s*:\\s*(\\w+(?:\\s*[*\\/+-]\\s*\\w+)*)\\s*:=\\s*(\"(?:[^\"]|\"\")*\"|[-+]?\\d*\\.?\\d+|\\w+(?:\\s*[*\\/+-]\\s*\\w+)*)\\s*;";
         String fieldSetterInstancePattern = "([\\w]+)\\s*:=\\s*([\\w]+)\\s*\\{([^{}]*)\\};";
         String arraySetterPattern = "(?:')?(\\w+)(?:')?\\s*:=\\s*\\[[^\\]]*\\];";
