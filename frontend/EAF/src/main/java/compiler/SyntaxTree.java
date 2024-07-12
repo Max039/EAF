@@ -68,7 +68,7 @@ public class SyntaxTree {
         System.out.println("============================");
 
         parseInput("{ " +
-                "    test := int 5;\n" +
+                "    test : int := 5;\n" +
                 "    alterers := alterers {\n" +
                 "      crossover := [\n" +
                 "        'single-node-crossover' {\n" +
@@ -84,7 +84,7 @@ public class SyntaxTree {
                 "        }\n" +
                 "      ];      \n" +
                 "    }; \n" +
-                "    tes2t := int 7; " +
+                "    tes2t := 7; " +
                 "}");
 
 
