@@ -87,7 +87,7 @@ public class SyntaxTree {
                 "    tes2t := 7; \n" +
                 "    arrary := [50, 25]; \n" +
                 "    arrary := [\"tests\", \"tests2\"]; \n" +
-                "    arrary := [50.8, 25.9]; \n" +
+                "    test : arrary int := [50.8, 25.9]; \n" +
                 "}");
 
 
@@ -271,13 +271,13 @@ public class SyntaxTree {
     static void FieldSetterPrimitive(String field, String typename, String value) {
         System.out.println(fieldPrefix + "FieldSetterPrimitive called with field: " + field + ", typename: " + typename + ", value: " + value);
     }
-    
+
     static void FieldSetterInstance(String field, String typename, String value) {
         System.out.println(fieldPrefix + "FieldSetterInstance called with field: " + field + ", typename: " + typename + ", value: " + value);
     }
 
-    static void ArraySetter(String field, String value) {
-        System.out.println(fieldPrefix + "ArraySetter called with field: " + field + ", value: " + value);
+    static void ArraySetter(String field, String typename, String value) {
+        System.out.println(fieldPrefix + "ArraySetter called with field: " + field + " type: " + typename + ", value: " + value);
     }
 
     public static void parseArray(String input) {
@@ -314,9 +314,8 @@ public class SyntaxTree {
         }
     }
 
-
     private static String matchAndCall(String input, String patternString, String functionName) {
-
+        System.out.println("Input: " + input);
         Pattern pattern = Pattern.compile(patternString);
         Matcher matcher = pattern.matcher(input);
 
@@ -346,16 +345,24 @@ public class SyntaxTree {
                     input = input.replace(matcher.group(), "");
                     parseInput("{" + value + "}");
                     break;
-
-                    //Currently only handel when array is first defined and then later set
-                    //!!Unhandel!! is for example "test : array int := [6, 5]"
-                    //handles :
-                    //step 1: "test : array int"
-                    //step 2 :  "test := [6, 5]"
+                case "ArrayDefiner":
+                    value = matcher.group().split(":=", 2)[1].trim(); // Full match including []
+                    String s1 = matcher.group().split(":=", 2)[0];
+                    var parts = s1.split(":");
+                    field = parts[0].trim();
+                    typename = parts[1].trim();
+                    ArraySetter(field, typename, value);
+                    input = input.replace(matcher.group(), "");
+                    parseArray(value);
+                    break;
                 case "ArraySetter":
-                    field = matcher.group(1);
-                    value = matcher.group().split(":=", 2)[1]; // Full match including []
-                    ArraySetter(field, value);
+                    value = matcher.group().split(":=", 2)[1].trim(); // Full match including []
+                    String s2 = matcher.group().split(":=", 2)[0];
+                    var parts2 = s2.split(":");
+                    field = parts2[0].trim();
+                    typename = "null";
+
+                    ArraySetter(field, typename, value);
                     input = input.replace(matcher.group(), "");
                     parseArray(value);
                     break;
@@ -383,11 +390,13 @@ public class SyntaxTree {
         String definingFieldPattern = "(?:['\"])?(\\S+)(?:['\"])?\\s*:\\s*((?:array\\s+)*)((instance\\s+)?(?:['\"])?(\\S+)(?:['\"])?);";
         String fieldSetterPrimitivePattern = "(?:')?(\\w+)(?:')?\\s*(?::\\s*(\\w+(?:\\s*[*\\/+-]\\s*\\w+)*))?\\s*:=\\s*(\"(?:[^\"]|\"\")*\"|[-+]?\\d*\\.?\\d+|\\w+(?:\\s*[*\\/+-]\\s*\\w+)*)\\s*;";
         String fieldSetterInstancePattern = "(\\w+)\\s*:=\\s*(\\w+)\\s*\\{((?:[^{}]*|\\{(?:[^{}]*|\\{[^{}]*\\})*\\})*)\\};";
-        String arraySetterPattern = "(?:')?(\\w+)(?:')?\\s*:=\\s*\\[[^\\]]*\\];";
+        String arrayDefinerPattern = "((\\w+)\\s*:\\s*)((\\w+)\\s*)*:=\\s*\\[[^\\[\\]]*\\];";
+        String arraySetterPattern = "(\\w+)\\s*:=\\s*\\[[^\\[\\]]*\\];";
 
         // Match and call functions
         input = matchAndCall(input, fieldSetterInstancePattern, "FieldSetterInstance");
-        input =  matchAndCall(input, arraySetterPattern, "ArraySetter");
+        input = matchAndCall(input, arrayDefinerPattern, "ArrayDefiner");
+        input = matchAndCall(input, arraySetterPattern, "ArraySetter");
         input = matchAndCall(input, definingFieldPattern, "DefiningField");
         matchAndCall(input, fieldSetterPrimitivePattern, "FieldSetterPrimitive");
     }
