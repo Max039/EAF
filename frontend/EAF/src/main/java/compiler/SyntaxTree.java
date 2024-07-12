@@ -315,7 +315,6 @@ public class SyntaxTree {
     }
 
     private static String matchAndCall(String input, String patternString, String functionName) {
-        System.out.println("Input: " + input);
         Pattern pattern = Pattern.compile(patternString);
         Matcher matcher = pattern.matcher(input);
 
