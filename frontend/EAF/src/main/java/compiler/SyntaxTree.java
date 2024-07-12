@@ -312,6 +312,7 @@ public class SyntaxTree {
                     // Call the method with the correct value
                     FieldSetterInstance(field, typename, "{" + value + "}");
                     input = input.replace(matcher.group(), "");
+                    parseInput("{" + value + "}");
                     break;
                 case "ArraySetter":
                     field = matcher.group(1);
