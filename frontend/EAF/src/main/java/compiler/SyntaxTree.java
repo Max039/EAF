@@ -23,6 +23,8 @@ public class SyntaxTree {
     public static final String RED = "\u001B[31m";
     public static final String GREEN = "\u001B[32m";
     public static final String BLUE = "\u001B[34m";
+
+    public static final String PURPLE = "\033[0;35m";
     public static final String ORANGE = "\u001B[38;5;214m"; // Note: Standard ANSI doesn't support orange, so this uses an extended code
 
     // Colored prefixes
@@ -30,7 +32,7 @@ public class SyntaxTree {
     public static String typePrefix = "[" + RESET + BLUE + "Type" + RESET + "] ";
     public static String fieldPrefix = "[" + RESET + ORANGE + "Field" + RESET + "] ";
 
-
+    public static String parsingPrefix = "[" + RESET + PURPLE + "Parse" + RESET + "] ";
 
     public static HashMap<String, Definition> definitionsInMemory = new HashMap<>();
 
@@ -307,9 +309,7 @@ public class SyntaxTree {
                 case "FieldSetterInstance":
                     field = matcher.group(1);
                     typename = matcher.group(2);
-                    value = matcher.group(3); // Inner content with braces
-
-                    // Call the method with the correct value
+                    value = matcher.group(3);
                     FieldSetterInstance(field, typename, "{" + value + "}");
                     input = input.replace(matcher.group(), "");
                     parseInput("{" + value + "}");
@@ -333,7 +333,7 @@ public class SyntaxTree {
 
         input = input.replace("'", "");
 
-
+        System.out.println(parsingPrefix + "Parsing: ");
         System.out.println(input);
 
         // Patterns
@@ -344,8 +344,6 @@ public class SyntaxTree {
 
         // Match and call functions
         input = matchAndCall(input, fieldSetterInstancePattern, "FieldSetterInstance");
-        System.out.println("----------");
-        System.out.println(input);
         input =  matchAndCall(input, arraySetterPattern, "ArraySetter");
         input = matchAndCall(input, definingFieldPattern, "DefiningField");
         matchAndCall(input, fieldSetterPrimitivePattern, "FieldSetterPrimitive");
