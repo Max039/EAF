@@ -67,7 +67,9 @@ public class SyntaxTree {
         }
         System.out.println("============================");
 
-        parseInput("alterers := alterers {\n" +
+        parseInput("{ " +
+                "    test := int 5;\n" +
+                "    alterers := alterers {\n" +
                 "      crossover := [\n" +
                 "        'single-node-crossover' {\n" +
                 "          probability := 0.3;\n" +
@@ -81,26 +83,9 @@ public class SyntaxTree {
                 "          probability := 0.4;\n" +
                 "        }\n" +
                 "      ];      \n" +
-                "    };");
-
-        parseInput("type test { alterers := alterers {\n" +
-                "      crossover := [\n" +
-                "        'single-node-crossover' {\n" +
-                "          probability := 0.3;\n" +
-                "        }\n" +
-                "      ];\n" +
-                "      mutator := [\n" +
-                "        'probability-mutator' {\n" +
-                "          probability := 0.2;\n" +
-                "        },\n" +
-                "        'mathematical-expression-rewriter' {\n" +
-                "          probability := 0.4;\n" +
-                "        }\n" +
-                "      ];      \n" +
-                "    };}");
-
-
-
+                "    }; \n" +
+                "    tes2t := int 7; " +
+                "}");
 
 
 
@@ -298,8 +283,7 @@ public class SyntaxTree {
         //==================
     }
 
-    private static void matchAndCall(String input, String patternString, String functionName) {
-        input = input.replace("'", "");
+    private static String matchAndCall(String input, String patternString, String functionName) {
 
         Pattern pattern = Pattern.compile(patternString);
         Matcher matcher = pattern.matcher(input);
@@ -323,34 +307,47 @@ public class SyntaxTree {
                 case "FieldSetterInstance":
                     field = matcher.group(1);
                     typename = matcher.group(2);
-                    value = matcher.group(0); // Full match for recursive call
-                    FieldSetterInstance(field, typename, value);
+                    value = matcher.group(3); // Inner content with braces
+
+                    // Call the method with the correct value
+                    FieldSetterInstance(field, typename, "{" + value + "}");
+                    input = input.replace(matcher.group(), "");
                     break;
                 case "ArraySetter":
                     field = matcher.group(1);
                     value = matcher.group().split(":=", 2)[1]; // Full match including []
                     ArraySetter(field, value);
+                    //=========================
+                    // Input = input array setters
+                    //=========================
                     break;
             }
         }
+
+        return input;
     }
 
     // Method to parse the input string
     static void parseInput(String input) {
-        System.out.println(input);
 
+        input = input.replace("'", "");
+
+
+        System.out.println(input);
 
         // Patterns
         String definingFieldPattern = "(?:['\"])?(\\S+)(?:['\"])?\\s*:\\s*((?:array\\s+)*)((instance\\s+)?(?:['\"])?(\\S+)(?:['\"])?);";
         String fieldSetterPrimitivePattern = "(?:')?(\\w+)(?:')?\\s*(?::\\s*(\\w+(?:\\s*[*\\/+-]\\s*\\w+)*))?\\s*:=\\s*(\"(?:[^\"]|\"\")*\"|[-+]?\\d*\\.?\\d+|\\w+(?:\\s*[*\\/+-]\\s*\\w+)*)\\s*;";
-        String fieldSetterInstancePattern = "([\\w]+)\\s*:=\\s*([\\w]+)\\s*\\{([^{}]*)\\};";
+        String fieldSetterInstancePattern = "(\\w+)\\s*:=\\s*(\\w+)\\s*\\{((?:[^{}]*|\\{(?:[^{}]*|\\{[^{}]*\\})*\\})*)\\};";
         String arraySetterPattern = "(?:')?(\\w+)(?:')?\\s*:=\\s*\\[[^\\]]*\\];";
 
         // Match and call functions
-        matchAndCall(input, definingFieldPattern, "DefiningField");
+        input = matchAndCall(input, fieldSetterInstancePattern, "FieldSetterInstance");
+        System.out.println("----------");
+        System.out.println(input);
+        input =  matchAndCall(input, arraySetterPattern, "ArraySetter");
+        input = matchAndCall(input, definingFieldPattern, "DefiningField");
         matchAndCall(input, fieldSetterPrimitivePattern, "FieldSetterPrimitive");
-        matchAndCall(input, fieldSetterInstancePattern, "FieldSetterInstance");
-        matchAndCall(input, arraySetterPattern, "ArraySetter");
     }
 
 
