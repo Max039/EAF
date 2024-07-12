@@ -6,10 +6,8 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 
 
 public class SyntaxTree {
@@ -86,7 +84,10 @@ public class SyntaxTree {
                 "        }\n" +
                 "      ];      \n" +
                 "    }; \n" +
-                "    tes2t := 7; " +
+                "    tes2t := 7; \n" +
+                "    arrary := [50, 25]; \n" +
+                "    arrary := [\"tests\", \"tests2\"]; \n" +
+                "    arrary := [50.8, 25.9]; \n" +
                 "}");
 
 
@@ -318,14 +319,52 @@ public class SyntaxTree {
                     field = matcher.group(1);
                     value = matcher.group().split(":=", 2)[1]; // Full match including []
                     ArraySetter(field, value);
-                    //=========================
-                    // Input = input array setters
-                    //=========================
+                    input = input.replace(matcher.group(), "");
+                    parseArray(value);
                     break;
             }
         }
 
         return input;
+    }
+    public static void parseArray(String input) {
+        // Regex patterns
+        Pattern structuredPattern = Pattern.compile("(\\w+-\\w+\\s*\\{.*?\\})", Pattern.DOTALL);
+        Pattern stringPattern = Pattern.compile("\"([^\"]*)\"");
+        Pattern intPattern = Pattern.compile("\\b\\d+\\b");
+        Pattern floatPattern = Pattern.compile("\\b\\d+\\.\\d+\\b");
+
+        // Remove array brackets and split by commas not within curly braces
+        String[] items = input.substring(1, input.length() - 1).split(",(?=(?:[^\\{]*\\{[^\\}]*\\})*[^\\}]*$)");
+
+        for (String item : items) {
+            item = item.trim();
+            Matcher structuredMatcher = structuredPattern.matcher(item);
+            Matcher stringMatcher = stringPattern.matcher(item);
+            Matcher intMatcher = intPattern.matcher(item);
+            Matcher floatMatcher = floatPattern.matcher(item);
+
+            if (structuredMatcher.find()) {
+                String type = structuredMatcher.group(1).split("\\s*\\{")[0];
+                String value = structuredMatcher.group(1).replace(type, "");
+                printArrayElement(type, value);
+                parseInput(value);
+            } else if (stringMatcher.find()) {
+                printArrayElement("string", stringMatcher.group(1));
+            } else if (floatMatcher.find()) {
+                printArrayElement("real", floatMatcher.group(0));
+            } else if (intMatcher.find()) {
+                printArrayElement("int", intMatcher.group(0));
+            } else {
+                printArrayElement("unknown", item);
+            }
+        }
+    }
+
+
+
+    public static void printArrayElement(String typename, String value) {
+        System.out.println(parsingPrefix + "Array Element: type= " + typename + " value= " + value + ");");
     }
 
     // Method to parse the input string
