@@ -271,62 +271,15 @@ public class SyntaxTree {
     static void FieldSetterPrimitive(String field, String typename, String value) {
         System.out.println(fieldPrefix + "FieldSetterPrimitive called with field: " + field + ", typename: " + typename + ", value: " + value);
     }
-
-    //Not propperly called yet
+    
     static void FieldSetterInstance(String field, String typename, String value) {
         System.out.println(fieldPrefix + "FieldSetterInstance called with field: " + field + ", typename: " + typename + ", value: " + value);
     }
 
-    //Not propperly called yet
     static void ArraySetter(String field, String value) {
         System.out.println(fieldPrefix + "ArraySetter called with field: " + field + ", value: " + value);
-
-        //==================
-        //Later recusivly call parsseInput(content)
-        //==================
     }
 
-    private static String matchAndCall(String input, String patternString, String functionName) {
-
-        Pattern pattern = Pattern.compile(patternString);
-        Matcher matcher = pattern.matcher(input);
-
-        while (matcher.find()) {
-            switch (functionName) {
-                case "DefiningField":
-                    String field = matcher.group(1);
-                    String arrayPart = matcher.group(2);
-                    int arrayCount = arrayPart == null ? 0 : arrayPart.split("array").length - 1;
-                    String typename = matcher.group(3) != null ? matcher.group(3) : matcher.group(4);
-                    boolean isInstance = matcher.group().contains("instance");
-                    DefiningField(field, typename, isInstance, arrayCount);
-                    break;
-                case "FieldSetterPrimitive":
-                    field = matcher.group(1);
-                    typename = matcher.group(2);
-                    String value = matcher.group(3);
-                    FieldSetterPrimitive(field, typename, value);
-                    break;
-                case "FieldSetterInstance":
-                    field = matcher.group(1);
-                    typename = matcher.group(2);
-                    value = matcher.group(3);
-                    FieldSetterInstance(field, typename, "{" + value + "}");
-                    input = input.replace(matcher.group(), "");
-                    parseInput("{" + value + "}");
-                    break;
-                case "ArraySetter":
-                    field = matcher.group(1);
-                    value = matcher.group().split(":=", 2)[1]; // Full match including []
-                    ArraySetter(field, value);
-                    input = input.replace(matcher.group(), "");
-                    parseArray(value);
-                    break;
-            }
-        }
-
-        return input;
-    }
     public static void parseArray(String input) {
         // Regex patterns
         Pattern structuredPattern = Pattern.compile("(\\w+-\\w+\\s*\\{.*?\\})", Pattern.DOTALL);
@@ -359,6 +312,57 @@ public class SyntaxTree {
                 printArrayElement("unknown", item);
             }
         }
+    }
+
+
+    private static String matchAndCall(String input, String patternString, String functionName) {
+
+        Pattern pattern = Pattern.compile(patternString);
+        Matcher matcher = pattern.matcher(input);
+
+        while (matcher.find()) {
+            switch (functionName) {
+                case "DefiningField":
+                    String field = matcher.group(1);
+                    String arrayPart = matcher.group(2);
+                    int arrayCount = arrayPart == null ? 0 : arrayPart.split("array").length - 1;
+                    String typename = matcher.group(3) != null ? matcher.group(3) : matcher.group(4);
+                    typename = typename.replace("instance", "");
+                    typename = typename.replace(" ", "");
+                    boolean isInstance = matcher.group().contains("instance");
+                    DefiningField(field, typename, isInstance, arrayCount);
+                    break;
+                case "FieldSetterPrimitive":
+                    field = matcher.group(1);
+                    typename = matcher.group(2);
+                    String value = matcher.group(3);
+                    FieldSetterPrimitive(field, typename, value);
+                    break;
+                case "FieldSetterInstance":
+                    field = matcher.group(1);
+                    typename = matcher.group(2);
+                    value = matcher.group(3);
+                    FieldSetterInstance(field, typename, "{" + value + "}");
+                    input = input.replace(matcher.group(), "");
+                    parseInput("{" + value + "}");
+                    break;
+
+                    //Currently only handel when array is first defined and then later set
+                    //!!Unhandel!! is for example "test : array int := [6, 5]"
+                    //handles :
+                    //step 1: "test : array int"
+                    //step 2 :  "test := [6, 5]"
+                case "ArraySetter":
+                    field = matcher.group(1);
+                    value = matcher.group().split(":=", 2)[1]; // Full match including []
+                    ArraySetter(field, value);
+                    input = input.replace(matcher.group(), "");
+                    parseArray(value);
+                    break;
+            }
+        }
+
+        return input;
     }
 
 
