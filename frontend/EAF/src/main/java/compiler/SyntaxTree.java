@@ -309,7 +309,7 @@ public class SyntaxTree {
             } else if (intMatcher.find()) {
                 printArrayElement("int", intMatcher.group(0));
             } else {
-                printArrayElement("unknown", item);
+                throw new UnknownTypeException("Unknown type in array: " + item);
             }
         }
     }
@@ -425,6 +425,12 @@ public class SyntaxTree {
 
     public static class InvalidImportException extends RuntimeException {
         public InvalidImportException(String s) {
+            super(s);
+        }
+    }
+
+    public static class UnknownTypeException extends RuntimeException {
+        public UnknownTypeException(String s) {
             super(s);
         }
     }
