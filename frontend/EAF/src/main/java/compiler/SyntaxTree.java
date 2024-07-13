@@ -418,9 +418,14 @@ public class SyntaxTree {
             case "data" :
                 return;
             default:
-                throw new RuntimeException("Invalid import statement: " + line);
+                throw new InvalidImportException("Invalid import statement: " + line);
 
         }
+    }
 
+    public static class InvalidImportException extends RuntimeException {
+        public InvalidImportException(String s) {
+            super(s);
+        }
     }
 }
