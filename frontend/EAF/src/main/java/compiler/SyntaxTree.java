@@ -6,7 +6,6 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
-import java.lang.reflect.Field;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -34,13 +33,15 @@ public class SyntaxTree {
 
     public static String parsingPrefix = "[" + RESET + PURPLE + "Parse" + RESET + "] ";
 
-    public static HashMap<String, Module> modulesInMemory = new HashMap<>();
+    public static HashMap<String, Module> moduleRegister = new HashMap<>();
+
+    public static HashMap<String, ClassType> classRegister = new HashMap<>();
 
     public static String buildPath = "\\EvoAlBuilds\\" + evoalBuild + "\\evoal\\definitions\\de";
 
     //=======================================================================
     //                  class name      fieldname     FieldType   Value
-    public static HashMap<String, HashMap<String, Pair<FieldType, String>>> classTree = new HashMap<>();
+
     // Next use this to make class trees by when calling extends add a child (but also put new entry that is the same object so same refference in child as in hashmap)
     // When only new type and no extend only put
     //=======================================================================
@@ -105,14 +106,14 @@ public class SyntaxTree {
 
 
         System.out.println("============================");
-        for (var im : modulesInMemory.values().stream().map(Module::toString).sorted().toList()) {
+        for (var im : moduleRegister.values().stream().map(Module::toString).sorted().toList()) {
             System.out.println(im);
         }
         System.out.println("============================");
-        System.out.println("Loaded modules count = " + modulesInMemory.size());
+        System.out.println("Loaded modules count = " + moduleRegister.size());
         System.out.println("Loaded modules: ");
         System.out.println("============================");
-        for (var im : modulesInMemory.keySet().stream().sorted().toList()) {
+        for (var im : moduleRegister.keySet().stream().sorted().toList()) {
             System.out.println(im);
         }
         System.out.println("============================");
@@ -189,7 +190,7 @@ public class SyntaxTree {
             }
 
             if (index) {
-                modulesInMemory.put(definitionName, new Module(processContentOfModule(new BufferedReader(new FileReader(filename)))));
+                moduleRegister.put(definitionName, new Module(processContentOfModule(new BufferedReader(new FileReader(filename)))));
             }
         }
     }
@@ -220,16 +221,18 @@ public class SyntaxTree {
         while (typeMatcher.find()) {
             boolean isAbstract = typeMatcher.group(1) != null;
             String typeName = typeMatcher.group(2);
-            ClassType clazz = new ClassType(typeName, null);
-            clazzTypes.add(clazz);
+
+
             String extendedType = typeMatcher.group(3);
             String typeContent = typeMatcher.group(0).substring(typeMatcher.group(0).indexOf("{"));
-
+            ClassType clazz = extendedType == null ? new ClassType(typeName, null) : new ClassType(typeName, classRegister.get(extendedType));
             if (extendedType == null) {
+
                 processType(clazz, moduleName, typeName, isAbstract, typeContent);
             } else {
                 processExtendedType(clazz, moduleName, typeName, extendedType, isAbstract, typeContent);
             }
+            clazzTypes.add(clazz);
         }
         return new Pair<>(moduleName, clazzTypes);
     }
@@ -251,7 +254,7 @@ public class SyntaxTree {
         System.out.println(typePrefix + "Registering Type: " + moduleName + ", Type: " + typeName + ", isAbstract: " + isAbstract);
         clazz.setAbstract(isAbstract);
 
-        classTree.put(typeName, clazz.fields);
+        classRegister.put(typeName, clazz);
         processContentOfType(typeContent);
 
     }
@@ -261,7 +264,7 @@ public class SyntaxTree {
         clazz.setAbstract(isAbstract);
         clazz.setExtending(true);
 
-        classTree.put(typeName, clazz.fields);
+        classRegister.put(typeName, clazz);
         processContentOfType(typeContent);
     }
 
@@ -408,7 +411,7 @@ public class SyntaxTree {
 
         switch (definitions) {
             case "definitions" :
-                if (modulesInMemory.get(generator) == null) {
+                if (moduleRegister.get(generator) == null) {
                     System.out.println(importPrefix + generator + RED + " is not " + RESET + "yet in memory!");
                     TreeNode foundNode = root.findNodeByPath(generator);
                     processDlFileForImports(foundNode.fullPath, generator, true);
