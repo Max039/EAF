@@ -4,8 +4,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -34,15 +33,21 @@ public class SyntaxTree {
 
     public static HashMap<String, Definition> definitionsInMemory = new HashMap<>();
 
+    public static String buildPath = "\\EvoAlBuilds\\" + evoalBuild + "\\evoal\\definitions\\de";
+
     //=======================================================================
     public static HashMap<String, HashMap<String, ClazzInstance>> classTree = new HashMap<>();
     // Next use this to make class trees by when calling extends add a child (but also put new entry that is the same object so same refference in child as in hashmap)
     // When only new type and no extend only put
     //=======================================================================
 
+    private static Deque<File> fileQueue = new ArrayDeque<>();
+
     public static void main(String[] args) throws IOException {
+
         String currentPath = System.getProperty("user.dir");
-        pathToSyntax.add(currentPath + "\\EvoAlBuilds\\" + evoalBuild + "\\evoal\\definitions\\de");
+
+        pathToSyntax.add(currentPath + buildPath);
         pathToSyntax.add(currentPath + "\\de");
         for (String path : pathToSyntax) {
             File rootDir = new File(path);
@@ -57,14 +62,18 @@ public class SyntaxTree {
         // Example: Printing the tree structure using toString()
         System.out.println(root.toString());
 
-        processFile("EvoAlScripts\\genetic-programming\\config.ol", "script", false);
+        while (!fileQueue.isEmpty()) {
+            File file = fileQueue.poll();
+            String relativePath = new File(currentPath).toURI().relativize(file.toURI()).getPath();
 
-        System.out.println("Loaded modules count = " + definitionsInMemory.size());
-        System.out.println("Loaded modules: ");
-        System.out.println("============================");
-        for (var im : definitionsInMemory.keySet().stream().sorted().toList()) {
-            System.out.println(im);
+            processFile(relativePath, makeModuleName(relativePath), true);
         }
+
+
+        //processFile("EvoAlScripts\\genetic-programming\\config.ol", "script", false);
+
+        System.out.println("============================");
+        System.out.println("============================");
         System.out.println("============================");
 
         parseInput("{ " +
@@ -91,7 +100,21 @@ public class SyntaxTree {
                 "}");
 
 
+        System.out.println("Loaded modules count = " + definitionsInMemory.size());
+        System.out.println("Loaded modules: ");
+        System.out.println("============================");
+        for (var im : definitionsInMemory.keySet().stream().sorted().toList()) {
+            System.out.println(im);
+        }
+        System.out.println("============================");
 
+
+    }
+
+    public static String makeModuleName(String s) {
+        String definitionName = s.replace(File.separator, ".").replace("/", ".").replace(".dl", "").replace(".ddl", "");
+        definitionName =  definitionName.replace("EvoAlBuilds." + evoalBuild + ".evoal.definitions.", "");
+        return definitionName;
     }
 
     private static void buildFileTree(TreeNode parentNode, File node) {
@@ -118,6 +141,7 @@ public class SyntaxTree {
                     parentNode.children.add(fileNode);
                 }
             }
+            fileQueue.add(node);
         }
     }
 
@@ -148,7 +172,7 @@ public class SyntaxTree {
                     generator = generator.replace("'", "");
 
                     // Call your function and print the line
-                    processLine(line, definitions, generator);
+                    processImport(line, definitions, generator);
                     //System.out.println(line);
                 } else {
                     break;  // Stop processing on the first non-matching line
@@ -401,7 +425,7 @@ public class SyntaxTree {
     }
 
 
-    public static void processLine(String line, String definitions, String generator) throws IOException {
+    public static void processImport(String line, String definitions, String generator) throws IOException {
 
 
         switch (definitions) {
