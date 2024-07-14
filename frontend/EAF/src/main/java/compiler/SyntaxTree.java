@@ -6,6 +6,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.lang.reflect.Field;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -38,7 +39,8 @@ public class SyntaxTree {
     public static String buildPath = "\\EvoAlBuilds\\" + evoalBuild + "\\evoal\\definitions\\de";
 
     //=======================================================================
-    public static HashMap<String, HashMap<String, ClazzInstance>> classTree = new HashMap<>();
+    //                  class name      fieldname     FieldType   Value
+    public static HashMap<String, HashMap<String, Pair<FieldType, String>>> classTree = new HashMap<>();
     // Next use this to make class trees by when calling extends add a child (but also put new entry that is the same object so same refference in child as in hashmap)
     // When only new type and no extend only put
     //=======================================================================
@@ -218,14 +220,15 @@ public class SyntaxTree {
         while (typeMatcher.find()) {
             boolean isAbstract = typeMatcher.group(1) != null;
             String typeName = typeMatcher.group(2);
-            clazzTypes.add(new ClassType(typeName, null));
+            ClassType clazz = new ClassType(typeName, null);
+            clazzTypes.add(clazz);
             String extendedType = typeMatcher.group(3);
             String typeContent = typeMatcher.group(0).substring(typeMatcher.group(0).indexOf("{"));
 
             if (extendedType == null) {
-                processType(moduleName, typeName, isAbstract, typeContent);
+                processType(clazz, moduleName, typeName, isAbstract, typeContent);
             } else {
-                processExtendedType(moduleName, typeName, extendedType, isAbstract, typeContent);
+                processExtendedType(clazz, moduleName, typeName, extendedType, isAbstract, typeContent);
             }
         }
         return new Pair<>(moduleName, clazzTypes);
@@ -244,47 +247,22 @@ public class SyntaxTree {
         return null;
     }
 
-    private static void processType(String moduleName, String typeName, boolean isAbstract, String typeContent) {
+    private static void processType(ClassType clazz, String moduleName, String typeName, boolean isAbstract, String typeContent) {
         System.out.println(typePrefix + "Registering Type: " + moduleName + ", Type: " + typeName + ", isAbstract: " + isAbstract);
-        ClazzInstance c = new ClazzInstance();
-        c.setAbstract(isAbstract);
+        clazz.setAbstract(isAbstract);
 
-        if (classTree.get(typeName) == null) {
-            HashMap<String, ClazzInstance> h = new HashMap<>();
-            h.put(moduleName, c);
-            classTree.put(typeName, h);
-        } else {
-            classTree.get(typeName).put(moduleName, c);
-        }
-        // Implement the actual function call here
+        classTree.put(typeName, clazz.fields);
         processContentOfType(typeContent);
 
     }
 
-    private static void processExtendedType(String moduleName, String typeName, String extendedType, boolean isAbstract, String typeContent) {
+    private static void processExtendedType(ClassType clazz, String moduleName, String typeName, String extendedType, boolean isAbstract, String typeContent) {
         System.out.println(typePrefix + "Registering Type: " + moduleName + ", Type: " + typeName + ", Extended Type: " + extendedType + ", isAbstract: " + isAbstract);
-        ClazzInstance c = new ClazzInstance();
-        c.setAbstract(isAbstract);
+        clazz.setAbstract(isAbstract);
+        clazz.setExtending(true);
 
-        if (classTree.get(extendedType) == null) {
-            throw new RuntimeException("Cannot extend " + extendedType + " class was not found!");
-        } else {
-            var s = classTree.get(extendedType);
-            for (var sub : s.entrySet()) {
-                sub.getValue().addChild(c);
-            }
-        }
-
-        if (classTree.get(typeName) == null) {
-            HashMap<String, ClazzInstance> h = new HashMap<>();
-            h.put(moduleName, c);
-            classTree.put(typeName, h);
-        } else {
-            classTree.get(typeName).put(moduleName, c);
-        }
-
+        classTree.put(typeName, clazz.fields);
         processContentOfType(typeContent);
-        // Implement the actual function call here
     }
 
     // Function declarations as per your requirement

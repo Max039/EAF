@@ -6,16 +6,40 @@ import java.util.HashMap;
 
 public class ClassType {
 
-    HashMap<String, Pair<FieldType, String>> fields;
+    public HashMap<String, Pair<FieldType, String>> fields;
     String name;
 
     String spacing = " ";
+
+    private boolean isAbstract = false;
+
+    private boolean extending = false;
 
     ClassType parent;
     ClassType(String name, ClassType parent) {
         this.name = name;
         this.parent = parent;
         fields = new HashMap<>();
+        if ( parent != null ) {
+            fields.putAll(parent.fields);
+        }
+    }
+
+    public void setAbstract(boolean isAbstract) {
+        this.isAbstract = isAbstract;
+    }
+
+    public void setExtending(boolean extending) {
+        this.extending = extending;
+    }
+
+    public void addChild(ClassType child) {
+        // Implementation for adding a child instance
+    }
+
+    public boolean matachesType(ClassType c) {
+        //Check if this or a child is of that type and is not abstract
+        return true;
     }
 
     boolean doesExtend() {
