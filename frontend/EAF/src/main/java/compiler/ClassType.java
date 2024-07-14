@@ -33,11 +33,11 @@ public class ClassType {
 
     @Override
     public String toString() {
-        StringBuilder s = new StringBuilder(spacing + "Class = " + name + " Parent: " + getParent()  + " {\n" + spacing + " Value: {\n");
+        StringBuilder s = new StringBuilder(spacing + "Class = " + name + " Parent: " + getParent()  + " {\n" + spacing + " Fields: [\n");
         for (var t : fields.entrySet()) {
             s.append(spacing).append("Field = ").append(t.getKey()).append(" : ").append(t.getValue().toString()).append("\n");
         }
-        s.append(spacing).append(" }\n" + spacing + "}");
+        s.append(spacing).append(" ]\n" + spacing + "}");
         return s.toString();
     }
 }

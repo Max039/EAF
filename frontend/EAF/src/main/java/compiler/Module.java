@@ -16,11 +16,11 @@ public class Module {
 
     @Override
     public String toString() {
-        StringBuilder s = new StringBuilder("Module " + name + " = " + "{\n");
+        StringBuilder s = new StringBuilder("Module " + name + " = " + "[\n");
         for (var t : types) {
             s.append(t.toString()).append("\n");
         }
-        s.append("}");
+        s.append("]");
         return s.toString();
     }
 
