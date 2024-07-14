@@ -65,7 +65,6 @@ public class SyntaxTree {
         while (!fileQueue.isEmpty()) {
             File file = fileQueue.poll();
             String relativePath = new File(currentPath).toURI().relativize(file.toURI()).getPath();
-
             processDlFileForImports(relativePath, makeModuleName(relativePath), true);
         }
 
@@ -181,21 +180,13 @@ public class SyntaxTree {
 
             if (index) {
                 definitionsInMemory.put(definitionName, new Definition());
-                processRestOfFile(new BufferedReader(new FileReader(filename)));
+                processContentOfModule(new BufferedReader(new FileReader(filename)));
             }
-
-
         }
-
-
-    }
-
-    public static void processRestOfFile(BufferedReader r) throws IOException {
-        parseFileContentForTypes(r);
     }
 
 
-    public static void parseFileContentForTypes(BufferedReader reader) throws IOException {
+    public static void processContentOfModule(BufferedReader reader) throws IOException {
         StringBuilder contentBuilder = new StringBuilder();
         String line;
         while ((line = reader.readLine()) != null) {
