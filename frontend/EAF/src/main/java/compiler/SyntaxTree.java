@@ -76,7 +76,7 @@ public class SyntaxTree {
         System.out.println("============================");
         System.out.println("============================");
 
-        parseInputForFields("{ " +
+        processContentOfType("{ " +
                 "    test : int := 5;\n" +
                 "    alterers := alterers {\n" +
                 "      crossover := [\n" +
@@ -224,9 +224,9 @@ public class SyntaxTree {
             String typeContent = typeMatcher.group(0).substring(typeMatcher.group(0).indexOf("{"));
 
             if (extendedType == null) {
-                callFunctionWithModuleAndType(moduleName, typeName, isAbstract, typeContent);
+                processType(moduleName, typeName, isAbstract, typeContent);
             } else {
-                callFunctionWithModuleTypeAndExtendedType(moduleName, typeName, extendedType, isAbstract, typeContent);
+                processExtendedType(moduleName, typeName, extendedType, isAbstract, typeContent);
             }
         }
     }
@@ -244,7 +244,7 @@ public class SyntaxTree {
         return null;
     }
 
-    private static void callFunctionWithModuleAndType(String moduleName, String typeName, boolean isAbstract, String typeContent) {
+    private static void processType(String moduleName, String typeName, boolean isAbstract, String typeContent) {
         System.out.println(typePrefix + "Registering Type: " + moduleName + ", Type: " + typeName + ", isAbstract: " + isAbstract);
         ClazzInstance c = new ClazzInstance();
         c.setAbstract(isAbstract);
@@ -257,11 +257,11 @@ public class SyntaxTree {
             classTree.get(typeName).put(moduleName, c);
         }
         // Implement the actual function call here
-        parseInputForFields(typeContent);
+        processContentOfType(typeContent);
 
     }
 
-    private static void callFunctionWithModuleTypeAndExtendedType(String moduleName, String typeName, String extendedType, boolean isAbstract, String typeContent) {
+    private static void processExtendedType(String moduleName, String typeName, String extendedType, boolean isAbstract, String typeContent) {
         System.out.println(typePrefix + "Registering Type: " + moduleName + ", Type: " + typeName + ", Extended Type: " + extendedType + ", isAbstract: " + isAbstract);
         ClazzInstance c = new ClazzInstance();
         c.setAbstract(isAbstract);
@@ -283,28 +283,28 @@ public class SyntaxTree {
             classTree.get(typeName).put(moduleName, c);
         }
 
-        parseInputForFields(typeContent);
+        processContentOfType(typeContent);
         // Implement the actual function call here
     }
 
     // Function declarations as per your requirement
-    static void DefiningField(String field, String typename, boolean isInstance, int isArray) {
+    static void UniversalFieldDefiner(String field, String typename, boolean isInstance, int isArray) {
         System.out.println(fieldPrefix + "DefiningField called with field: " + field + ", typename: " + typename + ", isInstance: " + isInstance+ ", isArray: " + isArray);
     }
 
-    static void FieldSetterPrimitive(String field, String typename, String value) {
+    static void PrimitiveFieldSetter(String field, String typename, String value) {
         System.out.println(fieldPrefix + "FieldSetterPrimitive called with field: " + field + ", typename: " + typename + ", value: " + value);
     }
 
-    static void FieldSetterInstance(String field, String typename, String value) {
+    static void InstanceFieldSetter(String field, String typename, String value) {
         System.out.println(fieldPrefix + "FieldSetterInstance called with field: " + field + ", typename: " + typename + ", value: " + value);
     }
 
-    static void ArraySetter(String field, String typename, String value) {
+    static void ArrayFieldSetter(String field, String typename, String value) {
         System.out.println(fieldPrefix + "ArraySetter called with field: " + field + " type: " + typename + ", value: " + value);
     }
 
-    public static void parseArrayField(String input) {
+    public static void processArrayField(String input) {
         // Regex patterns
         Pattern structuredPattern = Pattern.compile("(\\w+-\\w+\\s*\\{.*?\\})", Pattern.DOTALL);
         Pattern stringPattern = Pattern.compile("\"([^\"]*)\"");
@@ -325,7 +325,7 @@ public class SyntaxTree {
                 String type = structuredMatcher.group(1).split("\\s*\\{")[0];
                 String value = structuredMatcher.group(1).replace(type, "");
                 printArrayElement(type, value);
-                parseInputForFields(value);
+                processContentOfType(value);
             } else if (stringMatcher.find()) {
                 printArrayElement("string", stringMatcher.group(1));
             } else if (floatMatcher.find()) {
@@ -338,7 +338,7 @@ public class SyntaxTree {
         }
     }
 
-    private static String regexMatchFields(String input, String patternString, String functionName) {
+    private static String processFieldsOfType(String input, String patternString, String functionName) {
         Pattern pattern = Pattern.compile(patternString);
         Matcher matcher = pattern.matcher(input);
 
@@ -352,21 +352,21 @@ public class SyntaxTree {
                     typename = typename.replace("instance", "");
                     typename = typename.replace(" ", "");
                     boolean isInstance = matcher.group().contains("instance");
-                    DefiningField(field, typename, isInstance, arrayCount);
+                    UniversalFieldDefiner(field, typename, isInstance, arrayCount);
                     break;
                 case "FieldSetterPrimitive":
                     field = matcher.group(1);
                     typename = matcher.group(2);
                     String value = matcher.group(3);
-                    FieldSetterPrimitive(field, typename, value);
+                    PrimitiveFieldSetter(field, typename, value);
                     break;
                 case "FieldSetterInstance":
                     field = matcher.group(1);
                     typename = matcher.group(2);
                     value = matcher.group(3);
-                    FieldSetterInstance(field, typename, "{" + value + "}");
+                    InstanceFieldSetter(field, typename, "{" + value + "}");
                     input = input.replace(matcher.group(), "");
-                    parseInputForFields("{" + value + "}");
+                    processContentOfType("{" + value + "}");
                     break;
                 case "ArrayDefiner":
                     value = matcher.group().split(":=", 2)[1].trim(); // Full match including []
@@ -374,9 +374,9 @@ public class SyntaxTree {
                     var parts = s1.split(":");
                     field = parts[0].trim();
                     typename = parts[1].trim();
-                    ArraySetter(field, typename, value);
+                    ArrayFieldSetter(field, typename, value);
                     input = input.replace(matcher.group(), "");
-                    parseArrayField(value);
+                    processArrayField(value);
                     break;
                 case "ArraySetter":
                     value = matcher.group().split(":=", 2)[1].trim(); // Full match including []
@@ -385,9 +385,9 @@ public class SyntaxTree {
                     field = parts2[0].trim();
                     typename = "null";
 
-                    ArraySetter(field, typename, value);
+                    ArrayFieldSetter(field, typename, value);
                     input = input.replace(matcher.group(), "");
-                    parseArrayField(value);
+                    processArrayField(value);
                     break;
             }
         }
@@ -402,7 +402,7 @@ public class SyntaxTree {
     }
 
     // Method to parse the input string
-    static void parseInputForFields(String input) {
+    static void processContentOfType(String input) {
 
         input = input.replace("'", "");
 
@@ -417,11 +417,11 @@ public class SyntaxTree {
         String arraySetterPattern = "(\\w+)\\s*:=\\s*\\[[^\\[\\]]*\\];";
 
         // Match and call functions
-        input = regexMatchFields(input, fieldSetterInstancePattern, "FieldSetterInstance");
-        input = regexMatchFields(input, arrayDefinerPattern, "ArrayDefiner");
-        input = regexMatchFields(input, arraySetterPattern, "ArraySetter");
-        input = regexMatchFields(input, definingFieldPattern, "DefiningField");
-        regexMatchFields(input, fieldSetterPrimitivePattern, "FieldSetterPrimitive");
+        input = processFieldsOfType(input, fieldSetterInstancePattern, "FieldSetterInstance");
+        input = processFieldsOfType(input, arrayDefinerPattern, "ArrayDefiner");
+        input = processFieldsOfType(input, arraySetterPattern, "ArraySetter");
+        input = processFieldsOfType(input, definingFieldPattern, "DefiningField");
+        processFieldsOfType(input, fieldSetterPrimitivePattern, "FieldSetterPrimitive");
     }
 
 
