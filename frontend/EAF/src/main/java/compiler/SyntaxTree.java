@@ -66,7 +66,7 @@ public class SyntaxTree {
             File file = fileQueue.poll();
             String relativePath = new File(currentPath).toURI().relativize(file.toURI()).getPath();
 
-            processFile(relativePath, makeModuleName(relativePath), true);
+            processDlFileForImports(relativePath, makeModuleName(relativePath), true);
         }
 
 
@@ -76,7 +76,7 @@ public class SyntaxTree {
         System.out.println("============================");
         System.out.println("============================");
 
-        parseInput("{ " +
+        parseInputForFields("{ " +
                 "    test : int := 5;\n" +
                 "    alterers := alterers {\n" +
                 "      crossover := [\n" +
@@ -145,7 +145,7 @@ public class SyntaxTree {
         }
     }
 
-    public static void processFile(String filename, String definitionName, boolean index) throws IOException {
+    public static void processDlFileForImports(String filename, String definitionName, boolean index) throws IOException {
         System.out.println(importPrefix + "Processing definition " + definitionName + " under path " + filename);
         try (BufferedReader reader = new BufferedReader(new FileReader(filename))) {
             String line;
@@ -191,11 +191,11 @@ public class SyntaxTree {
     }
 
     public static void processRestOfFile(BufferedReader r) throws IOException {
-        parseFileContent(r);
+        parseFileContentForTypes(r);
     }
 
 
-    public static void parseFileContent(BufferedReader reader) throws IOException {
+    public static void parseFileContentForTypes(BufferedReader reader) throws IOException {
         StringBuilder contentBuilder = new StringBuilder();
         String line;
         while ((line = reader.readLine()) != null) {
@@ -257,7 +257,7 @@ public class SyntaxTree {
             classTree.get(typeName).put(moduleName, c);
         }
         // Implement the actual function call here
-        parseInput(typeContent);
+        parseInputForFields(typeContent);
 
     }
 
@@ -283,7 +283,7 @@ public class SyntaxTree {
             classTree.get(typeName).put(moduleName, c);
         }
 
-        parseInput(typeContent);
+        parseInputForFields(typeContent);
         // Implement the actual function call here
     }
 
@@ -304,7 +304,7 @@ public class SyntaxTree {
         System.out.println(fieldPrefix + "ArraySetter called with field: " + field + " type: " + typename + ", value: " + value);
     }
 
-    public static void parseArray(String input) {
+    public static void parseArrayField(String input) {
         // Regex patterns
         Pattern structuredPattern = Pattern.compile("(\\w+-\\w+\\s*\\{.*?\\})", Pattern.DOTALL);
         Pattern stringPattern = Pattern.compile("\"([^\"]*)\"");
@@ -325,7 +325,7 @@ public class SyntaxTree {
                 String type = structuredMatcher.group(1).split("\\s*\\{")[0];
                 String value = structuredMatcher.group(1).replace(type, "");
                 printArrayElement(type, value);
-                parseInput(value);
+                parseInputForFields(value);
             } else if (stringMatcher.find()) {
                 printArrayElement("string", stringMatcher.group(1));
             } else if (floatMatcher.find()) {
@@ -338,7 +338,7 @@ public class SyntaxTree {
         }
     }
 
-    private static String matchAndCall(String input, String patternString, String functionName) {
+    private static String regexMatchFields(String input, String patternString, String functionName) {
         Pattern pattern = Pattern.compile(patternString);
         Matcher matcher = pattern.matcher(input);
 
@@ -366,7 +366,7 @@ public class SyntaxTree {
                     value = matcher.group(3);
                     FieldSetterInstance(field, typename, "{" + value + "}");
                     input = input.replace(matcher.group(), "");
-                    parseInput("{" + value + "}");
+                    parseInputForFields("{" + value + "}");
                     break;
                 case "ArrayDefiner":
                     value = matcher.group().split(":=", 2)[1].trim(); // Full match including []
@@ -376,7 +376,7 @@ public class SyntaxTree {
                     typename = parts[1].trim();
                     ArraySetter(field, typename, value);
                     input = input.replace(matcher.group(), "");
-                    parseArray(value);
+                    parseArrayField(value);
                     break;
                 case "ArraySetter":
                     value = matcher.group().split(":=", 2)[1].trim(); // Full match including []
@@ -387,7 +387,7 @@ public class SyntaxTree {
 
                     ArraySetter(field, typename, value);
                     input = input.replace(matcher.group(), "");
-                    parseArray(value);
+                    parseArrayField(value);
                     break;
             }
         }
@@ -402,7 +402,7 @@ public class SyntaxTree {
     }
 
     // Method to parse the input string
-    static void parseInput(String input) {
+    static void parseInputForFields(String input) {
 
         input = input.replace("'", "");
 
@@ -417,11 +417,11 @@ public class SyntaxTree {
         String arraySetterPattern = "(\\w+)\\s*:=\\s*\\[[^\\[\\]]*\\];";
 
         // Match and call functions
-        input = matchAndCall(input, fieldSetterInstancePattern, "FieldSetterInstance");
-        input = matchAndCall(input, arrayDefinerPattern, "ArrayDefiner");
-        input = matchAndCall(input, arraySetterPattern, "ArraySetter");
-        input = matchAndCall(input, definingFieldPattern, "DefiningField");
-        matchAndCall(input, fieldSetterPrimitivePattern, "FieldSetterPrimitive");
+        input = regexMatchFields(input, fieldSetterInstancePattern, "FieldSetterInstance");
+        input = regexMatchFields(input, arrayDefinerPattern, "ArrayDefiner");
+        input = regexMatchFields(input, arraySetterPattern, "ArraySetter");
+        input = regexMatchFields(input, definingFieldPattern, "DefiningField");
+        regexMatchFields(input, fieldSetterPrimitivePattern, "FieldSetterPrimitive");
     }
 
 
@@ -433,10 +433,10 @@ public class SyntaxTree {
                 if (definitionsInMemory.get(generator) == null) {
                     System.out.println(importPrefix + generator + RED + " is not " + RESET + "yet in memory!");
                     TreeNode foundNode = root.findNodeByPath(generator);
-                    processFile(foundNode.fullPath, generator, true);
+                    processDlFileForImports(foundNode.fullPath, generator, true);
                 }
                 else {
-                    System.out.println(importPrefix + generator +  GREEN + " is " + RESET + "already in memory!");
+                    System.out.println(importPrefix + "Skipping \"" + generator +"\"" +  GREEN + " is " + RESET + "already in memory!");
                 }
                 return;
             case "data" :
