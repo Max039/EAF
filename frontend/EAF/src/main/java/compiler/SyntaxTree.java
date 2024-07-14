@@ -1,5 +1,7 @@
 package compiler;
 
+import test.Pair;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
@@ -31,7 +33,7 @@ public class SyntaxTree {
 
     public static String parsingPrefix = "[" + RESET + PURPLE + "Parse" + RESET + "] ";
 
-    public static HashMap<String, Definition> definitionsInMemory = new HashMap<>();
+    public static HashMap<String, Module> modulesInMemory = new HashMap<>();
 
     public static String buildPath = "\\EvoAlBuilds\\" + evoalBuild + "\\evoal\\definitions\\de";
 
@@ -99,10 +101,16 @@ public class SyntaxTree {
                 "}");
 
 
-        System.out.println("Loaded modules count = " + definitionsInMemory.size());
+
+        System.out.println("============================");
+        for (var im : modulesInMemory.values().stream().map(Module::toString).sorted().toList()) {
+            System.out.println(im);
+        }
+        System.out.println("============================");
+        System.out.println("Loaded modules count = " + modulesInMemory.size());
         System.out.println("Loaded modules: ");
         System.out.println("============================");
-        for (var im : definitionsInMemory.keySet().stream().sorted().toList()) {
+        for (var im : modulesInMemory.keySet().stream().sorted().toList()) {
             System.out.println(im);
         }
         System.out.println("============================");
@@ -179,14 +187,13 @@ public class SyntaxTree {
             }
 
             if (index) {
-                definitionsInMemory.put(definitionName, new Definition());
-                processContentOfModule(new BufferedReader(new FileReader(filename)));
+                modulesInMemory.put(definitionName, new Module(processContentOfModule(new BufferedReader(new FileReader(filename)))));
             }
         }
     }
 
-
-    public static void processContentOfModule(BufferedReader reader) throws IOException {
+    public static Pair<String, ArrayList<ClassType>> processContentOfModule(BufferedReader reader) throws IOException {
+        ArrayList<ClassType> clazzTypes = new ArrayList<>();
         StringBuilder contentBuilder = new StringBuilder();
         String line;
         while ((line = reader.readLine()) != null) {
@@ -201,7 +208,7 @@ public class SyntaxTree {
         String moduleName = extractModuleName(content);
         if (moduleName == null) {
             System.out.println("Module name not found!");
-            return;
+            return new Pair<>(null, clazzTypes);
         }
 
         // Extract types, extended types, and content within braces
@@ -211,6 +218,7 @@ public class SyntaxTree {
         while (typeMatcher.find()) {
             boolean isAbstract = typeMatcher.group(1) != null;
             String typeName = typeMatcher.group(2);
+            clazzTypes.add(new ClassType(typeName, null));
             String extendedType = typeMatcher.group(3);
             String typeContent = typeMatcher.group(0).substring(typeMatcher.group(0).indexOf("{"));
 
@@ -220,6 +228,7 @@ public class SyntaxTree {
                 processExtendedType(moduleName, typeName, extendedType, isAbstract, typeContent);
             }
         }
+        return new Pair<>(moduleName, clazzTypes);
     }
 
     private static String removeComments(String content) {
@@ -421,7 +430,7 @@ public class SyntaxTree {
 
         switch (definitions) {
             case "definitions" :
-                if (definitionsInMemory.get(generator) == null) {
+                if (modulesInMemory.get(generator) == null) {
                     System.out.println(importPrefix + generator + RED + " is not " + RESET + "yet in memory!");
                     TreeNode foundNode = root.findNodeByPath(generator);
                     processDlFileForImports(foundNode.fullPath, generator, true);
