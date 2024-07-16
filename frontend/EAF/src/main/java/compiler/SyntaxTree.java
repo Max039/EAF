@@ -106,7 +106,7 @@ public class SyntaxTree {
                 "    zzz := 'mathematical-expression-rewriter' {\n" +
                 "       probability := 0.4;\n" +
                 "     };\n" +
-                "    tttt : rewriter := 'rewriter' {\n" +
+                "    tttt : instance rewriter := 'rewriter' {\n" +
                 "       probability := 0.4;\n" +
                 "     };\n" +
                 "     ooo := test;\n" +
@@ -420,7 +420,7 @@ public class SyntaxTree {
                 var headAndValue = item.split(":=", 2);
                 var typeAndValue = headAndValue[1].split("\\{", 2);
 
-                InstanceFieldSetter(headAndValue[0], typeAndValue[0], "{" + typeAndValue[1]);
+                InstanceFieldSetter(headAndValue[0], typeAndValue[0].replace("instance", ""), "{" + typeAndValue[1]);
                 processContentOfType("{" + typeAndValue[1]);
             }
             else if (fieldSetterPrimitivePatternMatcher.find()) {
