@@ -377,7 +377,11 @@ public class SyntaxTree {
         }
     }
 
-    public static void processTypeField(String input) {
+    public static void processContentOfType(String input) {
+        input = input.replace("'", "");
+
+        System.out.println(parsingPrefix + "Parsing: ");
+        System.out.println(input);
 
         Pattern definingFieldPattern = Pattern.compile("\\b\\b.+:\\b.");
         Pattern fieldSetterPrimitivePattern = Pattern.compile("\\b\\w+:=\\w+(\\.\\w+)?\\b");
@@ -437,22 +441,8 @@ public class SyntaxTree {
         System.out.println(parsingPrefix + "Array Element: type= " + typename + " value= " + value);
     }
 
-    //=================
-    //Needs to be handel with items
-    //Like array in array
-    //=================
 
 
-    // Method to parse the input string
-    static void processContentOfType(String input) {
-
-        input = input.replace("'", "");
-
-        System.out.println(parsingPrefix + "Parsing: ");
-        System.out.println(input);
-
-        processTypeField(input);
-    }
 
 
     public static void processImport(String line, String definitions, String generator) throws IOException {
