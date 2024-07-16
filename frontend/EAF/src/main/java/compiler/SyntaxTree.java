@@ -98,11 +98,11 @@ public class SyntaxTree {
                 "      ];      \n" +
                 "    }; \n" +
                 "    tes2t := 7; \n" +
-                "    arrary := [50, 25]; \n" +
-                "    arrary := [\"tests\", \"tests2\"]; \n" +
-                "    test : arrary int := [50.8, 25.9]; \n" +
+                "    arr := [50, 25]; \n" +
+                "    arr := [\"tests\", \"tests2\"]; \n" +
+                "    test : array int := [50.8, 25.9]; \n" +
                 "    lol := [[\"tests\"]. \"tests2\"]; \n" +
-                "    lol2 : arrary int := [[1, [2, 3]]], 25.9]; \n" +
+                "    lol2 : array int := [[1, [2, 3]]], 25.9]; \n" +
                 "}");
 
 
