@@ -288,7 +288,7 @@ public class SyntaxTree {
     }
 
     public static List<String> extractValidSubstrings(String input) {
-
+        input = input.replace(" ", "");
         if (input.startsWith("[") && (input.endsWith("];") ||input.endsWith("]"))) {
             if ((input.endsWith("];"))) {
                 input = input.substring(1, input.length() - 2);
@@ -296,11 +296,9 @@ public class SyntaxTree {
             else {
                 input = input.substring(1, input.length() - 1);
             }
-
         }
         input +=  ",";
 
-        System.out.println("Spliting: " + input);
         List<String> substrings = new ArrayList<>();
         int curlyBraceCount = 0;
         int squareBracketCount = 0;
