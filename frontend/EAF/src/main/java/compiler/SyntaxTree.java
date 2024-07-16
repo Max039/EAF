@@ -386,32 +386,26 @@ public class SyntaxTree {
         Pattern arraySetterPattern = Pattern.compile("(\\b.+):=\\[(?s)(.*?)\\]");
 
         for (String item : extractArrayElements(input, "{", "}", ";", false)) {
-            System.out.println("Item: " + item);
             Matcher definingFieldPatternMatcher = definingFieldPattern.matcher(item);
             Matcher fieldSetterPrimitivePatternMatcher = fieldSetterPrimitivePattern.matcher(item);
             Matcher fieldSetterInstancePatternMatcher = fieldSetterInstancePattern.matcher(item);
             Matcher arrayDefinerPatternMatcher = arrayDefinerPattern.matcher(item);
             Matcher arraySetterPatternPatternMatcher = arraySetterPattern.matcher(item);
 
-            //================================
-            // Current issue if a array is in a instance the array will be detected instead of the instance
-            // same the other way around
-            //================================
-
-            if (arrayDefinerPatternMatcher.find()) {
+            if (arrayDefinerPatternMatcher.find() && item.endsWith("]")) {
                 var headAndValue = item.split(":=", 2);
                 var fieldAndType = headAndValue[0].split(":", 2);
 
                 ArrayFieldSetter(fieldAndType[0], fieldAndType[1].replace("array", "array "), headAndValue[1]);
                 processArrayField(headAndValue[1]);
             }
-            else if (arraySetterPatternPatternMatcher.find()) {
+            else if (arraySetterPatternPatternMatcher.find() && item.endsWith("]")) {
                 String typename = "null";
                 String[] fieldAndValue = item.split(":=", 2);
                 ArrayFieldSetter(fieldAndValue[0], typename, fieldAndValue[1]);
                 processArrayField(fieldAndValue[1]);
             }
-            else if (fieldSetterInstancePatternMatcher.find()) {
+            else if (fieldSetterInstancePatternMatcher.find() && item.endsWith("}")) {
                 var headAndValue = item.split(":=", 2);
                 var typeAndValue = headAndValue[1].split("\\{", 2);
 
