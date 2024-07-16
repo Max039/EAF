@@ -287,17 +287,17 @@ public class SyntaxTree {
         System.out.println(fieldPrefix + "ArraySetter called with field: " + field + " type: " + typename + ", value: " + value);
     }
 
-    public static List<String> extractValidSubstrings(String input) {
+    public static List<String> extractArrayElements(String input, String prefix, String suffix, String separator, boolean keepSeparator) {
         input = input.replace(" ", "");
-        if (input.startsWith("[") && (input.endsWith("];") ||input.endsWith("]"))) {
-            if ((input.endsWith("];"))) {
+        if (input.startsWith(prefix) && (input.endsWith(suffix + separator) ||input.endsWith(suffix))) {
+            if ((input.endsWith(suffix + separator))) {
                 input = input.substring(1, input.length() - 2);
             }
             else {
                 input = input.substring(1, input.length() - 1);
             }
         }
-        input +=  ",";
+        input +=  separator;
 
         List<String> substrings = new ArrayList<>();
         int curlyBraceCount = 0;
@@ -316,15 +316,27 @@ public class SyntaxTree {
                 curlyBraceCount--;
             } else if (currentChar == ']') {
                 squareBracketCount--;
-            } else if (currentChar == ',') {
+            } else if (currentChar == separator.charAt(0)) {
                 if (squareBracketCount == 0 && curlyBraceCount == 0) {
+                    String s = input.substring(lastValidPosition, i).trim();
+
                     // Valid comma found, extract substring
-                    substrings.add(input.substring(lastValidPosition, i).trim());
-                    lastValidPosition = i + 1;  // Update last valid position
+                    if (!s.isEmpty()) {
+                        if (keepSeparator) {
+                            substrings.add(s + separator);
+                        }
+                        else {
+                            substrings.add(s);
+                        }
+
+                    }
+                    lastValidPosition = i + 1;
+
                 }
             }
 
         }
+
         return substrings;
     }
 
@@ -338,12 +350,7 @@ public class SyntaxTree {
         Pattern intPattern = Pattern.compile("\\b\\d+\\b");
         Pattern floatPattern = Pattern.compile("\\b\\d+\\.\\d+\\b");
 
-        // Remove array brackets and split by commas not within curly braces
-
-        String[] items = extractValidSubstrings(input).toArray(String[]::new);
-        for (String item : items) {
-
-            item = item.trim();
+        for (String item : extractArrayElements(input, "[", "]", ",", false)) {
             Matcher structuredMatcher = structuredPattern.matcher(item);
             Matcher stringMatcher = stringPattern.matcher(item);
             Matcher intMatcher = intPattern.matcher(item);
@@ -370,64 +377,67 @@ public class SyntaxTree {
         }
     }
 
-    private static String processFieldsOfType(String input, String patternString, String functionName) {
-        Pattern pattern = Pattern.compile(patternString);
-        Matcher matcher = pattern.matcher(input);
+    public static void processTypeField(String input) {
 
-        while (matcher.find()) {
-            switch (functionName) {
-                case "DefiningField":
-                    String field = matcher.group(1);
-                    String arrayPart = matcher.group(2);
-                    int arrayCount = arrayPart == null ? 0 : arrayPart.split("array").length - 1;
-                    String typename = matcher.group(3) != null ? matcher.group(3) : matcher.group(4);
-                    typename = typename.replace("instance", "");
-                    typename = typename.replace(" ", "");
-                    boolean isInstance = matcher.group().contains("instance");
-                    UniversalFieldDefiner(field, typename, isInstance, arrayCount);
-                    break;
-                case "FieldSetterPrimitive":
-                    field = matcher.group(1);
-                    typename = matcher.group(2);
-                    String value = matcher.group(3);
-                    PrimitiveFieldSetter(field, typename, value);
-                    break;
-                case "FieldSetterInstance":
-                    field = matcher.group(1);
-                    typename = matcher.group(2);
-                    value = matcher.group(3);
-                    InstanceFieldSetter(field, typename, "{" + value + "}");
-                    input = input.replace(matcher.group(), "");
-                    processContentOfType("{" + value + "}");
-                    break;
-                case "ArrayDefiner":
-                    value = matcher.group().split(":=", 2)[1].trim(); // Full match including []
-                    String s1 = matcher.group().split(":=", 2)[0];
-                    var parts = s1.split(":");
-                    field = parts[0].trim();
-                    typename = parts[1].trim();
-                    ArrayFieldSetter(field, typename, value);
-                    input = input.replace(matcher.group(), "");
-                    processArrayField(value);
-                    break;
-                case "ArraySetter":
-                    value = matcher.group().split(":=", 2)[1].trim(); // Full match including []
-                    String s2 = matcher.group().split(":=", 2)[0];
-                    var parts2 = s2.split(":");
-                    field = parts2[0].trim();
-                    typename = "null";
+        Pattern definingFieldPattern = Pattern.compile("\\b\\b.+:\\b.");
+        Pattern fieldSetterPrimitivePattern = Pattern.compile("\\b\\w+:=\\w+(\\.\\w+)?\\b");
+        Pattern fieldSetterInstancePattern = Pattern.compile("\\w+:=\\w+\\{(?:[^{}]*\\{[^{}]*\\}[^{}]*)*\\}");
+        Pattern arrayDefinerPattern = Pattern.compile("(\\b.+):(\\b.+):=\\[(?s)(.*?)\\]");
+        Pattern arraySetterPattern = Pattern.compile("(\\b.+):=\\[(?s)(.*?)\\]");
 
-                    ArrayFieldSetter(field, typename, value);
-                    input = input.replace(matcher.group(), "");
-                    processArrayField(value);
-                    break;
+        for (String item : extractArrayElements(input, "{", "}", ";", false)) {
+            System.out.println("Item: " + item);
+            Matcher definingFieldPatternMatcher = definingFieldPattern.matcher(item);
+            Matcher fieldSetterPrimitivePatternMatcher = fieldSetterPrimitivePattern.matcher(item);
+            Matcher fieldSetterInstancePatternMatcher = fieldSetterInstancePattern.matcher(item);
+            Matcher arrayDefinerPatternMatcher = arrayDefinerPattern.matcher(item);
+            Matcher arraySetterPatternPatternMatcher = arraySetterPattern.matcher(item);
+
+            //================================
+            // Current issue if a array is in a instance the array will be detected instead of the instance
+            // same the other way around
+            //================================
+
+            if (arrayDefinerPatternMatcher.find()) {
+                var headAndValue = item.split(":=", 2);
+                var fieldAndType = headAndValue[0].split(":", 2);
+
+                ArrayFieldSetter(fieldAndType[0], fieldAndType[1].replace("array", "array "), headAndValue[1]);
+                processArrayField(headAndValue[1]);
+            }
+            else if (arraySetterPatternPatternMatcher.find()) {
+                String typename = "null";
+                String[] fieldAndValue = item.split(":=", 2);
+                ArrayFieldSetter(fieldAndValue[0], typename, fieldAndValue[1]);
+                processArrayField(fieldAndValue[1]);
+            }
+            else if (fieldSetterInstancePatternMatcher.find()) {
+                var headAndValue = item.split(":=", 2);
+                var typeAndValue = headAndValue[1].split("\\{", 2);
+
+                InstanceFieldSetter(headAndValue[0], typeAndValue[0], "{" + typeAndValue[1]);
+                processContentOfType("{" + typeAndValue[1]);
+            }
+            else if (fieldSetterPrimitivePatternMatcher.find()) {
+                var headAndValue = item.split(":=", 2);
+                var fieldAndType = headAndValue[0].split(":", 2);
+                String type = "null";
+                if (fieldAndType.length > 1) {
+                    type = fieldAndType[1];
+                }
+                PrimitiveFieldSetter(fieldAndType[0], type, headAndValue[1]);
+            }
+            else if (definingFieldPatternMatcher.find()) {
+                var fieldAndType = item.split(":", 2);
+                int arrayCount = item.split("array").length - 1;
+                boolean isInstance = item.contains("instance");
+                UniversalFieldDefiner(fieldAndType[0], fieldAndType[1].replace("array", "array "), isInstance, arrayCount);
+            }
+            else {
+                throw new UnknownTypeException("Unknown type in array: " + item);
             }
         }
-
-        return input;
     }
-
-
 
     public static void printArrayElement(String typename, String value) {
         System.out.println(parsingPrefix + "Array Element: type= " + typename + " value= " + value);
@@ -447,19 +457,7 @@ public class SyntaxTree {
         System.out.println(parsingPrefix + "Parsing: ");
         System.out.println(input);
 
-        // Patterns
-        String definingFieldPattern = "(?:['\"])?(\\S+)(?:['\"])?\\s*:\\s*((?:array\\s+)*)((instance\\s+)?(?:['\"])?(\\S+)(?:['\"])?);";
-        String fieldSetterPrimitivePattern = "(?:')?(\\w+)(?:')?\\s*(?::\\s*(\\w+(?:\\s*[*\\/+-]\\s*\\w+)*))?\\s*:=\\s*(\"(?:[^\"]|\"\")*\"|[-+]?\\d*\\.?\\d+|\\w+(?:\\s*[*\\/+-]\\s*\\w+)*)\\s*;";
-        String fieldSetterInstancePattern = "(\\w+)\\s*:=\\s*(\\w+)\\s*\\{((?:[^{}]*|\\{(?:[^{}]*|\\{[^{}]*\\})*\\})*)\\};";
-        String arrayDefinerPattern = "((\\w+)\\s*:\\s*)((\\w+)\\s*)*:=\\s*\\[.*?\\];";
-        String arraySetterPattern = "(\\w+)\\s*:=\\s*\\[.*?\\];";
-
-        // Match and call functions
-        input = processFieldsOfType(input, fieldSetterInstancePattern, "FieldSetterInstance");
-        input = processFieldsOfType(input, arrayDefinerPattern, "ArrayDefiner");
-        input = processFieldsOfType(input, arraySetterPattern, "ArraySetter");
-        input = processFieldsOfType(input, definingFieldPattern, "DefiningField");
-        processFieldsOfType(input, fieldSetterPrimitivePattern, "FieldSetterPrimitive");
+        processTypeField(input);
     }
 
 
