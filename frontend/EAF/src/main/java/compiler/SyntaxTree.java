@@ -101,22 +101,22 @@ public class SyntaxTree {
                 "    arr := [50, 25]; \n" +
                 "    arr := [\"tests\", \"tests2\"]; \n" +
                 "    test : array int := [50.8, 25.9]; \n" +
-                "    lol := [[\"tests\"]. \"tests2\"]; \n" +
-                "    lol2 : array int := [[1, [2, 3]]], 25.9]; \n" +
+                "    lol := [[\"tests\"], \"tests2\"]; \n" +
+                "    lol2 : array int := [[1, [2, 3]], 25.9]; \n" +
                 "}");
 
 
 
         System.out.println("============================");
         for (var im : moduleRegister.values().stream().map(Module::toString).sorted().toList()) {
-            System.out.println(im);
+            //System.out.println(im);
         }
         System.out.println("============================");
         System.out.println("Loaded modules count = " + moduleRegister.size());
         System.out.println("Loaded modules: ");
         System.out.println("============================");
         for (var im : moduleRegister.keySet().stream().sorted().toList()) {
-            System.out.println(im);
+            //System.out.println(im);
         }
         System.out.println("============================");
 
@@ -287,37 +287,78 @@ public class SyntaxTree {
         System.out.println(fieldPrefix + "ArraySetter called with field: " + field + " type: " + typename + ", value: " + value);
     }
 
+    public static List<String> extractValidSubstrings(String input) {
+
+        if (input.startsWith("[") && (input.endsWith("];") ||input.endsWith("]"))) {
+            if ((input.endsWith("];"))) {
+                input = input.substring(1, input.length() - 2);
+            }
+            else {
+                input = input.substring(1, input.length() - 1);
+            }
+
+        }
+        input +=  ",";
+
+        System.out.println("Spliting: " + input);
+        List<String> substrings = new ArrayList<>();
+        int curlyBraceCount = 0;
+        int squareBracketCount = 0;
+        int lastValidPosition = 0;
+
+
+        for (int i = 0; i < input.length(); i++) {
+            char currentChar = input.charAt(i);
+
+            if (currentChar == '{') {
+                curlyBraceCount++;
+            } else if (currentChar == '[') {
+                squareBracketCount++;
+            } else if (currentChar == '}') {
+                curlyBraceCount--;
+            } else if (currentChar == ']') {
+                squareBracketCount--;
+            } else if (currentChar == ',') {
+                if (squareBracketCount == 0 && curlyBraceCount == 0) {
+                    // Valid comma found, extract substring
+                    substrings.add(input.substring(lastValidPosition, i).trim());
+                    lastValidPosition = i + 1;  // Update last valid position
+                }
+            }
+
+        }
+        return substrings;
+    }
+
+
+
+
     public static void processArrayField(String input) {
         // Regex patterns
         Pattern structuredPattern = Pattern.compile("(\\w+-\\w+\\s*\\{.*?\\})", Pattern.DOTALL);
         Pattern stringPattern = Pattern.compile("\"([^\"]*)\"");
         Pattern intPattern = Pattern.compile("\\b\\d+\\b");
         Pattern floatPattern = Pattern.compile("\\b\\d+\\.\\d+\\b");
-        Pattern nestedArrayPattern = Pattern.compile("\\[([^\\[\\]]*)\\]");
 
         // Remove array brackets and split by commas not within curly braces
-        String[] items = input.substring(1, input.length() - 1).split(",(?=(?:[^\\{]*\\{[^\\}]*\\})*[^\\}]*$)");
+
+        String[] items = extractValidSubstrings(input).toArray(String[]::new);
         for (String item : items) {
+
             item = item.trim();
             Matcher structuredMatcher = structuredPattern.matcher(item);
             Matcher stringMatcher = stringPattern.matcher(item);
             Matcher intMatcher = intPattern.matcher(item);
             Matcher floatMatcher = floatPattern.matcher(item);
-            Matcher arraymatcher = nestedArrayPattern.matcher(item);
-
-            //==============================
-            // Array array setter [[],[]]
-            // Protect array from reading instance in instance aka [{{}}]
-            // by removing a item after reading it
-            //==============================
 
             if (structuredMatcher.find()) {
                 String type = structuredMatcher.group(1).split("\\s*\\{")[0];
                 String value = structuredMatcher.group(1).replace(type, "");
                 printArrayElement(type, value);
                 processContentOfType(value);
-            } else if (arraymatcher.find()) {
-                processArrayField(arraymatcher.group());
+            } else if (item.startsWith("[") && item.endsWith("]")) {
+                System.out.println(parsingPrefix + "Parsing sub array: " + item);
+                processArrayField(item);
             } else if (stringMatcher.find()) {
                 printArrayElement("string", stringMatcher.group(1));
             } else if (floatMatcher.find()) {
