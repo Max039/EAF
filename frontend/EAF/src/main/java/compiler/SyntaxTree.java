@@ -101,6 +101,8 @@ public class SyntaxTree {
                 "    arrary := [50, 25]; \n" +
                 "    arrary := [\"tests\", \"tests2\"]; \n" +
                 "    test : arrary int := [50.8, 25.9]; \n" +
+                "    lol := [[\"tests\"]. \"tests2\"]; \n" +
+                "    lol2 : arrary int := [[1, [2, 3]]], 25.9]; \n" +
                 "}");
 
 
@@ -291,22 +293,31 @@ public class SyntaxTree {
         Pattern stringPattern = Pattern.compile("\"([^\"]*)\"");
         Pattern intPattern = Pattern.compile("\\b\\d+\\b");
         Pattern floatPattern = Pattern.compile("\\b\\d+\\.\\d+\\b");
+        Pattern nestedArrayPattern = Pattern.compile("\\[([^\\[\\]]*)\\]");
 
         // Remove array brackets and split by commas not within curly braces
         String[] items = input.substring(1, input.length() - 1).split(",(?=(?:[^\\{]*\\{[^\\}]*\\})*[^\\}]*$)");
-
         for (String item : items) {
             item = item.trim();
             Matcher structuredMatcher = structuredPattern.matcher(item);
             Matcher stringMatcher = stringPattern.matcher(item);
             Matcher intMatcher = intPattern.matcher(item);
             Matcher floatMatcher = floatPattern.matcher(item);
+            Matcher arraymatcher = nestedArrayPattern.matcher(item);
+
+            //==============================
+            // Array array setter [[],[]]
+            // Protect array from reading instance in instance aka [{{}}]
+            // by removing a item after reading it
+            //==============================
 
             if (structuredMatcher.find()) {
                 String type = structuredMatcher.group(1).split("\\s*\\{")[0];
                 String value = structuredMatcher.group(1).replace(type, "");
                 printArrayElement(type, value);
                 processContentOfType(value);
+            } else if (arraymatcher.find()) {
+                processArrayField(arraymatcher.group());
             } else if (stringMatcher.find()) {
                 printArrayElement("string", stringMatcher.group(1));
             } else if (floatMatcher.find()) {
@@ -394,8 +405,8 @@ public class SyntaxTree {
         String definingFieldPattern = "(?:['\"])?(\\S+)(?:['\"])?\\s*:\\s*((?:array\\s+)*)((instance\\s+)?(?:['\"])?(\\S+)(?:['\"])?);";
         String fieldSetterPrimitivePattern = "(?:')?(\\w+)(?:')?\\s*(?::\\s*(\\w+(?:\\s*[*\\/+-]\\s*\\w+)*))?\\s*:=\\s*(\"(?:[^\"]|\"\")*\"|[-+]?\\d*\\.?\\d+|\\w+(?:\\s*[*\\/+-]\\s*\\w+)*)\\s*;";
         String fieldSetterInstancePattern = "(\\w+)\\s*:=\\s*(\\w+)\\s*\\{((?:[^{}]*|\\{(?:[^{}]*|\\{[^{}]*\\})*\\})*)\\};";
-        String arrayDefinerPattern = "((\\w+)\\s*:\\s*)((\\w+)\\s*)*:=\\s*\\[[^\\[\\]]*\\];";
-        String arraySetterPattern = "(\\w+)\\s*:=\\s*\\[[^\\[\\]]*\\];";
+        String arrayDefinerPattern = "((\\w+)\\s*:\\s*)((\\w+)\\s*)*:=\\s*\\[.*?\\];";
+        String arraySetterPattern = "(\\w+)\\s*:=\\s*\\[.*?\\];";
 
         // Match and call functions
         input = processFieldsOfType(input, fieldSetterInstancePattern, "FieldSetterInstance");
