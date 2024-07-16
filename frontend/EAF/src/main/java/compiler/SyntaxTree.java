@@ -349,15 +349,16 @@ public class SyntaxTree {
             Matcher intMatcher = intPattern.matcher(item);
             Matcher floatMatcher = floatPattern.matcher(item);
 
-            if (structuredMatcher.find()) {
-                String type = structuredMatcher.group(1).split("\\s*\\{")[0];
-                String value = structuredMatcher.group(1).replace(type, "");
-                printArrayElement(type, value);
-                processContentOfType(value);
-            } else if (item.startsWith("[") && item.endsWith("]")) {
+            if (item.startsWith("[") && item.endsWith("]")) {
                 System.out.println(parsingPrefix + "Parsing sub array: " + item);
                 processArrayField(item);
-            } else if (stringMatcher.find()) {
+            } else if (structuredMatcher.find()) {
+                String type = item.split("\\s*\\{")[0];
+                String value = item.replace(type, "");
+                printArrayElement(type, value);
+                processContentOfType(value);
+            }
+            else if (stringMatcher.find()) {
                 printArrayElement("string", stringMatcher.group(1));
             } else if (floatMatcher.find()) {
                 printArrayElement("real", floatMatcher.group(0));
@@ -431,6 +432,12 @@ public class SyntaxTree {
     public static void printArrayElement(String typename, String value) {
         System.out.println(parsingPrefix + "Array Element: type= " + typename + " value= " + value);
     }
+
+    //=================
+    //Needs to be handel with items
+    //Like array in array
+    //=================
+
 
     // Method to parse the input string
     static void processContentOfType(String input) {
