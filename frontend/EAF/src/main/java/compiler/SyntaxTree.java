@@ -103,6 +103,13 @@ public class SyntaxTree {
                 "    test : array int := [50.8, 25.9]; \n" +
                 "    lol := [[\"tests\"], \"tests2\"]; \n" +
                 "    lol2 : array int := [[1, [2, 3]], 25.9]; \n" +
+                "    zzz := 'mathematical-expression-rewriter' {\n" +
+                "       probability := 0.4;\n" +
+                "     };\n" +
+                "    tttt : rewriter := 'rewriter' {\n" +
+                "       probability := 0.4;\n" +
+                "     };\n" +
+                "     ooo := test;\n" +
                 "}");
 
 
@@ -385,7 +392,7 @@ public class SyntaxTree {
 
         Pattern definingFieldPattern = Pattern.compile("\\b\\b.+:\\b.");
         Pattern fieldSetterPrimitivePattern = Pattern.compile("\\b\\w+:=\\w+(\\.\\w+)?\\b");
-        Pattern fieldSetterInstancePattern = Pattern.compile("\\w+:=\\w+\\{(?:[^{}]*\\{[^{}]*\\}[^{}]*)*\\}");
+        Pattern fieldSetterInstancePattern = Pattern.compile("\\w+(?::=\\w+)?(?:\\{(?:[^{}]*\\{[^{}]*\\}[^{}]*)*\\})?");
         Pattern arrayDefinerPattern = Pattern.compile("(\\b.+):(\\b.+):=\\[(?s)(.*?)\\]");
         Pattern arraySetterPattern = Pattern.compile("(\\b.+):=\\[(?s)(.*?)\\]");
 
