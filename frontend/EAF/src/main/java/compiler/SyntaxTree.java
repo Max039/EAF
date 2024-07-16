@@ -429,7 +429,7 @@ public class SyntaxTree {
 
 
     public static void printArrayElement(String typename, String value) {
-        System.out.println(parsingPrefix + "Array Element: type= " + typename + " value= " + value + ");");
+        System.out.println(parsingPrefix + "Array Element: type= " + typename + " value= " + value);
     }
 
     // Method to parse the input string
