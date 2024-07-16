@@ -406,8 +406,7 @@ public class SyntaxTree {
             if (arrayDefinerPatternMatcher.find() && item.endsWith("]")) {
                 var headAndValue = item.split(":=", 2);
                 var fieldAndType = headAndValue[0].split(":", 2);
-
-                ArrayFieldSetter(fieldAndType[0], fieldAndType[1].replace("instance", "").replace("array", "array "), headAndValue[1]);
+                ArrayFieldSetter(fieldAndType[0], fieldAndType[1].replace("instance", "").replace("array", ""), headAndValue[1]);
                 processArrayField(headAndValue[1]);
             }
             else if (arraySetterPatternPatternMatcher.find() && item.endsWith("]")) {
