@@ -12,6 +12,7 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import static compiler.ClassType.getClassHierarchy;
+import static compiler.ClassType.getUniqueImports;
 
 
 public class SyntaxTree {
@@ -142,30 +143,7 @@ public class SyntaxTree {
         System.out.println(getUniqueImports(classesNeededForScript));
         System.out.println("============================");
     }
-
-    public static String getUniqueImports(ArrayList<ClassType> classTypes) {
-        Set<String> packages = new HashSet<>();
-        for (ClassType classType : classTypes) {
-            collectPackages(classType, packages);
-        }
-
-        List<String> sortedPackages = packages.stream().sorted().collect(Collectors.toList());
-
-        StringBuilder sb = new StringBuilder();
-        for (String pack : sortedPackages) {
-            sb.append("import ").append(pack).append(";\n");
-        }
-        return sb.toString();
-    }
-
-    // Helper method to collect packages from the class and its parents
-    private static void collectPackages(ClassType classType, Set<String> packages) {
-        if (classType != null) {
-            packages.add(classType.pack);
-            collectPackages(classType.parent, packages);
-        }
-    }
-
+    
 
     public static String makeModuleName(String s) {
         String definitionName = s.replace(File.separator, ".").replace("/", ".").replace(".dl", "").replace(".ddl", "");

@@ -3,6 +3,7 @@ package compiler;
 import test.Pair;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class ClassType implements Comparable {
 
@@ -128,28 +129,6 @@ public class ClassType implements Comparable {
         return Objects.equals(pack, classType.pack) && Objects.equals(name, classType.name) && isAbstract == classType.isAbstract && extending == classType.extending;
     }
 
-    // Method to collect all unique packages from the class and its parents
-    public static String getUniquePackages(ClassType classType) {
-        Set<String> packages = new HashSet<>();
-        collectPackages(classType, packages);
-
-        StringBuilder sb = new StringBuilder();
-        for (String pack : packages) {
-            sb.append("import ").append(pack).append(";\n");
-        }
-        return sb.toString();
-    }
-
-    // Helper method to traverse the class hierarchy and collect packages
-    private static void collectPackages(ClassType classType, Set<String> packages) {
-        if (classType != null) {
-            packages.add(classType.pack);
-            collectPackages(classType.parent, packages);
-        }
-    }
-
-
-
     @Override
     public int compareTo(Object o) {
         if (o == null || getClass() != o.getClass())  {
@@ -166,6 +145,29 @@ public class ClassType implements Comparable {
             }
             return res;
 
+        }
+    }
+
+    public static String getUniqueImports(ArrayList<ClassType> classTypes) {
+        Set<String> packages = new HashSet<>();
+        for (ClassType classType : classTypes) {
+            collectPackages(classType, packages);
+        }
+
+        List<String> sortedPackages = packages.stream().sorted().collect(Collectors.toList());
+
+        StringBuilder sb = new StringBuilder();
+        for (String pack : sortedPackages) {
+            sb.append("import ").append(pack).append(";\n");
+        }
+        return sb.toString();
+    }
+
+    // Helper method to collect packages from the class and its parents
+    private static void collectPackages(ClassType classType, Set<String> packages) {
+        if (classType != null) {
+            packages.add(classType.pack);
+            collectPackages(classType.parent, packages);
         }
     }
 }
