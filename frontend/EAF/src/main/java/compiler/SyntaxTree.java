@@ -506,7 +506,7 @@ public class SyntaxTree {
             }
         }
     }
-    public static void SetField(String clazzTypeName, String field, FieldType fieldType, String value) {
+    public static void SetField(String clazzTypeName, String field, FieldValue fieldValue) {
         var clazz = classRegister.get(clazzTypeName);
         if (clazz == null) {
             throw new ClassTypeNotFoundException("When trying to set field \"" + field + "\" for type \"" + clazzTypeName + "\" the type was not found!");
@@ -514,15 +514,15 @@ public class SyntaxTree {
         else {
             var res = clazz.getFieldPair(field);
             if (res != null) {
-                if (res.getFirst().equals(fieldType)) {
-                    if (res.getSecond().isEmpty()) {
-                        clazz.setField(field, fieldType, value);
+                if (res.getFirst().equals(fieldValue.type)) {
+                    if (res.getSecond() == null) {
+                        clazz.setField(field, fieldValue);
                     }
                     else {
                         throw new FieldValueAlreadyDefined("When trying to set field \"" + field + "\" for type \"" + clazzTypeName + "\" the value was already defined!");
                     }
                 } else {
-                    throw new FieldTypeMismatchException("When trying to set field \"" + field + "\" for type \"" + clazzTypeName + "\" there was a type mismatch \"" + fieldType.toString() + "\" != \"" + res.getFirst().toString() + "\"");
+                    throw new FieldTypeMismatchException("When trying to set field \"" + field + "\" for type \"" + clazzTypeName + "\" there was a type mismatch \"" + fieldValue.type.toString() + "\" != \"" + res.getFirst().toString() + "\"");
                 }
             } else {
                 throw new FieldNotFoundException("When trying to set field \"" + field + "\" for type \"" + clazzTypeName + "\" the field was not found!");

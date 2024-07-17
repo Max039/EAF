@@ -5,9 +5,16 @@ import java.util.Objects;
 public class FieldType {
     boolean primitive;
     String typeName;
-    int arrayCount = 0;
+    int arrayCount;
 
     String spacing = " ";
+
+
+    FieldType(String typeName, boolean primitive, int arrayCount) {
+        this.typeName = typeName;
+        this.primitive = primitive;
+        this.arrayCount = arrayCount;
+    }
 
     @Override
     public String toString() {

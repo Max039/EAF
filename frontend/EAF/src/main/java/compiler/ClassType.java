@@ -7,7 +7,7 @@ import java.util.stream.Collectors;
 
 public class ClassType implements Comparable {
 
-    public HashMap<String, Pair<FieldType, String>> fields;
+    public HashMap<String, Pair<FieldType, FieldValue>> fields;
     String name;
 
     String spacing = " ";
@@ -64,16 +64,16 @@ public class ClassType implements Comparable {
         return parent != null;
     }
 
-    Pair<FieldType, String> getFieldPair(String name) {
+    Pair<FieldType, FieldValue> getFieldPair(String name) {
         return fields.get(name);
     }
 
     void addField(String name, FieldType type) {
-        fields.put(name, new Pair<>(type, ""));
+        fields.put(name, new Pair<>(type, null));
     }
 
-    void setField(String name, FieldType type, String content) {
-        fields.put(name, new Pair<>(type, content));
+    void setField(String name, FieldValue v) {
+        fields.put(name, new Pair<>(v.type, v));
     }
 
     public String getParent() {
@@ -126,7 +126,7 @@ public class ClassType implements Comparable {
     public String toString() {
         StringBuilder s = new StringBuilder(spacing + "Class = " + name + " Parent: " + getParentName() + " Children: [" + getChildrenNames() + "]" +  " {\n" + spacing + " Fields: [\n");
         for (var t : fields.entrySet()) {
-            s.append(spacing).append("Field = ").append(t.getKey()).append(" : ").append(t.getValue().toString()).append("\n");
+            s.append(spacing).append("Field = ").append(t.getKey()).append(" : ").append(t.getValue().getSecond().toString()).append("\n");
         }
         s.append(spacing).append(" ]\n" + spacing + "}");
         return s.toString();
@@ -181,5 +181,18 @@ public class ClassType implements Comparable {
             packages.add(classType.pack);
             collectPackages(classType.parent, packages);
         }
+    }
+
+    public ClassType instance() {
+        var c = new ClassType(name, parent, pack);
+        c.setAbstract(isAbstract);
+        c.children = children;
+        for (var v : fields.entrySet()) {
+            var pair = v.getValue();
+            var val = pair.getSecond().clone();
+            c.fields.put(v.getKey(), new Pair<>(val.type, val));
+        }
+
+        return c;
     }
 }
