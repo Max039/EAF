@@ -14,7 +14,7 @@ public class ClassType implements Comparable {
 
     private boolean isAbstract = false;
 
-    private boolean extending = false;
+    private boolean extending;
 
     ClassType parent;
 
@@ -29,6 +29,10 @@ public class ClassType implements Comparable {
         fields = new HashMap<>();
         if ( parent != null ) {
             fields.putAll(parent.fields);
+            extending = true;
+        }
+        else {
+            extending = false;
         }
     }
 

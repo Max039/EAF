@@ -9,7 +9,6 @@ import java.io.IOException;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 
 import static compiler.ClassType.getClassHierarchy;
 import static compiler.ClassType.getUniqueImports;
@@ -143,7 +142,7 @@ public class SyntaxTree {
         System.out.println(getUniqueImports(classesNeededForScript));
         System.out.println("============================");
     }
-    
+
 
     public static String makeModuleName(String s) {
         String definitionName = s.replace(File.separator, ".").replace("/", ".").replace(".dl", "").replace(".ddl", "");
@@ -180,41 +179,42 @@ public class SyntaxTree {
     }
 
     public static void processDlFileForImports(String filename, String definitionName, boolean index) throws IOException {
-        System.out.println(importPrefix + "Processing definition " + definitionName + " under path " + filename);
-        try (BufferedReader reader = new BufferedReader(new FileReader(filename))) {
-            String line;
-            while ((line = reader.readLine()) != null) {
-                line = line.trim();  // Trim leading and trailing whitespace
+        if (moduleRegister.get(definitionName) == null) {
+            System.out.println(importPrefix + "Processing definition " + definitionName + " under path " + filename);
+            try (BufferedReader reader = new BufferedReader(new FileReader(filename))) {
+                String line;
+                while ((line = reader.readLine()) != null) {
+                    line = line.trim();  // Trim leading and trailing whitespace
 
-                // Check if the line is empty
-                if (line.isEmpty()) {
-                    continue;  // Skip empty lines
+                    // Check if the line is empty
+                    if (line.isEmpty()) {
+                        continue;  // Skip empty lines
+                    }
+
+                    // Define a regex pattern to match "import ... from ..."
+                    String regex = "^import \"([^\"]+)\" from ([^;]+);$";
+                    Pattern pattern = Pattern.compile(regex);
+                    Matcher matcher = pattern.matcher(line);
+
+                    // If line matches the pattern, process it
+                    if (matcher.matches()) {
+                        String definitions = matcher.group(1);
+                        String generator = matcher.group(2);
+
+                        // Remove single quotes
+                        definitions = definitions.replace("'", "");
+                        generator = generator.replace("'", "");
+
+                        // Call your function and print the line
+                        processImport(line, definitions, generator);
+                        //System.out.println(line);
+                    } else {
+                        break;  // Stop processing on the first non-matching line
+                    }
                 }
-
-                // Define a regex pattern to match "import ... from ..."
-                String regex = "^import \"([^\"]+)\" from ([^;]+);$";
-                Pattern pattern = Pattern.compile(regex);
-                Matcher matcher = pattern.matcher(line);
-
-                // If line matches the pattern, process it
-                if (matcher.matches()) {
-                    String definitions = matcher.group(1);
-                    String generator = matcher.group(2);
-
-                    // Remove single quotes
-                    definitions = definitions.replace("'", "");
-                    generator = generator.replace("'", "");
-
-                    // Call your function and print the line
-                    processImport(line, definitions, generator);
-                    //System.out.println(line);
-                } else {
-                    break;  // Stop processing on the first non-matching line
+                if (index) {
+                    moduleRegister.put(definitionName, new Module(processContentOfModule(new BufferedReader(new FileReader(filename)))));
                 }
-            }
-
-            if (index) {
-                moduleRegister.put(definitionName, new Module(processContentOfModule(new BufferedReader(new FileReader(filename)))));
             }
         }
     }
@@ -248,14 +248,10 @@ public class SyntaxTree {
 
 
             String extendedType = typeMatcher.group(3);
+            typeMatcher.group(0).substring(typeMatcher.group(0).indexOf("{"));
+            ClassType clazz = DefineType(typeName, extendedType, moduleName, isAbstract);
             String typeContent = typeMatcher.group(0).substring(typeMatcher.group(0).indexOf("{"));
-            ClassType clazz = extendedType == null ? new ClassType(typeName, null, moduleName) : new ClassType(typeName, classRegister.get(extendedType), moduleName);
-            if (extendedType == null) {
-                processType(clazz, moduleName, typeName, isAbstract, typeContent);
-            } else {
-                classRegister.get(extendedType).addChild(clazz);
-                processExtendedType(clazz, moduleName, typeName, extendedType, isAbstract, typeContent);
-            }
+            processContentOfType(typeContent);
             clazzTypes.add(clazz);
         }
         return new Pair<>(moduleName, clazzTypes);
@@ -272,25 +268,6 @@ public class SyntaxTree {
             return moduleMatcher.group(1);
         }
         return null;
-    }
-
-    private static void processType(ClassType clazz, String moduleName, String typeName, boolean isAbstract, String typeContent) {
-        System.out.println(typePrefix + "Registering Type: " + moduleName + ", Type: " + typeName + ", isAbstract: " + isAbstract);
-        clazz.setAbstract(isAbstract);
-
-        classRegister.put(typeName, clazz);
-        baseClassRegister.put(typeName, clazz);
-        processContentOfType(typeContent);
-
-    }
-
-    private static void processExtendedType(ClassType clazz, String moduleName, String typeName, String extendedType, boolean isAbstract, String typeContent) {
-        System.out.println(typePrefix + "Registering Type: " + moduleName + ", Type: " + typeName + ", Extended Type: " + extendedType + ", isAbstract: " + isAbstract);
-        clazz.setAbstract(isAbstract);
-        clazz.setExtending(true);
-
-        classRegister.put(typeName, clazz);
-        processContentOfType(typeContent);
     }
 
     // Function declarations as per your requirement
@@ -468,8 +445,6 @@ public class SyntaxTree {
 
 
     public static void processImport(String line, String definitions, String generator) throws IOException {
-
-
         switch (definitions) {
             case "definitions" :
                 if (moduleRegister.get(generator) == null) {
@@ -486,6 +461,77 @@ public class SyntaxTree {
             default:
                 throw new InvalidImportException("Invalid import statement: " + line);
 
+        }
+    }
+
+
+
+    public static ClassType DefineType(String typeName, String parent, String module, boolean isAbstract) {
+        System.out.println(typePrefix + "Registering Type: " + module + ", Type: " + typeName + ", Extending Type: " + parent + ", isAbstract: " + isAbstract);
+        var test = classRegister.get(typeName);
+        System.out.println(module);
+        if (test != null && test.pack.equals(module)) {
+            throw new TypeNameAlreadyUsedException("Type \"" + typeName + "\" in module \"" + module + "\" already defined!");
+        }
+        ClassType parentType = null;
+
+        if (parent != null && !parent.isEmpty()) {
+            var res = classRegister.get(parent);
+            if (res != null) {
+                parentType = res;
+            }
+            else {
+                throw new ParentClassDoesNotExistException("Parent class \"" + parent + "\" for the type \"" + typeName + "\" not found!");
+            }
+        }
+        ClassType c = new ClassType(typeName, parentType, module);
+        c.setAbstract(isAbstract);
+        classRegister.put(typeName, c);
+        if (parentType == null) {
+            baseClassRegister.put(typeName, c);
+        }
+        else {
+            parentType.addChild(c);
+        }
+        return c;
+    };
+
+
+
+
+    public static class TypeNameAlreadyUsedException extends RuntimeException {
+        public TypeNameAlreadyUsedException(String s) {
+            super(s);
+        }
+    }
+
+    public static class ParentClassDoesNotExistException extends RuntimeException {
+        public ParentClassDoesNotExistException(String s) {
+            super(s);
+        }
+    }
+
+    public static class ClassTypeNotFoundException extends RuntimeException {
+        public ClassTypeNotFoundException(String s) {
+            super(s);
+        }
+    }
+
+    public static class FieldAlreadyDefinedException extends RuntimeException {
+        public FieldAlreadyDefinedException(String s) {
+            super(s);
+        }
+    }
+
+    public static class FieldNotFoundException extends RuntimeException {
+        public FieldNotFoundException(String s) {
+            super(s);
+        }
+    }
+
+    public static class FieldTypeMismatchException extends RuntimeException {
+        public FieldTypeMismatchException(String s) {
+            super(s);
         }
     }
 
