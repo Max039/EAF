@@ -10,6 +10,8 @@ import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import static compiler.ClassType.getClassHierarchy;
+
 
 public class SyntaxTree {
     public static ArrayList<String> pathToSyntax = new ArrayList<>();
@@ -36,6 +38,7 @@ public class SyntaxTree {
     public static HashMap<String, Module> moduleRegister = new HashMap<>();
 
     public static HashMap<String, ClassType> classRegister = new HashMap<>();
+    public static HashMap<String, ClassType> baseClassRegister = new HashMap<>();
 
     public static String buildPath = "\\EvoAlBuilds\\" + evoalBuild + "\\evoal\\definitions\\de";
 
@@ -124,6 +127,10 @@ public class SyntaxTree {
         System.out.println("============================");
         for (var im : moduleRegister.keySet().stream().sorted().toList()) {
             System.out.println(im);
+        }
+        System.out.println("============================");
+        for (var im : baseClassRegister.values().stream().sorted().toList()) {
+            System.out.print(getClassHierarchy(im, "", true, true));
         }
         System.out.println("============================");
 
@@ -264,6 +271,7 @@ public class SyntaxTree {
         clazz.setAbstract(isAbstract);
 
         classRegister.put(typeName, clazz);
+        baseClassRegister.put(typeName, clazz);
         processContentOfType(typeContent);
 
     }

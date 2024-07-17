@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Objects;
 
-public class ClassType {
+public class ClassType implements Comparable {
 
     public HashMap<String, Pair<FieldType, String>> fields;
     String name;
@@ -83,6 +83,30 @@ public class ClassType {
         return s;
     }
 
+    // Method to return the class hierarchy tree as a string in the specified format
+    public static String getClassHierarchy(ClassType root, String indent, boolean last, boolean isRoot) {
+        StringBuilder sb = new StringBuilder();
+        sb.append(indent);
+        if (isRoot) {
+            sb.append("─── ");
+            indent += "    ";
+        } else {
+            if (last) {
+                sb.append("└── ");
+                indent += "    ";
+            } else {
+                sb.append("├── ");
+                indent += "│   ";
+            }
+        }
+        var childrenSorted = root.children.stream().sorted().toList();
+        sb.append(root.name).append("\n");
+        for (int i = 0; i < childrenSorted.size(); i++) {
+            sb.append(getClassHierarchy(childrenSorted.get(i), indent, i == childrenSorted.size() - 1, false));
+        }
+        return sb.toString();
+    }
+
 
     @Override
     public String toString() {
@@ -104,4 +128,22 @@ public class ClassType {
     }
 
 
+    @Override
+    public int compareTo(Object o) {
+        if (o == null || getClass() != o.getClass())  {
+            return -1;
+        }
+        else {
+            ClassType c = (ClassType) o;
+            int res =  c.name.compareTo(name);
+            if (res > 0) {
+                res = -1;
+            }
+            else if (res < 0) {
+                res = 1;
+            }
+            return res;
+
+        }
+    }
 }
