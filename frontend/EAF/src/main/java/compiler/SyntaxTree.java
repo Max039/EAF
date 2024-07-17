@@ -74,7 +74,7 @@ public class SyntaxTree {
         while (!fileQueue.isEmpty()) {
             File file = fileQueue.poll();
             String relativePath = new File(currentPath).toURI().relativize(file.toURI()).getPath();
-            processDlFileForImports(relativePath, makeModuleName(relativePath), true);
+            processDlFileForImports(relativePath, makeModuleName(relativePath));
         }
 
 
@@ -178,7 +178,7 @@ public class SyntaxTree {
         }
     }
 
-    public static void processDlFileForImports(String filename, String definitionName, boolean index) throws IOException {
+    public static void processDlFileForImports(String filename, String definitionName) throws IOException {
         if (moduleRegister.get(definitionName) == null) {
             System.out.println(importPrefix + "Processing definition " + definitionName + " under path " + filename);
             try (BufferedReader reader = new BufferedReader(new FileReader(filename))) {
@@ -212,9 +212,7 @@ public class SyntaxTree {
                         break;  // Stop processing on the first non-matching line
                     }
                 }
-                if (index) {
-                    moduleRegister.put(definitionName, new Module(processContentOfModule(new BufferedReader(new FileReader(filename)))));
-                }
+                moduleRegister.put(definitionName, new Module(processContentOfModule(new BufferedReader(new FileReader(filename)))));
             }
         }
     }
@@ -450,7 +448,7 @@ public class SyntaxTree {
                 if (moduleRegister.get(generator) == null) {
                     System.out.println(importPrefix + generator + RED + " is not " + RESET + "yet in memory!");
                     TreeNode foundNode = root.findNodeByPath(generator);
-                    processDlFileForImports(foundNode.fullPath, generator, true);
+                    processDlFileForImports(foundNode.fullPath, generator);
                 }
                 else {
                     System.out.println(importPrefix + "Skipping \"" + generator +"\"" +  GREEN + " is " + RESET + "already in memory!");
