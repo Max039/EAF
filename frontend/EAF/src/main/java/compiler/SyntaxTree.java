@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 import static compiler.ClassType.getClassHierarchy;
 
@@ -137,6 +138,7 @@ public class SyntaxTree {
         //ArrayList<ClassType> classesNeededForScript = new ArrayList<>(baseClassRegister.values());
         ArrayList<ClassType> classesNeededForScript = new ArrayList<>();
         classesNeededForScript.add(classRegister.get("thin-plate-spline-svr"));
+        classesNeededForScript.add(classRegister.get("generation-print-crossover"));
         System.out.println(getUniqueImports(classesNeededForScript));
         System.out.println("============================");
     }
@@ -147,8 +149,10 @@ public class SyntaxTree {
             collectPackages(classType, packages);
         }
 
+        List<String> sortedPackages = packages.stream().sorted().collect(Collectors.toList());
+
         StringBuilder sb = new StringBuilder();
-        for (String pack : packages) {
+        for (String pack : sortedPackages) {
             sb.append("import ").append(pack).append(";\n");
         }
         return sb.toString();
