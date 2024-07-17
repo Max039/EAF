@@ -116,14 +116,14 @@ public class SyntaxTree {
 
         System.out.println("============================");
         for (var im : moduleRegister.values().stream().map(Module::toString).sorted().toList()) {
-            //System.out.println(im);
+            System.out.println(im);
         }
         System.out.println("============================");
         System.out.println("Loaded modules count = " + moduleRegister.size());
         System.out.println("Loaded modules: ");
         System.out.println("============================");
         for (var im : moduleRegister.keySet().stream().sorted().toList()) {
-            //System.out.println(im);
+            System.out.println(im);
         }
         System.out.println("============================");
 
@@ -236,9 +236,9 @@ public class SyntaxTree {
             String typeContent = typeMatcher.group(0).substring(typeMatcher.group(0).indexOf("{"));
             ClassType clazz = extendedType == null ? new ClassType(typeName, null) : new ClassType(typeName, classRegister.get(extendedType));
             if (extendedType == null) {
-
                 processType(clazz, moduleName, typeName, isAbstract, typeContent);
             } else {
+                classRegister.get(extendedType).addChild(clazz);
                 processExtendedType(clazz, moduleName, typeName, extendedType, isAbstract, typeContent);
             }
             clazzTypes.add(clazz);

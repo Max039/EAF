@@ -2,7 +2,9 @@ package compiler;
 
 import test.Pair;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Objects;
 
 public class ClassType {
 
@@ -16,6 +18,9 @@ public class ClassType {
     private boolean extending = false;
 
     ClassType parent;
+
+    ArrayList<ClassType> children = new ArrayList<>();
+
     ClassType(String name, ClassType parent) {
         this.name = name;
         this.parent = parent;
@@ -34,16 +39,23 @@ public class ClassType {
     }
 
     public void addChild(ClassType child) {
-        // Implementation for adding a child instance
+        children.add(child);
     }
 
-    public boolean matachesType(ClassType c) {
-        //Check if this or a child is of that type and is not abstract
-        return true;
+    public boolean matchesType(ClassType c) {
+        if (this.equals(c)) {
+            return true;
+        }
+        for (var child : children) {
+            if (child.equals(c)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     boolean doesExtend() {
-        return parent == null;
+        return parent != null;
     }
 
     Pair<FieldType, String> getFieldPair(String name) {
@@ -54,14 +66,42 @@ public class ClassType {
         return parent == null ? "null" : parent.toString();
     }
 
+    public String getParentName() {
+        return parent == null ? "null" : parent.name;
+    }
+
+    public String getChildrenNames() {
+        String s = "";
+        for (var child : children) {
+            if (s.isEmpty()) {
+                s = child.name + " [" + child.getChildrenNames() + "]";
+            }
+            else {
+                s += ", " + child.name + " [" + child.getChildrenNames() + "]";
+            }
+        }
+        return s;
+    }
+
 
     @Override
     public String toString() {
-        StringBuilder s = new StringBuilder(spacing + "Class = " + name + " Parent: " + getParent()  + " {\n" + spacing + " Fields: [\n");
+        StringBuilder s = new StringBuilder(spacing + "Class = " + name + " Parent: " + getParentName() + " Children: [" + getChildrenNames() + "]" +  " {\n" + spacing + " Fields: [\n");
         for (var t : fields.entrySet()) {
             s.append(spacing).append("Field = ").append(t.getKey()).append(" : ").append(t.getValue().toString()).append("\n");
         }
         s.append(spacing).append(" ]\n" + spacing + "}");
         return s.toString();
     }
+
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        ClassType classType = (ClassType) o;
+        return isAbstract == classType.isAbstract && extending == classType.extending && Objects.equals(name, classType.name);
+    }
+
+
 }
