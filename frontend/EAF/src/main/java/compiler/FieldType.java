@@ -20,7 +20,7 @@ public class FieldType {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         FieldType fieldType = (FieldType) o;
-        return primitive == fieldType.primitive && arrayCount == fieldType.arrayCount && Objects.equals(typeName, fieldType.typeName);
+        return Objects.equals(typeName, fieldType.typeName) && primitive == fieldType.primitive && arrayCount == fieldType.arrayCount;
     }
 
 }

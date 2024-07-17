@@ -68,6 +68,14 @@ public class ClassType implements Comparable {
         return fields.get(name);
     }
 
+    void addField(String name, FieldType type) {
+        fields.put(name, new Pair<>(type, ""));
+    }
+
+    void setField(String name, FieldType type, String content) {
+        fields.put(name, new Pair<>(type, content));
+    }
+
     public String getParent() {
         return parent == null ? "null" : parent.toString();
     }

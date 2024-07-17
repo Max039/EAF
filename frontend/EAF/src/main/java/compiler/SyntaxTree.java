@@ -180,7 +180,7 @@ public class SyntaxTree {
 
     public static void processDlFileForImports(String filename, String definitionName) throws IOException {
         if (moduleRegister.get(definitionName) == null) {
-            System.out.println(importPrefix + definitionName + RED + " is not " + RESET + "yet in memory!");
+            System.out.println(importPrefix + "\"" + definitionName + "\"" + RED + " is not " + RESET + "yet in memory!");
             System.out.println(importPrefix + "Processing definition " + definitionName + " under path " + filename);
             try (BufferedReader reader = new BufferedReader(new FileReader(filename))) {
                 String line;
@@ -492,8 +492,50 @@ public class SyntaxTree {
         return c;
     };
 
+    public static void DefineField(String clazzTypeName, String field, FieldType fieldType) {
+        var clazz = classRegister.get(clazzTypeName);
+        if (clazz == null) {
+            throw new ClassTypeNotFoundException("When trying to define field \"" + field + "\" for type \"" + clazzTypeName + "\" the type was not found!");
+        }
+        else {
+            if (clazz.getFieldPair(field) == null) {
+                System.out.println("Defined field \"" + field + "\" for type \"" + clazzTypeName + "\" with type " + fieldType.toString());
+                clazz.addField(field, fieldType);
+            } else {
+                throw new FieldAlreadyDefinedException("When trying to define field \"" + field + "\" for type \"" + clazzTypeName + "\" field name was already defined!");
+            }
+        }
+    }
+    public static void SetField(String clazzTypeName, String field, FieldType fieldType, String value) {
+        var clazz = classRegister.get(clazzTypeName);
+        if (clazz == null) {
+            throw new ClassTypeNotFoundException("When trying to set field \"" + field + "\" for type \"" + clazzTypeName + "\" the type was not found!");
+        }
+        else {
+            var res = clazz.getFieldPair(field);
+            if (res != null) {
+                if (res.getFirst().equals(fieldType)) {
+                    if (res.getSecond().isEmpty()) {
+                        clazz.setField(field, fieldType, value);
+                    }
+                    else {
+                        throw new FieldValueAlreadyDefined("When trying to set field \"" + field + "\" for type \"" + clazzTypeName + "\" the value was already defined!");
+                    }
+                } else {
+                    throw new FieldTypeMismatchException("When trying to set field \"" + field + "\" for type \"" + clazzTypeName + "\" there was a type mismatch \"" + fieldType.toString() + "\" != \"" + res.getFirst().toString() + "\"");
+                }
+            } else {
+                throw new FieldNotFoundException("When trying to set field \"" + field + "\" for type \"" + clazzTypeName + "\" the field was not found!");
+            }
+        }
+    }
 
 
+    public static class FieldValueAlreadyDefined extends RuntimeException {
+        public FieldValueAlreadyDefined(String s) {
+            super(s);
+        }
+    }
 
     public static class TypeNameAlreadyUsedException extends RuntimeException {
         public TypeNameAlreadyUsedException(String s) {
