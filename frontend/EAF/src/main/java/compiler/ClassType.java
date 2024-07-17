@@ -2,9 +2,7 @@ package compiler;
 
 import test.Pair;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Objects;
+import java.util.*;
 
 public class ClassType implements Comparable {
 
@@ -129,6 +127,27 @@ public class ClassType implements Comparable {
         ClassType classType = (ClassType) o;
         return Objects.equals(pack, classType.pack) && Objects.equals(name, classType.name) && isAbstract == classType.isAbstract && extending == classType.extending;
     }
+
+    // Method to collect all unique packages from the class and its parents
+    public static String getUniquePackages(ClassType classType) {
+        Set<String> packages = new HashSet<>();
+        collectPackages(classType, packages);
+
+        StringBuilder sb = new StringBuilder();
+        for (String pack : packages) {
+            sb.append("import ").append(pack).append(";\n");
+        }
+        return sb.toString();
+    }
+
+    // Helper method to traverse the class hierarchy and collect packages
+    private static void collectPackages(ClassType classType, Set<String> packages) {
+        if (classType != null) {
+            packages.add(classType.pack);
+            collectPackages(classType.parent, packages);
+        }
+    }
+
 
 
     @Override

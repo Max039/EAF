@@ -133,9 +133,35 @@ public class SyntaxTree {
             System.out.print(getClassHierarchy(im, "", true, true));
         }
         System.out.println("============================");
-
-
+        System.out.println("Simulating classes needed for imports: ");
+        //ArrayList<ClassType> classesNeededForScript = new ArrayList<>(baseClassRegister.values());
+        ArrayList<ClassType> classesNeededForScript = new ArrayList<>();
+        classesNeededForScript.add(classRegister.get("thin-plate-spline-svr"));
+        System.out.println(getUniqueImports(classesNeededForScript));
+        System.out.println("============================");
     }
+
+    public static String getUniqueImports(ArrayList<ClassType> classTypes) {
+        Set<String> packages = new HashSet<>();
+        for (ClassType classType : classTypes) {
+            collectPackages(classType, packages);
+        }
+
+        StringBuilder sb = new StringBuilder();
+        for (String pack : packages) {
+            sb.append("import ").append(pack).append(";\n");
+        }
+        return sb.toString();
+    }
+
+    // Helper method to collect packages from the class and its parents
+    private static void collectPackages(ClassType classType, Set<String> packages) {
+        if (classType != null) {
+            packages.add(classType.pack);
+            collectPackages(classType.parent, packages);
+        }
+    }
+
 
     public static String makeModuleName(String s) {
         String definitionName = s.replace(File.separator, ".").replace("/", ".").replace(".dl", "").replace(".ddl", "");
