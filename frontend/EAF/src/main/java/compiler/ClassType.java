@@ -21,9 +21,12 @@ public class ClassType implements Comparable {
 
     ArrayList<ClassType> children = new ArrayList<>();
 
-    ClassType(String name, ClassType parent) {
+    String pack;
+
+    ClassType(String name, ClassType parent, String pack) {
         this.name = name;
         this.parent = parent;
+        this.pack = pack;
         fields = new HashMap<>();
         if ( parent != null ) {
             fields.putAll(parent.fields);
@@ -100,7 +103,7 @@ public class ClassType implements Comparable {
             }
         }
         var childrenSorted = root.children.stream().sorted().toList();
-        sb.append(root.name).append("\n");
+        sb.append(root.name + " (" + "\u001B[37m" + root.pack  + "\u001B[0m" + ")").append("\n");
         for (int i = 0; i < childrenSorted.size(); i++) {
             sb.append(getClassHierarchy(childrenSorted.get(i), indent, i == childrenSorted.size() - 1, false));
         }
@@ -124,7 +127,7 @@ public class ClassType implements Comparable {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         ClassType classType = (ClassType) o;
-        return isAbstract == classType.isAbstract && extending == classType.extending && Objects.equals(name, classType.name);
+        return Objects.equals(pack, classType.pack) && Objects.equals(name, classType.name) && isAbstract == classType.isAbstract && extending == classType.extending;
     }
 
 

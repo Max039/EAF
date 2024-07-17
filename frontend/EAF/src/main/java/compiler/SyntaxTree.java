@@ -241,7 +241,7 @@ public class SyntaxTree {
 
             String extendedType = typeMatcher.group(3);
             String typeContent = typeMatcher.group(0).substring(typeMatcher.group(0).indexOf("{"));
-            ClassType clazz = extendedType == null ? new ClassType(typeName, null) : new ClassType(typeName, classRegister.get(extendedType));
+            ClassType clazz = extendedType == null ? new ClassType(typeName, null, moduleName) : new ClassType(typeName, classRegister.get(extendedType), moduleName);
             if (extendedType == null) {
                 processType(clazz, moduleName, typeName, isAbstract, typeContent);
             } else {
