@@ -180,6 +180,7 @@ public class SyntaxTree {
 
     public static void processDlFileForImports(String filename, String definitionName) throws IOException {
         if (moduleRegister.get(definitionName) == null) {
+            System.out.println(importPrefix + definitionName + RED + " is not " + RESET + "yet in memory!");
             System.out.println(importPrefix + "Processing definition " + definitionName + " under path " + filename);
             try (BufferedReader reader = new BufferedReader(new FileReader(filename))) {
                 String line;
@@ -214,6 +215,9 @@ public class SyntaxTree {
                 }
                 moduleRegister.put(definitionName, new Module(processContentOfModule(new BufferedReader(new FileReader(filename)))));
             }
+        }
+        else {
+            System.out.println(importPrefix + "Skipping \"" + definitionName +"\"" +  GREEN + " is " + RESET + "already in memory!");
         }
     }
 
@@ -445,14 +449,8 @@ public class SyntaxTree {
     public static void processImport(String line, String definitions, String generator) throws IOException {
         switch (definitions) {
             case "definitions" :
-                if (moduleRegister.get(generator) == null) {
-                    System.out.println(importPrefix + generator + RED + " is not " + RESET + "yet in memory!");
-                    TreeNode foundNode = root.findNodeByPath(generator);
-                    processDlFileForImports(foundNode.fullPath, generator);
-                }
-                else {
-                    System.out.println(importPrefix + "Skipping \"" + generator +"\"" +  GREEN + " is " + RESET + "already in memory!");
-                }
+                TreeNode foundNode = root.findNodeByPath(generator);
+                processDlFileForImports(foundNode.fullPath, generator);
                 return;
             case "data" :
                 return;
