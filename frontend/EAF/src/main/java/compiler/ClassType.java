@@ -69,6 +69,10 @@ public class ClassType implements Comparable {
     }
 
     void addField(String name, FieldType type) {
+        var currVal = fields.get(name);
+        if (currVal != null && currVal.getSecond() != null) {
+            throw new SyntaxTree.FieldAlreadyDefinedException("When trying to define field \"" + name + "\" for type \"" + name + "\" field name was already defined!");
+        }
         fields.put(name, new Pair<>(type, null));
     }
 

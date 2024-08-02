@@ -291,7 +291,6 @@ public class SyntaxTree {
         return typename;
     }
 
-    // Function declarations as per your requirement
     static void UniversalFieldDefiner(ClassType context, String field, String typename, boolean isInstance, int isArray) {
         System.out.println(fieldPrefix + "DefiningField called with field: " + field + ", typename: " + typename + ", isInstance: " + isInstance+ ", isArray: " + isArray);
         context.addField(field, new FieldType(typename, !isInstance, isArray));
@@ -555,6 +554,7 @@ public class SyntaxTree {
         return c;
     };
 
+    /**
     public static void DefineField(String clazzTypeName, String field, FieldType fieldType) {
         var clazz = classRegister.get(clazzTypeName);
         if (clazz == null) {
@@ -592,7 +592,7 @@ public class SyntaxTree {
             }
         }
     }
-
+    **/
 
     public static class FieldValueAlreadyDefined extends RuntimeException {
         public FieldValueAlreadyDefined(String s) {
