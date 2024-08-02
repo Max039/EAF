@@ -73,7 +73,27 @@ public class ClassType implements Comparable {
     }
 
     void setField(String name, FieldValue v) {
-        fields.put(name, new Pair<>(v.type, v));
+        var currVal = fields.get(name);
+        if (currVal == null) {
+            fields.put(name, new Pair<>(v.type, v));
+        }
+        else {
+            System.out.println("Trying to set field \"" + name + "\" of type \"" + currVal.getFirst() + "\" with current value \"" + currVal.getSecond() + "\" to \"" + v + "\"" );
+            boolean typesMatch;
+            if (currVal.getFirst().primitive) {
+                typesMatch = currVal.getFirst().equals(v.type);
+            }
+            else {
+                typesMatch = FieldValue.doesTypesMatch(currVal.getFirst(), v.type);
+            }
+            if (typesMatch && currVal.getFirst().primitive == v.type.primitive && currVal.getFirst().arrayCount == v.type.arrayCount) {
+                fields.put(name, new Pair<>(v.type, v));
+            }
+            else {
+                throw new SyntaxTree.FieldTypeMismatchException("Tried to add array element to type but types are not compatible \n\"" + currVal.getFirst().toString() + "\" != \n\"" + v.type.toString() + "\"");
+            }
+        }
+
     }
 
     public String getParent() {

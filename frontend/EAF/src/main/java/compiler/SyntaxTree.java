@@ -294,7 +294,7 @@ public class SyntaxTree {
     // Function declarations as per your requirement
     static void UniversalFieldDefiner(ClassType context, String field, String typename, boolean isInstance, int isArray) {
         System.out.println(fieldPrefix + "DefiningField called with field: " + field + ", typename: " + typename + ", isInstance: " + isInstance+ ", isArray: " + isArray);
-        context.addField(field, new FieldType(typename, isInstance, isArray));
+        context.addField(field, new FieldType(typename, !isInstance, isArray));
     }
 
     static void PrimitiveFieldSetter(ClassType context, String field, String typename, String rawValue) {
@@ -311,18 +311,42 @@ public class SyntaxTree {
         context.setField(field, value);
     }
 
-    static void ArrayFieldSetter(ClassType context, String field, String typename, String rawValue) {
+    static void ArrayFieldSetter(ClassType context, String field, String typename, String rawValue, boolean setting) {
         typename = getFieldTypeIfNull(context, field, typename);
         System.out.println(fieldPrefix + "ArraySetter called with field: " + field + " type: " + typename + ", value: " + rawValue);
         if (!rawValue.isEmpty()) {
             boolean instance = typename.contains("instance");
-            int arrayDepth = typename.split("array").length - 1;
+            int arrayDepth ;
+            if (setting) {
+                arrayDepth = getArrayDepth(rawValue);
+            }
+            else {
+                arrayDepth = typename.split("array").length - 1;
+            }
             FieldValue value = processArrayField(new FieldType(typename, instance, arrayDepth), rawValue);
             context.setField(field, value);
         }
         else {
             context.setField(field, null);
         }
+    }
+
+    public static int getArrayDepth(String input) {
+        int maxDepth = 0;
+        int currentDepth = 0;
+
+        for (char ch : input.toCharArray()) {
+            if (ch == '[') {
+                currentDepth++;
+                if (currentDepth > maxDepth) {
+                    maxDepth = currentDepth;
+                }
+            } else if (ch == ']') {
+                currentDepth--;
+            }
+        }
+
+        return maxDepth;
     }
 
     public static List<String> extractArrayElements(String input, String prefix, String suffix, String separator, boolean keepSeparator) {
@@ -443,12 +467,12 @@ public class SyntaxTree {
             if (arrayDefinerPatternMatcher.find() && item.endsWith("]")) {
                 var headAndValue = item.split(":=", 2);
                 var fieldAndType = headAndValue[0].split(":", 2);
-                ArrayFieldSetter(context, fieldAndType[0], fieldAndType[1].replace("instance", "").replace("array", ""), headAndValue[1]);
+                ArrayFieldSetter(context, fieldAndType[0], fieldAndType[1].replace("instance", "").replace("array", ""), headAndValue[1], false);
             }
             else if (arraySetterPatternPatternMatcher.find() && item.endsWith("]")) {
                 String typename = "null";
                 String[] fieldAndValue = item.split(":=", 2);
-                ArrayFieldSetter(context, fieldAndValue[0], typename, fieldAndValue[1]);
+                ArrayFieldSetter(context, fieldAndValue[0], typename, fieldAndValue[1], true);
             }
             else if (fieldSetterInstancePatternMatcher.find() && item.endsWith("}")) {
                 var headAndValue = item.split(":=", 2);

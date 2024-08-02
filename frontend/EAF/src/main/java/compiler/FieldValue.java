@@ -32,26 +32,43 @@ public class FieldValue {
 
     //Array Constructor
     FieldValue(FieldType type, ArrayList<FieldValue> values) {
-        this.values = values;
+        this.values = new ArrayList<>(values); // Create a copy of the values list
         this.type = type;
-        for (var v : values) {
+        for (var v : new ArrayList<>(values)) { // Iterate over the copy of the values list
             try {
                 addArrayElement(v);
-            }
-            catch (SyntaxTree.FieldTypeMismatchException e) {
+            } catch (SyntaxTree.FieldTypeMismatchException e) {
                 throw new SyntaxTree.FieldTypeMismatchException(e.getMessage());
             }
         }
     }
 
     private void addArrayElement(FieldValue v) throws SyntaxTree.FieldTypeMismatchException {
-        if (type.typeName.equals(v.type.typeName) && type.primitive == v.type.primitive && type.arrayCount - 1 == v.type.arrayCount) {
-            values.add(v);
-        }
-        else {
-            throw new SyntaxTree.FieldTypeMismatchException("Tried to add array element to type but types are not compatible \"" + type.toString() + "\" != \"" + v.type.toString() + "\"");
+        boolean typeCheck;
+        if (type.primitive) {
+            typeCheck = type.typeName.equals(v.type.typeName);
+        } else {
+            typeCheck = doesTypesMatch(type, v.type);
         }
 
+        if (typeCheck && type.primitive == v.type.primitive && type.arrayCount - 1 == v.type.arrayCount) {
+            values.add(v);
+        } else {
+            throw new SyntaxTree.FieldTypeMismatchException("Tried to add array element to type but types are not compatible \n\"" + type.toString() + "\" != \n\"" + v.type.toString() + "\"");
+        }
+    }
+
+    public static boolean doesTypesMatch(FieldType t1, FieldType t2) {
+        var c1 = SyntaxTree.classRegister.get(t1.typeName);
+        var c2 = SyntaxTree.classRegister.get(t2.typeName);
+        if (c1 == null) {
+            throw new SyntaxTree.UnknownTypeException("Could not find type \"" + t1.typeName + "\"");
+        }
+        if (c2 == null) {
+            throw new SyntaxTree.UnknownTypeException("Could not find type \"" + t2.typeName + "\"");
+        }
+
+        return c1.matchesType(c2);
     }
 
     @Override

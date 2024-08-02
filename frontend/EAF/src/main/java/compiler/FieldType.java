@@ -11,7 +11,7 @@ public class FieldType {
 
 
     FieldType(String typeName, boolean primitive, int arrayCount) {
-        this.typeName = typeName;
+        this.typeName = typeName.replace("instance", "").replace("array", "").replace(" ", "");
         this.primitive = primitive;
         this.arrayCount = arrayCount;
     }
