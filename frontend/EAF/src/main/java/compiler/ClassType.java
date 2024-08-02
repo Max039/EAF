@@ -126,7 +126,12 @@ public class ClassType implements Comparable {
     public String toString() {
         StringBuilder s = new StringBuilder(spacing + "Class = " + name + " Parent: " + getParentName() + " Children: [" + getChildrenNames() + "]" +  " {\n" + spacing + " Fields: [\n");
         for (var t : fields.entrySet()) {
-            s.append(spacing).append("Field = ").append(t.getKey()).append(" : ").append(t.getValue().getSecond().toString()).append("\n");
+            String v = "";
+            if (t.getValue().getSecond() != null) {
+                v = t.getValue().getSecond().toString();
+            }
+
+            s.append(spacing).append("Field = ").append(t.getKey()).append(" : ").append(v).append("\n");
         }
         s.append(spacing).append(" ]\n" + spacing + "}");
         return s.toString();
@@ -189,8 +194,11 @@ public class ClassType implements Comparable {
         c.children = children;
         for (var v : fields.entrySet()) {
             var pair = v.getValue();
-            var val = pair.getSecond().clone();
-            c.fields.put(v.getKey(), new Pair<>(val.type, val));
+            FieldValue val = null;
+            if (pair.getSecond() != null) {
+                val = pair.getSecond().clone();
+            }
+            c.fields.put(v.getKey(), new Pair<>(pair.getFirst(), val));
         }
 
         return c;

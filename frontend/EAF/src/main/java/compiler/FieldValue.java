@@ -25,11 +25,8 @@ public class FieldValue {
     }
 
     //Instance Constructor
-    FieldValue(ClassType clazzType, ArrayList<Pair<String, FieldValue>> values) {
+    FieldValue(ClassType clazzType) {
         this.instance = clazzType.instance();
-        for (var v : values) {
-            instance.setField(v.getFirst(), v.getSecond());
-        }
         this.type = new FieldType(clazzType.name, false, 0);
     }
 

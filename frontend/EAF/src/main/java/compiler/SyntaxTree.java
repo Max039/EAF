@@ -84,6 +84,7 @@ public class SyntaxTree {
         System.out.println("============================");
         System.out.println("============================");
 
+        /**
         processContentOfType("{ " +
                 "    test : int := 5;\n" +
                 "    alterers := alterers {\n" +
@@ -115,7 +116,7 @@ public class SyntaxTree {
                 "     };\n" +
                 "     ooo := test;\n" +
                 "}");
-
+        **/
 
 
         System.out.println("============================");
@@ -253,7 +254,8 @@ public class SyntaxTree {
             typeMatcher.group(0).substring(typeMatcher.group(0).indexOf("{"));
             ClassType clazz = DefineType(typeName, extendedType, moduleName, isAbstract);
             String typeContent = typeMatcher.group(0).substring(typeMatcher.group(0).indexOf("{"));
-            processContentOfType(typeContent);
+            //Here needs to be the real version no instance
+            processContentOfType(clazz, typeContent);
             clazzTypes.add(clazz);
         }
         return new Pair<>(moduleName, clazzTypes);
@@ -273,20 +275,41 @@ public class SyntaxTree {
     }
 
     // Function declarations as per your requirement
-    static void UniversalFieldDefiner(String field, String typename, boolean isInstance, int isArray) {
+    static void UniversalFieldDefiner(ClassType context, String field, String typename, boolean isInstance, int isArray) {
         System.out.println(fieldPrefix + "DefiningField called with field: " + field + ", typename: " + typename + ", isInstance: " + isInstance+ ", isArray: " + isArray);
+        context.addField(field, new FieldType(typename, isInstance, isArray));
     }
 
-    static void PrimitiveFieldSetter(String field, String typename, String value) {
-        System.out.println(fieldPrefix + "FieldSetterPrimitive called with field: " + field + ", typename: " + typename + ", value: " + value);
+    static void PrimitiveFieldSetter(ClassType context, String field, String typename, String rawValue) {
+        System.out.println(fieldPrefix + "FieldSetterPrimitive called with field: " + field + ", typename: " + typename + ", value: " + rawValue);
+        context.setField(field, primitiveStringToFieldValue(typename, rawValue));
     }
 
-    static void InstanceFieldSetter(String field, String typename, String value) {
-        System.out.println(fieldPrefix + "FieldSetterInstance called with field: " + field + ", typename: " + typename + ", value: " + value);
+    static void InstanceFieldSetter(ClassType context, String field, String typename, String rawValue) {
+        System.out.println(fieldPrefix + "FieldSetterInstance called with field: " + field + ", typename: " + typename + ", value: " + rawValue);
+        ClassType instanceContext = getInstanceOfClass(typename);
+        FieldValue value = processContentOfType(instanceContext, rawValue);
+        if (value != null) {
+            System.out.println("Setting field");
+            context.setField(field, value);
+        }
+        else {
+            System.out.println("Defining field");
+            context.setField(field, null);
+        }
     }
 
-    static void ArrayFieldSetter(String field, String typename, String value) {
-        System.out.println(fieldPrefix + "ArraySetter called with field: " + field + " type: " + typename + ", value: " + value);
+    static void ArrayFieldSetter(ClassType context, String field, String typename, String rawValue) {
+        System.out.println(fieldPrefix + "ArraySetter called with field: " + field + " type: " + typename + ", value: " + rawValue);
+        if (!rawValue.isEmpty()) {
+            boolean instance = typename.contains("instance");
+            int arrayDepth = typename.split("array").length - 1;
+            FieldValue value = processArrayField(new FieldType(typename, instance, arrayDepth), rawValue);
+            context.setField(field, value);
+        }
+        else {
+            context.setField(field, null);
+        }
     }
 
     public static List<String> extractArrayElements(String input, String prefix, String suffix, String separator, boolean keepSeparator) {
@@ -345,7 +368,8 @@ public class SyntaxTree {
 
 
 
-    public static void processArrayField(String input) {
+    public static FieldValue processArrayField(FieldType fieldType, String input) {
+        ArrayList<FieldValue> values = new ArrayList<>();
         // Regex patterns
         Pattern structuredPattern = Pattern.compile("(\\w+-\\w+\\s*\\{.*?\\})", Pattern.DOTALL);
         Pattern stringPattern = Pattern.compile("\"([^\"]*)\"");
@@ -353,33 +377,38 @@ public class SyntaxTree {
         Pattern floatPattern = Pattern.compile("\\b\\d+\\.\\d+\\b");
 
         for (String item : extractArrayElements(input, "[", "]", ",", false)) {
-            Matcher structuredMatcher = structuredPattern.matcher(item);
+            Matcher instanceMatcher = structuredPattern.matcher(item);
             Matcher stringMatcher = stringPattern.matcher(item);
             Matcher intMatcher = intPattern.matcher(item);
             Matcher floatMatcher = floatPattern.matcher(item);
 
             if (item.startsWith("[") && item.endsWith("]")) {
                 System.out.println(parsingPrefix + "Parsing sub array: " + item);
-                processArrayField(item);
-            } else if (structuredMatcher.find()) {
+                values.add(processArrayField(fieldType, item));
+            } else if (instanceMatcher.find()) {
                 String type = item.split("\\s*\\{")[0];
                 String value = item.replace(type, "");
                 printArrayElement(type, value);
-                processContentOfType(value);
+                ClassType instanceContext = getInstanceOfClass(type);
+                values.add(processContentOfType(instanceContext, value));
             }
             else if (stringMatcher.find()) {
                 printArrayElement("string", stringMatcher.group(1));
+                values.add(primitiveStringToFieldValue("string", stringMatcher.group(1)));
             } else if (floatMatcher.find()) {
                 printArrayElement("real", floatMatcher.group(0));
+                values.add(primitiveStringToFieldValue("real", stringMatcher.group(0)));
             } else if (intMatcher.find()) {
                 printArrayElement("int", intMatcher.group(0));
+                values.add(primitiveStringToFieldValue("int", stringMatcher.group(0)));
             } else {
                 throw new UnknownTypeException("Unknown type in array: " + item);
             }
         }
+        return new FieldValue(fieldType, values);
     }
 
-    public static void processContentOfType(String input) {
+    public static FieldValue processContentOfType(ClassType context, String input) {
         input = input.replace("'", "");
 
         System.out.println(parsingPrefix + "Parsing: ");
@@ -401,21 +430,17 @@ public class SyntaxTree {
             if (arrayDefinerPatternMatcher.find() && item.endsWith("]")) {
                 var headAndValue = item.split(":=", 2);
                 var fieldAndType = headAndValue[0].split(":", 2);
-                ArrayFieldSetter(fieldAndType[0], fieldAndType[1].replace("instance", "").replace("array", ""), headAndValue[1]);
-                processArrayField(headAndValue[1]);
+                ArrayFieldSetter(context, fieldAndType[0], fieldAndType[1].replace("instance", "").replace("array", ""), headAndValue[1]);
             }
             else if (arraySetterPatternPatternMatcher.find() && item.endsWith("]")) {
                 String typename = "null";
                 String[] fieldAndValue = item.split(":=", 2);
-                ArrayFieldSetter(fieldAndValue[0], typename, fieldAndValue[1]);
-                processArrayField(fieldAndValue[1]);
+                ArrayFieldSetter(context, fieldAndValue[0], typename, fieldAndValue[1]);
             }
             else if (fieldSetterInstancePatternMatcher.find() && item.endsWith("}")) {
                 var headAndValue = item.split(":=", 2);
                 var typeAndValue = headAndValue[1].split("\\{", 2);
-
-                InstanceFieldSetter(headAndValue[0], typeAndValue[0].replace("instance", ""), "{" + typeAndValue[1]);
-                processContentOfType("{" + typeAndValue[1]);
+                InstanceFieldSetter(context, headAndValue[0], typeAndValue[0].replace("instance", ""), "{" + typeAndValue[1]);
             }
             else if (fieldSetterPrimitivePatternMatcher.find()) {
                 var headAndValue = item.split(":=", 2);
@@ -424,18 +449,19 @@ public class SyntaxTree {
                 if (fieldAndType.length > 1) {
                     type = fieldAndType[1];
                 }
-                PrimitiveFieldSetter(fieldAndType[0], type, headAndValue[1]);
+                PrimitiveFieldSetter(context, fieldAndType[0], type, headAndValue[1]);
             }
             else if (definingFieldPatternMatcher.find()) {
                 var fieldAndType = item.split(":", 2);
                 int arrayCount = item.split("array").length - 1;
                 boolean isInstance = item.contains("instance");
-                UniversalFieldDefiner(fieldAndType[0], fieldAndType[1].replace("array", "array "), isInstance, arrayCount);
+                UniversalFieldDefiner(context, fieldAndType[0], fieldAndType[1].replace("array", "array "), isInstance, arrayCount);
             }
             else {
                 throw new UnknownTypeException("Unknown type in array: " + item);
             }
         }
+        return new FieldValue(context);
     }
 
     public static void printArrayElement(String typename, String value) {
@@ -583,5 +609,14 @@ public class SyntaxTree {
         public UnknownTypeException(String s) {
             super(s);
         }
+    }
+
+
+    public static ClassType getInstanceOfClass(String name) {
+        return classRegister.get(name).instance();
+    }
+
+    public static FieldValue primitiveStringToFieldValue(String type, String value) {
+        return new FieldValue(type, value);
     }
 }
