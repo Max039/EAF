@@ -104,23 +104,25 @@ public class SyntaxTree {
                 "        'probability-mutator' {\n" +
                 "          probability := 0.2;\n" +
                 "        },\n" +
-                "        'mathematical-expression-rewriter' {\n" +
+                "        'probability-mutator' {\n" +
                 "          probability := 0.4;\n" +
                 "        }\n" +
                 "      ];      \n" +
                 "    }; \n" +
+                "    tes2t : int; \n" +
                 "    tes2t := 7; \n" +
-                "    arr := [50, 25]; \n" +
-                "    arr := [\"tests\", \"tests2\"]; \n" +
-                "    test : array int := [50.8, 25.9]; \n" +
-                "    lol := [[\"tests\"], \"tests2\"]; \n" +
-                "    lol2 : array int := [[1, [2, 3]], 25.9]; \n" +
-                "    zzz := 'mathematical-expression-rewriter' {\n" +
+                //"    arr : array int; \n" +
+                //"    arr := [50, 25]; \n" +
+                "    arr2 : array string; \n" +
+                "    arr2 := [\"tests\", \"tests2\"]; \n" +
+                "    test : array real := [50.8, 25.9]; \n" +
+                //"    lol := [[\"tests\"], \"tests2\"]; \n" +
+                //"    lol2 : array int := [[1, [2, 3]], 25.9]; \n" +
+                "    zzz : instance 'single-point-crossover'" +
+                "    zzz := 'single-point-crossover' {\n" +
                 "       probability := 0.4;\n" +
                 "     };\n" +
-                "    tttt : instance rewriter := 'rewriter' {\n" +
-                "       probability := 0.4;\n" +
-                "     };\n" +
+                "     ooo : string;\n" +
                 "     ooo := test;\n" +
                 "}");
 
@@ -314,15 +316,17 @@ public class SyntaxTree {
         typename = getFieldTypeIfNull(context, field, typename);
         System.out.println(fieldPrefix + "ArraySetter called with field: " + field + " type: " + typename + ", value: " + rawValue);
         if (!rawValue.isEmpty()) {
-            boolean instance = typename.contains("instance");
             int arrayDepth ;
+            boolean instance;
             if (setting) {
                 arrayDepth = getArrayDepth(rawValue);
+                instance = !context.fields.get(field).getFirst().primitive;
             }
             else {
                 arrayDepth = typename.split("array").length - 1;
+                instance = typename.contains("instance");
             }
-            FieldValue value = processArrayField(new FieldType(typename, instance, arrayDepth), rawValue);
+            FieldValue value = processArrayField(new FieldType(typename, !instance, arrayDepth), rawValue);
             context.setField(field, value);
         }
         else {
@@ -433,10 +437,10 @@ public class SyntaxTree {
                 values.add(primitiveStringToFieldValue("string", stringMatcher.group(1)));
             } else if (floatMatcher.find()) {
                 printArrayElement("real", floatMatcher.group(0));
-                values.add(primitiveStringToFieldValue("real", stringMatcher.group(0)));
+                values.add(primitiveStringToFieldValue("real", floatMatcher.group()));
             } else if (intMatcher.find()) {
                 printArrayElement("int", intMatcher.group(0));
-                values.add(primitiveStringToFieldValue("int", stringMatcher.group(0)));
+                values.add(primitiveStringToFieldValue("int", intMatcher.group()));
             } else {
                 throw new UnknownTypeException("Unknown type in array: " + item);
             }

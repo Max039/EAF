@@ -54,7 +54,7 @@ public class FieldValue {
         if (typeCheck && type.primitive == v.type.primitive && type.arrayCount - 1 == v.type.arrayCount) {
             values.add(v);
         } else {
-            throw new SyntaxTree.FieldTypeMismatchException("Tried to add array element to type but types are not compatible \n\"" + type.toString() + "\" != \n\"" + v.type.toString() + "\"");
+            throw new SyntaxTree.FieldTypeMismatchException("Tried to add array element to type but types are not compatible (also consider arraycount - 1 = array count) \n\"" + type.toString() + "\" != \n\"" + v.type.toString() + "\"");
         }
     }
 
