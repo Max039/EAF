@@ -115,7 +115,7 @@ public class SyntaxTree {
                 //"    arr := [50, 25]; \n" +
                 "    arr2 : array string; \n" +
                 "    arr2 := [\"tests\", \"tests2\"]; \n" +
-                "    test : array real := [50.8, 25.9]; \n" +
+                "    test3 : array real := [50.8, 25.9]; \n" +
                 //"    lol := [[\"tests\"], \"tests2\"]; \n" +
                 //"    lol2 : array int := [[1, [2, 3]], 25.9]; \n" +
                 "    zzz : instance 'single-point-crossover'" +
@@ -312,19 +312,19 @@ public class SyntaxTree {
         context.setField(field, value);
     }
 
-    static void ArrayFieldSetter(ClassType context, String field, String typename, String rawValue, boolean setting) {
+    static void ArrayFieldSetter(ClassType context, String field, String typename, String rawValue, boolean defineAndSet) {
         typename = getFieldTypeIfNull(context, field, typename);
         System.out.println(fieldPrefix + "ArraySetter called with field: " + field + " type: " + typename + ", value: " + rawValue);
         if (!rawValue.isEmpty()) {
             int arrayDepth ;
             boolean instance;
-            if (setting) {
-                arrayDepth = getArrayDepth(rawValue);
-                instance = !context.fields.get(field).getFirst().primitive;
-            }
-            else {
+            if (defineAndSet) {
                 arrayDepth = typename.split("array").length - 1;
                 instance = typename.contains("instance");
+            }
+            else {
+                arrayDepth = getArrayDepth(rawValue);
+                instance = !context.fields.get(field).getFirst().primitive;
             }
             FieldValue value = processArrayField(new FieldType(typename, !instance, arrayDepth), rawValue);
             context.setField(field, value);
@@ -470,12 +470,12 @@ public class SyntaxTree {
             if (arrayDefinerPatternMatcher.find() && item.endsWith("]")) {
                 var headAndValue = item.split(":=", 2);
                 var fieldAndType = headAndValue[0].split(":", 2);
-                ArrayFieldSetter(context, fieldAndType[0], fieldAndType[1].replace("instance", "").replace("array", ""), headAndValue[1], false);
+                ArrayFieldSetter(context, fieldAndType[0], fieldAndType[1], headAndValue[1], true);
             }
             else if (arraySetterPatternPatternMatcher.find() && item.endsWith("]")) {
                 String typename = "null";
                 String[] fieldAndValue = item.split(":=", 2);
-                ArrayFieldSetter(context, fieldAndValue[0], typename, fieldAndValue[1], true);
+                ArrayFieldSetter(context, fieldAndValue[0], typename, fieldAndValue[1], false);
             }
             else if (fieldSetterInstancePatternMatcher.find() && item.endsWith("}")) {
                 var headAndValue = item.split(":=", 2);
