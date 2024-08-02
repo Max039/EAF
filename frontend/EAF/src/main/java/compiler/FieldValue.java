@@ -38,18 +38,18 @@ public class FieldValue {
             try {
                 addArrayElement(v);
             }
-            catch (Exception e) {
-                throw new RuntimeException(e);
+            catch (SyntaxTree.FieldTypeMismatchException e) {
+                throw new SyntaxTree.FieldTypeMismatchException(e.getMessage());
             }
         }
     }
 
-    private void addArrayElement(FieldValue v) throws Exception {
+    private void addArrayElement(FieldValue v) throws SyntaxTree.FieldTypeMismatchException {
         if (type.typeName.equals(v.type.typeName) && type.primitive == v.type.primitive && type.arrayCount - 1 == v.type.arrayCount) {
             values.add(v);
         }
         else {
-            throw new Exception("Tried to add array element to type but types are not compatible " + type.toString() + " " + v.type.toString());
+            throw new SyntaxTree.FieldTypeMismatchException("Tried to add array element to type but types are not compatible \"" + type.toString() + "\" != \"" + v.type.toString() + "\"");
         }
 
     }
