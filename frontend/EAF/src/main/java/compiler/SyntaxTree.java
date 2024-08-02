@@ -84,12 +84,19 @@ public class SyntaxTree {
         System.out.println("============================");
         System.out.println("============================");
 
-        /**
-        processContentOfType("{ " +
+        System.out.println("============================");
+        for (var im : moduleRegister.values().stream().map(Module::toString).sorted().toList()) {
+            System.out.println(im);
+        }
+        System.out.println("============================");
+
+
+        ClassType type = new ClassType("ZeTestType", null, "TestPackage");
+        processContentOfType(type, "{ " +
                 "    test : int := 5;\n" +
                 "    alterers := alterers {\n" +
                 "      crossover := [\n" +
-                "        'single-node-crossover' {\n" +
+                "        'single-point-crossover' {\n" +
                 "          probability := 0.3;\n" +
                 "        }\n" +
                 "      ];\n" +
@@ -116,13 +123,10 @@ public class SyntaxTree {
                 "     };\n" +
                 "     ooo := test;\n" +
                 "}");
-        **/
 
 
-        System.out.println("============================");
-        for (var im : moduleRegister.values().stream().map(Module::toString).sorted().toList()) {
-            System.out.println(im);
-        }
+
+
         System.out.println("============================");
         System.out.println("Loaded modules count = " + moduleRegister.size());
         System.out.println("Loaded modules: ");
@@ -274,6 +278,19 @@ public class SyntaxTree {
         return null;
     }
 
+    public static String getFieldTypeIfNull(ClassType context, String field, String typename) {
+        if (typename.equals("null")) {
+            var f = context.fields.get(field);
+            if (f != null) {
+                typename = f.getFirst().typeName;
+            }
+            else {
+                throw new FieldNotFoundException("When trying to set field \"" + field + "\" in class \"" + context.name + "\" in package \"" + context.pack + "\" the field was not found!");
+            }
+        }
+        return typename;
+    }
+
     // Function declarations as per your requirement
     static void UniversalFieldDefiner(ClassType context, String field, String typename, boolean isInstance, int isArray) {
         System.out.println(fieldPrefix + "DefiningField called with field: " + field + ", typename: " + typename + ", isInstance: " + isInstance+ ", isArray: " + isArray);
@@ -281,25 +298,21 @@ public class SyntaxTree {
     }
 
     static void PrimitiveFieldSetter(ClassType context, String field, String typename, String rawValue) {
+        typename = getFieldTypeIfNull(context, field, typename);
         System.out.println(fieldPrefix + "FieldSetterPrimitive called with field: " + field + ", typename: " + typename + ", value: " + rawValue);
         context.setField(field, primitiveStringToFieldValue(typename, rawValue));
     }
 
     static void InstanceFieldSetter(ClassType context, String field, String typename, String rawValue) {
+        typename = getFieldTypeIfNull(context, field, typename);
         System.out.println(fieldPrefix + "FieldSetterInstance called with field: " + field + ", typename: " + typename + ", value: " + rawValue);
         ClassType instanceContext = getInstanceOfClass(typename);
         FieldValue value = processContentOfType(instanceContext, rawValue);
-        if (value != null) {
-            System.out.println("Setting field");
-            context.setField(field, value);
-        }
-        else {
-            System.out.println("Defining field");
-            context.setField(field, null);
-        }
+        context.setField(field, value);
     }
 
     static void ArrayFieldSetter(ClassType context, String field, String typename, String rawValue) {
+        typename = getFieldTypeIfNull(context, field, typename);
         System.out.println(fieldPrefix + "ArraySetter called with field: " + field + " type: " + typename + ", value: " + rawValue);
         if (!rawValue.isEmpty()) {
             boolean instance = typename.contains("instance");
@@ -613,7 +626,12 @@ public class SyntaxTree {
 
 
     public static ClassType getInstanceOfClass(String name) {
-        return classRegister.get(name).instance();
+        try {
+            return classRegister.get(name).instance();
+        }
+        catch (Exception e) {
+            throw new ClassTypeNotFoundException(name + " was not found!");
+        }
     }
 
     public static FieldValue primitiveStringToFieldValue(String type, String value) {
