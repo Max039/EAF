@@ -106,6 +106,11 @@ public class ArrayRect <T extends Rect> extends RectWithRects {
     };
 
     @Override
+    public void drawOnTop(Graphics g, int x, int y, int width, int height, int a) {
+
+    };
+
+    @Override
     public int extraSpacingToRight() {
         if (DragDropRectanglesWithSplitPane.showButtons) {
             return spacing + buttonWidth;

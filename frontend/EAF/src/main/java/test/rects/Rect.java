@@ -12,7 +12,7 @@ public abstract class Rect {
         return clazz;
     }
 
-    ClassType clazz;
+    public ClassType clazz;
 
     public static double transparencyFactor = 0.5;
 

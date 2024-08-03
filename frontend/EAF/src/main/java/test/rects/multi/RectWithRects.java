@@ -22,7 +22,6 @@ public abstract class RectWithRects extends Rect {
 
     public static int fontSize = 21;
 
-    public static float fontSizeMultiplier = 1.5F;
 
     public static float fontOffsetMultiplier = 0.5F;
 
@@ -95,6 +94,8 @@ public abstract class RectWithRects extends Rect {
 
     public abstract void drawOnTopBelow(Graphics g, int x, int y, int width, int height, int a);
 
+    public abstract void drawOnTop(Graphics g, int x, int y, int width, int height, int a);
+
     @Override
     public int getWidth() {
         int maxWidth = realWidth();
@@ -116,6 +117,9 @@ public abstract class RectWithRects extends Rect {
                 maxWidth = Math.max(maxWidth, (int) getFont().getStringBounds(name, context).getWidth());
             }
         }
+        if (context != null && this instanceof ClassRect) {
+            maxWidth = Math.max(maxWidth, (int) getFont().getStringBounds(clazz.name, context).getWidth());
+        }
         return spacing * 2 + maxWidth + extraSpacingToRight();
     }
 
@@ -130,15 +134,15 @@ public abstract class RectWithRects extends Rect {
             }
             else {
                 if (r != null) {
-                    heightAcc += r.getHeight() + spacing;
+                    heightAcc += r.getHeight() + spacing * 2;
                 }
                 else {
-                    heightAcc += emptyRowSize + spacing;
+                    heightAcc += emptyRowSize + spacing * 2;
                 }
             }
 
             if (!name.isEmpty()) {
-                heightAcc += (int) (fontSize * fontSizeMultiplier);
+                heightAcc += (int) (fontSize);
             }
         }
         return heightAcc + extraSpacingBelow();
@@ -153,7 +157,7 @@ public abstract class RectWithRects extends Rect {
     }
 
     public static Font getFont() {
-        return new Font("TimesRoman", Font.PLAIN, fontSize);
+        return new Font("TimesRoman", Font.PLAIN, (int)(fontSize));
     }
 
     @Override
@@ -184,6 +188,7 @@ public abstract class RectWithRects extends Rect {
                 offset = drawEmptyBox(g, name, offset, i, a, depth);
             }
         }
+        drawOnTop(g, getX(), getY(), getWidth(), getHeight(), (int)(255 * a));
         drawOnTopBelow(g, getX() + getWidth(), getY() + getHeight() - extraSpacingBelow(), getWidth(), getHeight() - extraSpacingBelow(), (int)(255 * a));
     }
 
@@ -208,7 +213,7 @@ public abstract class RectWithRects extends Rect {
         boolean typeIndexMatch = indexDoesNotMatchesDragged(index);
         if (index != hoveringIndex || typeIndexMatch) {
             if (!name.isEmpty()) {
-                offset += (int) (fontSize * fontSizeMultiplier);
+                offset += (int) (fontSize);
             }
 
             if (typeIndexMatch && index == hoveringIndex) {
@@ -224,7 +229,7 @@ public abstract class RectWithRects extends Rect {
                 g.drawString(name, getX() + spacing, getY() + offset - (int)(fontSize * fontOffsetMultiplier));
             }
             drawOnTopForEachRow(g, getX() + getWidth(), getY() + offset, getWidth() - spacing * 2, emptyRowSize, (int)(255 * a));
-            return offset + emptyRowSize + spacing;
+            return offset + emptyRowSize + spacing * 2;
         }
         else {
             return drawSubRect(g, DragDropRectanglesWithSplitPane.subFrame.leftPanel.draggingRect, name, offset, index, transparencyFactor, depth + 1);
@@ -234,7 +239,7 @@ public abstract class RectWithRects extends Rect {
 
     private int drawSubRect(Graphics g, Rect r, String name, int offset, int index, double a, int depth) {
         if (!name.isEmpty()) {
-            offset += (int) (fontSize * fontSizeMultiplier);
+            offset += (int) (fontSize);
         }
         r.setPosition(getX() + spacing, getY() + offset);
         if (!(r instanceof RectWithRects)) {
@@ -255,7 +260,7 @@ public abstract class RectWithRects extends Rect {
             g.drawString(name, getX() + spacing, getY() + offset - (int)(fontSize * fontOffsetMultiplier));
         }
         drawOnTopForEachRow(g, getX() + getWidth(), getY() + offset, r.getWidth(), r.getHeight(), (int)(255 * a));
-        return offset + r.getHeight() + spacing;
+        return offset + r.getHeight() + spacing * 2;
     }
 
 
@@ -286,7 +291,7 @@ public abstract class RectWithRects extends Rect {
                 Rect r = subRects[i];
                 String name = names[i];
                 if (!name.isEmpty()) {
-                    heightAcc += (int) (fontSize * fontSizeMultiplier);;
+                    heightAcc += (int) (fontSize);;
                 }
                 if (r != null) {
                     if (r instanceof RectWithRects) {
@@ -317,7 +322,7 @@ public abstract class RectWithRects extends Rect {
                 Rect r = subRects[i];
                 String name = names[i];
                 if (!name.isEmpty()) {
-                    heightAcc += (int) (fontSize * fontSizeMultiplier);
+                    heightAcc += (int) (fontSize);
                 }
                 if (r != null && r.contains(p)) {
                     if (r instanceof RectWithRects) {
@@ -350,7 +355,7 @@ public abstract class RectWithRects extends Rect {
                 Rect r = subRects[i];
                 String name = names[i];
                 if (!name.isEmpty()) {
-                    heightAcc += (int) (fontSize * fontSizeMultiplier);;
+                    heightAcc += (int) (fontSize);;
                 }
                 if (r != null) {
                     heightAcc += r.getHeight() + spacing;

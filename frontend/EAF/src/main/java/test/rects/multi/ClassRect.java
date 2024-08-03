@@ -41,6 +41,14 @@ public class ClassRect extends RectWithRects {
     };
 
     @Override
+    public void drawOnTop(Graphics g, int x, int y, int width, int height, int a) {
+        g.setColor(new Color(textColor.getRed(), textColor.getGreen(), textColor.getBlue(), 255));
+        if (!clazz.name.isEmpty()) {
+            g.drawString(clazz.name, x + spacing, y + spacing + fontSize);
+        }
+    };
+
+    @Override
     public int extraSpacingBelow() {
         return 0;
     }
