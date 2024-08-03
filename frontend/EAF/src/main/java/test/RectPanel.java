@@ -7,6 +7,7 @@ import test.rects.Rect;
 import test.rects.RectWithColorAndTextBox;
 import test.rects.multi.ArrayRect;
 import test.rects.multi.ClassRect;
+import test.rects.multi.RectWithRects;
 
 import javax.swing.*;
 import java.awt.*;
@@ -27,7 +28,7 @@ public class RectPanel extends JScrollPane {
 
     public static int arrayWidth = 40;
 
-    public static int arrayHeight = 40;
+    public static int arrayHeight = RectWithRects.spacing * 2;
 
     public static int instanceWidth = 40;
 
