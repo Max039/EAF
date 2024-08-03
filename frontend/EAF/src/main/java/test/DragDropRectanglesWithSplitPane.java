@@ -72,7 +72,9 @@ public class DragDropRectanglesWithSplitPane extends JPanel {
         }
          **/
         for (var c : SyntaxTree.classRegister.entrySet()) {
-            rightPanel.addRect(RectPanel.getRectFromClassType(c.getValue()));
+            if (!c.getValue().isAbstract ) {
+                rightPanel.addRect(RectPanel.getRectFromClassType(c.getValue()));
+            }
         }
 
 

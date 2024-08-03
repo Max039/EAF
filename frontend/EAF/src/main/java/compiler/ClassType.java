@@ -12,7 +12,7 @@ public class ClassType implements Comparable {
 
     String spacing = " ";
 
-    private boolean isAbstract = false;
+    public boolean isAbstract = false;
 
     private boolean extending;
 
