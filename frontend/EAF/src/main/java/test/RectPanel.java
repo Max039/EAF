@@ -150,17 +150,33 @@ public class RectPanel extends JScrollPane {
             super.paintComponent(g);
             int y = verticalSpacing;
             for (Rect rect : rects) {
-                if (filter.isEmpty() || rect.clazz.name.contains(filter)) {
+                if (filter.isEmpty()) {
                     rect.setPosition(horizontalSpacing, y);
                     rect.draw(g);
                     y += rect.getHeight() + verticalSpacing;
                 }
                 else {
-                    rect.setPosition(-500, -500);
-                    rect.draw(g);
-                }
-            }
+                    var parts = filter.split(" ");
+                    boolean found = true;
+                    for (var part : parts) {
+                        if (!rect.clazz.name.toLowerCase().contains(part.toLowerCase())) {
+                            found = false;
+                            break;
+                        }
+                    }
 
+                    if (found) {
+                        rect.setPosition(horizontalSpacing, y);
+                        rect.draw(g);
+                        y += rect.getHeight() + verticalSpacing;
+                    }
+                    else {
+                        rect.setPosition(-50000, -50000);
+                        rect.draw(g);
+                    }
+                }
+
+            }
         }
 
         @Override
