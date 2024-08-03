@@ -1,8 +1,8 @@
 package test.rects;
 
+import compiler.ClassType;
 import test.DragDropRectanglesWithSplitPane;
 import test.Pair;
-import test.rects.multi.ArrayRect;
 import test.rects.multi.RectWithRects;
 
 import javax.swing.*;
@@ -15,18 +15,18 @@ public class RectWithColorAndTextBox extends Rect {
 
     public static int spacing = 0;
 
-    public RectWithColorAndTextBox() {
-        super(50, RectWithRects.emptyRowSize, new Color(255, 255, 255));
+    public RectWithColorAndTextBox(ClassType type) {
+        super(50, RectWithRects.emptyRowSize, new Color(255, 255, 255), type);
         setTextBox("Insert Text Here");
     }
 
-    public RectWithColorAndTextBox(int width, int height, Color color) {
-        super(width, height, color);
+    public RectWithColorAndTextBox(int width, int height, Color color, ClassType type) {
+        super(width, height, color, type);
         setTextBox("Insert Text Here");
     }
 
-    public RectWithColorAndTextBox(int width, int height, Color color, JTextField field) {
-        super(width, height, color);
+    public RectWithColorAndTextBox(int width, int height, Color color, ClassType type, JTextField field) {
+        super(width, height, color, type);
         setTextBox(field.getText());
     }
 
@@ -86,7 +86,7 @@ public class RectWithColorAndTextBox extends Rect {
 
     @Override
     public Rect clone() {
-        return new RectWithColorAndTextBox(getWidth(), getHeight(), color, textBox);
+        return new RectWithColorAndTextBox(getWidth(), getHeight(), color, clazz, textBox);
     }
 
     @Override
@@ -127,12 +127,6 @@ public class RectWithColorAndTextBox extends Rect {
     public void removeFrom(JPanel p) {
         p.remove(textBox);
     }
-
-    @Override
-    public Rect newInstance() {
-        return new RectWithColorAndTextBox();
-    }
-
 
 
 }

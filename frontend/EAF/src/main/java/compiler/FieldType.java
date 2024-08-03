@@ -3,9 +3,9 @@ package compiler;
 import java.util.Objects;
 
 public class FieldType {
-    boolean primitive;
-    String typeName;
-    int arrayCount;
+    public boolean primitive;
+    public String typeName;
+    public int arrayCount;
 
     String spacing = " ";
 

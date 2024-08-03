@@ -1,14 +1,18 @@
 package test.rects.multi;
 
+import compiler.ClassType;
+import compiler.FieldType;
 import test.DragDropRectanglesWithSplitPane;
 import test.Pair;
+import test.RectPanel;
 import test.rects.Rect;
 import test.rects.RectWithColorAndTextBox;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.font.FontRenderContext;
-import java.lang.reflect.Method;
+
+import static compiler.FieldValue.doesTypesMatch;
 
 public abstract class RectWithRects extends Rect {
 
@@ -40,7 +44,7 @@ public abstract class RectWithRects extends Rect {
     Rect[] subRects = new Rect[0];
     String[] names = new String[0];
 
-    Class<?>[] types = new Class<?>[0];
+    FieldType[] types = new FieldType[0];
 
 
     public abstract int extraSpacingToRight();
@@ -48,21 +52,25 @@ public abstract class RectWithRects extends Rect {
     public abstract int extraSpacingBelow();
 
 
-    public RectWithRects() {
-        super(50, RectWithRects.emptyRowSize, new Color(255, 255, 255));
+    public RectWithRects(ClassType type) {
+        super(50, RectWithRects.emptyRowSize, new Color(255, 255, 255), type);
     }
 
-    public RectWithRects(int width, int height, Color color, String[] names, Class<?>[] types) {
-        this(width, height, color);
+    public RectWithRects(int width, int height, Color color, ClassType type, String[] names, FieldType[] types) {
+        this(width, height, color, type);
         setNamesAndTypes(names, types);
     }
 
-    public RectWithRects(int width, int height, Color color, String[] names, Rect[] subRects, Class<?>[] types) {
-        this(width, height, color, names, types);
+    public RectWithRects(int width, int height, Color color, ClassType type, String[] names, Rect[] subRects, FieldType[] types) {
+        this(width, height, color, type, names, types);
         setRects(subRects);
     }
 
-    public void setNamesAndTypes(String[] names, Class<?>[] types) {
+    public RectWithRects(int width, int height, Color color, ClassType type) {
+        super(width, height, color, type);
+    }
+
+    public void setNamesAndTypes(String[] names, FieldType[] types) {
         this.names = names.clone();
         this.subRects = new Rect[names.length];
         this.types = types;
@@ -81,9 +89,7 @@ public abstract class RectWithRects extends Rect {
         }
     }
 
-    public RectWithRects(int width, int height, Color color) {
-        super(width, height, color);
-    }
+
 
     public abstract void drawOnTopForEachRow(Graphics g, int x, int y, int width, int height, int a);
 
@@ -182,8 +188,20 @@ public abstract class RectWithRects extends Rect {
     }
 
     private boolean indexDoesNotMatchesDragged(int index) {
-        Class<?> classOfHoveringIndex = types[index];
-        return DragDropRectanglesWithSplitPane.subFrame.draggedRect != null && !classOfHoveringIndex.isInstance(DragDropRectanglesWithSplitPane.subFrame.draggedRect);
+        var type = types[index];
+
+        if (DragDropRectanglesWithSplitPane.subFrame.draggedRect != null) {
+            var clazz = DragDropRectanglesWithSplitPane.subFrame.draggedRect.getClazz();
+            boolean typeCheck;
+            if (type.primitive) {
+                typeCheck = type.typeName.equals(clazz.name);
+            } else {
+                typeCheck = doesTypesMatch(type, clazz);
+            }
+
+            return !typeCheck;
+        }
+        return false;
     }
 
     private int drawEmptyBox(Graphics g, String name, int offset, int index, double a, int depth) {
@@ -340,7 +358,6 @@ public abstract class RectWithRects extends Rect {
                 else {
                     if (p.y >= getY() + heightAcc && p.y <= getY() + heightAcc + emptyRowSize) {
                         hoveringIndex = i;
-                        Class<?> classOfHoveringIndex = types[i];
                         if (indexDoesNotMatchesDragged(i)) {
                             return new Pair<>(true, true);
                         }
@@ -368,23 +385,12 @@ public abstract class RectWithRects extends Rect {
     };
 
     public void fillIfNecessary() {
-        try {
-            for (int i = 0; i < types.length; i++) {
-                var r = subRects[i];
-                if (r == null) {
-                    var c = types[i];
-                    Object instance = c.getDeclaredConstructor().newInstance();
-
-                    Method newInstanceMethod = c.getMethod("newInstance");
-                    subRects[i] = (Rect) newInstanceMethod.invoke(instance);
-                }
+        for (int i = 0; i < types.length; i++) {
+            var r = subRects[i];
+            if (r == null) {
+                var c = types[i];
+                subRects[i] = RectPanel.getRectFromFieldType(c, null);
             }
-        } catch (NoSuchMethodException e) {
-            System.err.println("The class does not have a no-argument constructor or newInstance method.");
-            e.printStackTrace();
-        } catch (Exception e) {
-            System.err.println("The class does not have a no-argument constructor or newInstance method.");
-            e.printStackTrace();
         }
     }
 

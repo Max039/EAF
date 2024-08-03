@@ -1,11 +1,18 @@
 package test.rects;
 
+import compiler.ClassType;
 import test.Pair;
 
 import javax.swing.*;
 import java.awt.*;
 
 public abstract class Rect {
+
+    public ClassType getClazz() {
+        return clazz;
+    }
+
+    ClassType clazz;
 
     public static double transparencyFactor = 0.5;
 
@@ -60,12 +67,13 @@ public abstract class Rect {
         setOpacity(1.0);
     }
 
-    public Rect(int width, int height, Color color) {
+    public Rect(int width, int height, Color color, ClassType type) {
         this.x = 0;
         this.y = 0;
         this.width = width;
         this.height = height;
         this.color = color;
+        this.clazz = type;
     }
 
     public void draw(Graphics g) {
@@ -92,8 +100,6 @@ public abstract class Rect {
     public abstract Pair<Boolean, Boolean> onHover(Point p);
 
     public abstract void onMouseReleased();
-
-    public abstract Rect newInstance();
 
 }
 

@@ -1,31 +1,28 @@
 package test.rects.multi;
 
+import compiler.ClassType;
+import compiler.FieldType;
 import test.rects.Rect;
 
 import java.awt.*;
 
 public class ClassRect extends RectWithRects {
 
-    public ClassRect() {
-        super();
+    public ClassRect(ClassType type) {
+        super(type);
     }
 
-    public ClassRect(int width, int height, Color color, String[] names, Class<?>[] types) {
-        super(width, height, color, names, types);
+    public ClassRect(int width, int height, Color color, ClassType type, String[] names, FieldType[] types) {
+        super(width, height, color, type, names, types);
     }
 
-    public ClassRect(int width, int height, Color color, String[] names, Rect[] rects, Class<?>[] types) {
-        super(width, height, color, names, rects, types);
+    public ClassRect(int width, int height, Color color, ClassType type, String[] names, Rect[] rects, FieldType[] types) {
+        super(width, height, color, type, names, rects, types);
     }
 
     @Override
     public Rect clone() {
-        return new ClassRect(realWidth(), realHeight(), color, names, subRects, types);
-    }
-
-    @Override
-    public Rect newInstance() {
-        return new ClassRect();
+        return new ClassRect(realWidth(), realHeight(), color, getClazz(), names, subRects, types);
     }
 
     @Override

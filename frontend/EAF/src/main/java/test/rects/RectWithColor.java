@@ -1,7 +1,7 @@
 package test.rects;
 
+import compiler.ClassType;
 import test.Pair;
-import test.rects.multi.ArrayRect;
 import test.rects.multi.RectWithRects;
 
 import javax.swing.*;
@@ -9,16 +9,16 @@ import java.awt.*;
 
 public class RectWithColor extends Rect {
 
-    public RectWithColor() {
-        super(50, RectWithRects.emptyRowSize, new Color(255, 255, 255));
+    public RectWithColor(ClassType type) {
+        super(50, RectWithRects.emptyRowSize, new Color(255, 255, 255), type);
     }
 
-    private RectWithColor(int width, int height, Color color) {
-        super(width, height, color);
+    private RectWithColor(int width, int height, Color color, ClassType type) {
+        super(width, height, color, type);
     }
 
-    public static RectWithColor createRectWithColor(int width, int height, Color color) {
-        return new RectWithColor(width, height, color);
+    public static RectWithColor createRectWithColor(int width, int height, Color color, ClassType type) {
+        return new RectWithColor(width, height, color, type);
     }
 
     @Override
@@ -31,7 +31,7 @@ public class RectWithColor extends Rect {
 
     @Override
     public Rect clone() {
-        return createRectWithColor(getWidth(), getHeight(), color);
+        return createRectWithColor(getWidth(), getHeight(), color, clazz);
     }
 
     @Override
@@ -53,12 +53,6 @@ public class RectWithColor extends Rect {
     public void onMouseReleased() {
 
     };
-
-    @Override
-    public Rect newInstance() {
-        return new RectWithColor();
-    }
-
 
 
 }

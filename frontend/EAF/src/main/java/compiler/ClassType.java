@@ -8,7 +8,7 @@ import java.util.stream.Collectors;
 public class ClassType implements Comparable {
 
     public HashMap<String, Pair<FieldType, FieldValue>> fields;
-    String name;
+    public String name;
 
     String spacing = " ";
 
@@ -22,7 +22,7 @@ public class ClassType implements Comparable {
 
     String pack;
 
-    ClassType(String name, ClassType parent, String pack) {
+    public ClassType(String name, ClassType parent, String pack) {
         this.name = name;
         this.parent = parent;
         this.pack = pack;

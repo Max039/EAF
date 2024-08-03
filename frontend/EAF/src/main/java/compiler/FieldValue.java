@@ -7,12 +7,12 @@ import java.util.ArrayList;
 public class FieldValue {
 
 
-    FieldType type;
+    public FieldType type;
 
 
-    String value;
-    ArrayList<FieldValue> values;
-    ClassType instance;
+    public String value;
+    public ArrayList<FieldValue> values;
+    public ClassType instance;
 
 
     FieldValue() {
@@ -69,6 +69,16 @@ public class FieldValue {
         }
 
         return c1.matchesType(c2);
+    }
+
+    public static boolean doesTypesMatch(FieldType t, ClassType c) {
+        var tc = SyntaxTree.classRegister.get(t.typeName);
+
+        if (tc == null) {
+            throw new SyntaxTree.UnknownTypeException("Could not find type \"" + t.typeName + "\"");
+        }
+
+        return tc.matchesType(c);
     }
 
     @Override

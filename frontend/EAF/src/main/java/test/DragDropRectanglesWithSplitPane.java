@@ -1,5 +1,6 @@
 package test;
 
+import compiler.SyntaxTree;
 import test.rects.*;
 import test.rects.multi.ArrayRect;
 import test.rects.multi.ClassRect;
@@ -46,6 +47,7 @@ public class DragDropRectanglesWithSplitPane extends JPanel {
         splitPane.setResizeWeight(0.5); // Evenly split the panels
         add(splitPane, BorderLayout.CENTER);
 
+        /**
         Random random = new Random();
         for (int i = 0; i < numRects; i++) {
             int width = random.nextInt(100) + 50;
@@ -67,6 +69,10 @@ public class DragDropRectanglesWithSplitPane extends JPanel {
                 r = RectWithColor.createRectWithColor(width, height, color);
             }
             rightPanel.addRect(r);
+        }
+         **/
+        for (var c : SyntaxTree.classRegister.entrySet()) {
+            rightPanel.addRect(RectPanel.getRectFromClassType(c.getValue()));
         }
 
 
@@ -228,8 +234,15 @@ public class DragDropRectanglesWithSplitPane extends JPanel {
     }
 
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws Exception {
         int numRects = 20;  // Change this number to create more or fewer rectangles
+        try {
+            SyntaxTree.start();
+        }
+        catch (Exception e) {
+            throw new Exception(e);
+        }
+
         SwingUtilities.invokeLater(() -> createAndShowGUI(numRects));
     }
 }

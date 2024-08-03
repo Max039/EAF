@@ -53,6 +53,11 @@ public class SyntaxTree {
     private static Deque<File> fileQueue = new ArrayDeque<>();
 
     public static void main(String[] args) throws IOException {
+        start();
+
+    }
+
+    public static void start() throws IOException {
 
         String currentPath = System.getProperty("user.dir");
 

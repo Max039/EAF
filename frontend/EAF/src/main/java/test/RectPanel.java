@@ -1,6 +1,12 @@
 package test;
 
+import compiler.ClassType;
+import compiler.FieldType;
+import compiler.FieldValue;
 import test.rects.Rect;
+import test.rects.RectWithColorAndTextBox;
+import test.rects.multi.ArrayRect;
+import test.rects.multi.ClassRect;
 
 import javax.swing.*;
 import java.awt.*;
@@ -10,6 +16,10 @@ import java.awt.event.MouseMotionAdapter;
 import java.util.ArrayList;
 
 public class RectPanel extends JScrollPane {
+
+    public static Color arrayColor = new Color(255, 100, 100, 255);
+    public static Color primitiveColor = new Color(100, 255, 100, 255);
+    public static Color instanceColor = new Color(100, 100, 255, 255);
 
     public boolean drawDragging = true;
 
@@ -178,6 +188,73 @@ public class RectPanel extends JScrollPane {
         public Dimension getPreferredSize() {
             return drawingPanel.getPreferredSize();
         }
-
     }
+
+
+    public static <T extends Rect> T getRectFromClassType(ClassType type) {
+
+        int length = type.fields.size();
+        var names = new String[length];
+        var types = new FieldType[length];
+        var rects = new Rect[length];
+        int i = 0;
+        for (var field : type.fields.entrySet()) {
+            names[i] = field.getKey();
+            types[i] = field.getValue().getFirst();
+            rects[i] = getRectFromFieldType(field.getValue().getFirst(), field.getValue().getSecond());
+           i++;
+        }
+        return (T) new ClassRect(50, 50, instanceColor, type, names, rects, types);
+    }
+
+    public static <T extends Rect> T getRectFromFieldType(FieldType type, FieldValue value) {
+
+        if (value != null) {
+            if (type.arrayCount > 0) {
+                int length = value.values.size();
+                var clazz = new ClassType(type.typeName, null, "Array");
+                var names = new String[length];
+                var types = new FieldType[length];
+                var rects = new Rect[length];
+
+                int i = 0;
+                for (var item : value.values) {
+                    names[i] = Integer.toString(i);
+                    types[i] = item.type;
+                    rects[i] = getRectFromFieldType(item.type, item);
+                    i++;
+                }
+                return (T) new ArrayRect<>(40, 60, arrayColor, clazz, type, names, rects, types, type.primitive);
+
+            }
+            else {
+                if (type.primitive) {
+                    var c = new ClassType(type.typeName, null, "Primitive");
+                    var r = new RectWithColorAndTextBox(40, 10, primitiveColor, c);
+                    r.setTextBox(value.value);
+                    return (T) r;
+                }
+                else {
+                    return getRectFromClassType(value.instance);
+                }
+            }
+        }
+        else {
+            if (type.arrayCount > 0) {
+                var clazz = new ClassType(type.typeName, null, "Array");
+                return (T) new ArrayRect<>(40, 60, arrayColor, clazz,  type, type.primitive);
+            }
+            else {
+                if (type.primitive) {
+                    var c = new ClassType(type.typeName, null, "Primitive");
+                    return (T) new RectWithColorAndTextBox(40, 10, primitiveColor, c);
+                }
+                else {
+                    return null;
+                }
+            }
+        }
+    }
+
+
 }

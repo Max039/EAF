@@ -1,11 +1,12 @@
 package test.rects.multi;
 
+import compiler.ClassType;
+import compiler.FieldType;
 import test.DragDropRectanglesWithSplitPane;
 import test.rects.Rect;
 import test.rects.RectWithColorAndTextBox;
 
 import java.awt.*;
-import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -28,32 +29,38 @@ public class ArrayRect <T extends Rect> extends RectWithRects {
         remove
     }
 
-    Class<T> clazz;
-    public ArrayRect() {
-        super();
-        this.clazz = (Class<T> ) RectWithColorAndTextBox.class;
+    FieldType fillType;
+
+    public ArrayRect(ClassType type) {
+        super(type);
     }
 
-    public ArrayRect(int width, int height, Color color, Class<T> clazz, boolean fillOnCreation) {
-        super(width, height, color);
-        this.clazz = clazz;
+    public ArrayRect(int width, int height, Color color, ClassType type, FieldType field, boolean fillOnCreation) {
+        super(width, height, color, type);
         this.fillOnCreation = fillOnCreation;
-    }
-
-    public ArrayRect(int width, int height, Color color, int num, Class<T> clazz, boolean fillOnCreation) {
-        super(width, height, color);
-        this.clazz = clazz;
-        this.fillOnCreation = fillOnCreation;
-        setNamesAndTypes(getEmptyNames(num), generateStringArray(clazz, num));
+        this.fillType = field;
         if (this.fillOnCreation) {
             fillIfNecessary();
         }
     }
 
-    public ArrayRect(int width, int height, Color color, String[] names, Rect[] rects, Class<?>[] types, Class<T> clazz, boolean fillOnCreation) {
-        super(width, height, color, names, rects, types);
-        this.clazz = clazz;
+    public ArrayRect(int width, int height, Color color, ClassType type, FieldType field, int num, boolean fillOnCreation) {
+        super(width, height, color, type);
         this.fillOnCreation = fillOnCreation;
+        this.fillType = field;
+        setNamesAndTypes(getEmptyNames(num), generateStringArray(field, num));
+        if (this.fillOnCreation) {
+            fillIfNecessary();
+        }
+    }
+
+    public ArrayRect(int width, int height, Color color, ClassType type, FieldType field, String[] names, Rect[] rects, FieldType[] types, boolean fillOnCreation) {
+        super(width, height, color, type, names, rects, types);
+        this.fillOnCreation = fillOnCreation;
+        this.fillType = field;
+        if (this.fillOnCreation) {
+            fillIfNecessary();
+        }
     }
 
     @Override
@@ -74,12 +81,12 @@ public class ArrayRect <T extends Rect> extends RectWithRects {
         return l.toArray(new String[l.size()]);
     }
 
-    public static Class<?>[] generateStringArray(Class<?> input, int size) {
+    public static FieldType[] generateStringArray(FieldType input, int size) {
         if (size < 0) {
             throw new IllegalArgumentException("Size must be non-negative");
         }
 
-        Class<?>[] resultArray = new Class<?>[size];
+        FieldType[] resultArray = new FieldType[size];
 
         Arrays.fill(resultArray, input);
 
@@ -88,13 +95,9 @@ public class ArrayRect <T extends Rect> extends RectWithRects {
 
     @Override
     public Rect clone() {
-        return new ArrayRect<T>(realWidth(), realHeight(), color, names, subRects, types, clazz, fillOnCreation);
+        return new ArrayRect<T>(realWidth(), realHeight(), color, getClazz(), fillType, names, subRects, types, fillOnCreation);
     }
 
-    @Override
-    public Rect newInstance() {
-        return new ArrayRect<>();
-    }
 
     @Override
     public void drawOnTopForEachRow(Graphics g, int x, int y, int width, int height, int a) {
