@@ -21,6 +21,18 @@ public class RectPanel extends JScrollPane {
     public static Color primitiveColor = new Color(100, 255, 100, 255);
     public static Color instanceColor = new Color(100, 100, 255, 255);
 
+    public static int textBoxWidth = 40;
+
+    public static int textBoxHeight = 20;
+
+    public static int arrayWidth = 40;
+
+    public static int arrayHeight = 40;
+
+    public static int instanceWidth = 40;
+
+    public static int instanceHeight = 40;
+
     public boolean drawDragging = true;
 
     private final ArrayList<Rect> rects = new ArrayList<>();
@@ -204,7 +216,7 @@ public class RectPanel extends JScrollPane {
             rects[i] = getRectFromFieldType(field.getValue().getFirst(), field.getValue().getSecond());
            i++;
         }
-        return (T) new ClassRect(50, 50, instanceColor, type, names, rects, types);
+        return (T) new ClassRect(instanceWidth, instanceHeight, instanceColor, type, names, rects, types);
     }
 
     public static <T extends Rect> T getRectFromFieldType(FieldType type, FieldValue value) {
@@ -224,13 +236,13 @@ public class RectPanel extends JScrollPane {
                     rects[i] = getRectFromFieldType(item.type, item);
                     i++;
                 }
-                return (T) new ArrayRect<>(40, 60, arrayColor, clazz, type, names, rects, types, type.primitive);
+                return (T) new ArrayRect<>(arrayWidth, arrayHeight, arrayColor, clazz, type, names, rects, types, type.primitive);
 
             }
             else {
                 if (type.primitive) {
                     var c = new ClassType(type.typeName, null, "Primitive");
-                    var r = new RectWithColorAndTextBox(40, 10, primitiveColor, c);
+                    var r = new RectWithColorAndTextBox(textBoxWidth, textBoxHeight, primitiveColor, c);
                     r.setTextBox(value.value);
                     return (T) r;
                 }
@@ -242,12 +254,12 @@ public class RectPanel extends JScrollPane {
         else {
             if (type.arrayCount > 0) {
                 var clazz = new ClassType(type.typeName, null, "Array");
-                return (T) new ArrayRect<>(40, 60, arrayColor, clazz,  type, type.primitive);
+                return (T) new ArrayRect<>(arrayWidth, arrayHeight, arrayColor, clazz,  type, type.primitive);
             }
             else {
                 if (type.primitive) {
                     var c = new ClassType(type.typeName, null, "Primitive");
-                    return (T) new RectWithColorAndTextBox(40, 10, primitiveColor, c);
+                    return (T) new RectWithColorAndTextBox(textBoxWidth, textBoxHeight, primitiveColor, c);
                 }
                 else {
                     return null;
