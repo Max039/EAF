@@ -236,7 +236,10 @@ public class RectPanel extends JScrollPane {
                     rects[i] = getRectFromFieldType(item.type, item);
                     i++;
                 }
-                return (T) new ArrayRect<>(arrayWidth, arrayHeight, arrayColor, clazz, type, names, rects, types, type.primitive);
+
+                FieldType ctype = type.clone();
+                ctype.arrayCount -= 1;
+                return (T) new ArrayRect<>(arrayWidth, arrayHeight, arrayColor, clazz, ctype, names, rects, types, type.primitive);
 
             }
             else {
@@ -254,7 +257,10 @@ public class RectPanel extends JScrollPane {
         else {
             if (type.arrayCount > 0) {
                 var clazz = new ClassType(type.typeName, null, "Array");
-                return (T) new ArrayRect<>(arrayWidth, arrayHeight, arrayColor, clazz,  type, type.primitive);
+                FieldType ctype = type.clone();
+                ctype.arrayCount -= 1;
+
+                return (T) new ArrayRect<>(arrayWidth, arrayHeight, arrayColor, clazz,  ctype, 1, type.primitive);
             }
             else {
                 if (type.primitive) {

@@ -30,4 +30,8 @@ public class FieldType {
         return Objects.equals(typeName, fieldType.typeName) && primitive == fieldType.primitive && arrayCount == fieldType.arrayCount;
     }
 
+    public FieldType clone() {
+        return new FieldType(typeName, primitive, arrayCount);
+    }
+
 }
