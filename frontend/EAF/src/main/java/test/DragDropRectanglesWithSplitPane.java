@@ -7,6 +7,8 @@ import test.rects.multi.ClassRect;
 import test.rects.multi.RectWithRects;
 
 import javax.swing.*;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 import java.awt.*;
 import java.awt.event.*;
 import java.util.Random;
@@ -27,6 +29,10 @@ public class DragDropRectanglesWithSplitPane extends JPanel {
 
     public static boolean showButtons = false;
 
+    // Declare the text field
+    private JTextField rightPanelTextField;
+    private JPanel rightContainerPanel;
+
     public void setPosOfDraggingRect(MouseEvent e) {
         Point rightPanelPos = SwingUtilities.convertPoint(e.getComponent(), e.getPoint(), rightPanel.getViewport().getView());
         Point leftPanelPos = SwingUtilities.convertPoint(e.getComponent(), e.getPoint(), leftPanel.getViewport().getView());
@@ -39,10 +45,64 @@ public class DragDropRectanglesWithSplitPane extends JPanel {
     public DragDropRectanglesWithSplitPane(int numRects) {
         setLayout(new BorderLayout());
 
+        // Initialize the text field
+        rightPanelTextField = new JTextField();
 
+        rightPanelTextField.addKeyListener(new KeyListener() {
+            @Override
+            public void keyTyped(KeyEvent e) {
+                rightPanel.filter = rightPanelTextField.getText();
+                repaint();
+            }
 
+            @Override
+            public void keyPressed(KeyEvent e) {
+                rightPanel.filter = rightPanelTextField.getText();
+                repaint();
+            }
 
-        splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, leftPanel, rightPanel);
+            @Override
+            public void keyReleased(KeyEvent e) {
+                rightPanel.filter = rightPanelTextField.getText();
+                repaint();
+            }
+        });
+
+        rightPanelTextField.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                rightPanel.filter = rightPanelTextField.getText();
+                repaint();
+            }
+        });
+
+        rightPanelTextField.getDocument().addDocumentListener(new DocumentListener() {
+            @Override
+            public void insertUpdate(DocumentEvent e) {
+                rightPanel.filter = rightPanelTextField.getText();
+                repaint();
+            }
+
+            @Override
+            public void removeUpdate(DocumentEvent e) {
+                rightPanel.filter = rightPanelTextField.getText();
+                repaint();
+            }
+
+            @Override
+            public void changedUpdate(DocumentEvent e) {
+                rightPanel.filter = rightPanelTextField.getText();
+                repaint();
+            }
+        });
+
+        // Create a panel to hold the text field and the right panel
+        rightContainerPanel = new JPanel();
+        rightContainerPanel.setLayout(new BorderLayout());
+        rightContainerPanel.add(rightPanelTextField, BorderLayout.NORTH);
+        rightContainerPanel.add(rightPanel, BorderLayout.CENTER);
+
+        splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, leftPanel, rightContainerPanel);
         splitPane.setDividerLocation(400); // Initial divider location
         splitPane.setResizeWeight(0.5); // Evenly split the panels
         add(splitPane, BorderLayout.CENTER);

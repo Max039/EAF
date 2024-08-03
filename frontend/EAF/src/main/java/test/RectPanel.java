@@ -47,6 +47,8 @@ public class RectPanel extends JScrollPane {
     public static int horizontalSpacing = 10;
     public static int verticalSpacing = 5;
 
+    public String filter = "";
+
     public RectPanel() {
         super();
         drawingPanel = new DrawingPanel();
@@ -148,9 +150,15 @@ public class RectPanel extends JScrollPane {
             super.paintComponent(g);
             int y = verticalSpacing;
             for (Rect rect : rects) {
-                rect.setPosition(horizontalSpacing, y);
-                rect.draw(g);
-                y += rect.getHeight() + verticalSpacing;
+                if (filter.isEmpty() || rect.clazz.name.contains(filter)) {
+                    rect.setPosition(horizontalSpacing, y);
+                    rect.draw(g);
+                    y += rect.getHeight() + verticalSpacing;
+                }
+                else {
+                    rect.setPosition(-500, -500);
+                    rect.draw(g);
+                }
             }
 
         }
