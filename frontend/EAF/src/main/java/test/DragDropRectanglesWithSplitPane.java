@@ -1,5 +1,8 @@
 package test;
 
+import compiler.ClassType;
+import compiler.FieldType;
+import compiler.FieldValue;
 import compiler.SyntaxTree;
 import test.rects.*;
 import test.rects.multi.ArrayRect;
@@ -11,7 +14,6 @@ import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import java.awt.*;
 import java.awt.event.*;
-import java.util.Random;
 
 public class DragDropRectanglesWithSplitPane extends JPanel {
 
@@ -32,6 +34,77 @@ public class DragDropRectanglesWithSplitPane extends JPanel {
     // Declare the text field
     private JTextField rightPanelTextField;
     private JPanel rightContainerPanel;
+
+    public static <T extends Rect> T getRectFromClassType(ClassType type) {
+
+        int length = type.fields.size();
+        var names = new String[length];
+        var types = new FieldType[length];
+        var rects = new Rect[length];
+        int i = 0;
+        for (var field : type.fields.entrySet()) {
+            names[i] = field.getKey();
+            types[i] = field.getValue().getFirst();
+            rects[i] = getRectFromFieldType(field.getValue().getFirst(), field.getValue().getSecond());
+           i++;
+        }
+        return (T) new ClassRect(RectPanel.instanceWidth, RectPanel.instanceHeight, RectPanel.instanceColor, type, names, rects, types);
+    }
+
+    public static <T extends Rect> T getRectFromFieldType(FieldType type, FieldValue value) {
+
+        if (value != null) {
+            if (type.arrayCount > 0) {
+                int length = value.values.size();
+                var clazz = new ClassType(type.typeName, null, "Array");
+                var names = new String[length];
+                var types = new FieldType[length];
+                var rects = new Rect[length];
+
+                int i = 0;
+                for (var item : value.values) {
+                    names[i] = Integer.toString(i);
+                    types[i] = item.type;
+                    rects[i] = getRectFromFieldType(item.type, item);
+                    i++;
+                }
+
+                FieldType ctype = type.clone();
+                ctype.arrayCount -= 1;
+                return (T) new ArrayRect<>(RectPanel.arrayWidth, RectPanel.arrayHeight, RectPanel.arrayColor, clazz, ctype, names, rects, types, type.primitive);
+
+            }
+            else {
+                if (type.primitive) {
+                    var c = new ClassType(type.typeName, null, "Primitive");
+                    var r = new RectWithColorAndTextBox(RectPanel.textBoxWidth, RectPanel.textBoxHeight, RectPanel.primitiveColor, c);
+                    r.setTextBox(value.value);
+                    return (T) r;
+                }
+                else {
+                    return getRectFromClassType(value.instance);
+                }
+            }
+        }
+        else {
+            if (type.arrayCount > 0) {
+                var clazz = new ClassType(type.typeName, null, "Array");
+                FieldType ctype = type.clone();
+                ctype.arrayCount -= 1;
+
+                return (T) new ArrayRect<>(RectPanel.arrayWidth, RectPanel.arrayHeight, RectPanel.arrayColor, clazz,  ctype, 1, type.primitive);
+            }
+            else {
+                if (type.primitive) {
+                    var c = new ClassType(type.typeName, null, "Primitive");
+                    return (T) new RectWithColorAndTextBox(RectPanel.textBoxWidth, RectPanel.textBoxHeight, RectPanel.primitiveColor, c);
+                }
+                else {
+                    return null;
+                }
+            }
+        }
+    }
 
     public void setPosOfDraggingRect(MouseEvent e) {
         Point rightPanelPos = SwingUtilities.convertPoint(e.getComponent(), e.getPoint(), rightPanel.getViewport().getView());
@@ -107,37 +180,9 @@ public class DragDropRectanglesWithSplitPane extends JPanel {
         splitPane.setResizeWeight(0.5); // Evenly split the panels
         add(splitPane, BorderLayout.CENTER);
 
-        /**
-        Random random = new Random();
-        for (int i = 0; i < numRects; i++) {
-            int width = random.nextInt(100) + 50;
-            int height = random.nextInt(50) + 30;
-            Color color = new Color(random.nextInt(256), random.nextInt(256), random.nextInt(256));
-            Rect r;
-
-            if (i == 1) {
-                r = new RectWithColorAndTextBox(width, height, color);
-
-            } else if (i == 2) {
-                r = new ClassRect(width, height, color, new String[]{"11111", "2222222222"}, new Class<?>[]{RectWithColorAndTextBox.class, Rect.class});
-            } else if (i == 3) {
-                r = new ArrayRect<RectWithColorAndTextBox>(width, height, color, 3, RectWithColorAndTextBox.class, true);
-            }else if (i == 4) {
-                r = new ArrayRect<RectWithRects>(width, height, color, 3, RectWithRects.class, false);
-            }
-            else {
-                r = RectWithColor.createRectWithColor(width, height, color);
-            }
-            rightPanel.addRect(r);
+        for (var c : SyntaxTree.getNonAbstractClasses()) {
+            rightPanel.addRect(getRectFromClassType(c));
         }
-         **/
-        for (var c : SyntaxTree.classRegister.entrySet()) {
-            if (!c.getValue().isAbstract ) {
-                rightPanel.addRect(RectPanel.getRectFromClassType(c.getValue()));
-            }
-        }
-
-
 
         MouseAdapter mouseAdapter = new MouseAdapter() {
             @Override

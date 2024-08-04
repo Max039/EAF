@@ -1,6 +1,7 @@
 package compiler;
 
 import test.Pair;
+import test.RectPanel;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -51,6 +52,11 @@ public class SyntaxTree {
     //=======================================================================
 
     private static Deque<File> fileQueue = new ArrayDeque<>();
+
+
+    public static ArrayList<ClassType> getNonAbstractClasses() {
+        return new ArrayList<>(List.of(SyntaxTree.classRegister.values().stream().filter(t -> !t.isAbstract).toArray(ClassType[]::new)));
+    }
 
     public static void main(String[] args) throws IOException {
         start();

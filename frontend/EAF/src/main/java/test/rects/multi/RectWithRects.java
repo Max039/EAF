@@ -4,7 +4,6 @@ import compiler.ClassType;
 import compiler.FieldType;
 import test.DragDropRectanglesWithSplitPane;
 import test.Pair;
-import test.RectPanel;
 import test.rects.Rect;
 import test.rects.RectWithColorAndTextBox;
 
@@ -300,14 +299,14 @@ public abstract class RectWithRects extends Rect {
                             return true;
                         }
                     }
-                    heightAcc += r.getHeight() + spacing;
+                    heightAcc += r.getHeight() + spacing * 2;
                 }
                 else {
                     if (p.y >= getY() + heightAcc && p.y <= getY() + heightAcc + emptyRowSize && !indexDoesNotMatchesDragged(i)) {
                         setIndex(i, rec);
                         return true;
                     }
-                    heightAcc += emptyRowSize + spacing;
+                    heightAcc += emptyRowSize + spacing * 2;
                 }
 
             }
@@ -328,9 +327,9 @@ public abstract class RectWithRects extends Rect {
                     if (r instanceof RectWithRects) {
                         return ((RectWithRects) r).getSubRect(p);
                     }
-                    heightAcc += r.getHeight() + spacing;
+                    heightAcc += r.getHeight() + spacing * 2;
                 } else {
-                    heightAcc += emptyRowSize + spacing;
+                    heightAcc += emptyRowSize + spacing * 2;
                 }
             }
         }
@@ -358,7 +357,7 @@ public abstract class RectWithRects extends Rect {
                     heightAcc += (int) (fontSize);;
                 }
                 if (r != null) {
-                    heightAcc += r.getHeight() + spacing;
+                    heightAcc += r.getHeight() + spacing * 2;
                 }
                 else {
                     if (p.y >= getY() + heightAcc && p.y <= getY() + heightAcc + emptyRowSize) {
@@ -371,7 +370,7 @@ public abstract class RectWithRects extends Rect {
                         }
 
                     }
-                    heightAcc += emptyRowSize + spacing;
+                    heightAcc += emptyRowSize + spacing * 2;
                 }
             }
         }
@@ -394,7 +393,7 @@ public abstract class RectWithRects extends Rect {
             var r = subRects[i];
             if (r == null) {
                 var c = types[i];
-                subRects[i] = RectPanel.getRectFromFieldType(c, null);
+                subRects[i] = DragDropRectanglesWithSplitPane.getRectFromFieldType(c, null);
             }
         }
     }
