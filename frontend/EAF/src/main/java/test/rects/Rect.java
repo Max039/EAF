@@ -2,6 +2,7 @@ package test.rects;
 
 import compiler.ClassType;
 import test.Pair;
+import test.rects.multi.RectWithRects;
 
 import javax.swing.*;
 import java.awt.*;
@@ -19,6 +20,9 @@ public abstract class Rect {
     private int x, y, width, height;
     public Color color;
 
+    public RectWithRects parent = null;
+
+    public int parentIndex = -1;
     private double opacity = 1.0;
 
     public double getOpacity() {

@@ -39,7 +39,6 @@ public abstract class RectWithRects extends Rect {
     Color invalidRectsColor = new Color(255, 0, 0);
 
 
-
     FontRenderContext context = null;
 
     Rect[] subRects = new Rect[0];
@@ -344,6 +343,8 @@ public abstract class RectWithRects extends Rect {
         }
         else {
             subRects[i] = r;
+            r.parent = this;
+            r.parentIndex = i;
         }
     }
 
@@ -428,11 +429,7 @@ public abstract class RectWithRects extends Rect {
                     menuItem.addActionListener(new ActionListener() {
                         @Override
                         public void actionPerformed(ActionEvent e) {
-                            var rect = DragDropRectanglesWithSplitPane.getRectFromClassType(item);
-                            rect.addTo(DragDropRectanglesWithSplitPane.subFrame.leftPanel.drawingPanel);
-                            subRects[res.getSecond()] = rect;
-                            DragDropRectanglesWithSplitPane.subFrame.leftPanel.revalidate();
-                            DragDropRectanglesWithSplitPane.subFrame.leftPanel.repaint();
+                            setAndRedrawClass(item, res.getSecond());
                         }
                     });
                     popupMenu.add(menuItem);
@@ -441,6 +438,7 @@ public abstract class RectWithRects extends Rect {
                 // Add "Show More" option if there are more than 5 options
                 if (valid.size() > maxVisibleItems) {
                     JMenuItem showMoreItem = new JMenuItem("Show More...");
+                    showMoreItem.setFont(showMoreItem.getFont().deriveFont(Font.BOLD | Font.ITALIC)); // Make text bold and italic
                     showMoreItem.addActionListener(new ActionListener() {
                         @Override
                         public void actionPerformed(ActionEvent e) {
@@ -460,11 +458,7 @@ public abstract class RectWithRects extends Rect {
                                 button.addActionListener(new ActionListener() {
                                     @Override
                                     public void actionPerformed(ActionEvent e) {
-                                        var rect = DragDropRectanglesWithSplitPane.getRectFromClassType(fullItem);
-                                        rect.addTo(DragDropRectanglesWithSplitPane.subFrame.leftPanel.drawingPanel);
-                                        subRects[res.getSecond()] = rect;
-                                        DragDropRectanglesWithSplitPane.subFrame.leftPanel.revalidate();
-                                        DragDropRectanglesWithSplitPane.subFrame.leftPanel.repaint();
+                                        setAndRedrawClass(fullItem, res.getSecond());
                                         showMoreDialog.dispose(); // Close the dialog after selection
                                     }
                                 });
@@ -481,16 +475,37 @@ public abstract class RectWithRects extends Rect {
                 popupMenu.show(DragDropRectanglesWithSplitPane.mainFrame, p2.x, p2.y);
             }
 
-            // Handle other right-click actions here...
-
         } else if (this instanceof ClassRect) {
             if (left) {
                 // Copy, set dragging, delete, etc.
             } else {
-                // Open delete menu, etc.
+                JPopupMenu popupMenu = new JPopupMenu();
+                JMenuItem menuItem = new JMenuItem("Delete");
+                menuItem.addActionListener(new ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        System.out.println(clazz.name);
+                        if (parent != null) {
+                            System.out.println("test");
+                            parent.subRects[parentIndex] = null;
+                        }
+                        DragDropRectanglesWithSplitPane.subFrame.leftPanel.removeRect(RectWithRects.this);
+                        DragDropRectanglesWithSplitPane.subFrame.leftPanel.revalidate();
+                        DragDropRectanglesWithSplitPane.subFrame.leftPanel.repaint();
+                    }
+                });
+                popupMenu.add(menuItem);
+                popupMenu.show(DragDropRectanglesWithSplitPane.mainFrame, p2.x, p2.y);
             }
         }
     }
 
+    public void setAndRedrawClass(ClassType t, int index) {
+        var rect = DragDropRectanglesWithSplitPane.getRectFromClassType(t);
+        rect.addTo(DragDropRectanglesWithSplitPane.subFrame.leftPanel.drawingPanel);
+        setIndex(index, rect);
+        DragDropRectanglesWithSplitPane.subFrame.leftPanel.revalidate();
+        DragDropRectanglesWithSplitPane.subFrame.leftPanel.repaint();
+    }
 
 }
