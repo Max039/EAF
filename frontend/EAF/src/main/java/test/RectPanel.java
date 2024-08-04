@@ -7,6 +7,7 @@ import test.rects.multi.RectWithRects;
 import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
+import java.util.Optional;
 
 public class RectPanel extends JScrollPane {
 
@@ -161,9 +162,11 @@ public class RectPanel extends JScrollPane {
         protected void paintComponent(Graphics g) {
             super.paintComponent(g);
             int y = verticalSpacing;
+
+            Optional<Integer> minSpac = rects.stream().map(t -> (this.getWidth() - t.getWidth()) / 2).min(Integer::compareTo);
             for (Rect rect : rects) {
                 if (filter.isEmpty()) {
-                    rect.setPosition(horizontalSpacing, y);
+                    rect.setPosition(minSpac.get(), y);
                     rect.draw(g);
                     y += rect.getHeight() + verticalSpacing;
                 }

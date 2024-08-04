@@ -39,7 +39,7 @@ public abstract class RectWithRects extends Rect {
 
     Color emptyRectsColor = new Color(255, 255, 255);
 
-    Color invalidRectsColor = new Color(205, 54, 54);
+    Color invalidRectsColor = new Color(190, 70, 70);
 
 
     FontRenderContext context = null;
