@@ -54,6 +54,11 @@ public class RectWithColor extends Rect {
 
     };
 
+    @Override
+    public void onMouseClicked(boolean left, Point p) {
+
+    };
+
 
 }
 

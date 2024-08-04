@@ -2,6 +2,7 @@ package test.rects.multi;
 
 import compiler.ClassType;
 import compiler.FieldType;
+import compiler.SyntaxTree;
 import test.DragDropRectanglesWithSplitPane;
 import test.Pair;
 import test.rects.Rect;
@@ -9,6 +10,8 @@ import test.rects.RectWithColorAndTextBox;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.font.FontRenderContext;
 
 import static compiler.FieldValue.doesTypesMatch;
@@ -308,7 +311,6 @@ public abstract class RectWithRects extends Rect {
                     }
                     heightAcc += emptyRowSize + spacing * 2;
                 }
-
             }
         }
         return false;
@@ -347,8 +349,24 @@ public abstract class RectWithRects extends Rect {
 
     @Override
     public Pair<Boolean, Boolean> onHover(Point p) {
-        int heightAcc = realHeight();
+        var res = getIndex(p);
         hoveringIndex = -1;
+        if (res.getFirst()) {
+            hoveringIndex = res.getSecond();
+            if (indexDoesNotMatchesDragged(hoveringIndex)) {
+                return new Pair<>(true, true);
+            }
+            else {
+                return new Pair<>(false, false);
+            }
+        }
+        else {
+            return new Pair<>(true, false);
+        }
+    };
+
+    public Pair<Boolean, Integer> getIndex(Point p) {
+        int heightAcc = realHeight();
         if (p.x >= getX() + spacing && p.x <= getX() + getWidth() - spacing) {
             for (int i = 0; i < subRects.length && getY() + heightAcc <= p.y; i++) {
                 Rect r = subRects[i];
@@ -361,20 +379,13 @@ public abstract class RectWithRects extends Rect {
                 }
                 else {
                     if (p.y >= getY() + heightAcc && p.y <= getY() + heightAcc + emptyRowSize) {
-                        hoveringIndex = i;
-                        if (indexDoesNotMatchesDragged(i)) {
-                            return new Pair<>(true, true);
-                        }
-                        else {
-                            return new Pair<>(false, false);
-                        }
-
+                        return new Pair<Boolean, Integer>(true, i);
                     }
                     heightAcc += emptyRowSize + spacing * 2;
                 }
             }
         }
-        return new Pair<>(true, false);
+        return new Pair<Boolean, Integer>(false, -1);
     };
 
     @Override
@@ -394,6 +405,46 @@ public abstract class RectWithRects extends Rect {
             if (r == null) {
                 var c = types[i];
                 subRects[i] = DragDropRectanglesWithSplitPane.getRectFromFieldType(c, null);
+            }
+        }
+    }
+
+    @Override
+    public void onMouseClicked(boolean left, Point p) {
+        var res = getIndex(p);
+
+        if (res.getFirst() && !left) {
+            var index = types[res.getSecond()];
+            if (!index.primitive) {
+                var clazz = SyntaxTree.classRegister.get(index.typeName);
+                var valid = clazz.getAllClassTypes();
+
+                // Create the popup menu
+                JPopupMenu popupMenu = new JPopupMenu();
+                for (var item : valid) {
+                    JMenuItem menuItem = new JMenuItem(item.name);
+                    menuItem.addActionListener(new ActionListener() {
+                        @Override
+                        public void actionPerformed(ActionEvent e) {
+                            subRects[res.getSecond()] = DragDropRectanglesWithSplitPane.getRectFromClassType(item);
+                            DragDropRectanglesWithSplitPane.mainFrame.revalidate();
+                            DragDropRectanglesWithSplitPane.mainFrame.repaint();
+                        }
+                    });
+                    popupMenu.add(menuItem);
+                }
+
+                popupMenu.show(DragDropRectanglesWithSplitPane.mainFrame, p.x, p.y);
+            }
+
+            //open small suggestion menu with show more option
+        } else if (this instanceof ClassRect) {
+            if (left) {
+                //copy
+                //set dragging
+                //delete
+            } else {
+                //open delete menu
             }
         }
     }

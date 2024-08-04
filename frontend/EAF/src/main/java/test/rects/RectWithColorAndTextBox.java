@@ -128,5 +128,10 @@ public class RectWithColorAndTextBox extends Rect {
         p.remove(textBox);
     }
 
+    @Override
+    public void onMouseClicked(boolean left, Point p) {
+
+    };
+
 
 }

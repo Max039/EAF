@@ -201,6 +201,7 @@ public class DragDropRectanglesWithSplitPane extends JPanel {
                     setPosOfDraggingRect(e);
 
                 }
+
             }
 
             @Override
@@ -273,6 +274,22 @@ public class DragDropRectanglesWithSplitPane extends JPanel {
             @Override
             public void mousePressed(MouseEvent e) {
                 leftPanel.requestFocusInWindow();
+
+                Point leftPanelPos = SwingUtilities.convertPoint(e.getComponent(), e.getPoint(), leftPanel.getViewport().getView());
+
+                // Convert the panel-relative point to screen-relative point
+                Point screenPoint = new Point(e.getPoint());
+                SwingUtilities.convertPointToScreen(screenPoint, e.getComponent());
+
+                Rect matchingRect = leftPanel.getRect(leftPanelPos);
+                if (matchingRect instanceof RectWithRects) {
+                    matchingRect = ((RectWithRects) matchingRect).getSubRect(leftPanelPos);
+                    if (matchingRect != null) {
+                        matchingRect.onMouseClicked(e.getButton() == 1, leftPanelPos);
+
+                    }
+                }
+                repaint();
 
             }
 

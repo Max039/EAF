@@ -227,4 +227,13 @@ public class ClassType implements Comparable {
 
         return c;
     }
+
+    public List<ClassType> getAllClassTypes() {
+        List<ClassType> result = new ArrayList<>();
+        result.add(this);
+        for (ClassType child : children) {
+            result.addAll(child.getAllClassTypes());
+        }
+        return result;
+    }
 }
