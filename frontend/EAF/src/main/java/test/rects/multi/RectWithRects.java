@@ -177,8 +177,10 @@ public abstract class RectWithRects extends Rect {
         context = ((Graphics2D)g).getFontRenderContext();
 
         var g2 = (Graphics2D) g;
-        g2.setColor(new Color(color.getRed(), color.getGreen(), color.getBlue(), (int)(255 * a)));
+        g2.setColor(new Color(borderColor.getRed(), borderColor.getGreen(), borderColor.getBlue(), (int)(255 * a)));
         g2.fillRect(getX(), getY(), getWidth(), getHeight());
+        g2.setColor(new Color(color.getRed(), color.getGreen(), color.getBlue(), (int)(255 * a)));
+        g2.fillRect(getX() + borderSize, getY() + borderSize, getWidth() - borderSize * 2, getHeight() - borderSize * 2);
         int offset = realHeight();
         for (int i = 0; i < subRects.length; i++) {
             Rect r = subRects[i];

@@ -26,6 +26,10 @@ public abstract class Rect {
     public int parentIndex = -1;
     private double opacity = 1.0;
 
+    public Color borderColor = new Color(0, 0, 0);
+
+    public int borderSize = 1;
+
     public double getOpacity() {
         return opacity;
     }
