@@ -277,15 +277,15 @@ public class DragDropRectanglesWithSplitPane extends JPanel {
 
                 Point leftPanelPos = SwingUtilities.convertPoint(e.getComponent(), e.getPoint(), leftPanel.getViewport().getView());
 
-                // Convert the panel-relative point to screen-relative point
-                Point screenPoint = new Point(e.getPoint());
-                SwingUtilities.convertPointToScreen(screenPoint, e.getComponent());
+                // Convert the point from the source component's coordinate system to the left panel's coordinate system
+                Point panelRelativePos = SwingUtilities.convertPoint(e.getComponent(), e.getPoint(), leftPanel);
+
 
                 Rect matchingRect = leftPanel.getRect(leftPanelPos);
                 if (matchingRect instanceof RectWithRects) {
                     matchingRect = ((RectWithRects) matchingRect).getSubRect(leftPanelPos);
                     if (matchingRect != null) {
-                        matchingRect.onMouseClicked(e.getButton() == 1, leftPanelPos);
+                        matchingRect.onMouseClicked(e.getButton() == 1, leftPanelPos, panelRelativePos);
 
                     }
                 }

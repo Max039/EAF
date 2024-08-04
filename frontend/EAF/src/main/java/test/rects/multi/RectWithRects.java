@@ -410,7 +410,7 @@ public abstract class RectWithRects extends Rect {
     }
 
     @Override
-    public void onMouseClicked(boolean left, Point p) {
+    public void onMouseClicked(boolean left, Point p, Point p2) {
         var res = getIndex(p);
 
         if (res.getFirst() && !left) {
@@ -436,7 +436,7 @@ public abstract class RectWithRects extends Rect {
                     popupMenu.add(menuItem);
                 }
 
-                popupMenu.show(DragDropRectanglesWithSplitPane.mainFrame, p.x, p.y);
+                popupMenu.show(DragDropRectanglesWithSplitPane.mainFrame, p2.x, p2.y);
             }
 
             //open small suggestion menu with show more option

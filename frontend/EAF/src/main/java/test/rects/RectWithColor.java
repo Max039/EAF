@@ -55,7 +55,7 @@ public class RectWithColor extends Rect {
     };
 
     @Override
-    public void onMouseClicked(boolean left, Point p) {
+    public void onMouseClicked(boolean left, Point p, Point p2) {
 
     };
 
