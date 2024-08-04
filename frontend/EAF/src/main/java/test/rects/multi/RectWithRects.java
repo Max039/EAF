@@ -33,11 +33,13 @@ public abstract class RectWithRects extends Rect {
     private int hoveringIndex = -1;
 
 
-    Color textColor = new Color(255, 255, 255);
+    Color fieldColor = new Color(213, 234, 238);
+
+    Color nameColor = new Color(203, 116, 47);
 
     Color emptyRectsColor = new Color(255, 255, 255);
 
-    Color invalidRectsColor = new Color(255, 0, 0);
+    Color invalidRectsColor = new Color(205, 54, 54);
 
 
     FontRenderContext context = null;
@@ -228,7 +230,7 @@ public abstract class RectWithRects extends Rect {
             }
             g.fillRect(getX() + spacing, getY() + offset, getWidth() - spacing * 2 - extraSpacingToRight(), emptyRowSize);
 
-            g.setColor(new Color(textColor.getRed(), textColor.getGreen(), textColor.getBlue(), (int)(255 * a)));
+            g.setColor(new Color(fieldColor.getRed(), fieldColor.getGreen(), fieldColor.getBlue(), (int)(255 * a)));
             if (!name.isEmpty()) {
                 g.drawString(name, getX() + spacing, getY() + offset - (int)(fontSize * fontOffsetMultiplier));
             }
@@ -255,10 +257,10 @@ public abstract class RectWithRects extends Rect {
         r.draw(g, a);
 
         if (depth == 2) {
-            g.setColor(new Color(textColor.getRed(), textColor.getGreen(), textColor.getBlue(), 255));
+            g.setColor(new Color(fieldColor.getRed(), fieldColor.getGreen(), fieldColor.getBlue(), 255));
         }
         else {
-            g.setColor(new Color(textColor.getRed(), textColor.getGreen(), textColor.getBlue(), (int)(255 * a)));
+            g.setColor(new Color(fieldColor.getRed(), fieldColor.getGreen(), fieldColor.getBlue(), (int)(255 * a)));
         }
         if (!name.isEmpty()) {
             g.drawString(name, getX() + spacing, getY() + offset - (int)(fontSize * fontOffsetMultiplier));

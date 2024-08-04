@@ -24,12 +24,14 @@ public class FolderPanel extends JPanel {
         this.folderStructure = parsePaths(classTypes);
         this.classTypeMap = mapClassTypesToPackages(classTypes);
         this.pathStack = new Stack<>();
-
+        this.setBorder(BorderFactory.createEmptyBorder());
+        this.setBackground(DragDropRectanglesWithSplitPane.bgColor);
         setLayout(new BorderLayout());
 
         // Initialize the path label
         pathLabel = new JLabel("Path: Root");
         pathLabel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
+        pathLabel.setBackground(DragDropRectanglesWithSplitPane.bgColor);
         add(pathLabel, BorderLayout.NORTH);
 
         backButton = new JButton("Back");
@@ -50,14 +52,20 @@ public class FolderPanel extends JPanel {
         });
 
         folderDisplayPanel = new JPanel();
+        folderDisplayPanel.setBorder(BorderFactory.createEmptyBorder());
+        folderDisplayPanel.setBackground(DragDropRectanglesWithSplitPane.bgColor);
         folderDisplayPanel.setLayout(new WrapLayout(FlowLayout.LEFT, 5, 5));
         scrollPane = new JScrollPane(folderDisplayPanel);
         scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
         scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+        scrollPane.setBorder(BorderFactory.createEmptyBorder());
+        scrollPane.setBackground(DragDropRectanglesWithSplitPane.bgColor);
 
         JPanel topPanel = new JPanel(new BorderLayout());
+        topPanel.setBorder(BorderFactory.createEmptyBorder());
         topPanel.add(backButton, BorderLayout.WEST);
         topPanel.add(pathLabel, BorderLayout.CENTER);
+        topPanel.setBackground(DragDropRectanglesWithSplitPane.bgColor);
 
         add(topPanel, BorderLayout.NORTH);
         add(scrollPane, BorderLayout.CENTER);

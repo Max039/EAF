@@ -10,9 +10,9 @@ import java.util.ArrayList;
 
 public class RectPanel extends JScrollPane {
 
-    public static Color arrayColor = new Color(255, 100, 100, 255);
-    public static Color primitiveColor = new Color(100, 255, 100, 255);
-    public static Color instanceColor = new Color(100, 100, 255, 255);
+    public static Color arrayColor = new Color(43, 43, 43, 255);
+    public static Color primitiveColor = new Color(50, 50, 50, 255);
+    public static Color instanceColor = new Color(43, 43, 43, 255);
 
     public static int textBoxWidth = 40;
 
@@ -46,12 +46,20 @@ public class RectPanel extends JScrollPane {
         drawingPanel = new DrawingPanel();
         dragPanel = new DragPanel();
 
+        // Set background colors for demonstration (optional)
+        drawingPanel.setBackground(DragDropRectanglesWithSplitPane.bgColor);
+        drawingPanel.setForeground(DragDropRectanglesWithSplitPane.bgColor);
+
         layeredPane = new JLayeredPane();
         layeredPane.setLayout(new OverlayLayout(layeredPane));
         layeredPane.add(drawingPanel, JLayeredPane.DEFAULT_LAYER);
 
+        this.setBorder(BorderFactory.createEmptyBorder());
+        layeredPane.setBorder(BorderFactory.createEmptyBorder());
+        drawingPanel.setBorder(BorderFactory.createEmptyBorder());
+
         setViewportView(layeredPane);
-        
+
     }
 
     public void addRect(Rect rect) {

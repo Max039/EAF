@@ -10,14 +10,21 @@ import test.rects.multi.ClassRect;
 import test.rects.multi.RectWithRects;
 
 import javax.swing.*;
+import javax.swing.border.Border;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
+import javax.swing.plaf.basic.BasicSplitPaneDivider;
+import javax.swing.plaf.basic.BasicSplitPaneUI;
 import java.awt.*;
 import java.awt.event.*;
 import java.util.Arrays;
 import java.util.List;
 
 public class DragDropRectanglesWithSplitPane extends JPanel {
+
+    public static Color bgColor = new Color(49, 51, 53);
+
+    public static Color dividerColor = new Color(38, 38, 38);
 
     private static final int RECT_SPACING = 5;
     public final RectPanel leftPanel = new RectPanel();
@@ -132,7 +139,32 @@ public class DragDropRectanglesWithSplitPane extends JPanel {
         repaint();
     }
 
+    // Custom SplitPaneUI
+    static class CustomSplitPaneUI extends BasicSplitPaneUI {
+        @Override
+        public BasicSplitPaneDivider createDefaultDivider() {
+            return new CustomSplitPaneDivider(this);
+        }
+    }
+
+    // Custom SplitPaneDivider
+    static class CustomSplitPaneDivider extends BasicSplitPaneDivider {
+        public CustomSplitPaneDivider(BasicSplitPaneUI ui) {
+            super(ui);
+            setBorder(BorderFactory.createEmptyBorder());
+        }
+
+        @Override
+        public void paint(Graphics g) {
+            // Set the color for the divider
+            g.setColor(dividerColor);
+            // Fill the divider with the chosen color
+            g.fillRect(0, 0, getWidth(), getHeight());
+        }
+    }
+
     public DragDropRectanglesWithSplitPane(int numRects) {
+        this.setBorder(BorderFactory.createEmptyBorder());
         setLayout(new BorderLayout());
         subFrame = this;
         // Initialize the text field and new panel
@@ -188,15 +220,26 @@ public class DragDropRectanglesWithSplitPane extends JPanel {
         rightContainerPanel.setLayout(new BorderLayout());
         rightContainerPanel.add(rightPanelTextField, BorderLayout.NORTH);
         rightContainerPanel.add(rightPanel, BorderLayout.CENTER);
+        rightContainerPanel.setBorder(BorderFactory.createEmptyBorder());
 
         // Create a vertical split pane to hold the new panel and the right container panel
         JSplitPane rightSplitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, newPanelAbove, rightContainerPanel);
         rightSplitPane.setDividerLocation(100); // Initial divider location
         rightSplitPane.setResizeWeight(0.1); // Adjust resize weight as needed
+        rightSplitPane.setBorder(BorderFactory.createEmptyBorder());
+        rightSplitPane.setUI(new CustomSplitPaneUI());
+        rightSplitPane.setBackground(bgColor);
 
         mainSplitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, leftPanel, rightSplitPane);
         mainSplitPane.setDividerLocation(400); // Initial divider location
         mainSplitPane.setResizeWeight(0.5); // Evenly split the panels
+        mainSplitPane.setBackground(dividerColor);
+        mainSplitPane.setForeground(dividerColor);
+        mainSplitPane.setUI(new CustomSplitPaneUI());
+        Border border = BorderFactory.createLineBorder(dividerColor, 1);
+        mainSplitPane.setBorder(border);
+
+
         add(mainSplitPane, BorderLayout.CENTER);
 
 
@@ -270,6 +313,7 @@ public class DragDropRectanglesWithSplitPane extends JPanel {
         leftPanel.getViewport().getView().addMouseMotionListener(mouseAdapter2);
         addKeyListener(leftPanel);
         addKeyListener(rightPanel);
+
     }
 
     private static void createAndShowGUI(int numRects) {

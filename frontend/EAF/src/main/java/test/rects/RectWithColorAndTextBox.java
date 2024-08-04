@@ -6,6 +6,7 @@ import test.Pair;
 import test.rects.multi.RectWithRects;
 
 import javax.swing.*;
+import javax.swing.border.Border;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import java.awt.*;
@@ -13,6 +14,12 @@ import java.awt.event.MouseEvent;
 
 public class RectWithColorAndTextBox extends Rect {
     JTextField textBox;
+
+    Color textColor = new Color(255, 255, 255);
+
+    Color bgColor = new Color(55, 55, 55);
+
+    Color borderColor = new Color(85, 85, 85);
 
     public static int spacing = 0;
 
@@ -38,10 +45,8 @@ public class RectWithColorAndTextBox extends Rect {
     }
 
     private void adjustTextBoxColor() {
-        Color bg = textBox.getBackground();
-        textBox.setBackground(new Color(bg.getRed(), bg.getGreen(), bg.getBlue(), (int)(getOpacity()*255)));
-        Color fg = textBox.getForeground();
-        textBox.setForeground(new Color(fg.getRed(), fg.getGreen(), fg.getBlue(), (int)(getOpacity()*255)));
+        textBox.setBackground(new Color(bgColor.getRed(), bgColor.getGreen(), bgColor.getBlue(), (int)(getOpacity()*255)));
+        textBox.setForeground(new Color(textColor.getRed(), textColor.getGreen(), textColor.getBlue(), (int)(getOpacity()*255)));
         Color caret = textBox.getCaretColor();
         textBox.setCaretColor(new Color(caret.getRed(), caret.getGreen(), caret.getBlue(), (int)(getOpacity()*255)));
         Color selected = textBox.getSelectedTextColor();
@@ -56,7 +61,9 @@ public class RectWithColorAndTextBox extends Rect {
     public void setTextBox(String input) {
         textBox = new JTextField(input);
         textBox.setOpaque(false);
-        textBox.setBackground(color);
+        Border border = BorderFactory.createLineBorder(borderColor, 1);
+        textBox.setBorder(border);
+
         textBox.getDocument().addDocumentListener(new DocumentListener() {
             @Override
             public void insertUpdate(DocumentEvent e) {
