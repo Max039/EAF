@@ -6,6 +6,7 @@ import test.rects.multi.RectWithRects;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.MouseEvent;
 
 public abstract class Rect {
 
@@ -105,7 +106,7 @@ public abstract class Rect {
 
     public abstract void onMouseReleased();
 
-    public abstract void onMouseClicked(boolean left, Point p, Point p2);
+    public abstract void onMouseClicked(boolean left, Point p, Point p2, MouseEvent e);
 
 }
 

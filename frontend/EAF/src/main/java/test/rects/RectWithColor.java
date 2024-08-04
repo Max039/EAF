@@ -6,6 +6,7 @@ import test.rects.multi.RectWithRects;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.MouseEvent;
 
 public class RectWithColor extends Rect {
 
@@ -55,7 +56,7 @@ public class RectWithColor extends Rect {
     };
 
     @Override
-    public void onMouseClicked(boolean left, Point p, Point p2) {
+    public void onMouseClicked(boolean left, Point p, Point p2, MouseEvent e) {
 
     };
 

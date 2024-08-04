@@ -12,6 +12,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
 import java.awt.font.FontRenderContext;
 
 import static compiler.FieldValue.doesTypesMatch;
@@ -411,7 +412,7 @@ public abstract class RectWithRects extends Rect {
     }
 
     @Override
-    public void onMouseClicked(boolean left, Point p, Point p2) {
+    public void onMouseClicked(boolean left, Point p, Point p2, MouseEvent e) {
         var res = getIndex(p);
 
         if (res.getFirst() && !left) {
@@ -478,15 +479,20 @@ public abstract class RectWithRects extends Rect {
         } else if (this instanceof ClassRect) {
             if (left) {
                 // Copy, set dragging, delete, etc.
+                DragDropRectanglesWithSplitPane.subFrame.leftPanel.removeRect(RectWithRects.this);
+                if (parent != null) {
+                    parent.subRects[parentIndex] = null;
+                }
+                DragDropRectanglesWithSplitPane.subFrame.setDraggingRect(RectWithRects.this, e, new Point(e.getPoint().x - getX(), e.getPoint().y - getY()));
+                DragDropRectanglesWithSplitPane.subFrame.leftPanel.revalidate();
+                DragDropRectanglesWithSplitPane.subFrame.leftPanel.repaint();
             } else {
                 JPopupMenu popupMenu = new JPopupMenu();
                 JMenuItem menuItem = new JMenuItem("Delete");
                 menuItem.addActionListener(new ActionListener() {
                     @Override
                     public void actionPerformed(ActionEvent e) {
-                        System.out.println(clazz.name);
                         if (parent != null) {
-                            System.out.println("test");
                             parent.subRects[parentIndex] = null;
                         }
                         DragDropRectanglesWithSplitPane.subFrame.leftPanel.removeRect(RectWithRects.this);

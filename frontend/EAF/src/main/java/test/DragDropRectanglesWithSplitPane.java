@@ -115,6 +115,14 @@ public class DragDropRectanglesWithSplitPane extends JPanel {
         rightPanel.draggingRect.setPosition(newX, newY);
     }
 
+    public void setDraggingRect(Rect rect, MouseEvent e, Point offset) {
+        draggedRect = rect.clone();
+        dragOffset = new Point(offset.x, offset.y);
+        rightPanel.setDraggingRect(draggedRect);
+        leftPanel.setDraggingRect(draggedRect.clone());
+        setPosOfDraggingRect(e);
+    }
+
     public DragDropRectanglesWithSplitPane(int numRects) {
         setLayout(new BorderLayout());
 
@@ -194,77 +202,19 @@ public class DragDropRectanglesWithSplitPane extends JPanel {
                 Rect rect = rightPanel.getRect(point);
 
                 if (rect != null && rect.contains(point)) {
-                    draggedRect = rect.clone();
-                    dragOffset = new Point(point.x - rect.getX(), point.y - rect.getY());
-                    rightPanel.setDraggingRect(draggedRect);
-                    leftPanel.setDraggingRect(draggedRect.clone());
-                    setPosOfDraggingRect(e);
-
+                    setDraggingRect(rect, e, new Point(point.x - rect.getX(), point.y - rect.getY()));
                 }
 
             }
 
             @Override
             public void mouseDragged(MouseEvent e) {
-                if (draggedRect != null) {
-                    leftPanel.drawDragging = true;
-                    rightPanel.drawDragging = true;
-
-                    Point leftPanelPos = SwingUtilities.convertPoint(e.getComponent(), e.getPoint(), leftPanel.getViewport().getView());
-                    setPosOfDraggingRect(e);
-
-                    Rect matchingRect = leftPanel.getRect(leftPanelPos);
-                    if (matchingRect instanceof RectWithRects) {
-                        matchingRect = ((RectWithRects) matchingRect).getSubRect(leftPanelPos);
-                        if (matchingRect != null) {
-                            var res = matchingRect.onHover(leftPanelPos);
-
-
-                            if (!res.getFirst()) {
-                                leftPanel.drawDragging = false;
-                                rightPanel.drawDragging = false;
-                            }
-                            if (res.getSecond()) {
-                                leftPanel.draggingRect.setTransparent();
-                                rightPanel.draggingRect.setTransparent();
-                            }
-                            else {
-                                leftPanel.draggingRect.setOpace();
-                                rightPanel.draggingRect.setOpace();
-                            }
-                        }
-                    }
-                    repaint();
-                }
+                DragDropRectanglesWithSplitPane.this.mouseDragged(e);
             }
 
             @Override
             public void mouseReleased(MouseEvent e) {
-                if (draggedRect != null) {
-                    Point releasePoint = SwingUtilities.convertPoint(e.getComponent(), e.getPoint(), leftPanel.getViewport().getView());
-                    Point pointFromLeft = SwingUtilities.convertPoint(e.getComponent(), e.getPoint(), leftPanel);
-                    if (leftPanel.contains(pointFromLeft)) {
-                        Rect matchingRect = leftPanel.getRect(releasePoint);
-                        if (matchingRect instanceof RectWithRects) {
-                            if (((RectWithRects)matchingRect).setIndex(releasePoint, draggedRect)) {
-                                draggedRect.addTo(leftPanel.drawingPanel);
-                            }
-                        }
-                        else {
-                            leftPanel.addRect(leftPanel.draggingRect);
-                        }
-                    }
-
-
-                    draggedRect = null;
-                    dragOffset = null;
-                    leftPanel.clearDraggingRect();
-                    rightPanel.clearDraggingRect();
-                    leftPanel.mouseReleased();
-                    rightPanel.mouseReleased();
-                    revalidate();
-                    repaint();
-                }
+                DragDropRectanglesWithSplitPane.this.mouseReleased(e);
             }
 
 
@@ -285,7 +235,7 @@ public class DragDropRectanglesWithSplitPane extends JPanel {
                 if (matchingRect instanceof RectWithRects) {
                     matchingRect = ((RectWithRects) matchingRect).getSubRect(leftPanelPos);
                     if (matchingRect != null) {
-                        matchingRect.onMouseClicked(e.getButton() == 1, leftPanelPos, panelRelativePos);
+                        matchingRect.onMouseClicked(e.getButton() == 1, leftPanelPos, panelRelativePos, e);
 
                     }
                 }
@@ -295,12 +245,12 @@ public class DragDropRectanglesWithSplitPane extends JPanel {
 
             @Override
             public void mouseDragged(MouseEvent e) {
-
+                DragDropRectanglesWithSplitPane.this.mouseDragged(e);
             }
 
             @Override
             public void mouseReleased(MouseEvent e) {
-
+                DragDropRectanglesWithSplitPane.this.mouseReleased(e);
             }
 
 
@@ -368,5 +318,66 @@ public class DragDropRectanglesWithSplitPane extends JPanel {
         }
 
         SwingUtilities.invokeLater(() -> createAndShowGUI(numRects));
+    }
+
+    public void mouseDragged(MouseEvent e) {
+        if (draggedRect != null) {
+            leftPanel.drawDragging = true;
+            rightPanel.drawDragging = true;
+
+            Point leftPanelPos = SwingUtilities.convertPoint(e.getComponent(), e.getPoint(), leftPanel.getViewport().getView());
+            setPosOfDraggingRect(e);
+
+            Rect matchingRect = leftPanel.getRect(leftPanelPos);
+            if (matchingRect instanceof RectWithRects) {
+                matchingRect = ((RectWithRects) matchingRect).getSubRect(leftPanelPos);
+                if (matchingRect != null) {
+                    var res = matchingRect.onHover(leftPanelPos);
+
+
+                    if (!res.getFirst()) {
+                        leftPanel.drawDragging = false;
+                        rightPanel.drawDragging = false;
+                    }
+                    if (res.getSecond()) {
+                        leftPanel.draggingRect.setTransparent();
+                        rightPanel.draggingRect.setTransparent();
+                    }
+                    else {
+                        leftPanel.draggingRect.setOpace();
+                        rightPanel.draggingRect.setOpace();
+                    }
+                }
+            }
+            repaint();
+        }
+    }
+
+    public void mouseReleased(MouseEvent e) {
+        if (draggedRect != null) {
+            Point releasePoint = SwingUtilities.convertPoint(e.getComponent(), e.getPoint(), leftPanel.getViewport().getView());
+            Point pointFromLeft = SwingUtilities.convertPoint(e.getComponent(), e.getPoint(), leftPanel);
+            if (leftPanel.contains(pointFromLeft)) {
+                Rect matchingRect = leftPanel.getRect(releasePoint);
+                if (matchingRect instanceof RectWithRects) {
+                    if (((RectWithRects)matchingRect).setIndex(releasePoint, draggedRect)) {
+                        draggedRect.addTo(leftPanel.drawingPanel);
+                    }
+                }
+                else {
+                    leftPanel.addRect(leftPanel.draggingRect);
+                }
+            }
+
+
+            draggedRect = null;
+            dragOffset = null;
+            leftPanel.clearDraggingRect();
+            rightPanel.clearDraggingRect();
+            leftPanel.mouseReleased();
+            rightPanel.mouseReleased();
+            revalidate();
+            repaint();
+        }
     }
 }
