@@ -419,9 +419,11 @@ public abstract class RectWithRects extends Rect {
                 var clazz = SyntaxTree.classRegister.get(index.typeName);
                 var valid = clazz.getAllClassTypes();
 
-                // Create the popup menu
+                // Create the popup menu for the first 5 options
                 JPopupMenu popupMenu = new JPopupMenu();
-                for (var item : valid) {
+                int maxVisibleItems = 5;
+                for (int i = 0; i < Math.min(valid.size(), maxVisibleItems); i++) {
+                    var item = valid.get(i);
                     JMenuItem menuItem = new JMenuItem(item.name);
                     menuItem.addActionListener(new ActionListener() {
                         @Override
@@ -436,19 +438,59 @@ public abstract class RectWithRects extends Rect {
                     popupMenu.add(menuItem);
                 }
 
+                // Add "Show More" option if there are more than 5 options
+                if (valid.size() > maxVisibleItems) {
+                    JMenuItem showMoreItem = new JMenuItem("Show More...");
+                    showMoreItem.addActionListener(new ActionListener() {
+                        @Override
+                        public void actionPerformed(ActionEvent e) {
+                            // Create a new scrollable window with all options
+                            JDialog showMoreDialog = new JDialog(DragDropRectanglesWithSplitPane.mainFrame, "All Options", true);
+                            showMoreDialog.setSize(300, 400);
+                            showMoreDialog.setLocationRelativeTo(DragDropRectanglesWithSplitPane.mainFrame);
+
+                            JPanel listPanel = new JPanel();
+                            listPanel.setLayout(new BoxLayout(listPanel, BoxLayout.Y_AXIS));
+                            JScrollPane scrollPane = new JScrollPane(listPanel);
+
+                            for (var fullItem : valid) {
+                                JButton button = new JButton(fullItem.name);
+                                button.setHorizontalAlignment(SwingConstants.CENTER);
+                                button.setMaximumSize(new Dimension(Integer.MAX_VALUE, 50)); // Ensure full width and fixed height
+                                button.addActionListener(new ActionListener() {
+                                    @Override
+                                    public void actionPerformed(ActionEvent e) {
+                                        var rect = DragDropRectanglesWithSplitPane.getRectFromClassType(fullItem);
+                                        rect.addTo(DragDropRectanglesWithSplitPane.subFrame.leftPanel.drawingPanel);
+                                        subRects[res.getSecond()] = rect;
+                                        DragDropRectanglesWithSplitPane.subFrame.leftPanel.revalidate();
+                                        DragDropRectanglesWithSplitPane.subFrame.leftPanel.repaint();
+                                        showMoreDialog.dispose(); // Close the dialog after selection
+                                    }
+                                });
+                                listPanel.add(button);
+                            }
+
+                            showMoreDialog.add(scrollPane);
+                            showMoreDialog.setVisible(true);
+                        }
+                    });
+                    popupMenu.add(showMoreItem);
+                }
+
                 popupMenu.show(DragDropRectanglesWithSplitPane.mainFrame, p2.x, p2.y);
             }
 
-            //open small suggestion menu with show more option
+            // Handle other right-click actions here...
+
         } else if (this instanceof ClassRect) {
             if (left) {
-                //copy
-                //set dragging
-                //delete
+                // Copy, set dragging, delete, etc.
             } else {
-                //open delete menu
+                // Open delete menu, etc.
             }
         }
     }
+
 
 }
