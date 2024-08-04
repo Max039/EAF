@@ -426,9 +426,11 @@ public abstract class RectWithRects extends Rect {
                     menuItem.addActionListener(new ActionListener() {
                         @Override
                         public void actionPerformed(ActionEvent e) {
-                            subRects[res.getSecond()] = DragDropRectanglesWithSplitPane.getRectFromClassType(item);
-                            DragDropRectanglesWithSplitPane.mainFrame.revalidate();
-                            DragDropRectanglesWithSplitPane.mainFrame.repaint();
+                            var rect = DragDropRectanglesWithSplitPane.getRectFromClassType(item);
+                            rect.addTo(DragDropRectanglesWithSplitPane.subFrame.leftPanel.drawingPanel);
+                            subRects[res.getSecond()] = rect;
+                            DragDropRectanglesWithSplitPane.subFrame.leftPanel.revalidate();
+                            DragDropRectanglesWithSplitPane.subFrame.leftPanel.repaint();
                         }
                     });
                     popupMenu.add(menuItem);
