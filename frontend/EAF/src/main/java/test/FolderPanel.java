@@ -33,6 +33,9 @@ public class FolderPanel extends JPanel {
                 if (!pathStack.isEmpty()) {
                     pathStack.pop();
                     updateFolderDisplay();
+                    DragDropRectanglesWithSplitPane.subFrame.rightPanel.getVerticalScrollBar().setValue(0);
+                    DragDropRectanglesWithSplitPane.subFrame.rightPanel.revalidate();
+                    DragDropRectanglesWithSplitPane.subFrame.rightPanel.repaint();
                 }
             }
         });
@@ -73,10 +76,16 @@ public class FolderPanel extends JPanel {
                     pathStack.push(folder);
                     updateFolderDisplay();
                     printClassTypesBelow(currentPath);
+                    DragDropRectanglesWithSplitPane.subFrame.rightPanel.getVerticalScrollBar().setValue(0);
+                    DragDropRectanglesWithSplitPane.subFrame.rightPanel.revalidate();
+                    DragDropRectanglesWithSplitPane.subFrame.rightPanel.repaint();
+                    revalidate();
+                    repaint();
                 }
             });
             folderDisplayPanel.add(folderButton);
         }
+
 
         revalidate();
         repaint();
