@@ -4,6 +4,7 @@ import compiler.ClassType;
 import compiler.SyntaxTree;
 
 import javax.swing.*;
+import javax.swing.border.Border;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -23,6 +24,17 @@ public class FolderPanel extends JPanel {
     private Map<String, List<ClassType>> classTypeMap;
 
     public static Color pathColor = new Color(255, 255, 255);
+    public static Color bgPath = new Color(43, 43, 43);
+
+    public static Color buttonTextColor2 = new Color(104, 151, 187);
+
+    public static Color buttonTextColor1 = new Color(203, 116, 47);
+
+    public static Color buttonColor = new Color(43, 43, 43);
+
+    public static Color buttonBorderColor = new Color(43, 43, 43);
+
+    int borderSize = 3;
 
     public FolderPanel(List<ClassType> classTypes) {
         this.folderStructure = parsePaths(classTypes);
@@ -34,7 +46,7 @@ public class FolderPanel extends JPanel {
 
         // Initialize the path label
         pathLabel = new JLabel("Path: Root");
-        pathLabel.setBackground(DragDropRectanglesWithSplitPane.bgColor);
+        pathLabel.setBackground(bgPath);
         pathLabel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
         pathLabel.setForeground(pathColor);
         add(pathLabel, BorderLayout.NORTH);
@@ -56,6 +68,12 @@ public class FolderPanel extends JPanel {
             }
         });
 
+        backButton.setBackground(buttonColor);
+        backButton.setForeground(buttonTextColor1);
+        Border border = BorderFactory.createLineBorder(buttonBorderColor, borderSize);
+        backButton.setBorder(border);
+        backButton.setFocusPainted(false);
+
         folderDisplayPanel = new JPanel();
         folderDisplayPanel.setBorder(BorderFactory.createEmptyBorder());
         folderDisplayPanel.setBackground(DragDropRectanglesWithSplitPane.bgColor);
@@ -71,7 +89,7 @@ public class FolderPanel extends JPanel {
         topPanel.setBorder(BorderFactory.createEmptyBorder());
         topPanel.add(backButton, BorderLayout.WEST);
         topPanel.add(pathLabel, BorderLayout.CENTER);
-        topPanel.setBackground(DragDropRectanglesWithSplitPane.bgColor);
+        topPanel.setBackground(bgPath);
 
         add(topPanel, BorderLayout.NORTH);
         add(scrollPane, BorderLayout.CENTER);
@@ -113,6 +131,11 @@ public class FolderPanel extends JPanel {
                     repaint();
                 }
             });
+            folderButton.setBackground(buttonColor);
+            folderButton.setForeground(buttonTextColor2);
+            Border border = BorderFactory.createLineBorder(buttonBorderColor, borderSize);
+            folderButton.setBorder(border);
+            folderButton.setFocusPainted(false);
             folderDisplayPanel.add(folderButton);
         }
 

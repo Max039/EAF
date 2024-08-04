@@ -27,6 +27,8 @@ public class DragDropRectanglesWithSplitPane extends JPanel {
 
     public static Color scrollBarBg = new Color(43, 43, 43);
 
+
+
     public static Color scrollBarButton = new Color(150, 150, 150);
 
     public static Color scrollBarTopAndBottom = new Color(60, 60, 60);
