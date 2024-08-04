@@ -1,5 +1,6 @@
 package test;
 
+import compiler.ClassType;
 import test.rects.Rect;
 import test.rects.multi.RectWithRects;
 
@@ -118,6 +119,17 @@ public class RectPanel extends JScrollPane {
         }
         super.revalidate();
 
+    }
+
+
+    public void setRects(ArrayList<ClassType> cs) {
+        ArrayList<Rect> r2 = (ArrayList<Rect>) rects.clone();
+        for (var r : r2) {
+            removeRect(r);
+        }
+        for (var c : cs) {
+            addRect(DragDropRectanglesWithSplitPane.getRectFromClassType(c));
+        }
     }
 
 

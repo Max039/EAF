@@ -14,6 +14,8 @@ import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import java.awt.*;
 import java.awt.event.*;
+import java.util.Arrays;
+import java.util.List;
 
 public class DragDropRectanglesWithSplitPane extends JPanel {
 
@@ -23,7 +25,7 @@ public class DragDropRectanglesWithSplitPane extends JPanel {
     public Rect draggedRect = null;
     private Point dragOffset = null;
 
-    public JSplitPane splitPane = null;
+    public JSplitPane mainSplitPane = null;
 
     public static DragDropRectanglesWithSplitPane subFrame = null;
 
@@ -31,10 +33,10 @@ public class DragDropRectanglesWithSplitPane extends JPanel {
 
     public static boolean showButtons = false;
 
-    // Declare the text field
+    // Declare the text field and new panel
     private JTextField rightPanelTextField;
     private JPanel rightContainerPanel;
-
+    private FolderPanel newPanelAbove;
     public static <T extends Rect> T getRectFromClassType(ClassType type) {
 
         int length = type.fields.size();
@@ -111,7 +113,7 @@ public class DragDropRectanglesWithSplitPane extends JPanel {
         Point leftPanelPos = SwingUtilities.convertPoint(e.getComponent(), e.getPoint(), leftPanel.getViewport().getView());
         int newX = rightPanelPos.x - dragOffset.x;
         int newY = rightPanelPos.y - dragOffset.y;
-        leftPanel.draggingRect.setPosition(newX + leftPanel.getWidth() + splitPane.getDividerSize(), leftPanelPos.y  - dragOffset.y);
+        leftPanel.draggingRect.setPosition(newX + leftPanel.getWidth() + mainSplitPane.getDividerSize(), leftPanelPos.y  - dragOffset.y);
         rightPanel.draggingRect.setPosition(newX, newY);
     }
 
@@ -133,8 +135,10 @@ public class DragDropRectanglesWithSplitPane extends JPanel {
     public DragDropRectanglesWithSplitPane(int numRects) {
         setLayout(new BorderLayout());
 
-        // Initialize the text field
+        // Initialize the text field and new panel
         rightPanelTextField = new JTextField();
+
+        newPanelAbove = new FolderPanel(SyntaxTree.getNonAbstractClasses());
 
         rightPanelTextField.addKeyListener(new KeyListener() {
             @Override
@@ -183,14 +187,19 @@ public class DragDropRectanglesWithSplitPane extends JPanel {
         rightContainerPanel.add(rightPanelTextField, BorderLayout.NORTH);
         rightContainerPanel.add(rightPanel, BorderLayout.CENTER);
 
-        splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, leftPanel, rightContainerPanel);
-        splitPane.setDividerLocation(400); // Initial divider location
-        splitPane.setResizeWeight(0.5); // Evenly split the panels
-        add(splitPane, BorderLayout.CENTER);
+        // Create a vertical split pane to hold the new panel and the right container panel
+        JSplitPane rightSplitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, newPanelAbove, rightContainerPanel);
+        rightSplitPane.setDividerLocation(100); // Initial divider location
+        rightSplitPane.setResizeWeight(0.1); // Adjust resize weight as needed
 
-        for (var c : SyntaxTree.getNonAbstractClasses()) {
-            rightPanel.addRect(getRectFromClassType(c));
-        }
+        mainSplitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, leftPanel, rightSplitPane);
+        mainSplitPane.setDividerLocation(400); // Initial divider location
+        mainSplitPane.setResizeWeight(0.5); // Evenly split the panels
+        add(mainSplitPane, BorderLayout.CENTER);
+
+
+        rightPanel.setRects(SyntaxTree.getNonAbstractClasses());
+
 
         MouseAdapter mouseAdapter = new MouseAdapter() {
             @Override

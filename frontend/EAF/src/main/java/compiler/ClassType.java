@@ -20,7 +20,7 @@ public class ClassType implements Comparable {
 
     ArrayList<ClassType> children = new ArrayList<>();
 
-    String pack;
+    public String pack;
 
     public ClassType(String name, ClassType parent, String pack) {
         this.name = name;
