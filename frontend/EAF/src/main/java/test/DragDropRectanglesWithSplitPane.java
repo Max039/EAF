@@ -140,6 +140,8 @@ public class DragDropRectanglesWithSplitPane extends JPanel {
 
         newPanelAbove = new FolderPanel(SyntaxTree.getNonAbstractClasses());
 
+
+
         rightPanelTextField.addKeyListener(new KeyListener() {
             @Override
             public void keyTyped(KeyEvent e) {
@@ -196,9 +198,6 @@ public class DragDropRectanglesWithSplitPane extends JPanel {
         mainSplitPane.setDividerLocation(400); // Initial divider location
         mainSplitPane.setResizeWeight(0.5); // Evenly split the panels
         add(mainSplitPane, BorderLayout.CENTER);
-
-
-        rightPanel.setRects(SyntaxTree.getNonAbstractClasses());
 
 
         MouseAdapter mouseAdapter = new MouseAdapter() {

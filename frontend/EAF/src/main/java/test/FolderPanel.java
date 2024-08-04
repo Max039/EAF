@@ -16,6 +16,7 @@ public class FolderPanel extends JPanel {
     private JButton backButton;
     private JPanel folderDisplayPanel;
     private JScrollPane scrollPane;
+    private JLabel pathLabel;  // Label for displaying the current path
     private Map<String, Set<String>> folderStructure;
     private Map<String, List<ClassType>> classTypeMap;
 
@@ -26,17 +27,25 @@ public class FolderPanel extends JPanel {
 
         setLayout(new BorderLayout());
 
+        // Initialize the path label
+        pathLabel = new JLabel("Path: Root");
+        pathLabel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
+        add(pathLabel, BorderLayout.NORTH);
+
         backButton = new JButton("Back");
         backButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 if (!pathStack.isEmpty()) {
                     pathStack.pop();
-                    updateFolderDisplay();
-                    DragDropRectanglesWithSplitPane.subFrame.rightPanel.getVerticalScrollBar().setValue(0);
-                    DragDropRectanglesWithSplitPane.subFrame.rightPanel.revalidate();
-                    DragDropRectanglesWithSplitPane.subFrame.rightPanel.repaint();
                 }
+                updateFolderDisplay();
+                String currentPath = String.join(".", pathStack);
+                updatePathLabel();
+                printClassTypesBelow(currentPath);
+                DragDropRectanglesWithSplitPane.subFrame.rightPanel.getVerticalScrollBar().setValue(0);
+                DragDropRectanglesWithSplitPane.subFrame.rightPanel.revalidate();
+                DragDropRectanglesWithSplitPane.subFrame.rightPanel.repaint();
             }
         });
 
@@ -46,20 +55,23 @@ public class FolderPanel extends JPanel {
         scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
         scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
 
-        add(backButton, BorderLayout.NORTH);
+        JPanel topPanel = new JPanel(new BorderLayout());
+        topPanel.add(backButton, BorderLayout.WEST);
+        topPanel.add(pathLabel, BorderLayout.CENTER);
+
+        add(topPanel, BorderLayout.NORTH);
         add(scrollPane, BorderLayout.CENTER);
 
         updateFolderDisplay();
     }
 
-    private void updateFolderDisplay() {
+    void updateFolderDisplay() {
         folderDisplayPanel.removeAll();
 
         String currentPath = String.join(".", pathStack);
         Set<String> currentFolders = folderStructure.getOrDefault(currentPath, new HashSet<>());
 
         for (String folder : currentFolders) {
-
             pathStack.push(folder);
             String currentPath2 = String.join(".", pathStack);
             Set<String> currentFolders2 = folderStructure.getOrDefault(currentPath2, new HashSet<>());
@@ -75,7 +87,8 @@ public class FolderPanel extends JPanel {
                 public void actionPerformed(ActionEvent e) {
                     pathStack.push(folder);
                     updateFolderDisplay();
-                    printClassTypesBelow(currentPath);
+                    printClassTypesBelow(String.join(".", pathStack));
+                    updatePathLabel();
                     DragDropRectanglesWithSplitPane.subFrame.rightPanel.getVerticalScrollBar().setValue(0);
                     DragDropRectanglesWithSplitPane.subFrame.rightPanel.revalidate();
                     DragDropRectanglesWithSplitPane.subFrame.rightPanel.repaint();
@@ -86,15 +99,23 @@ public class FolderPanel extends JPanel {
             folderDisplayPanel.add(folderButton);
         }
 
-
         revalidate();
         repaint();
     }
 
     private void printClassTypesBelow(String currentPath) {
         List<ClassType> classTypes = getClassTypesInSubtree(currentPath);
+        // Assuming classTypes is a List of objects with a name property
+        List<ClassType> sortedClassTypes = classTypes.stream()
+                .sorted(Comparator.comparing(classType -> classType.name))
+                .collect(Collectors.toList());
 
-        DragDropRectanglesWithSplitPane.subFrame.rightPanel.setRects(new ArrayList<>(classTypes));
+        DragDropRectanglesWithSplitPane.subFrame.rightPanel.setRects(new ArrayList<>(sortedClassTypes));
+    }
+
+    private void updatePathLabel() {
+        String currentPath = String.join(".", pathStack);
+        pathLabel.setText("Path: " + (currentPath.isEmpty() ? "Root" : currentPath));
     }
 
     private List<ClassType> getClassTypesInSubtree(String currentPath) {
@@ -129,5 +150,4 @@ public class FolderPanel extends JPanel {
     private Map<String, List<ClassType>> mapClassTypesToPackages(List<ClassType> classTypes) {
         return classTypes.stream().collect(Collectors.groupingBy(ct -> ct.pack));
     }
-
 }
