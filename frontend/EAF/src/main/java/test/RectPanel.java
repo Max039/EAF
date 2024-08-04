@@ -46,6 +46,7 @@ public class RectPanel extends JScrollPane {
         drawingPanel = new DrawingPanel();
         dragPanel = new DragPanel();
 
+
         // Set background colors for demonstration (optional)
         drawingPanel.setBackground(DragDropRectanglesWithSplitPane.bgColor);
         drawingPanel.setForeground(DragDropRectanglesWithSplitPane.bgColor);

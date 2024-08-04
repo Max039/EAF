@@ -13,18 +13,28 @@ import javax.swing.*;
 import javax.swing.border.Border;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
+import javax.swing.plaf.basic.BasicScrollBarUI;
 import javax.swing.plaf.basic.BasicSplitPaneDivider;
 import javax.swing.plaf.basic.BasicSplitPaneUI;
 import java.awt.*;
 import java.awt.event.*;
-import java.util.Arrays;
-import java.util.List;
 
 public class DragDropRectanglesWithSplitPane extends JPanel {
 
     public static Color bgColor = new Color(49, 51, 53);
 
-    public static Color dividerColor = new Color(38, 38, 38);
+    public static Color dividerColor = new Color(43, 43, 43);
+
+    public static Color scrollBarBg = new Color(43, 43, 43);
+
+    public static Color scrollBarButton = new Color(150, 150, 150);
+
+    public static Color scrollBarTopAndBottom = new Color(60, 60, 60);
+
+    public static Color searchBarText = new Color(255, 255, 255);
+
+    public static Color searchBar = new Color(100, 100, 100);
+    public static Color searchBarBorder = new Color(85, 85, 85);
 
     private static final int RECT_SPACING = 5;
     public final RectPanel leftPanel = new RectPanel();
@@ -44,6 +54,77 @@ public class DragDropRectanglesWithSplitPane extends JPanel {
     private JTextField rightPanelTextField;
     private JPanel rightContainerPanel;
     private FolderPanel newPanelAbove;
+
+    static void customizeScrollBar(JScrollPane scrollPane) {
+        JScrollBar verticalScrollBar = scrollPane.getVerticalScrollBar();
+        JScrollBar horizontalScrollBar = scrollPane.getHorizontalScrollBar();
+
+        verticalScrollBar.setUI(new BasicScrollBarUI() {
+            @Override
+            protected void configureScrollBarColors() {
+                this.thumbColor = scrollBarButton;
+                this.trackColor = scrollBarBg;
+                this.thumbDarkShadowColor = scrollBarBg;
+                this.thumbHighlightColor = scrollBarButton;
+            }
+
+            @Override
+            protected JButton createDecreaseButton(int orientation) {
+                return createArrowButton(orientation);
+            }
+
+            @Override
+            protected JButton createIncreaseButton(int orientation) {
+                return createArrowButton(orientation);
+            }
+
+            private JButton createArrowButton(int orientation) {
+                JButton button = new JButton();
+                button.setPreferredSize(new Dimension(16, 16));
+                button.setBackground(scrollBarTopAndBottom);
+                button.setForeground(scrollBarButton);
+                button.setBorder(BorderFactory.createEmptyBorder());
+                button.setOpaque(true);
+                button.setContentAreaFilled(true);
+                button.setFocusPainted(false);
+                return button;
+            }
+        });
+
+        horizontalScrollBar.setUI(new BasicScrollBarUI() {
+            @Override
+            protected void configureScrollBarColors() {
+                this.thumbColor = scrollBarButton;
+                this.trackColor = scrollBarBg;
+                this.thumbDarkShadowColor = scrollBarBg;
+                this.thumbHighlightColor = scrollBarButton;
+            }
+
+            @Override
+            protected JButton createDecreaseButton(int orientation) {
+                return createArrowButton(orientation);
+            }
+
+            @Override
+            protected JButton createIncreaseButton(int orientation) {
+                return createArrowButton(orientation);
+            }
+
+            private JButton createArrowButton(int orientation) {
+                JButton button = new JButton();
+                button.setPreferredSize(new Dimension(16, 16));
+                button.setBackground(scrollBarTopAndBottom);
+                button.setForeground(scrollBarButton);
+                button.setBorder(BorderFactory.createEmptyBorder());
+                button.setOpaque(true);
+                button.setContentAreaFilled(true);
+                button.setFocusPainted(false);
+                return button;
+            }
+        });
+    }
+
+
     public static <T extends Rect> T getRectFromClassType(ClassType type) {
 
         int length = type.fields.size();
@@ -169,9 +250,14 @@ public class DragDropRectanglesWithSplitPane extends JPanel {
         subFrame = this;
         // Initialize the text field and new panel
         rightPanelTextField = new JTextField();
+        rightPanelTextField.setBackground(searchBar);
+        rightPanelTextField.setForeground(searchBarText);
+        Border border = BorderFactory.createLineBorder(searchBarBorder, 1);
+        rightPanelTextField.setBorder(border);
 
         newPanelAbove = new FolderPanel(SyntaxTree.getNonAbstractClasses());
-
+        customizeScrollBar(rightPanel);
+        customizeScrollBar(leftPanel);
 
 
         rightPanelTextField.addKeyListener(new KeyListener() {
@@ -236,8 +322,8 @@ public class DragDropRectanglesWithSplitPane extends JPanel {
         mainSplitPane.setBackground(dividerColor);
         mainSplitPane.setForeground(dividerColor);
         mainSplitPane.setUI(new CustomSplitPaneUI());
-        Border border = BorderFactory.createLineBorder(dividerColor, 1);
-        mainSplitPane.setBorder(border);
+        Border border2 = BorderFactory.createLineBorder(dividerColor, 1);
+        mainSplitPane.setBorder(border2);
 
 
         add(mainSplitPane, BorderLayout.CENTER);

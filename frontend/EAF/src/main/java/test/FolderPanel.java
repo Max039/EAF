@@ -11,6 +11,8 @@ import java.util.*;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static test.DragDropRectanglesWithSplitPane.customizeScrollBar;
+
 public class FolderPanel extends JPanel {
     private Stack<String> pathStack;
     private JButton backButton;
@@ -19,6 +21,8 @@ public class FolderPanel extends JPanel {
     private JLabel pathLabel;  // Label for displaying the current path
     private Map<String, Set<String>> folderStructure;
     private Map<String, List<ClassType>> classTypeMap;
+
+    public static Color pathColor = new Color(255, 255, 255);
 
     public FolderPanel(List<ClassType> classTypes) {
         this.folderStructure = parsePaths(classTypes);
@@ -30,8 +34,9 @@ public class FolderPanel extends JPanel {
 
         // Initialize the path label
         pathLabel = new JLabel("Path: Root");
-        pathLabel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
         pathLabel.setBackground(DragDropRectanglesWithSplitPane.bgColor);
+        pathLabel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
+        pathLabel.setForeground(pathColor);
         add(pathLabel, BorderLayout.NORTH);
 
         backButton = new JButton("Back");
@@ -60,6 +65,7 @@ public class FolderPanel extends JPanel {
         scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
         scrollPane.setBorder(BorderFactory.createEmptyBorder());
         scrollPane.setBackground(DragDropRectanglesWithSplitPane.bgColor);
+        customizeScrollBar(scrollPane);
 
         JPanel topPanel = new JPanel(new BorderLayout());
         topPanel.setBorder(BorderFactory.createEmptyBorder());
