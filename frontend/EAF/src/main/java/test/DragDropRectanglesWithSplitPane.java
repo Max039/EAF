@@ -123,6 +123,13 @@ public class DragDropRectanglesWithSplitPane extends JPanel {
         setPosOfDraggingRect(e);
     }
 
+    public void filterChanged() {
+        rightPanel.filter = rightPanelTextField.getText();
+        rightPanel.getVerticalScrollBar().setValue(0);
+        revalidate();
+        repaint();
+    }
+
     public DragDropRectanglesWithSplitPane(int numRects) {
         setLayout(new BorderLayout());
 
@@ -132,48 +139,41 @@ public class DragDropRectanglesWithSplitPane extends JPanel {
         rightPanelTextField.addKeyListener(new KeyListener() {
             @Override
             public void keyTyped(KeyEvent e) {
-                rightPanel.filter = rightPanelTextField.getText();
-                repaint();
+                filterChanged();
             }
 
             @Override
             public void keyPressed(KeyEvent e) {
-                rightPanel.filter = rightPanelTextField.getText();
-                repaint();
+                filterChanged();
             }
 
             @Override
             public void keyReleased(KeyEvent e) {
-                rightPanel.filter = rightPanelTextField.getText();
-                repaint();
+                filterChanged();
             }
         });
 
         rightPanelTextField.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                rightPanel.filter = rightPanelTextField.getText();
-                repaint();
+                filterChanged();
             }
         });
 
         rightPanelTextField.getDocument().addDocumentListener(new DocumentListener() {
             @Override
             public void insertUpdate(DocumentEvent e) {
-                rightPanel.filter = rightPanelTextField.getText();
-                repaint();
+                filterChanged();
             }
 
             @Override
             public void removeUpdate(DocumentEvent e) {
-                rightPanel.filter = rightPanelTextField.getText();
-                repaint();
+                filterChanged();
             }
 
             @Override
             public void changedUpdate(DocumentEvent e) {
-                rightPanel.filter = rightPanelTextField.getText();
-                repaint();
+                filterChanged();
             }
         });
 
