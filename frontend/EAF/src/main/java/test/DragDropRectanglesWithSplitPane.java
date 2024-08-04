@@ -92,7 +92,7 @@ public class DragDropRectanglesWithSplitPane extends JPanel {
                 FieldType ctype = type.clone();
                 ctype.arrayCount -= 1;
 
-                return (T) new ArrayRect<>(RectPanel.arrayWidth, RectPanel.arrayHeight, RectPanel.arrayColor, clazz,  ctype, 1, type.primitive);
+                return (T) new ArrayRect<>(RectPanel.arrayWidth, RectPanel.arrayHeight, RectPanel.arrayColor, clazz,  ctype, 3, type.primitive);
             }
             else {
                 if (type.primitive) {
