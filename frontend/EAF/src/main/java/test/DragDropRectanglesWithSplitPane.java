@@ -134,7 +134,7 @@ public class DragDropRectanglesWithSplitPane extends JPanel {
 
     public DragDropRectanglesWithSplitPane(int numRects) {
         setLayout(new BorderLayout());
-
+        subFrame = this;
         // Initialize the text field and new panel
         rightPanelTextField = new JTextField();
 
@@ -276,7 +276,7 @@ public class DragDropRectanglesWithSplitPane extends JPanel {
         mainFrame = new JFrame("Drag and Drop Rectangles with Split Pane");
         mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-        subFrame = new DragDropRectanglesWithSplitPane(numRects);
+        new DragDropRectanglesWithSplitPane(numRects);
         mainFrame.add(subFrame);
         mainFrame.setSize(new Dimension(800, 600));
         mainFrame.setLocationRelativeTo(null);

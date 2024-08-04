@@ -62,7 +62,10 @@ public class FolderPanel extends JPanel {
         add(topPanel, BorderLayout.NORTH);
         add(scrollPane, BorderLayout.CENTER);
 
+        String currentPath = String.join(".", pathStack);
         updateFolderDisplay();
+        updatePathLabel();
+        printClassTypesBelow(currentPath);
     }
 
     void updateFolderDisplay() {
