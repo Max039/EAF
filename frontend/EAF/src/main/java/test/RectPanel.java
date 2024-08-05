@@ -52,14 +52,25 @@ public class RectPanel extends JScrollPane {
         drawingPanel.setBackground(DragDropRectanglesWithSplitPane.bgColor);
         drawingPanel.setForeground(DragDropRectanglesWithSplitPane.bgColor);
 
-        layeredPane = new JLayeredPane();
-        layeredPane.setLayout(new OverlayLayout(layeredPane));
+        layeredPane = new JLayeredPane() {
+            @Override
+            public Dimension getPreferredSize() {
+                return drawingPanel.getPreferredSize();
+            }
+        };
         layeredPane.add(drawingPanel, JLayeredPane.DEFAULT_LAYER);
+        layeredPane.setLayout(new OverlayLayout(layeredPane));
+
+        drawingPanel.setMaximumSize(new Dimension(Integer.MAX_VALUE, Integer.MAX_VALUE));
+        layeredPane.setMaximumSize(new Dimension(Integer.MAX_VALUE, Integer.MAX_VALUE));
+        dragPanel.setMaximumSize(new Dimension(Integer.MAX_VALUE, Integer.MAX_VALUE));
+
+
 
         this.setBorder(BorderFactory.createEmptyBorder());
         layeredPane.setBorder(BorderFactory.createEmptyBorder());
         drawingPanel.setBorder(BorderFactory.createEmptyBorder());
-
+        
         setViewportView(layeredPane);
 
     }

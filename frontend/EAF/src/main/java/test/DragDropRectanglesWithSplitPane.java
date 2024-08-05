@@ -405,9 +405,8 @@ public class DragDropRectanglesWithSplitPane extends JPanel {
     }
 
     private static void createAndShowGUI(int numRects) {
-        mainFrame = new JFrame("Drag and Drop Rectangles with Split Pane");
+        mainFrame = new JFrame("EAF");
         mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-
         new DragDropRectanglesWithSplitPane(numRects);
         mainFrame.add(subFrame);
         mainFrame.setSize(new Dimension(800, 600));
