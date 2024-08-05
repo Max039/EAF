@@ -251,8 +251,6 @@ public abstract class RectWithRects extends Rect {
         if (!(r instanceof RectWithRects)) {
             r.setWidth(getWidth() - spacing * 2 - extraSpacingToRight());
         }
-        g.setColor(new Color(emptyRectsColor.getRed(), emptyRectsColor.getGreen(), emptyRectsColor.getBlue(), 255));
-        g.fillRect(getX() + spacing, getY() + offset, r.getWidth(), r.getHeight());
 
         r.draw(g, a);
 

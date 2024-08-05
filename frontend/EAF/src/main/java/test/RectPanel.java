@@ -70,7 +70,7 @@ public class RectPanel extends JScrollPane {
         this.setBorder(BorderFactory.createEmptyBorder());
         layeredPane.setBorder(BorderFactory.createEmptyBorder());
         drawingPanel.setBorder(BorderFactory.createEmptyBorder());
-        
+
         setViewportView(layeredPane);
 
     }
