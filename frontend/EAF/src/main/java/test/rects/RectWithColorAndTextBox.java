@@ -21,6 +21,10 @@ public class RectWithColorAndTextBox extends Rect {
 
     Color borderColor = new Color(85, 85, 85);
 
+    Color selectedColor = new Color(0, 0, 0);
+
+    Color selectionColor = new Color(255, 255, 255);
+
     public static int spacing = 0;
 
     public RectWithColorAndTextBox(ClassType type) {
@@ -47,12 +51,9 @@ public class RectWithColorAndTextBox extends Rect {
     private void adjustTextBoxColor() {
         textBox.setBackground(new Color(bgColor.getRed(), bgColor.getGreen(), bgColor.getBlue(), (int)(getOpacity()*255)));
         textBox.setForeground(new Color(textColor.getRed(), textColor.getGreen(), textColor.getBlue(), (int)(getOpacity()*255)));
-        Color caret = textBox.getCaretColor();
-        textBox.setCaretColor(new Color(caret.getRed(), caret.getGreen(), caret.getBlue(), (int)(getOpacity()*255)));
-        Color selected = textBox.getSelectedTextColor();
-        textBox.setSelectedTextColor(new Color(selected.getRed(), selected.getGreen(), selected.getBlue(), (int)(getOpacity()*255)));
-        Color selection = textBox.getSelectionColor();
-        textBox.setSelectionColor(new Color(selection.getRed(), selection.getGreen(), selection.getBlue(), (int)(getOpacity()*255)));
+        textBox.setCaretColor(new Color(textColor.getRed(), textColor.getGreen(), textColor.getBlue(), (int)(getOpacity()*255)));
+        textBox.setSelectedTextColor(new Color(selectedColor.getRed(), selectedColor.getGreen(), selectedColor.getBlue(), (int)(getOpacity()*255)));
+        textBox.setSelectionColor(new Color(selectionColor.getRed(), selectionColor.getGreen(), selectionColor.getBlue(), (int)(getOpacity()*255)));
         Color disabled = textBox.getDisabledTextColor();
         textBox.setDisabledTextColor(new Color(disabled.getRed(), disabled.getGreen(), disabled.getBlue(), (int)(getOpacity()*255)));
         textBox.revalidate();
