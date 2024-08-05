@@ -169,9 +169,7 @@ public class DragDropRectanglesWithSplitPane extends JPanel {
             else {
                 if (type.primitive) {
                     var c = new ClassType(type.typeName, null, "Primitive");
-                    var r = new RectWithColorAndTextBox(RectPanel.textBoxWidth, RectPanel.textBoxHeight, RectPanel.primitiveColor, c, false);
-                    r.setTextBox(value.value);
-                    return (T) r;
+                    return (T) new RectWithColorAndTextBox(value.value, RectPanel.textBoxWidth, RectPanel.textBoxHeight, RectPanel.primitiveColor, c, false);
                 }
                 else {
                     return getRectFromClassType(value.instance);
@@ -189,7 +187,28 @@ public class DragDropRectanglesWithSplitPane extends JPanel {
             else {
                 if (type.primitive) {
                     var c = new ClassType(type.typeName, null, "Primitive");
-                    return (T) new RectWithColorAndTextBox(RectPanel.textBoxWidth, RectPanel.textBoxHeight, RectPanel.primitiveColor, c, true);
+                    String content;
+                    if (type.typeName.toLowerCase().contains("string") ) {
+                        content = "Enter string here!";
+                    }
+                    else if (type.typeName.toLowerCase().contains("int") ||  type.typeName.toLowerCase().contains("real"))  {
+                        content = "0";
+                    } else if (type.typeName.toLowerCase().contains("bool")) {
+                        content = "true";
+                    }
+                    else if (type.typeName.toLowerCase().contains("data")) {
+                        content  = "Enter data here!";
+                    }
+                    else if (type.typeName.toLowerCase().contains("literal")) {
+                        content  = "Enter literal here!";
+                    }
+                    else {
+                        content  = "Unkown primitive";
+                        System.out.println("Unkown primitve: " + type.typeName);
+                    }
+
+
+                    return (T) new RectWithColorAndTextBox(content, RectPanel.textBoxWidth, RectPanel.textBoxHeight, RectPanel.primitiveColor, c, true);
                 }
                 else {
                     return null;

@@ -31,16 +31,16 @@ public class RectWithColorAndTextBox extends Rect {
 
     public static int spacing = 0;
 
-    public RectWithColorAndTextBox(ClassType type, boolean editable) {
+    public RectWithColorAndTextBox(String content, ClassType type, boolean editable) {
         super(50, RectWithRects.emptyRowSize, new Color(255, 255, 255), type);
         this.editable = editable;
-        setTextBox("Insert Text Here");
+        setTextBox(content);
     }
 
-    public RectWithColorAndTextBox(int width, int height, Color color, ClassType type, boolean editable) {
+    public RectWithColorAndTextBox(String content, int width, int height, Color color, ClassType type, boolean editable) {
         super(width, height, color, type);
         this.editable = editable;
-        setTextBox("Insert Text Here");
+        setTextBox(content);
     }
 
     public RectWithColorAndTextBox(int width, int height, Color color, ClassType type, JTextField field, boolean editable) {
