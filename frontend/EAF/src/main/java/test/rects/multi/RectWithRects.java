@@ -254,12 +254,7 @@ public abstract class RectWithRects extends Rect {
 
         r.draw(g, a);
 
-        if (depth == 2) {
-            g.setColor(new Color(fieldColor.getRed(), fieldColor.getGreen(), fieldColor.getBlue(), 255));
-        }
-        else {
-            g.setColor(new Color(fieldColor.getRed(), fieldColor.getGreen(), fieldColor.getBlue(), (int)(255 * a)));
-        }
+        g.setColor(new Color(fieldColor.getRed(), fieldColor.getGreen(), fieldColor.getBlue(), (int)(255 * a)));
         if (!name.isEmpty()) {
             g.drawString(name, getX() + spacing, getY() + offset - (int)(fontSize * fontOffsetMultiplier));
         }
