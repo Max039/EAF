@@ -63,7 +63,7 @@ class TreeNode {
             return currentNode;
         }
         for (TreeNode child : currentNode.children) {
-            if (child.name.equals(parts[index]) || child.name.equals(parts[index] + ".dl") || child.name.equals(parts[index]+ ".ddl") ) {
+            if (child.name.equals(parts[index]) || child.name.equals(parts[index] + ".dl")) {
                 return findNodeByPathHelper(child, parts, index + 1);
             }
         }

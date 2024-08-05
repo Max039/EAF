@@ -186,7 +186,7 @@ public class SyntaxTree {
             }
         } else if (node.isFile()) {
             // Process .dl files
-            if (node.getName().endsWith(".dl") || node.getName().endsWith(".ddl")) {
+            if (node.getName().endsWith(".dl")) {
                 TreeNode fileNode = new TreeNode(node.getName(), node.getAbsolutePath());
                 if (!parentNode.children.contains(fileNode)) {
                     parentNode.children.add(fileNode);
