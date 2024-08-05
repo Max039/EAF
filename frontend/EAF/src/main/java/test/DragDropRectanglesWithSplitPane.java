@@ -194,7 +194,10 @@ public class DragDropRectanglesWithSplitPane extends JPanel {
                     else if (type.typeName.toLowerCase().contains("int") ||  type.typeName.toLowerCase().contains("real"))  {
                         content = "0";
                     } else if (type.typeName.toLowerCase().contains("bool")) {
-                        content = "true";
+                        String[] s = new String[2];
+                        s[0] = "true";
+                        s[1] = "false";
+                        return (T) new RectWithColorAndSwitch(s, "true", RectPanel.textBoxWidth, RectPanel.textBoxHeight, RectPanel.primitiveColor, c, true);
                     }
                     else if (type.typeName.toLowerCase().contains("data")) {
                         content  = "Enter data here!";
