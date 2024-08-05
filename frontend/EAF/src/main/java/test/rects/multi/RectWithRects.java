@@ -343,6 +343,8 @@ public abstract class RectWithRects extends Rect {
             subRects[i] = r;
             r.parent = this;
             r.parentIndex = i;
+            DragDropRectanglesWithSplitPane.subFrame.leftPanel.revalidate();
+            DragDropRectanglesWithSplitPane.subFrame.leftPanel.repaint();
         }
     }
 
@@ -507,8 +509,6 @@ public abstract class RectWithRects extends Rect {
         var rect = DragDropRectanglesWithSplitPane.getRectFromClassType(t);
         rect.addTo(DragDropRectanglesWithSplitPane.subFrame.leftPanel.drawingPanel);
         setIndex(index, rect);
-        DragDropRectanglesWithSplitPane.subFrame.leftPanel.revalidate();
-        DragDropRectanglesWithSplitPane.subFrame.leftPanel.repaint();
     }
 
 }
