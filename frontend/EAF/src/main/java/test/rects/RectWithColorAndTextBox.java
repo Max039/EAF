@@ -25,20 +25,27 @@ public class RectWithColorAndTextBox extends Rect {
 
     Color selectionColor = new Color(255, 255, 255);
 
+    Color uneditableColor = new Color(151, 111, 151);
+
+    boolean editable;
+
     public static int spacing = 0;
 
-    public RectWithColorAndTextBox(ClassType type) {
+    public RectWithColorAndTextBox(ClassType type, boolean editable) {
         super(50, RectWithRects.emptyRowSize, new Color(255, 255, 255), type);
+        this.editable = editable;
         setTextBox("Insert Text Here");
     }
 
-    public RectWithColorAndTextBox(int width, int height, Color color, ClassType type) {
+    public RectWithColorAndTextBox(int width, int height, Color color, ClassType type, boolean editable) {
         super(width, height, color, type);
+        this.editable = editable;
         setTextBox("Insert Text Here");
     }
 
-    public RectWithColorAndTextBox(int width, int height, Color color, ClassType type, JTextField field) {
+    public RectWithColorAndTextBox(int width, int height, Color color, ClassType type, JTextField field, boolean editable) {
         super(width, height, color, type);
+        this.editable = editable;
         setTextBox(field.getText());
     }
 
@@ -50,7 +57,12 @@ public class RectWithColorAndTextBox extends Rect {
 
     private void adjustTextBoxColor() {
         textBox.setBackground(new Color(bgColor.getRed(), bgColor.getGreen(), bgColor.getBlue(), (int)(getOpacity()*255)));
-        textBox.setForeground(new Color(textColor.getRed(), textColor.getGreen(), textColor.getBlue(), (int)(getOpacity()*255)));
+        if (textBox.isEditable()) {
+            textBox.setForeground(new Color(textColor.getRed(), textColor.getGreen(), textColor.getBlue(), (int)(getOpacity()*255)));
+        }
+        else {
+            textBox.setForeground(new Color(uneditableColor.getRed(), uneditableColor.getGreen(), uneditableColor.getBlue(), (int)(getOpacity()*255)));
+        }
         textBox.setCaretColor(new Color(textColor.getRed(), textColor.getGreen(), textColor.getBlue(), (int)(getOpacity()*255)));
         textBox.setSelectedTextColor(new Color(selectedColor.getRed(), selectedColor.getGreen(), selectedColor.getBlue(), (int)(getOpacity()*255)));
         textBox.setSelectionColor(new Color(selectionColor.getRed(), selectionColor.getGreen(), selectionColor.getBlue(), (int)(getOpacity()*255)));
@@ -81,6 +93,7 @@ public class RectWithColorAndTextBox extends Rect {
                 DragDropRectanglesWithSplitPane.mainFrame.repaint();
             }
         });
+        textBox.setEditable(editable);
         adjustTextBoxColor();
     }
 
@@ -96,7 +109,7 @@ public class RectWithColorAndTextBox extends Rect {
 
     @Override
     public Rect clone() {
-        return new RectWithColorAndTextBox(getWidth(), getHeight(), color, clazz, textBox);
+        return new RectWithColorAndTextBox(getWidth(), getHeight(), color, clazz, textBox, editable);
     }
 
     @Override

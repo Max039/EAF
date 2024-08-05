@@ -169,7 +169,7 @@ public class DragDropRectanglesWithSplitPane extends JPanel {
             else {
                 if (type.primitive) {
                     var c = new ClassType(type.typeName, null, "Primitive");
-                    var r = new RectWithColorAndTextBox(RectPanel.textBoxWidth, RectPanel.textBoxHeight, RectPanel.primitiveColor, c);
+                    var r = new RectWithColorAndTextBox(RectPanel.textBoxWidth, RectPanel.textBoxHeight, RectPanel.primitiveColor, c, false);
                     r.setTextBox(value.value);
                     return (T) r;
                 }
@@ -189,7 +189,7 @@ public class DragDropRectanglesWithSplitPane extends JPanel {
             else {
                 if (type.primitive) {
                     var c = new ClassType(type.typeName, null, "Primitive");
-                    return (T) new RectWithColorAndTextBox(RectPanel.textBoxWidth, RectPanel.textBoxHeight, RectPanel.primitiveColor, c);
+                    return (T) new RectWithColorAndTextBox(RectPanel.textBoxWidth, RectPanel.textBoxHeight, RectPanel.primitiveColor, c, true);
                 }
                 else {
                     return null;
