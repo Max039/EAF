@@ -427,6 +427,7 @@ public abstract class RectWithRects extends Rect {
 
                 valid = valid.stream()
                         .sorted(Comparator.comparing(classType -> classType.name))
+                        .filter(t -> !t.isAbstract)
                         .collect(Collectors.toList());
 
                 // Create the popup menu for the first 5 options
