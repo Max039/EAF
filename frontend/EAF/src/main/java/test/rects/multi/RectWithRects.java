@@ -14,6 +14,10 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.font.FontRenderContext;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import static compiler.FieldValue.doesTypesMatch;
 
@@ -420,6 +424,11 @@ public abstract class RectWithRects extends Rect {
                 var clazz = SyntaxTree.classRegister.get(index.typeName);
                 var valid = clazz.getAllClassTypes();
 
+
+                valid = valid.stream()
+                        .sorted(Comparator.comparing(classType -> classType.name))
+                        .collect(Collectors.toList());
+
                 // Create the popup menu for the first 5 options
                 JPopupMenu popupMenu = new JPopupMenu();
                 int maxVisibleItems = 5;
@@ -439,6 +448,7 @@ public abstract class RectWithRects extends Rect {
                 if (valid.size() > maxVisibleItems) {
                     JMenuItem showMoreItem = new JMenuItem("Show More...");
                     showMoreItem.setFont(showMoreItem.getFont().deriveFont(Font.BOLD | Font.ITALIC)); // Make text bold and italic
+                    List<ClassType> finalValid = valid;
                     showMoreItem.addActionListener(new ActionListener() {
                         @Override
                         public void actionPerformed(ActionEvent e) {
@@ -451,7 +461,7 @@ public abstract class RectWithRects extends Rect {
                             listPanel.setLayout(new BoxLayout(listPanel, BoxLayout.Y_AXIS));
                             JScrollPane scrollPane = new JScrollPane(listPanel);
 
-                            for (var fullItem : valid) {
+                            for (var fullItem : finalValid) {
                                 JButton button = new JButton(fullItem.name);
                                 button.setHorizontalAlignment(SwingConstants.CENTER);
                                 button.setMaximumSize(new Dimension(Integer.MAX_VALUE, 50)); // Ensure full width and fixed height
