@@ -15,7 +15,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 
-public class RectWithColorAndSwitch extends Rect {
+public class OptionsFieldRect extends Rect {
     JComboBox<String> comboBox;
 
     Color textColor = new Color(255, 255, 255);
@@ -31,19 +31,19 @@ public class RectWithColorAndSwitch extends Rect {
 
     public static int spacing = 0;
 
-    public RectWithColorAndSwitch(String[] options, String selectedOption, ClassType type, boolean editable) {
+    public OptionsFieldRect(String[] options, String selectedOption, ClassType type, boolean editable) {
         super(50, RectWithRects.emptyRowSize, new Color(255, 255, 255), type);
         this.editable = editable;
         setComboBox(options, selectedOption);
     }
 
-    public RectWithColorAndSwitch(String[] options, String selectedOption, int width, int height, Color color, ClassType type, boolean editable) {
+    public OptionsFieldRect(String[] options, String selectedOption, int width, int height, Color color, ClassType type, boolean editable) {
         super(width, height, color, type);
         this.editable = editable;
         setComboBox(options, selectedOption);
     }
 
-    public RectWithColorAndSwitch(int width, int height, Color color, ClassType type, JComboBox<String> comboBox, boolean editable) {
+    public OptionsFieldRect(int width, int height, Color color, ClassType type, JComboBox<String> comboBox, boolean editable) {
         super(width, height, color, type);
         this.editable = editable;
         this.comboBox = comboBox;
@@ -133,7 +133,7 @@ public class RectWithColorAndSwitch extends Rect {
         for (int i = 0; i < options.length; i++) {
             options[i] = comboBox.getItemAt(i);
         }
-        return new RectWithColorAndSwitch(options, (String) comboBox.getSelectedItem(), getWidth(), getHeight(), color, clazz, editable);
+        return new OptionsFieldRect(options, (String) comboBox.getSelectedItem(), getWidth(), getHeight(), color, clazz, editable);
     }
 
     @Override

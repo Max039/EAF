@@ -12,7 +12,7 @@ import javax.swing.event.DocumentListener;
 import java.awt.*;
 import java.awt.event.MouseEvent;
 
-public class RectWithColorAndTextBox extends Rect {
+public class TextFieldRect extends Rect {
     JTextField textBox;
 
     Color textColor = new Color(255, 255, 255);
@@ -31,19 +31,19 @@ public class RectWithColorAndTextBox extends Rect {
 
     public static int spacing = 0;
 
-    public RectWithColorAndTextBox(String content, ClassType type, boolean editable) {
+    public TextFieldRect(String content, ClassType type, boolean editable) {
         super(50, RectWithRects.emptyRowSize, new Color(255, 255, 255), type);
         this.editable = editable;
         setTextBox(content);
     }
 
-    public RectWithColorAndTextBox(String content, int width, int height, Color color, ClassType type, boolean editable) {
+    public TextFieldRect(String content, int width, int height, Color color, ClassType type, boolean editable) {
         super(width, height, color, type);
         this.editable = editable;
         setTextBox(content);
     }
 
-    public RectWithColorAndTextBox(int width, int height, Color color, ClassType type, JTextField field, boolean editable) {
+    public TextFieldRect(int width, int height, Color color, ClassType type, JTextField field, boolean editable) {
         super(width, height, color, type);
         this.editable = editable;
         setTextBox(field.getText());
@@ -109,7 +109,7 @@ public class RectWithColorAndTextBox extends Rect {
 
     @Override
     public Rect clone() {
-        return new RectWithColorAndTextBox(getWidth(), getHeight(), color, clazz, textBox, editable);
+        return new TextFieldRect(getWidth(), getHeight(), color, clazz, textBox, editable);
     }
 
     @Override

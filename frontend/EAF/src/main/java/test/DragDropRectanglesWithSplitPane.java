@@ -169,7 +169,7 @@ public class DragDropRectanglesWithSplitPane extends JPanel {
             else {
                 if (type.primitive) {
                     var c = new ClassType(type.typeName, null, "Primitive");
-                    return (T) new RectWithColorAndTextBox(value.value, RectPanel.textBoxWidth, RectPanel.textBoxHeight, RectPanel.primitiveColor, c, false);
+                    return (T) new TextFieldRect(value.value, RectPanel.textBoxWidth, RectPanel.textBoxHeight, RectPanel.primitiveColor, c, false);
                 }
                 else {
                     return getRectFromClassType(value.instance);
@@ -197,7 +197,7 @@ public class DragDropRectanglesWithSplitPane extends JPanel {
                         String[] s = new String[2];
                         s[0] = "true";
                         s[1] = "false";
-                        return (T) new RectWithColorAndSwitch(s, "true", RectPanel.textBoxWidth, RectPanel.textBoxHeight, RectPanel.primitiveColor, c, true);
+                        return (T) new OptionsFieldRect(s, "true", RectPanel.textBoxWidth, RectPanel.textBoxHeight, RectPanel.primitiveColor, c, true);
                     }
                     else if (type.typeName.toLowerCase().contains("data")) {
                         content  = "Enter data here!";
@@ -211,7 +211,7 @@ public class DragDropRectanglesWithSplitPane extends JPanel {
                     }
 
 
-                    return (T) new RectWithColorAndTextBox(content, RectPanel.textBoxWidth, RectPanel.textBoxHeight, RectPanel.primitiveColor, c, true);
+                    return (T) new TextFieldRect(content, RectPanel.textBoxWidth, RectPanel.textBoxHeight, RectPanel.primitiveColor, c, true);
                 }
                 else {
                     return null;
@@ -340,7 +340,26 @@ public class DragDropRectanglesWithSplitPane extends JPanel {
         rightSplitPane.setUI(new CustomSplitPaneUI());
         rightSplitPane.setBackground(bgColor);
 
-        mainSplitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, leftPanel, rightSplitPane);
+        // Create a scroll pane for the top left panel
+        JScrollPane leftBottomScrollPane = new JScrollPane(leftPanel);
+        leftBottomScrollPane.setBorder(BorderFactory.createEmptyBorder());
+        customizeScrollBar(leftBottomScrollPane);
+
+
+        DataFieldListPane leftTopScrollPanel = new DataFieldListPane();
+        leftTopScrollPanel.setBackground(bgColor);
+        leftTopScrollPanel.setBackground(bgColor);
+        customizeScrollBar(leftTopScrollPanel);
+
+        // Create a vertical split pane for the left side
+        JSplitPane leftSplitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, leftTopScrollPanel, leftBottomScrollPane);
+        leftSplitPane.setDividerLocation(100); // Initial divider location
+        leftSplitPane.setResizeWeight(0.1); // Adjust resize weight as needed
+        leftSplitPane.setBorder(BorderFactory.createEmptyBorder());
+        leftSplitPane.setUI(new CustomSplitPaneUI());
+        leftSplitPane.setBackground(bgColor);
+
+        mainSplitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, leftSplitPane, rightSplitPane);
         mainSplitPane.setDividerLocation(400); // Initial divider location
         mainSplitPane.setResizeWeight(0.5); // Evenly split the panels
         mainSplitPane.setBackground(dividerColor);

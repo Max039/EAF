@@ -4,7 +4,6 @@ import compiler.ClassType;
 import compiler.FieldType;
 import test.DragDropRectanglesWithSplitPane;
 import test.rects.Rect;
-import test.rects.RectWithColorAndTextBox;
 
 import java.awt.*;
 import java.util.ArrayList;

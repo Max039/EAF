@@ -6,7 +6,7 @@ import compiler.SyntaxTree;
 import test.DragDropRectanglesWithSplitPane;
 import test.Pair;
 import test.rects.Rect;
-import test.rects.RectWithColorAndTextBox;
+import test.rects.TextFieldRect;
 
 import javax.swing.*;
 import java.awt.*;
@@ -14,7 +14,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.font.FontRenderContext;
-import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -111,8 +110,8 @@ public abstract class RectWithRects extends Rect {
             Rect r = subRects[i];
             String name = names[i];
             if (r != null) {
-                if (r instanceof RectWithColorAndTextBox) {
-                    maxWidth = Math.max(maxWidth, ((RectWithColorAndTextBox) r).getTextWidth() - extraSpacingToRight());
+                if (r instanceof TextFieldRect) {
+                    maxWidth = Math.max(maxWidth, ((TextFieldRect) r).getTextWidth() - extraSpacingToRight());
                 }
                 else {
                     maxWidth = Math.max(maxWidth, r.getWidth());
