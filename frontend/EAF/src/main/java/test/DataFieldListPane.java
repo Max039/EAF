@@ -11,7 +11,7 @@ import java.util.List;
 
 public class DataFieldListPane extends JScrollPane {
     private JPanel panel;
-    private List<DataField> dataFieldList;
+    private ArrayList<Object> dataFieldList;
     private static final int ROW_HEIGHT = 30; // Fixed height for each row
 
     public static Color fieldColor = new Color(43, 43, 43, 255);
@@ -230,7 +230,7 @@ public class DataFieldListPane extends JScrollPane {
         });
     }
 
-    public List<DataField> getDataFieldList() {
+    public ArrayList<Object> getDataFieldList() {
         return dataFieldList;
     }
 }

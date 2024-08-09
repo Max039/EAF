@@ -11,8 +11,13 @@ public class DataField {
         this.instance = instance;
     }
 
+
     @Override
     public String toString() {
+        return name;
+    }
+
+    public String toFormat() {
         if (instance) {
             return "data '" + name + "' of instance '" + type + "';";
         } else {

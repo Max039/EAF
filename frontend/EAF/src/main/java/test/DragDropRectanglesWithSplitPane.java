@@ -18,6 +18,7 @@ import javax.swing.plaf.basic.BasicSplitPaneDivider;
 import javax.swing.plaf.basic.BasicSplitPaneUI;
 import java.awt.*;
 import java.awt.event.*;
+import java.util.ArrayList;
 
 public class DragDropRectanglesWithSplitPane extends JPanel {
 
@@ -47,6 +48,8 @@ public class DragDropRectanglesWithSplitPane extends JPanel {
     public JSplitPane mainSplitPane = null;
 
     public static DragDropRectanglesWithSplitPane subFrame = null;
+
+    static DataFieldListPane leftTopScrollPanel = null;
 
     public static JFrame mainFrame = null;
 
@@ -194,13 +197,13 @@ public class DragDropRectanglesWithSplitPane extends JPanel {
                     else if (type.typeName.toLowerCase().contains("int") ||  type.typeName.toLowerCase().contains("real"))  {
                         content = "0";
                     } else if (type.typeName.toLowerCase().contains("bool")) {
-                        String[] s = new String[2];
-                        s[0] = "true";
-                        s[1] = "false";
-                        return (T) new OptionsFieldRect(s, "true", RectPanel.textBoxWidth, RectPanel.textBoxHeight, RectPanel.primitiveColor, c, true);
+                        var r = new ArrayList<Object>();
+                        r.add(true);
+                        r.add(false);
+                        return (T) new OptionsFieldRect(r, "true", RectPanel.textBoxWidth, RectPanel.textBoxHeight, RectPanel.primitiveColor, c, true);
                     }
                     else if (type.typeName.toLowerCase().contains("data")) {
-                        content  = "Enter data here!";
+                        return (T) new OptionsFieldRect(leftTopScrollPanel.getDataFieldList(), "", RectPanel.textBoxWidth, RectPanel.textBoxHeight, RectPanel.primitiveColor, c, true);
                     }
                     else if (type.typeName.toLowerCase().contains("literal")) {
                         content  = "Enter literal here!";
@@ -279,6 +282,12 @@ public class DragDropRectanglesWithSplitPane extends JPanel {
         Border border = BorderFactory.createLineBorder(searchBarBorder, 1);
         rightPanelTextField.setBorder(border);
 
+        leftTopScrollPanel = new DataFieldListPane();
+        leftTopScrollPanel.setBackground(bgColor);
+        leftTopScrollPanel.setBackground(bgColor);
+        customizeScrollBar(leftTopScrollPanel);
+
+
         newPanelAbove = new FolderPanel(SyntaxTree.getNonAbstractClasses());
         customizeScrollBar(rightPanel);
         customizeScrollBar(leftPanel);
@@ -346,10 +355,6 @@ public class DragDropRectanglesWithSplitPane extends JPanel {
         customizeScrollBar(leftBottomScrollPane);
 
 
-        DataFieldListPane leftTopScrollPanel = new DataFieldListPane();
-        leftTopScrollPanel.setBackground(bgColor);
-        leftTopScrollPanel.setBackground(bgColor);
-        customizeScrollBar(leftTopScrollPanel);
 
         // Create a vertical split pane for the left side
         JSplitPane leftSplitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, leftTopScrollPanel, leftBottomScrollPane);
