@@ -2,6 +2,8 @@ package test.rects.multi;
 
 import compiler.ClassType;
 import compiler.FieldType;
+import org.json.JSONArray;
+import org.json.JSONObject;
 import test.DragDropRectanglesWithSplitPane;
 import test.rects.Rect;
 
@@ -28,7 +30,7 @@ public class ArrayRect <T extends Rect> extends RectWithRects {
         remove
     }
 
-    FieldType fillType;
+    public FieldType fillType;
 
     public ArrayRect(ClassType type) {
         super(type);

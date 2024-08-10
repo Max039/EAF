@@ -2,7 +2,10 @@ package test.rects.multi;
 
 import compiler.ClassType;
 import compiler.FieldType;
+import compiler.FieldValue;
 import compiler.SyntaxTree;
+import org.json.JSONArray;
+import org.json.JSONObject;
 import test.DragDropRectanglesWithSplitPane;
 import test.Pair;
 import test.rects.OptionsFieldRect;
@@ -567,5 +570,34 @@ public abstract class RectWithRects extends Rect {
     public void ifInvalid() {
 
     };
+
+
+    @Override
+    public JSONObject toJson() {
+        JSONObject o = new JSONObject();
+        if (this instanceof ArrayRect) {
+            o.put("type", "array");
+            o.put("primitive", ((ArrayRect)this).fillType.primitive);
+            o.put("count", ((ArrayRect)this).fillType.arrayCount);
+        }
+        if (this instanceof ClassRect) {
+            o.put("type", "instance");
+        }
+        o.put("sub-type", clazz.name);
+        o.put("package", clazz.pack);
+
+        JSONArray a = new JSONArray();
+        for (int i = 0; i < subRects.length; i++) {
+
+            var r = subRects[i];
+            if (r != null && clazz.fields.values().stream().toList().get(i).getSecond() == null) {
+                JSONObject o2 = r.toJson();
+                o2.put("field-name", names[i]);
+                a.put(o2);
+            }
+        }
+        o.put("value", a);
+        return  o;
+    }
 
 }

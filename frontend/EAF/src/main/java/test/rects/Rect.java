@@ -1,6 +1,7 @@
 package test.rects;
 
 import compiler.ClassType;
+import org.json.JSONObject;
 import test.Pair;
 import test.rects.multi.RectWithRects;
 
@@ -115,6 +116,8 @@ public abstract class Rect {
     public abstract void setValidity();
 
     public abstract void ifInvalid();
+
+    public abstract JSONObject toJson();
 
 }
 

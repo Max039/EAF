@@ -19,19 +19,19 @@ public class FieldValue {
     }
 
     //Primitve Constructor
-    FieldValue(String typeName, String value) {
+    public FieldValue(String typeName, String value) {
         this.value = value;
         type = new FieldType(typeName, true, 0);
     }
 
     //Instance Constructor
-    FieldValue(ClassType clazzType) {
+    public FieldValue(ClassType clazzType) {
         this.instance = clazzType.instance();
         this.type = new FieldType(clazzType.name, false, 0);
     }
 
     //Array Constructor
-    FieldValue(FieldType type, ArrayList<FieldValue> values) {
+    public FieldValue(FieldType type, ArrayList<FieldValue> values) {
         this.values = new ArrayList<>(values); // Create a copy of the values list
         this.type = type;
         for (var v : new ArrayList<>(values)) { // Iterate over the copy of the values list

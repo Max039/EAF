@@ -1,13 +1,25 @@
 package test;
 
 import compiler.ClassType;
+import compiler.FieldType;
+import compiler.FieldValue;
+import compiler.SyntaxTree;
+import org.json.JSONArray;
+import org.json.JSONObject;
+import test.rects.OptionsFieldRect;
 import test.rects.Rect;
+import test.rects.TextFieldRect;
+import test.rects.multi.ArrayRect;
+import test.rects.multi.ClassRect;
 import test.rects.multi.RectWithRects;
 
 import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.Optional;
+
+import static test.DragDropRectanglesWithSplitPane.getRectFromClassType;
+import static test.DragDropRectanglesWithSplitPane.getRectFromFieldType;
 
 public class RectPanel extends JScrollPane {
 
@@ -149,10 +161,136 @@ public class RectPanel extends JScrollPane {
             removeRect(r);
         }
         for (var c : cs) {
-            addRect(DragDropRectanglesWithSplitPane.getRectFromClassType(c));
+            addRect(getRectFromClassType(c));
         }
     }
 
+    public JSONArray toJson() {
+        JSONArray rts = new JSONArray();
+        for (var r : rects) {
+                rts.put(r.toJson());
+        }
+        return rts;
+    }
+
+    public void fromJson(JSONArray arr) {
+        var rc = (ArrayList<Rect>) rects.clone();
+        for (var r : rc) {
+            removeRect(r);
+        }
+        rects.clear();
+
+        for (var o : arr) {
+            addRect(rectFromJson((JSONObject)o));
+        }
+    }
+
+    public Rect rectFromJson(JSONObject arr) {
+
+        String clazz = (String) arr.get("sub-type");
+
+
+        switch ((String) arr.get("type")) {
+            case "option-field" :
+                String value = (String) arr.get("value");
+                var c = new ClassType(clazz, null, "Primitive");
+                boolean b1 = (Boolean) arr.get("editable");
+                if (clazz.contains("bool")) {
+                    var r = new ArrayList<Object>();
+                    r.add(true);
+                    r.add(false);
+                    return new OptionsFieldRect(r, value, RectPanel.textBoxWidth, RectPanel.textBoxHeight, RectPanel.primitiveColor, c, b1);
+                }
+                else {
+                    return new OptionsFieldRect(DragDropRectanglesWithSplitPane.dataPanel.getDataFieldList(), value, RectPanel.textBoxWidth, RectPanel.textBoxHeight, RectPanel.primitiveColor, c, b1);
+                }
+            case "text-field" :
+                String value2 = (String) arr.get("value");
+                boolean b2 = (Boolean) arr.get("editable");
+                var c2 = new ClassType(clazz, null, "Primitive");
+                return new TextFieldRect(value2, RectPanel.textBoxWidth, RectPanel.textBoxHeight, RectPanel.primitiveColor, c2, b2);
+            case "instance" :
+                var reg = SyntaxTree.classRegister.get(clazz);
+                String pack = (String) arr.get("package");
+                if (!reg.pack.equals(pack)) {
+                    System.out.println("WARNING: Unequal pack \"" + pack + "\" != \"" + reg.pack + "\" for class \"" + clazz + "\" you can ignore this if you changed the class domain.");
+                }
+
+                var v = new FieldValue(reg);
+                var instance =  (ClassRect) getRectFromClassType(v.instance);
+                JSONArray value3 = (JSONArray) arr.get("value");
+                int objectsToUse = value3.length();
+                int i = 0;
+                for (var field : reg.fields.entrySet()) {
+                    if (field.getValue().getSecond() == null) {
+                        boolean found = false;
+                        for (var jsonField : value3) {
+                            if (((String)((JSONObject)jsonField).get("field-name")).contains(field.getKey())) {
+                                instance.setIndex(i, rectFromJson((JSONObject)jsonField));
+                                found = true;
+                                break;
+                            }
+                        }
+                        if (!found) {
+                            System.out.println("WARNING: For field \"" + field.getKey() + "\" in class \"" + reg.name + "\" no value was found in json!");
+                            if (field.getValue().getFirst().primitive) {
+                                instance.setIndex(i, getRectFromFieldType(field.getValue().getFirst(), null));
+                            }
+                        }
+                        else {
+                            objectsToUse--;
+                        }
+                    }
+                    else {
+                        if (field.getValue().getFirst().primitive) {
+                            instance.setIndex(i, getRectFromFieldType(field.getValue().getFirst(), field.getValue().getSecond()));
+                        }
+                    }
+
+
+                    i++;
+                }
+                if (objectsToUse > 0) {
+                    System.out.println("WARNING: Not all field values were used from json for class construction from class \"" + reg.name + "\"");
+                }
+                return instance;
+
+            case "array" :
+
+
+                JSONArray arrarr = (JSONArray) arr.get("value");
+
+                var arrnames = new String[arrarr.length()];
+                var arrtypes = new FieldType[arrarr.length()];
+                var arrrects = new Rect[arrarr.length()];
+
+                var ft = new FieldType(clazz, (Boolean) arr.get("primitive"), (Integer) arr.get("count"));
+
+                int i3 = 0;
+                for (int i4 = 0; i4 < arrarr.length(); i4++) {
+                    arrnames[i3] = Integer.toString(i3);
+                    arrtypes[i3] = ft;
+                    arrrects[i3] = null;
+                    i3++;
+                }
+
+                var ct = new ClassType(clazz, null, "Array");
+
+                var arrRect = new ArrayRect<>(RectPanel.arrayWidth, RectPanel.arrayHeight, RectPanel.arrayColor, ct, ft, arrnames, arrrects, arrtypes, (Boolean) arr.get("primitive"));
+
+                int i2 = 0;
+                for (var jsonField : arrarr) {
+                    arrRect.setIndex(i2, rectFromJson((JSONObject)jsonField));
+                }
+                return arrRect;
+
+
+            default:
+                throw new RuntimeException("Invalid rect type \"" + arr.get("type") + "\"!");
+
+
+        }
+    }
 
     class DrawingPanel extends JPanel {
 

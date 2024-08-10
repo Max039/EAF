@@ -2,6 +2,7 @@ package test.rects.multi;
 
 import compiler.ClassType;
 import compiler.FieldType;
+import org.json.JSONObject;
 import test.rects.Rect;
 
 import java.awt.*;
@@ -52,4 +53,5 @@ public class ClassRect extends RectWithRects {
     public int extraSpacingBelow() {
         return 0;
     }
+
 }

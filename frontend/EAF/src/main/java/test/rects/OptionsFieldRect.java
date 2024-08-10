@@ -1,6 +1,7 @@
 package test.rects;
 
 import compiler.ClassType;
+import org.json.JSONObject;
 import test.DataField;
 import test.DragDropRectanglesWithSplitPane;
 import test.Pair;
@@ -246,4 +247,17 @@ public class OptionsFieldRect extends Rect {
     public void ifInvalid() {
         comboBox.setForeground(invalidColor);
     };
+
+
+    @Override
+    public JSONObject toJson() {
+        JSONObject o = new JSONObject();
+        o.put("type", "option-field");
+        o.put("sub-type", clazz.name);
+        o.put("value", comboBox.getSelectedItem());
+        o.put("editable", editable);
+        return  o;
+    }
+
+
 }

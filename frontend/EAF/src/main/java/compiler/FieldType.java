@@ -10,7 +10,7 @@ public class FieldType {
     String spacing = " ";
 
 
-    FieldType(String typeName, boolean primitive, int arrayCount) {
+    public FieldType(String typeName, boolean primitive, int arrayCount) {
         this.typeName = typeName.replace("instance", "").replace("array", "").replace(" ", "");
         this.primitive = primitive;
         this.arrayCount = arrayCount;

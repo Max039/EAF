@@ -4,6 +4,7 @@ import compiler.ClassType;
 import compiler.FieldType;
 import compiler.FieldValue;
 import compiler.SyntaxTree;
+import org.json.JSONArray;
 import test.rects.*;
 import test.rects.multi.ArrayRect;
 import test.rects.multi.ClassRect;
@@ -18,6 +19,10 @@ import javax.swing.plaf.basic.BasicSplitPaneDivider;
 import javax.swing.plaf.basic.BasicSplitPaneUI;
 import java.awt.*;
 import java.awt.event.*;
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -467,15 +472,65 @@ public class DragDropRectanglesWithSplitPane extends JPanel {
     }
 
     private static void createAndShowGUI(int numRects) {
+        // Create the main frame
         mainFrame = new JFrame("EAF");
         mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+        // Create and set up the menu bar
+        JMenuBar menuBar = new JMenuBar();
+
+        // Create the File menu
+        JMenu fileMenu = new JMenu("File");
+
+        // Create menu items
+        JMenuItem newItem = new JMenuItem("New");
+        JMenuItem openItem = new JMenuItem("Open");
+
+
+
+        openItem.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                try {
+                    subFrame.leftPanel.fromJson(readJSONFileToJSONArray("test.json"));
+                } catch (IOException ex) {
+                    throw new RuntimeException(ex);
+                }
+            }
+        });
+
+        JMenuItem exitItem = new JMenuItem("Save");
+
+        // Add action listeners for menu items
+        exitItem.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                writeJSONArrayToFile(subFrame.leftPanel.toJson(), "test.json");
+            }
+        });
+
+        // Add menu items to File menu
+        fileMenu.add(newItem);
+        fileMenu.add(openItem);
+        fileMenu.addSeparator();
+        fileMenu.add(exitItem);
+
+        // Add File menu to menu bar
+        menuBar.add(fileMenu);
+
+        // Set the menu bar to the frame
+        mainFrame.setJMenuBar(menuBar);
+
+        // Create and add content to the frame
         new DragDropRectanglesWithSplitPane(numRects);
         mainFrame.add(subFrame);
+
+        // Set frame size and location
         mainFrame.setSize(new Dimension(800, 600));
         mainFrame.setLocationRelativeTo(null);
         mainFrame.setVisible(true);
-
     }
+
 
     public <T extends JScrollPane> void addKeyListener(T j) {
         j.addKeyListener(new KeyAdapter() {
@@ -614,5 +669,30 @@ public class DragDropRectanglesWithSplitPane extends JPanel {
         }
 
     }
+
+    public static void writeJSONArrayToFile(JSONArray jsonArray, String filePath) {
+        try (FileWriter file = new FileWriter(filePath)) {
+            file.write(jsonArray.toString(4)); // The "4" here is for pretty-printing with an indentation of 4 spaces
+            file.flush();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static JSONArray readJSONFileToJSONArray(String filePath) throws IOException, org.json.JSONException {
+        // Open the file using a BufferedReader
+        try (BufferedReader reader = new BufferedReader(new FileReader(filePath))) {
+            // Read the entire content of the file into a String
+            StringBuilder jsonContent = new StringBuilder();
+            String line;
+            while ((line = reader.readLine()) != null) {
+                jsonContent.append(line);
+            }
+
+            // Convert the String content to a JSONArray
+            return new JSONArray(jsonContent.toString());
+        }
+    }
+
 
 }

@@ -1,6 +1,7 @@
 package test.rects;
 
 import compiler.ClassType;
+import org.json.JSONObject;
 import test.DragDropRectanglesWithSplitPane;
 import test.Pair;
 import test.rects.multi.RectWithRects;
@@ -178,5 +179,17 @@ public class TextFieldRect extends Rect {
     public void ifInvalid() {
 
     };
+
+    @Override
+    public JSONObject toJson() {
+        JSONObject o = new JSONObject();
+        o.put("type", "text-field");
+        o.put("sub-type", clazz.name);
+        o.put("value", textBox.getText());
+        o.put("editable", editable);
+        return  o;
+    }
+
+
 
 }
