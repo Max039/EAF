@@ -5,6 +5,7 @@ import compiler.FieldType;
 import compiler.SyntaxTree;
 import test.DragDropRectanglesWithSplitPane;
 import test.Pair;
+import test.rects.OptionsFieldRect;
 import test.rects.Rect;
 import test.rects.TextFieldRect;
 
@@ -114,8 +115,13 @@ public abstract class RectWithRects extends Rect {
             Rect r = subRects[i];
             String name = names[i];
             if (r != null) {
-                if (r instanceof TextFieldRect) {
-                    maxWidth = Math.max(maxWidth, ((TextFieldRect) r).getTextWidth() - extraSpacingToRight());
+                if (r instanceof TextFieldRect || r instanceof OptionsFieldRect) {
+                    if (r instanceof TextFieldRect) {
+                        maxWidth = Math.max(maxWidth, ((TextFieldRect) r).getTextWidth() - extraSpacingToRight());
+                    }
+                    else {
+                        maxWidth = Math.max(maxWidth, ((OptionsFieldRect) r).getWidth() - extraSpacingToRight());
+                    }
                 }
                 else {
                     maxWidth = Math.max(maxWidth, r.getWidth());
