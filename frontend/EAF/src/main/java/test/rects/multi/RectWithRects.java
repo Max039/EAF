@@ -172,6 +172,31 @@ public abstract class RectWithRects extends Rect {
         draw(g, a, 1);
     }
 
+
+    @Override
+    public void setPosition(int x, int y) {
+        super.setPosition(x, y);
+        int offset = realHeight();
+        for (int i = 0; i < subRects.length; i++) {
+            Rect r = subRects[i];
+            if (r != null) {
+                r.setPosition(getX() + spacing, getY() + offset);
+                offset += r.getHeight() + spacing * 2;
+            }
+            else {
+                boolean typeIndexMatch = indexDoesNotMatchesDragged(i);
+                if (i != hoveringIndex || typeIndexMatch) {
+                    offset += emptyRowSize + spacing * 2;
+                }
+                else {
+                    DragDropRectanglesWithSplitPane.subFrame.leftPanel.draggingRect.setPosition(getX() + spacing, getY() + offset);
+                    offset += DragDropRectanglesWithSplitPane.subFrame.leftPanel.draggingRect.getHeight() + spacing * 2;
+                }
+
+            }
+        }
+    }
+
     public void draw(Graphics g, double a, int depth) {
         if(g instanceof Graphics2D)
         {

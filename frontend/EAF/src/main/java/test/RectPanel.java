@@ -192,7 +192,7 @@ public class RectPanel extends JScrollPane {
                     }
 
                     if (found) {
-                        rect.setPosition(horizontalSpacing, y);
+                        rect.setPosition(minSpac.get(), y);
                         rect.draw(g);
                         y += rect.getHeight() + verticalSpacing;
                     }
