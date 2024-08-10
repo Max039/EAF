@@ -18,8 +18,6 @@ import java.awt.*;
 import java.util.ArrayList;
 import java.util.Optional;
 
-import static test.DragDropRectanglesWithSplitPane.getRectFromClassType;
-import static test.DragDropRectanglesWithSplitPane.getRectFromFieldType;
 
 public class RectPanel extends JScrollPane {
 
@@ -161,7 +159,7 @@ public class RectPanel extends JScrollPane {
             removeRect(r);
         }
         for (var c : cs) {
-            addRect(getRectFromClassType(c));
+            addRect(DragDropRectanglesWithSplitPane.getRectFromClassType(c));
         }
     }
 
@@ -193,7 +191,7 @@ public class RectPanel extends JScrollPane {
         switch ((String) arr.get("type")) {
             case "option-field" :
                 String value = (String) arr.get("value");
-                System.out.println(value);
+
                 var c = new ClassType(clazz, null, "Primitive");
                 boolean b1 = (Boolean) arr.get("editable");
                 if (clazz.contains("bool")) {
@@ -218,7 +216,7 @@ public class RectPanel extends JScrollPane {
                 }
 
                 var v = new FieldValue(reg);
-                var instance =  (ClassRect) getRectFromClassType(v.instance);
+                var instance =  (ClassRect) DragDropRectanglesWithSplitPane.getRectFromClassType(v.instance);
                 JSONArray value3 = (JSONArray) arr.get("value");
                 int i = 0;
                 for (var field : reg.fields.entrySet()) {
@@ -234,13 +232,13 @@ public class RectPanel extends JScrollPane {
                         if (!found) {
                             System.out.println("WARNING: For field \"" + field.getKey() + "\" in class \"" + reg.name + "\" no value was found in json!");
                             if (field.getValue().getFirst().primitive) {
-                                instance.setIndex(i, getRectFromFieldType(field.getValue().getFirst(), null));
+                                instance.setIndex(i, DragDropRectanglesWithSplitPane.getRectFromFieldType(field.getValue().getFirst(), null));
                             }
                         }
                     }
                     else {
                         if (field.getValue().getFirst().primitive) {
-                            instance.setIndex(i, getRectFromFieldType(field.getValue().getFirst(), field.getValue().getSecond()));
+                            instance.setIndex(i, DragDropRectanglesWithSplitPane.getRectFromFieldType(field.getValue().getFirst(), field.getValue().getSecond()));
                         }
                     }
 
@@ -270,11 +268,12 @@ public class RectPanel extends JScrollPane {
 
                 var ct = new ClassType(clazz, null, "Array");
 
-                var arrRect = new ArrayRect<>(RectPanel.arrayWidth, RectPanel.arrayHeight, RectPanel.arrayColor, ct, ft, arrnames, arrrects, arrtypes, (Boolean) arr.get("primitive"));
+                var arrRect = new ArrayRect<>(RectPanel.arrayWidth, RectPanel.arrayHeight, RectPanel.arrayColor, ct, ft, arrnames, arrrects, arrtypes, false);
 
                 int i2 = 0;
                 for (var jsonField : arrarr) {
                     arrRect.setIndex(i2, rectFromJson((JSONObject)jsonField));
+                    i2++;
                 }
                 return arrRect;
 
