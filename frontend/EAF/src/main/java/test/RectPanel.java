@@ -193,6 +193,7 @@ public class RectPanel extends JScrollPane {
         switch ((String) arr.get("type")) {
             case "option-field" :
                 String value = (String) arr.get("value");
+                System.out.println(value);
                 var c = new ClassType(clazz, null, "Primitive");
                 boolean b1 = (Boolean) arr.get("editable");
                 if (clazz.contains("bool")) {
@@ -219,7 +220,6 @@ public class RectPanel extends JScrollPane {
                 var v = new FieldValue(reg);
                 var instance =  (ClassRect) getRectFromClassType(v.instance);
                 JSONArray value3 = (JSONArray) arr.get("value");
-                int objectsToUse = value3.length();
                 int i = 0;
                 for (var field : reg.fields.entrySet()) {
                     if (field.getValue().getSecond() == null) {
@@ -237,9 +237,6 @@ public class RectPanel extends JScrollPane {
                                 instance.setIndex(i, getRectFromFieldType(field.getValue().getFirst(), null));
                             }
                         }
-                        else {
-                            objectsToUse--;
-                        }
                     }
                     else {
                         if (field.getValue().getFirst().primitive) {
@@ -249,9 +246,6 @@ public class RectPanel extends JScrollPane {
 
 
                     i++;
-                }
-                if (objectsToUse > 0) {
-                    System.out.println("WARNING: Not all field values were used from json for class construction from class \"" + reg.name + "\"");
                 }
                 return instance;
 
@@ -268,7 +262,7 @@ public class RectPanel extends JScrollPane {
 
                 int i3 = 0;
                 for (int i4 = 0; i4 < arrarr.length(); i4++) {
-                    arrnames[i3] = Integer.toString(i3);
+                    arrnames[i3] = "";
                     arrtypes[i3] = ft;
                     arrrects[i3] = null;
                     i3++;

@@ -166,7 +166,7 @@ public class DragDropRectanglesWithSplitPane extends JPanel {
 
                 int i = 0;
                 for (var item : value.values) {
-                    names[i] = Integer.toString(i);
+                    names[i] = "";
                     types[i] = item.type;
                     rects[i] = getRectFromFieldType(item.type, item);
                     i++;

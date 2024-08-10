@@ -158,8 +158,9 @@ public class OptionsFieldRect extends Rect {
 
     public void setComboBox(ArrayList<Object> options, String selectedOption) {
         this.options = options;
-        comboBox = new JComboBox<>(getOptions(selectedOption));
-        comboBox.setSelectedItem(selectedOption);
+        var t = getOptions(selectedOption);
+        comboBox = new JComboBox<>(t);
+        comboBox.setSelectedIndex(t.length - 1);
         comboBox.setOpaque(false);
         Border border = BorderFactory.createLineBorder(borderColor, 1);
         comboBox.setBorder(border);

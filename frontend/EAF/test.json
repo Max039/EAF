@@ -1,6 +1,69 @@
 [{
-    "package": "de.evoal.generator.generator",
+    "package": "de.evoal.generator.optimisation",
     "type": "instance",
-    "sub-type": "ackley",
-    "value": []
+    "sub-type": "benchmark-configuration",
+    "value": [
+        {
+            "field-name": "reads",
+            "package": "Array",
+            "primitive": true,
+            "count": 0,
+            "type": "array",
+            "sub-type": "data",
+            "value": [
+                {
+                    "field-name": "",
+                    "editable": true,
+                    "type": "option-field",
+                    "sub-type": "data",
+                    "value": "Test"
+                },
+                {
+                    "field-name": "",
+                    "editable": true,
+                    "type": "option-field",
+                    "sub-type": "data",
+                    "value": ""
+                },
+                {
+                    "field-name": "",
+                    "editable": true,
+                    "type": "option-field",
+                    "sub-type": "data",
+                    "value": ""
+                }
+            ]
+        },
+        {
+            "field-name": "writes",
+            "package": "Array",
+            "primitive": true,
+            "count": 0,
+            "type": "array",
+            "sub-type": "data",
+            "value": [
+                {
+                    "field-name": "",
+                    "editable": true,
+                    "type": "option-field",
+                    "sub-type": "data",
+                    "value": ""
+                },
+                {
+                    "field-name": "",
+                    "editable": true,
+                    "type": "option-field",
+                    "sub-type": "data",
+                    "value": ""
+                },
+                {
+                    "field-name": "",
+                    "editable": true,
+                    "type": "option-field",
+                    "sub-type": "data",
+                    "value": ""
+                }
+            ]
+        }
+    ]
 }]

@@ -590,7 +590,7 @@ public abstract class RectWithRects extends Rect {
         for (int i = 0; i < subRects.length; i++) {
 
             var r = subRects[i];
-            if (r != null && clazz.fields.values().stream().toList().get(i).getSecond() == null) {
+            if (r != null && (!(r instanceof ArrayRect) || clazz.fields.values().stream().toList().get(i).getSecond() == null)) {
                 JSONObject o2 = r.toJson();
                 o2.put("field-name", names[i]);
                 a.put(o2);
