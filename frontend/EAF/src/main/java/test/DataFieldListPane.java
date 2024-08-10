@@ -238,11 +238,12 @@ public class DataFieldListPane extends JScrollPane {
                                 "Instance Not Found", JOptionPane.YES_NO_OPTION);
                         if (response == JOptionPane.YES_OPTION) {
                             addDataField(new DataField(name, closestMatch, true));
+                            dialog.dispose();
                         }
                     } else {
                         addDataField(new DataField(name, type, instance));
+                        dialog.dispose(); // Only close if the instance is valid or the name isn't a duplicate
                     }
-                    dialog.dispose();
                 } else {
                     JOptionPane.showMessageDialog(dialog, "Both fields must be filled in!", "Error", JOptionPane.ERROR_MESSAGE);
                 }
