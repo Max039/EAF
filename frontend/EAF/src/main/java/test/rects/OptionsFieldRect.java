@@ -115,17 +115,44 @@ public class OptionsFieldRect extends Rect {
     }
 
 
-    public  void refreshComboBoxOptions() {
+    public void refreshComboBoxOptions() {
         String selectedItem = (String) comboBox.getSelectedItem();
-        comboBox.setModel(new DefaultComboBoxModel<>(options.stream().map(Object::toString).toArray(String[]::new)));
+
+        // Update the comboBox model
+        comboBox.setModel(new DefaultComboBoxModel<>(getOptions(selectedItem)));
+
+        // Restore the selected item
         comboBox.setSelectedItem(selectedItem);
+
+        // Adjust the bounds and repaint
         comboBox.setBounds(getX() + spacing, getY() + spacing, getWidth() - spacing * 2, getHeight() - spacing * 2);
         comboBox.revalidate();
         comboBox.repaint();
     }
 
+    public String[] getOptions(String selectedItem) {
+        // Create an ArrayList to handle options and ensure no duplicates
+        ArrayList<String> optionArrayList = new ArrayList<>();
+
+        // Add all options to the ArrayList
+        for (Object option : options) {
+            String optionStr = option.toString();
+            if (!optionArrayList.contains(optionStr)) {
+                optionArrayList.add(optionStr);
+            }
+        }
+
+        // Ensure the selected item is present in the options
+        if (selectedItem != null && !optionArrayList.contains(selectedItem)) {
+            optionArrayList.add(selectedItem);
+        }
+
+        // Convert ArrayList back to an array
+        return optionArrayList.toArray(new String[0]);
+    }
+
     public void setComboBox(ArrayList<Object> options, String selectedOption) {
-        comboBox = new JComboBox<>(options.stream().map(Object::toString).toArray(String[]::new));
+        comboBox = new JComboBox<>(getOptions(selectedOption));
         comboBox.setSelectedItem(selectedOption);
         comboBox.setOpaque(false);
         Border border = BorderFactory.createLineBorder(borderColor, 1);
