@@ -307,6 +307,7 @@ public abstract class RectWithRects extends Rect {
 
     @Override
     public void removeFrom(JPanel p) {
+        DragDropRectanglesWithSplitPane.subFrame.erroRects.remove(this);
         for (int i = 0; i < subRects.length; i++) {
             Rect r = subRects[i];
             if (r != null) {
@@ -551,8 +552,9 @@ public abstract class RectWithRects extends Rect {
     }
 
     @Override
-    public Pair<Boolean, String> setValidity() {
-        return new Pair<>(true, "");
+    public void setValidity() {
+        DragDropRectanglesWithSplitPane.subFrame.erroRects.remove(this);
+        valid = true;
     };
 
     @Override

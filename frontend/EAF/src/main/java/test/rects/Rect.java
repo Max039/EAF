@@ -112,7 +112,7 @@ public abstract class Rect {
 
     public abstract void onMouseClicked(boolean left, Point p, Point p2, MouseEvent e);
 
-    public abstract Pair<Boolean, String> setValidity();
+    public abstract void setValidity();
 
     public abstract void ifInvalid();
 

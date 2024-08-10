@@ -19,6 +19,7 @@ import javax.swing.plaf.basic.BasicSplitPaneUI;
 import java.awt.*;
 import java.awt.event.*;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class DragDropRectanglesWithSplitPane extends JPanel {
 
@@ -60,7 +61,7 @@ public class DragDropRectanglesWithSplitPane extends JPanel {
     private JPanel rightContainerPanel;
     private FolderPanel folderPanel;
 
-    ArrayList<Pair<Rect, String>> errorRects = new ArrayList<>();
+    public HashMap<Rect, String> erroRects = new HashMap<>();
 
     static void customizeScrollBar(JScrollPane scrollPane) {
         JScrollBar verticalScrollBar = scrollPane.getVerticalScrollBar();
@@ -583,7 +584,7 @@ public class DragDropRectanglesWithSplitPane extends JPanel {
 
 
     public void clearErrors() {
-        errorRects = new ArrayList<>();
+        erroRects = new HashMap<>();
     }
 
 
@@ -608,8 +609,8 @@ public class DragDropRectanglesWithSplitPane extends JPanel {
             checkForErrors(r);
         }
 
-        for (var e : errorRects) {
-            System.out.println("Error in rect: " + e.getSecond());
+        for (var e : erroRects.values()) {
+            System.out.println("Error in rect: " + e);
         }
 
     }

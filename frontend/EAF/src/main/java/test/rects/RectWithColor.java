@@ -1,6 +1,7 @@
 package test.rects;
 
 import compiler.ClassType;
+import test.DragDropRectanglesWithSplitPane;
 import test.Pair;
 import test.rects.multi.RectWithRects;
 
@@ -44,7 +45,7 @@ public class RectWithColor extends Rect {
 
     @Override
     public void removeFrom(JPanel p) {
-
+        DragDropRectanglesWithSplitPane.subFrame.erroRects.remove(this);
     }
 
     @Override
@@ -63,8 +64,9 @@ public class RectWithColor extends Rect {
     };
 
     @Override
-    public Pair<Boolean, String> setValidity() {
-        return new Pair<>(true, "");
+    public void setValidity() {
+        DragDropRectanglesWithSplitPane.subFrame.erroRects.remove(this);
+        valid = true;
     };
 
     @Override

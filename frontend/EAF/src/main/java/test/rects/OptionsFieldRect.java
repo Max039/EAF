@@ -8,12 +8,9 @@ import test.rects.multi.RectWithRects;
 
 import javax.swing.*;
 import javax.swing.border.Border;
-import javax.swing.event.PopupMenuEvent;
-import javax.swing.event.PopupMenuListener;
 import javax.swing.plaf.BorderUIResource;
 import javax.swing.plaf.basic.BasicComboBoxEditor;
 import javax.swing.plaf.basic.BasicComboBoxUI;
-import javax.swing.plaf.basic.ComboPopup;
 import java.awt.*;
 import java.awt.event.*;
 import java.util.ArrayList;
@@ -80,6 +77,20 @@ public class OptionsFieldRect extends Rect {
 
             // Add an ActionListener to refresh when an item is selected
 
+            private void setupListener() {
+                comboBox.addItemListener(new ItemListener() {
+                    @Override
+                    public void itemStateChanged(ItemEvent e) {
+                        if (e.getStateChange() == ItemEvent.SELECTED) {
+                            String selectedItem = (String) e.getItem();
+                            System.out.println("Selected item: " + selectedItem);
+                            // Add code here to handle the selected item
+                        }
+                    }
+                });
+            }
+
+
 
             @Override
             protected ComboBoxEditor createEditor() {
@@ -95,8 +106,17 @@ public class OptionsFieldRect extends Rect {
             }
         });
 
+        comboBox.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                refreshComboBoxOptions();
+            }
+        });
+
         comboBox.repaint();
     }
+
+
 
     public void adjustComboBoxColor() {
         comboBox.setBackground(new Color(bgColor.getRed(), bgColor.getGreen(), bgColor.getBlue(), (int)(getOpacity() * 255)));
@@ -116,6 +136,7 @@ public class OptionsFieldRect extends Rect {
 
 
     public void refreshComboBoxOptions() {
+        setValidity();
         String selectedItem = (String) comboBox.getSelectedItem();
 
         // Update the comboBox model
@@ -158,6 +179,7 @@ public class OptionsFieldRect extends Rect {
         Border border = BorderFactory.createLineBorder(borderColor, 1);
         comboBox.setBorder(border);
         comboBox.addActionListener(e -> DragDropRectanglesWithSplitPane.mainFrame.repaint());
+        setValidity();
     }
 
     @Override
@@ -209,6 +231,7 @@ public class OptionsFieldRect extends Rect {
     @Override
     public void removeFrom(JPanel p) {
         p.remove(comboBox);
+        DragDropRectanglesWithSplitPane.subFrame.erroRects.remove(this);
     }
 
     @Override
@@ -216,17 +239,20 @@ public class OptionsFieldRect extends Rect {
     }
 
     @Override
-    public Pair<Boolean, String> setValidity() {
+    public void setValidity() {
+        DragDropRectanglesWithSplitPane.subFrame.erroRects.remove(this);
         if (clazz.name.equals("data")) {
             boolean res = DragDropRectanglesWithSplitPane.dataPanel.getDataFieldList().stream().anyMatch(t -> ((DataField) t).getName().equals(comboBox.getSelectedItem()));
             String err = "";
             if (!res) {
                 err = "Test";
+                DragDropRectanglesWithSplitPane.subFrame.erroRects.put(this, err);
             }
-            return new Pair<>(res, err);
+            valid = res;
+            return;
         }
 
-        return new Pair<>(true, "");
+        valid = true;
     };
 
     @Override

@@ -160,6 +160,7 @@ public class TextFieldRect extends Rect {
     @Override
     public void removeFrom(JPanel p) {
         p.remove(textBox);
+        DragDropRectanglesWithSplitPane.subFrame.erroRects.remove(this);
     }
 
     @Override
@@ -168,8 +169,9 @@ public class TextFieldRect extends Rect {
     };
 
     @Override
-    public Pair<Boolean, String> setValidity() {
-        return new Pair<>(true, "");
+    public void setValidity() {
+        DragDropRectanglesWithSplitPane.subFrame.erroRects.remove(this);
+        valid = true;
     };
 
     @Override
