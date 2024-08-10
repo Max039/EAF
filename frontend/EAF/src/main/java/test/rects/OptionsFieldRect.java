@@ -34,6 +34,8 @@ public class OptionsFieldRect extends Rect {
 
     public ArrayList<Object> options;
 
+    String last = "";
+
     public OptionsFieldRect(ArrayList<Object> options, String selectedOption, ClassType type, boolean editable) {
         super(50, RectWithRects.emptyRowSize, new Color(255, 255, 255), type);
         this.editable = editable;
@@ -77,19 +79,6 @@ public class OptionsFieldRect extends Rect {
 
             // Add an ActionListener to refresh when an item is selected
 
-            private void setupListener() {
-                comboBox.addItemListener(new ItemListener() {
-                    @Override
-                    public void itemStateChanged(ItemEvent e) {
-                        if (e.getStateChange() == ItemEvent.SELECTED) {
-                            String selectedItem = (String) e.getItem();
-                            System.out.println("Selected item: " + selectedItem);
-                            // Add code here to handle the selected item
-                        }
-                    }
-                });
-            }
-
 
 
             @Override
@@ -106,12 +95,6 @@ public class OptionsFieldRect extends Rect {
             }
         });
 
-        comboBox.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                refreshComboBoxOptions();
-            }
-        });
 
         comboBox.repaint();
     }
@@ -173,13 +156,13 @@ public class OptionsFieldRect extends Rect {
     }
 
     public void setComboBox(ArrayList<Object> options, String selectedOption) {
+        this.options = options;
         comboBox = new JComboBox<>(getOptions(selectedOption));
         comboBox.setSelectedItem(selectedOption);
         comboBox.setOpaque(false);
         Border border = BorderFactory.createLineBorder(borderColor, 1);
         comboBox.setBorder(border);
         comboBox.addActionListener(e -> DragDropRectanglesWithSplitPane.mainFrame.repaint());
-        setValidity();
     }
 
     @Override
@@ -190,6 +173,11 @@ public class OptionsFieldRect extends Rect {
 
     @Override
     public void draw(Graphics g, double a) {
+        if (!last.equals(comboBox.getSelectedItem())) {
+            last = (String) comboBox.getSelectedItem();
+            refreshComboBoxOptions();
+        }
+
         adjustComboBoxColor();
 
         if (!valid) {
@@ -243,9 +231,8 @@ public class OptionsFieldRect extends Rect {
         DragDropRectanglesWithSplitPane.subFrame.erroRects.remove(this);
         if (clazz.name.equals("data")) {
             boolean res = DragDropRectanglesWithSplitPane.dataPanel.getDataFieldList().stream().anyMatch(t -> ((DataField) t).getName().equals(comboBox.getSelectedItem()));
-            String err = "";
             if (!res) {
-                err = "Test";
+                String err = "Data with name \"" + comboBox.getSelectedItem() + "\" was not found!";
                 DragDropRectanglesWithSplitPane.subFrame.erroRects.put(this, err);
             }
             valid = res;
