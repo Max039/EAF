@@ -8,6 +8,11 @@ import java.util.stream.Collectors;
 public class ClassType implements Comparable {
 
     public HashMap<String, Pair<FieldType, FieldValue>> fields;
+
+    public String getName() {
+        return name;
+    }
+
     public String name;
 
     String spacing = " ";

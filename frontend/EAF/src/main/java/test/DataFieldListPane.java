@@ -1,11 +1,15 @@
 package test;
 
+import compiler.SyntaxTree;
+
 import javax.swing.*;
 import javax.swing.border.MatteBorder;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 
 public class DataFieldListPane extends JScrollPane {
     private JPanel panel;
@@ -173,9 +177,18 @@ public class DataFieldListPane extends JScrollPane {
                 if (!name.isEmpty() && !type.isEmpty()) {
                     if (isDuplicateName(name)) {
                         JOptionPane.showMessageDialog(dialog, "Name already used!", "Error", JOptionPane.ERROR_MESSAGE);
-                    } else {
+                    } else if (isInstanceNameValid(type)) {
                         addDataField(new DataField(name, type, true));
                         dialog.dispose();
+                    } else {
+                        String closestMatch = findClosestMatch(type);
+                        int response = JOptionPane.showConfirmDialog(dialog,
+                                "Instance not found. Did you mean \"" + closestMatch + "\"?",
+                                "Instance Not Found", JOptionPane.YES_NO_OPTION);
+                        if (response == JOptionPane.YES_OPTION) {
+                            addDataField(new DataField(name, closestMatch, true));
+                            dialog.dispose();
+                        }
                     }
                 } else {
                     JOptionPane.showMessageDialog(dialog, "Both fields must be filled in!", "Error", JOptionPane.ERROR_MESSAGE);
@@ -218,10 +231,18 @@ public class DataFieldListPane extends JScrollPane {
                 if (!type.isEmpty() && !name.isEmpty()) {
                     if (isDuplicateName(name)) {
                         JOptionPane.showMessageDialog(dialog, "Name already used!", "Error", JOptionPane.ERROR_MESSAGE);
+                    } else if (instance && !isInstanceNameValid(type)) {
+                        String closestMatch = findClosestMatch(type);
+                        int response = JOptionPane.showConfirmDialog(dialog,
+                                "Instance not found. Did you mean \"" + closestMatch + "\"?",
+                                "Instance Not Found", JOptionPane.YES_NO_OPTION);
+                        if (response == JOptionPane.YES_OPTION) {
+                            addDataField(new DataField(name, closestMatch, true));
+                        }
                     } else {
                         addDataField(new DataField(name, type, instance));
-                        dialog.dispose();
                     }
+                    dialog.dispose();
                 } else {
                     JOptionPane.showMessageDialog(dialog, "Both fields must be filled in!", "Error", JOptionPane.ERROR_MESSAGE);
                 }
@@ -241,15 +262,52 @@ public class DataFieldListPane extends JScrollPane {
     }
 
     private boolean isDuplicateName(String name) {
-        for (Object obj : dataFieldList) {
-            if (obj instanceof DataField) {
-                DataField dataField = (DataField) obj;
-                if (dataField.getName().equals(name)) {
-                    return true;
-                }
+        return dataFieldList.stream()
+                .anyMatch(df -> df instanceof DataField && ((DataField) df).getName().equals(name));
+    }
+
+    private boolean isInstanceNameValid(String name) {
+        return SyntaxTree.getNonAbstractClasses().stream()
+                .anyMatch(t -> t.getName().matches(name));
+    }
+
+    private String findClosestMatch(String name) {
+        Optional<String> closestMatch = SyntaxTree.getNonAbstractClasses().stream()
+                .map(t -> t.getName())
+                .min((s1, s2) -> Integer.compare(getLevenshteinDistance(s1, name), getLevenshteinDistance(s2, name)));
+        return closestMatch.orElse(name); // Return the original name if no matches found
+    }
+
+    private int getLevenshteinDistance(String s1, String s2) {
+        int len1 = s1.length() + 1;
+        int len2 = s2.length() + 1;
+
+        // Create the distance matrix
+        int[] cost = new int[len1];
+        int[] newCost = new int[len1];
+
+        for (int i = 0; i < len1; i++) cost[i] = i;
+
+        // Calculate the cost
+        for (int j = 1; j < len2; j++) {
+            newCost[0] = j;
+
+            for (int i = 1; i < len1; i++) {
+                int match = (s1.charAt(i - 1) == s2.charAt(j - 1)) ? 0 : 1;
+
+                int costReplace = cost[i - 1] + match;
+                int costInsert = cost[i] + 1;
+                int costDelete = newCost[i - 1] + 1;
+
+                newCost[i] = Math.min(Math.min(costInsert, costDelete), costReplace);
             }
+
+            int[] swap = cost;
+            cost = newCost;
+            newCost = swap;
         }
-        return false;
+
+        return cost[len1 - 1];
     }
 
     public void addDataField(DataField dataField) {

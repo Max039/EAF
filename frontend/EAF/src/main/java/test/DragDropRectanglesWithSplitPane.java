@@ -292,7 +292,6 @@ public class DragDropRectanglesWithSplitPane extends JPanel {
         customizeScrollBar(rightPanel);
         customizeScrollBar(leftPanel);
 
-
         rightPanelTextField.addKeyListener(new KeyListener() {
             @Override
             public void keyTyped(KeyEvent e) {
