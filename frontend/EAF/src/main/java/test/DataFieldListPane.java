@@ -1,13 +1,11 @@
 package test;
 
 import javax.swing.*;
-import javax.swing.border.Border;
 import javax.swing.border.MatteBorder;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
-import java.util.List;
 
 public class DataFieldListPane extends JScrollPane {
     private JPanel panel;
@@ -43,8 +41,6 @@ public class DataFieldListPane extends JScrollPane {
         gbc.fill = GridBagConstraints.HORIZONTAL;
         gbc.insets = new Insets(0, 0, 0, 0); // No padding
         gbc.gridy = 0;
-
-
 
         // Name label
         JLabel nameLabel = new JLabel("Data Name");
@@ -85,37 +81,130 @@ public class DataFieldListPane extends JScrollPane {
         addButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                showPopupMenu(addButton);
+            }
+        });
+    }
+
+    private void showPopupMenu(Component invoker) {
+        JPopupMenu popupMenu = new JPopupMenu();
+
+        JMenuItem createNumberItem = new JMenuItem("Create Number");
+        createNumberItem.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                openCreateNumberDialog();
+            }
+        });
+        popupMenu.add(createNumberItem);
+
+        JMenuItem createInstanceItem = new JMenuItem("Create Instance");
+        createInstanceItem.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                openCreateInstanceDialog();
+            }
+        });
+        popupMenu.add(createInstanceItem);
+
+        JMenuItem newItem = new JMenuItem("New");
+        newItem.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
                 openAddDataFieldDialog();
             }
         });
+        popupMenu.add(newItem);
 
+        popupMenu.show(invoker, invoker.getWidth() / 2, invoker.getHeight() / 2);
     }
 
-    private void openAddDataFieldDialog() {
-        // Create the dialog
-        JDialog dialog = new JDialog((Frame) SwingUtilities.getWindowAncestor(this), "Add Data Field", true);
-        dialog.setLayout(new GridLayout(4, 2));
-        dialog.setSize(300, 150);
+    private void openCreateNumberDialog() {
+        JDialog dialog = new JDialog((Frame) SwingUtilities.getWindowAncestor(this), "Create Number", true);
+        dialog.setLayout(new GridLayout(2, 2));
+        dialog.setSize(300, 100);
 
-        // Name label and text field
         JLabel nameLabel = new JLabel("Name:");
         JTextField nameField = new JTextField();
 
-        // Type label and text field
-        JLabel typeLabel = new JLabel("Type:");
-        JTextField typeField = new JTextField();
-
-        // Instance label and checkbox
-        JLabel instanceLabel = new JLabel("Instance:");
-        JCheckBox instanceCheckBox = new JCheckBox();
-
-        // OK button
         JButton okButton = new JButton("OK");
         okButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                String type = typeField.getText();
                 String name = nameField.getText();
+                if (!name.isEmpty()) {
+                    addDataField(new DataField(name, "quotient real", false));
+                    dialog.dispose();
+                } else {
+                    JOptionPane.showMessageDialog(dialog, "Name must be filled in!", "Error", JOptionPane.ERROR_MESSAGE);
+                }
+            }
+        });
+
+        dialog.add(nameLabel);
+        dialog.add(nameField);
+        dialog.add(okButton);
+
+        dialog.setLocationRelativeTo(this);
+        dialog.setVisible(true);
+    }
+
+    private void openCreateInstanceDialog() {
+        JDialog dialog = new JDialog((Frame) SwingUtilities.getWindowAncestor(this), "Create Instance", true);
+        dialog.setLayout(new GridLayout(3, 2));
+        dialog.setSize(300, 150);
+
+        JLabel nameLabel = new JLabel("Name:");
+        JTextField nameField = new JTextField();
+
+        JLabel typeLabel = new JLabel("Type:");
+        JTextField typeField = new JTextField();
+
+        JButton okButton = new JButton("OK");
+        okButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String name = nameField.getText();
+                String type = typeField.getText();
+                if (!name.isEmpty() && !type.isEmpty()) {
+                    addDataField(new DataField(name, type, true));
+                    dialog.dispose();
+                } else {
+                    JOptionPane.showMessageDialog(dialog, "Both fields must be filled in!", "Error", JOptionPane.ERROR_MESSAGE);
+                }
+            }
+        });
+
+        dialog.add(nameLabel);
+        dialog.add(nameField);
+        dialog.add(typeLabel);
+        dialog.add(typeField);
+        dialog.add(okButton);
+
+        dialog.setLocationRelativeTo(this);
+        dialog.setVisible(true);
+    }
+
+    private void openAddDataFieldDialog() {
+        JDialog dialog = new JDialog((Frame) SwingUtilities.getWindowAncestor(this), "Add Data Field", true);
+        dialog.setLayout(new GridLayout(4, 2));
+        dialog.setSize(300, 150);
+
+        JLabel nameLabel = new JLabel("Name:");
+        JTextField nameField = new JTextField();
+
+        JLabel typeLabel = new JLabel("Type:");
+        JTextField typeField = new JTextField();
+
+        JLabel instanceLabel = new JLabel("Instance:");
+        JCheckBox instanceCheckBox = new JCheckBox();
+
+        JButton okButton = new JButton("OK");
+        okButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String name = nameField.getText();
+                String type = typeField.getText();
                 boolean instance = instanceCheckBox.isSelected();
 
                 if (!type.isEmpty() && !name.isEmpty()) {
@@ -127,16 +216,6 @@ public class DataFieldListPane extends JScrollPane {
             }
         });
 
-        // Cancel button
-        JButton cancelButton = new JButton("Cancel");
-        cancelButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                dialog.dispose();
-            }
-        });
-
-        // Add components to the dialog
         dialog.add(nameLabel);
         dialog.add(nameField);
         dialog.add(typeLabel);
@@ -144,9 +223,7 @@ public class DataFieldListPane extends JScrollPane {
         dialog.add(instanceLabel);
         dialog.add(instanceCheckBox);
         dialog.add(okButton);
-        dialog.add(cancelButton);
 
-        // Show the dialog
         dialog.setLocationRelativeTo(this);
         dialog.setVisible(true);
     }
@@ -159,7 +236,6 @@ public class DataFieldListPane extends JScrollPane {
     }
 
     private void addDataFieldComponent(DataField dataField) {
-
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.fill = GridBagConstraints.HORIZONTAL;
         gbc.insets = new Insets(0, 0, 0, 0); // No padding
@@ -180,8 +256,7 @@ public class DataFieldListPane extends JScrollPane {
         String s;
         if (dataField.isInstance()) {
             s = "instance " + dataField.getType();
-        }
-        else {
+        } else {
             s = dataField.getType();
         }
 
@@ -196,8 +271,6 @@ public class DataFieldListPane extends JScrollPane {
         gbc.weightx = 0.4;
         panel.add(typeLabel, gbc);
 
-
-
         // "-" button
         JButton removeButton = new JButton("-");
         removeButton.setPreferredSize(new Dimension(50, ROW_HEIGHT)); // Fixed size for the button
@@ -210,8 +283,6 @@ public class DataFieldListPane extends JScrollPane {
         removeButton.setBackground(fieldColor);
         removeButton.setForeground(minusColor);
         removeButton.setFocusPainted(false);
-
-
 
         // Remove button action
         removeButton.addActionListener(new ActionListener() {
@@ -234,4 +305,3 @@ public class DataFieldListPane extends JScrollPane {
         return dataFieldList;
     }
 }
-
