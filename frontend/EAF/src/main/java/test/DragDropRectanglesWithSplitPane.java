@@ -49,7 +49,7 @@ public class DragDropRectanglesWithSplitPane extends JPanel {
 
     public static DragDropRectanglesWithSplitPane subFrame = null;
 
-    static DataFieldListPane leftTopScrollPanel = null;
+    public static DataFieldListPane dataPanel = null;
 
     public static JFrame mainFrame = null;
 
@@ -58,7 +58,9 @@ public class DragDropRectanglesWithSplitPane extends JPanel {
     // Declare the text field and new panel
     private JTextField rightPanelTextField;
     private JPanel rightContainerPanel;
-    private FolderPanel newPanelAbove;
+    private FolderPanel folderPanel;
+
+    ArrayList<Pair<Rect, String>> errorRects = new ArrayList<>();
 
     static void customizeScrollBar(JScrollPane scrollPane) {
         JScrollBar verticalScrollBar = scrollPane.getVerticalScrollBar();
@@ -203,7 +205,7 @@ public class DragDropRectanglesWithSplitPane extends JPanel {
                         return (T) new OptionsFieldRect(r, "true", RectPanel.textBoxWidth, RectPanel.textBoxHeight, RectPanel.primitiveColor, c, true);
                     }
                     else if (type.typeName.toLowerCase().contains("data")) {
-                        return (T) new OptionsFieldRect(leftTopScrollPanel.getDataFieldList(), "", RectPanel.textBoxWidth, RectPanel.textBoxHeight, RectPanel.primitiveColor, c, true);
+                        return (T) new OptionsFieldRect(dataPanel.getDataFieldList(), "", RectPanel.textBoxWidth, RectPanel.textBoxHeight, RectPanel.primitiveColor, c, true);
                     }
                     else if (type.typeName.toLowerCase().contains("literal")) {
                         content  = "Enter literal here!";
@@ -282,13 +284,13 @@ public class DragDropRectanglesWithSplitPane extends JPanel {
         Border border = BorderFactory.createLineBorder(searchBarBorder, 1);
         rightPanelTextField.setBorder(border);
 
-        leftTopScrollPanel = new DataFieldListPane();
-        leftTopScrollPanel.setBackground(bgColor);
-        leftTopScrollPanel.setBackground(bgColor);
-        customizeScrollBar(leftTopScrollPanel);
+        dataPanel = new DataFieldListPane();
+        dataPanel.setBackground(bgColor);
+        dataPanel.setBackground(bgColor);
+        customizeScrollBar(dataPanel);
 
 
-        newPanelAbove = new FolderPanel(SyntaxTree.getNonAbstractClasses());
+        folderPanel = new FolderPanel(SyntaxTree.getNonAbstractClasses());
         customizeScrollBar(rightPanel);
         customizeScrollBar(leftPanel);
 
@@ -341,7 +343,7 @@ public class DragDropRectanglesWithSplitPane extends JPanel {
         rightContainerPanel.setBorder(BorderFactory.createEmptyBorder());
 
         // Create a vertical split pane to hold the new panel and the right container panel
-        JSplitPane rightSplitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, newPanelAbove, rightContainerPanel);
+        JSplitPane rightSplitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, folderPanel, rightContainerPanel);
         rightSplitPane.setDividerLocation(100); // Initial divider location
         rightSplitPane.setResizeWeight(0.1); // Adjust resize weight as needed
         rightSplitPane.setBorder(BorderFactory.createEmptyBorder());
@@ -356,7 +358,7 @@ public class DragDropRectanglesWithSplitPane extends JPanel {
 
 
         // Create a vertical split pane for the left side
-        JSplitPane leftSplitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, leftTopScrollPanel, leftBottomScrollPane);
+        JSplitPane leftSplitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, dataPanel, leftBottomScrollPane);
         leftSplitPane.setDividerLocation(100); // Initial divider location
         leftSplitPane.setResizeWeight(0.1); // Adjust resize weight as needed
         leftSplitPane.setBorder(BorderFactory.createEmptyBorder());
@@ -439,6 +441,20 @@ public class DragDropRectanglesWithSplitPane extends JPanel {
 
 
         };
+
+        MouseAdapter mouseAdapter3 = new MouseAdapter() {
+            @Override
+            public void mousePressed(MouseEvent e) {
+                leftPanel.requestFocusInWindow();
+
+            };
+        };
+        dataPanel.getViewport().getView().addMouseListener(mouseAdapter);
+        dataPanel.getViewport().getView().addMouseMotionListener(mouseAdapter);
+
+        folderPanel.addMouseListener(mouseAdapter);
+        folderPanel.addMouseMotionListener(mouseAdapter);
+
 
         rightPanel.getViewport().getView().addMouseListener(mouseAdapter);
         rightPanel.getViewport().getView().addMouseMotionListener(mouseAdapter);
@@ -564,4 +580,38 @@ public class DragDropRectanglesWithSplitPane extends JPanel {
             repaint();
         }
     }
+
+
+    public void clearErrors() {
+        errorRects = new ArrayList<>();
+    }
+
+
+    public void checkForErrors(Rect r) {
+        r.setValidity();
+        if (r instanceof RectWithRects) {
+            for (var t : ((RectWithRects) r).getSubRects()) {
+                if (t != null) {
+                    checkForErrors(t);
+                }
+            }
+        } else if (r instanceof OptionsFieldRect) {
+            ((OptionsFieldRect)r).refreshComboBoxOptions();
+        }
+
+    }
+
+    public void checkForErrors() {
+        clearErrors();
+        System.out.println("Checking for errors");
+        for (var r : leftPanel.getRects()) {
+            checkForErrors(r);
+        }
+
+        for (var e : errorRects) {
+            System.out.println("Error in rect: " + e.getSecond());
+        }
+
+    }
+
 }

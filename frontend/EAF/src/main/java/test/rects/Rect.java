@@ -66,7 +66,7 @@ public abstract class Rect {
         this.height = height;
     }
 
-
+    public boolean valid = true;
 
     public void setTransparent() {
         setOpacity(transparencyFactor);
@@ -111,6 +111,10 @@ public abstract class Rect {
     public abstract void onMouseReleased();
 
     public abstract void onMouseClicked(boolean left, Point p, Point p2, MouseEvent e);
+
+    public abstract Pair<Boolean, String> setValidity();
+
+    public abstract void ifInvalid();
 
 }
 

@@ -47,6 +47,10 @@ public abstract class RectWithRects extends Rect {
 
     FontRenderContext context = null;
 
+    public Rect[] getSubRects() {
+        return subRects;
+    }
+
     Rect[] subRects = new Rect[0];
     String[] names = new String[0];
 
@@ -545,5 +549,15 @@ public abstract class RectWithRects extends Rect {
         rect.addTo(DragDropRectanglesWithSplitPane.subFrame.leftPanel.drawingPanel);
         setIndex(index, rect);
     }
+
+    @Override
+    public Pair<Boolean, String> setValidity() {
+        return new Pair<>(true, "");
+    };
+
+    @Override
+    public void ifInvalid() {
+
+    };
 
 }

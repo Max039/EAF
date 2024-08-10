@@ -94,7 +94,6 @@ public class TextFieldRect extends Rect {
             }
         });
         textBox.setEditable(editable);
-        adjustTextBoxColor();
     }
 
     @Override
@@ -105,6 +104,12 @@ public class TextFieldRect extends Rect {
 
     @Override
     public void draw(Graphics g, double a) {
+        adjustTextBoxColor();
+
+        if (!valid) {
+            ifInvalid();
+        }
+
         var g2 = (Graphics2D) g;
         g2.setColor(new Color(color.getRed(), color.getGreen(), color.getBlue(), (int)(255 * a)));
         g2.fillRect(getX(), getY(), getWidth(), getHeight());
@@ -162,5 +167,14 @@ public class TextFieldRect extends Rect {
 
     };
 
+    @Override
+    public Pair<Boolean, String> setValidity() {
+        return new Pair<>(true, "");
+    };
+
+    @Override
+    public void ifInvalid() {
+
+    };
 
 }

@@ -314,6 +314,7 @@ public class DataFieldListPane extends JScrollPane {
     public void addDataField(DataField dataField) {
         dataFieldList.add(dataField);
         addDataFieldComponent(dataField);
+        DragDropRectanglesWithSplitPane.subFrame.checkForErrors();
         panel.revalidate();
         panel.repaint();
     }
@@ -377,6 +378,7 @@ public class DataFieldListPane extends JScrollPane {
                     panel.remove(nameLabel);
                     panel.remove(typeLabel);
                     panel.remove(removeButton);
+                    DragDropRectanglesWithSplitPane.subFrame.checkForErrors();
                     panel.revalidate();
                     panel.repaint();
                 }

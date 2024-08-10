@@ -62,6 +62,15 @@ public class RectWithColor extends Rect {
 
     };
 
+    @Override
+    public Pair<Boolean, String> setValidity() {
+        return new Pair<>(true, "");
+    };
+
+    @Override
+    public void ifInvalid() {
+
+    };
 
 }
 
