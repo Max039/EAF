@@ -133,8 +133,12 @@ public class DataFieldListPane extends JScrollPane {
             public void actionPerformed(ActionEvent e) {
                 String name = nameField.getText();
                 if (!name.isEmpty()) {
-                    addDataField(new DataField(name, "quotient real", false));
-                    dialog.dispose();
+                    if (isDuplicateName(name)) {
+                        JOptionPane.showMessageDialog(dialog, "Name already used!", "Error", JOptionPane.ERROR_MESSAGE);
+                    } else {
+                        addDataField(new DataField(name, "quotient real", false));
+                        dialog.dispose();
+                    }
                 } else {
                     JOptionPane.showMessageDialog(dialog, "Name must be filled in!", "Error", JOptionPane.ERROR_MESSAGE);
                 }
@@ -167,8 +171,12 @@ public class DataFieldListPane extends JScrollPane {
                 String name = nameField.getText();
                 String type = typeField.getText();
                 if (!name.isEmpty() && !type.isEmpty()) {
-                    addDataField(new DataField(name, type, true));
-                    dialog.dispose();
+                    if (isDuplicateName(name)) {
+                        JOptionPane.showMessageDialog(dialog, "Name already used!", "Error", JOptionPane.ERROR_MESSAGE);
+                    } else {
+                        addDataField(new DataField(name, type, true));
+                        dialog.dispose();
+                    }
                 } else {
                     JOptionPane.showMessageDialog(dialog, "Both fields must be filled in!", "Error", JOptionPane.ERROR_MESSAGE);
                 }
@@ -208,8 +216,12 @@ public class DataFieldListPane extends JScrollPane {
                 boolean instance = instanceCheckBox.isSelected();
 
                 if (!type.isEmpty() && !name.isEmpty()) {
-                    addDataField(new DataField(name, type, instance));
-                    dialog.dispose();
+                    if (isDuplicateName(name)) {
+                        JOptionPane.showMessageDialog(dialog, "Name already used!", "Error", JOptionPane.ERROR_MESSAGE);
+                    } else {
+                        addDataField(new DataField(name, type, instance));
+                        dialog.dispose();
+                    }
                 } else {
                     JOptionPane.showMessageDialog(dialog, "Both fields must be filled in!", "Error", JOptionPane.ERROR_MESSAGE);
                 }
@@ -226,6 +238,18 @@ public class DataFieldListPane extends JScrollPane {
 
         dialog.setLocationRelativeTo(this);
         dialog.setVisible(true);
+    }
+
+    private boolean isDuplicateName(String name) {
+        for (Object obj : dataFieldList) {
+            if (obj instanceof DataField) {
+                DataField dataField = (DataField) obj;
+                if (dataField.getName().equals(name)) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     public void addDataField(DataField dataField) {
