@@ -1,4 +1,4 @@
-[{
+{"rects": [{
     "package": "de.evoal.optimisation.ea.optimisation",
     "type": "instance",
     "sub-type": "evolutionary-algorithm",
@@ -19,45 +19,39 @@
         },
         {
             "field-name": "comparator",
-            "package": "de.evoal.routenoptimierung.comparators.generationPrintComparator",
+            "package": "de.evoal.optimisation.core",
             "type": "instance",
-            "sub-type": "generation-print-comparator",
+            "sub-type": "hierarchical-comparator",
             "value": [{
-                "field-name": "child-comparator",
-                "package": "de.evoal.optimisation.core",
-                "type": "instance",
-                "sub-type": "hierarchical-comparator",
-                "value": [{
-                    "field-name": "order",
-                    "package": "Array",
-                    "primitive": true,
-                    "count": 0,
-                    "type": "array",
-                    "sub-type": "data",
-                    "value": [
-                        {
-                            "field-name": "",
-                            "editable": true,
-                            "type": "option-field",
-                            "sub-type": "data",
-                            "value": "1"
-                        },
-                        {
-                            "field-name": "",
-                            "editable": true,
-                            "type": "option-field",
-                            "sub-type": "data",
-                            "value": "2"
-                        },
-                        {
-                            "field-name": "",
-                            "editable": true,
-                            "type": "option-field",
-                            "sub-type": "data",
-                            "value": "Test"
-                        }
-                    ]
-                }]
+                "field-name": "order",
+                "package": "Array",
+                "primitive": true,
+                "count": 0,
+                "type": "array",
+                "sub-type": "data",
+                "value": [
+                    {
+                        "field-name": "",
+                        "editable": true,
+                        "type": "option-field",
+                        "sub-type": "data",
+                        "value": "Num"
+                    },
+                    {
+                        "field-name": "",
+                        "editable": true,
+                        "type": "option-field",
+                        "sub-type": "data",
+                        "value": "Num2"
+                    },
+                    {
+                        "field-name": "",
+                        "editable": true,
+                        "type": "option-field",
+                        "sub-type": "data",
+                        "value": ""
+                    }
+                ]
             }]
         },
         {
@@ -72,7 +66,7 @@
             "editable": true,
             "type": "text-field",
             "sub-type": "int",
-            "value": "10"
+            "value": "5"
         },
         {
             "field-name": "handlers",
@@ -98,13 +92,13 @@
                         "field-name": "constraint-handling",
                         "package": "de.evoal.optimisation.ea.optimisation",
                         "type": "instance",
-                        "sub-type": "kill-at-birth",
+                        "sub-type": "malus-for-fitness",
                         "value": [{
-                            "field-name": "repair-strategy",
-                            "package": "de.evoal.optimisation.ea.optimisation",
-                            "type": "instance",
-                            "sub-type": "repair-with-random",
-                            "value": []
+                            "field-name": "smoothing",
+                            "editable": true,
+                            "type": "text-field",
+                            "sub-type": "real",
+                            "value": "50"
                         }]
                     },
                     {
@@ -112,7 +106,7 @@
                         "editable": true,
                         "type": "text-field",
                         "sub-type": "string",
-                        "value": "Test"
+                        "value": "Test string"
                     }
                 ]
             }]
@@ -135,21 +129,21 @@
                     "editable": true,
                     "type": "text-field",
                     "sub-type": "real",
-                    "value": "20"
+                    "value": "6"
                 },
                 {
                     "field-name": "ε",
                     "editable": true,
                     "type": "text-field",
                     "sub-type": "real",
-                    "value": "1"
+                    "value": "7"
                 },
                 {
                     "field-name": "tolerance",
                     "editable": true,
                     "type": "text-field",
                     "sub-type": "real",
-                    "value": "2"
+                    "value": "8"
                 }
             ]
         },
@@ -166,28 +160,43 @@
                     "count": 0,
                     "type": "array",
                     "sub-type": "crossover",
-                    "value": [{
-                        "field-name": "",
-                        "package": "de.evoal.optimisation.ea.optimisation",
-                        "type": "instance",
-                        "sub-type": "correlation-line-crossover",
-                        "value": [
-                            {
+                    "value": [
+                        {
+                            "field-name": "",
+                            "package": "de.evoal.optimisation.ea.optimisation",
+                            "type": "instance",
+                            "sub-type": "correlation-line-crossover",
+                            "value": [
+                                {
+                                    "field-name": "probability",
+                                    "editable": true,
+                                    "type": "text-field",
+                                    "sub-type": "real",
+                                    "value": "5"
+                                },
+                                {
+                                    "field-name": "position",
+                                    "editable": true,
+                                    "type": "text-field",
+                                    "sub-type": "real",
+                                    "value": "8"
+                                }
+                            ]
+                        },
+                        {
+                            "field-name": "",
+                            "package": "de.evoal.optimisation.ea.optimisation",
+                            "type": "instance",
+                            "sub-type": "correlation-single-point-crossover",
+                            "value": [{
                                 "field-name": "probability",
                                 "editable": true,
                                 "type": "text-field",
                                 "sub-type": "real",
-                                "value": "0"
-                            },
-                            {
-                                "field-name": "position",
-                                "editable": true,
-                                "type": "text-field",
-                                "sub-type": "real",
-                                "value": "0"
-                            }
-                        ]
-                    }]
+                                "value": "5"
+                            }]
+                        }
+                    ]
                 },
                 {
                     "field-name": "mutator",
@@ -207,33 +216,20 @@
                                 "editable": true,
                                 "type": "text-field",
                                 "sub-type": "real",
-                                "value": "5"
+                                "value": "3"
                             }]
                         },
                         {
                             "field-name": "",
-                            "package": "de.evoal.optimisation.ea.mdo",
+                            "package": "de.evoal.optimisation.ea.optimisation",
                             "type": "instance",
-                            "sub-type": "array-size-mutator",
+                            "sub-type": "bit-flip-mutator",
                             "value": [{
                                 "field-name": "probability",
                                 "editable": true,
                                 "type": "text-field",
                                 "sub-type": "real",
-                                "value": "5"
-                            }]
-                        },
-                        {
-                            "field-name": "",
-                            "package": "de.evoal.optimisation.ea.mdo",
-                            "type": "instance",
-                            "sub-type": "array-size-mutator",
-                            "value": [{
-                                "field-name": "probability",
-                                "editable": true,
-                                "type": "text-field",
-                                "sub-type": "real",
-                                "value": "0"
+                                "value": "2"
                             }]
                         }
                     ]
@@ -263,21 +259,36 @@
                         "editable": true,
                         "type": "text-field",
                         "sub-type": "real",
-                        "value": "5"
+                        "value": "3"
                     }]
                 },
                 {
                     "field-name": "survivor",
                     "package": "de.evoal.optimisation.ea.optimisation",
                     "type": "instance",
-                    "sub-type": "boltzmann-selector",
-                    "value": [{
-                        "field-name": "beta",
-                        "editable": true,
-                        "type": "text-field",
-                        "sub-type": "real",
-                        "value": "0"
-                    }]
+                    "sub-type": "elite-selector",
+                    "value": [
+                        {
+                            "field-name": "size-factor",
+                            "editable": true,
+                            "type": "text-field",
+                            "sub-type": "real",
+                            "value": "4"
+                        },
+                        {
+                            "field-name": "non-elite-selector",
+                            "package": "de.evoal.optimisation.ea.optimisation",
+                            "type": "instance",
+                            "sub-type": "linear-rank-selector",
+                            "value": [{
+                                "field-name": "nminus",
+                                "editable": true,
+                                "type": "text-field",
+                                "sub-type": "int",
+                                "value": "5"
+                            }]
+                        }
+                    ]
                 }
             ]
         },
@@ -316,7 +327,7 @@
                                     "editable": true,
                                     "type": "option-field",
                                     "sub-type": "data",
-                                    "value": "1"
+                                    "value": "Num2"
                                 }]
                             }]
                         },
@@ -325,11 +336,11 @@
                             "editable": true,
                             "type": "text-field",
                             "sub-type": "int",
-                            "value": "0"
+                            "value": "5"
                         }
                     ]
                 }]
             }]
         }
     ]
-}]
+}]}

@@ -5,6 +5,7 @@ import compiler.FieldType;
 import compiler.FieldValue;
 import compiler.SyntaxTree;
 import org.json.JSONArray;
+import org.json.JSONObject;
 import test.rects.*;
 import test.rects.multi.ArrayRect;
 import test.rects.multi.ClassRect;
@@ -492,7 +493,9 @@ public class DragDropRectanglesWithSplitPane extends JPanel {
             @Override
             public void actionPerformed(ActionEvent e) {
                 try {
-                    subFrame.leftPanel.fromJson(readJSONFileToJSONArray("test.json"));
+                    JSONObject o = readJSONFileToJSON("test.json");
+                    JSONArray a = o.getJSONArray("rects");
+                    subFrame.leftPanel.fromJson(a);
                 } catch (IOException ex) {
                     throw new RuntimeException(ex);
                 }
@@ -505,7 +508,9 @@ public class DragDropRectanglesWithSplitPane extends JPanel {
         exitItem.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                writeJSONArrayToFile(subFrame.leftPanel.toJson(), "test.json");
+                JSONObject o = new JSONObject();
+                o.put("rects", subFrame.leftPanel.toJson());
+                writeJSONToFile(o, "test.json");
             }
         });
 
@@ -670,7 +675,7 @@ public class DragDropRectanglesWithSplitPane extends JPanel {
 
     }
 
-    public static void writeJSONArrayToFile(JSONArray jsonArray, String filePath) {
+    public static void writeJSONToFile(JSONObject jsonArray, String filePath) {
         try (FileWriter file = new FileWriter(filePath)) {
             file.write(jsonArray.toString(4)); // The "4" here is for pretty-printing with an indentation of 4 spaces
             file.flush();
@@ -679,7 +684,7 @@ public class DragDropRectanglesWithSplitPane extends JPanel {
         }
     }
 
-    public static JSONArray readJSONFileToJSONArray(String filePath) throws IOException, org.json.JSONException {
+    public static JSONObject readJSONFileToJSON(String filePath) throws IOException, org.json.JSONException {
         // Open the file using a BufferedReader
         try (BufferedReader reader = new BufferedReader(new FileReader(filePath))) {
             // Read the entire content of the file into a String
@@ -690,7 +695,7 @@ public class DragDropRectanglesWithSplitPane extends JPanel {
             }
 
             // Convert the String content to a JSONArray
-            return new JSONArray(jsonContent.toString());
+            return new JSONObject(jsonContent.toString());
         }
     }
 
