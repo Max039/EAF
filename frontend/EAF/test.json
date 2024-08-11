@@ -9,6 +9,11 @@
             "instance": false,
             "name": "Num2",
             "type": "quotient real"
+        },
+        {
+            "instance": true,
+            "name": "Test",
+            "type": "best"
         }
     ],
     "rects": [{

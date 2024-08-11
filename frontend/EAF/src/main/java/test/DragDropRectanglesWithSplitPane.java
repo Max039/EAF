@@ -469,6 +469,28 @@ public class DragDropRectanglesWithSplitPane extends JPanel {
 
     }
 
+    public static void writeToFile(String content, String filePath) {
+        FileWriter writer = null;
+        try {
+            writer = new FileWriter(filePath);
+            writer.write(content);
+            System.out.println("Successfully wrote to the file.");
+        } catch (IOException e) {
+            System.out.println("An error occurred while writing to the file.");
+            e.printStackTrace();
+        } finally {
+            try {
+                if (writer != null) {
+                    writer.close();
+                }
+            } catch (IOException e) {
+                System.out.println("An error occurred while closing the writer.");
+                e.printStackTrace();
+            }
+        }
+    }
+
+
     private static void createAndShowGUI(int numRects) {
         // Create the main frame
         mainFrame = new JFrame("EAF");
@@ -481,7 +503,18 @@ public class DragDropRectanglesWithSplitPane extends JPanel {
         JMenu fileMenu = new JMenu("File");
 
         // Create menu items
-        JMenuItem newItem = new JMenuItem("New");
+        JMenuItem newItem = new JMenuItem("Script");
+
+        newItem.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                writeToFile(dataPanel.toString(),"config.ol");
+            }
+        });
+
+
+
+
         JMenuItem openItem = new JMenuItem("Open");
 
 

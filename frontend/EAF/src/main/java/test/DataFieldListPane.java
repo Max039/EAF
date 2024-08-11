@@ -1,5 +1,6 @@
 package test;
 
+import compiler.ClassType;
 import compiler.Data;
 import compiler.SyntaxTree;
 import org.json.JSONArray;
@@ -14,6 +15,8 @@ import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+
+import static compiler.ClassType.getUniqueImports;
 
 public class DataFieldListPane extends JScrollPane {
     private JPanel panel;
@@ -422,4 +425,27 @@ public class DataFieldListPane extends JScrollPane {
     }
 
 
+    public String toString() {
+        String res = "";
+        String data = "";
+        ArrayList<ClassType> classesNeededForScript = new ArrayList<>();
+
+        for (var d : dataFieldList) {
+            var c = ((DataField)d);
+            if (c.isInstance()) {
+                classesNeededForScript.add(SyntaxTree.classRegister.get(c.getType()));
+            }
+            data += "\t" + c.toFormat() + "\n";
+        }
+
+        res += getUniqueImports(classesNeededForScript) + "\n";
+        res += "module 'config' {\n";
+        res += data;
+        res += "}";
+
+        return res;
+    }
+
 }
+
+
