@@ -184,6 +184,9 @@ public class TextFieldRect extends Rect {
         return  o;
     }
 
-
+    @Override
+    public String toString(int level) {
+        return textBox.getText();
+    }
 
 }

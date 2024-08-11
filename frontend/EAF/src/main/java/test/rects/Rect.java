@@ -119,5 +119,17 @@ public abstract class Rect {
 
     public abstract JSONObject toJson();
 
+    public abstract String toString(int level);
+
+    public static String repeatString(String str, int times) {
+        StringBuilder result = new StringBuilder();
+
+        for (int i = 0; i < times; i++) {
+            result.append(str);
+        }
+
+        return result.toString();
+    }
+
 }
 

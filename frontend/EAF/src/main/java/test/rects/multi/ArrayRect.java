@@ -10,6 +10,7 @@ import test.rects.Rect;
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Objects;
 
 public class ArrayRect <T extends Rect> extends RectWithRects {
 
@@ -144,6 +145,33 @@ public class ArrayRect <T extends Rect> extends RectWithRects {
             g2.drawLine(x, y + height/2, x  + buttonWidth, y + height/2);
         }
          **/
+    }
+
+    @Override
+    public String toString(int level) {
+        String spacing = "  ";
+        String res = "";
+        res += "[";
+        boolean test = Arrays.stream(subRects).anyMatch(Objects::nonNull);
+        if (test) {
+            res += "\n";
+        }
+
+        for (int i = 0; i < subRects.length; i++) {
+            var res2 = repeatString(spacing, level + 1 ) + subRects[i].toString(level + 1);
+            res += res2;
+            if (i < subRects.length - 1) {
+                res += ",\n";
+            }
+            else {
+                res += "\n";
+            }
+        }
+        if (test) {
+            res += repeatString(spacing, level);
+        }
+        res += "]";
+        return res;
     }
 
 }

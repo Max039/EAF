@@ -245,5 +245,14 @@ public class OptionsFieldRect extends Rect {
         return  o;
     }
 
+    @Override
+    public String toString(int level) {
+        if (clazz.name.equals("data")) {
+            return "data '" + (String)comboBox.getSelectedItem() + "'";
+        }
+        else {
+            return (String)comboBox.getSelectedItem();
+        }
+    }
 
 }

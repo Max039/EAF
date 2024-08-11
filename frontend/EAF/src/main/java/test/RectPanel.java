@@ -18,6 +18,8 @@ import java.awt.*;
 import java.util.ArrayList;
 import java.util.Optional;
 
+import static compiler.ClassType.getUniqueImports;
+
 
 public class RectPanel extends JScrollPane {
 
@@ -283,6 +285,37 @@ public class RectPanel extends JScrollPane {
 
 
         }
+    }
+
+    public String toString() {
+        String res = "";
+        String problemContent = "";
+        String problemName = "";
+        String algorithmContent = "";
+        String algorithmName = "";
+        ArrayList<ClassType> classesNeededForScript = new ArrayList<>();
+
+        /**
+        for (var d : dataFieldList) {
+            var c = ((DataField)d);
+            if (c.isInstance()) {
+                classesNeededForScript.add(SyntaxTree.classRegister.get(c.getType()));
+            }
+            data += "\t" + c.toFormat() + "\n";
+        }**/
+
+        res += getUniqueImports(classesNeededForScript) + "\n";
+        res += "\"data\" from 'config';";
+        res += "module 'config' {\n";
+        res += "\t specify problem '" + problemName + "' {\n";
+        res += problemContent;
+        res += "\t}\n";
+        res += "\t configure problem '" + algorithmName + "' for '" + problemName + "' {\n";
+        res += algorithmContent;
+        res += "\t}\n";
+        res += "}";
+
+        return res;
     }
 
     class DrawingPanel extends JPanel {
