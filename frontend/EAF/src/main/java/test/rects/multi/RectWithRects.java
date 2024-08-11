@@ -549,6 +549,17 @@ public abstract class RectWithRects extends Rect {
                     }
                 });
                 popupMenu.add(menuItem);
+
+
+                JMenuItem info = new JMenuItem("Info");
+                info.addActionListener(new ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        ClassType.displayClassInfo(clazz);
+                    }
+                });
+                popupMenu.add(info);
+
                 popupMenu.show(DragDropRectanglesWithSplitPane.mainFrame, p2.x, p2.y);
             }
         }

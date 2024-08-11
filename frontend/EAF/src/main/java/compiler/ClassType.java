@@ -2,7 +2,12 @@ package compiler;
 
 import test.Pair;
 
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.*;
+import java.util.List;
 import java.util.stream.Collectors;
 
 public class ClassType implements Comparable {
@@ -26,6 +31,8 @@ public class ClassType implements Comparable {
     ArrayList<ClassType> children = new ArrayList<>();
 
     public String pack;
+
+    private static Stack<ClassType> historyStack = new Stack<>();
 
     public ClassType(String name, ClassType parent, String pack) {
         this.name = name;
@@ -241,4 +248,102 @@ public class ClassType implements Comparable {
         }
         return result;
     }
+
+
+    // Method to create and show the main GUI window
+    public static void displayClassInfo(ClassType classType) {
+        JFrame frame = new JFrame("Class Information Viewer");
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setSize(400, 300);
+
+        // Create the initial content
+        updateClassInfo(frame.getContentPane(), classType, frame);
+
+        frame.setVisible(true);
+    }
+
+    // Method to update the contents of the window with the class information
+    // Method to update the contents of the window with the class information
+    public static void updateClassInfo(Container container, ClassType classType, JFrame frame) {
+        container.removeAll();
+        container.setLayout(new BorderLayout());
+
+        // Panel to hold all the components with vertical layout and spacing
+        JPanel panel = new JPanel();
+        panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+
+        // Adding 15px spacing between components
+        panel.setBorder(BorderFactory.createEmptyBorder(15, 15, 15, 15));
+
+        // Add a back button if there is history
+        if (!historyStack.isEmpty()) {
+            JButton backButton = new JButton("← Back");
+            backButton.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    if (!historyStack.isEmpty()) {
+                        ClassType previousClass = historyStack.pop();
+                        updateClassInfo(container, previousClass, frame);
+                    }
+                }
+            });
+            panel.add(backButton);
+            panel.add(Box.createRigidArea(new Dimension(0, 15))); // Add vertical space
+        }
+
+        // Add the class name
+        JLabel nameLabel = new JLabel("Class Name: " + classType.getName());
+        panel.add(nameLabel);
+        panel.add(Box.createRigidArea(new Dimension(0, 15))); // Add vertical space
+
+        // Add the package name
+        JLabel packageLabel = new JLabel("Package: " + classType.pack);
+        panel.add(packageLabel);
+        panel.add(Box.createRigidArea(new Dimension(0, 15))); // Add vertical space
+
+        // Add the parent name with a clickable button
+        JButton parentButton = new JButton("Parent: " + classType.getParentName());
+        parentButton.setEnabled(classType.parent != null);
+        parentButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (classType.parent != null) {
+                    historyStack.push(classType);
+                    updateClassInfo(container, classType.parent, frame);
+                }
+            }
+        });
+        panel.add(parentButton);
+        panel.add(Box.createRigidArea(new Dimension(0, 15))); // Add vertical space
+
+        // Add the child names with clickable buttons inside a scroll pane
+        JPanel childrenPanel = new JPanel();
+        childrenPanel.setLayout(new BoxLayout(childrenPanel, BoxLayout.Y_AXIS));
+        for (ClassType child : classType.children) {
+            JButton childButton = new JButton(child.getName());
+            childButton.setMaximumSize(new Dimension(Integer.MAX_VALUE, 30)); // Set button to full width
+            childButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+            childButton.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    historyStack.push(classType);
+                    updateClassInfo(container, child, frame);
+                }
+            });
+            childrenPanel.add(childButton);
+        }
+
+        JScrollPane scrollPane = new JScrollPane(childrenPanel);
+        scrollPane.setPreferredSize(new Dimension(380, 150));
+        panel.add(scrollPane);
+
+        container.add(panel, BorderLayout.CENTER);
+
+        // Revalidate and repaint the frame to update the UI
+        frame.revalidate();
+        frame.repaint();
+    }
+
+
+
 }
