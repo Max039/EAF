@@ -551,11 +551,15 @@ public abstract class RectWithRects extends Rect {
                 popupMenu.add(menuItem);
 
 
+                Point p3 = new Point();
+                p3.x = p2.x + DragDropRectanglesWithSplitPane.mainFrame.getX();
+                p3.y = p2.y + DragDropRectanglesWithSplitPane.mainFrame.getY();
                 JMenuItem info = new JMenuItem("Info");
                 info.addActionListener(new ActionListener() {
                     @Override
                     public void actionPerformed(ActionEvent e) {
-                        ClassType.displayClassInfo(clazz);
+
+                        ClassType.displayClassInfo(clazz, p3);
                     }
                 });
                 popupMenu.add(info);

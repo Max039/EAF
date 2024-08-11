@@ -251,14 +251,16 @@ public class ClassType implements Comparable {
 
 
     // Method to create and show the main GUI window
-    public static void displayClassInfo(ClassType classType) {
+    public static void displayClassInfo(ClassType classType, Point p) {
         JFrame frame = new JFrame("Class Information Viewer");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setSize(400, 300);
+        int width = 400;
+        int height = 300;
+
 
         // Create the initial content
         updateClassInfo(frame.getContentPane(), classType, frame);
-
+        frame.setBounds(p.x - width/2, p.y - height/2, width, height);
         frame.setVisible(true);
     }
 
