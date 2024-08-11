@@ -493,6 +493,8 @@ public class DragDropRectanglesWithSplitPane extends JPanel {
                     JSONObject o = readJSONFileToJSON("test.json");
                     JSONArray a = o.getJSONArray("rects");
                     subFrame.leftPanel.fromJson(a);
+                    JSONArray a2 = o.getJSONArray("data");
+                    dataPanel.fromJson(a2);
                 } catch (IOException ex) {
                     throw new RuntimeException(ex);
                 }
@@ -507,6 +509,7 @@ public class DragDropRectanglesWithSplitPane extends JPanel {
             public void actionPerformed(ActionEvent e) {
                 JSONObject o = new JSONObject();
                 o.put("rects", subFrame.leftPanel.toJson());
+                o.put("data", dataPanel.toJson());
                 writeJSONToFile(o, "test.json");
             }
         });

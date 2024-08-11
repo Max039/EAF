@@ -1,6 +1,10 @@
 package test;
 
+import compiler.Data;
 import compiler.SyntaxTree;
+import org.json.JSONArray;
+import org.json.JSONObject;
+import test.rects.Rect;
 
 import javax.swing.*;
 import javax.swing.border.MatteBorder;
@@ -389,4 +393,33 @@ public class DataFieldListPane extends JScrollPane {
     public ArrayList<Object> getDataFieldList() {
         return dataFieldList;
     }
+
+
+    public JSONArray toJson() {
+        JSONArray rts = new JSONArray();
+        for (var d : dataFieldList) {
+            rts.put(((DataField)d).toJson());
+        }
+        return rts;
+    }
+
+    public void fromJson(JSONArray arr) {
+        // Remove all data fields
+        dataFieldList.clear();
+        panel.removeAll();
+
+        // Re-add the header
+        createHeader();
+
+        // Add new data fields from JSON array
+        for (var o : arr) {
+            addDataField(new DataField((JSONObject)o));
+        }
+
+        // Refresh the UI
+        panel.revalidate();
+        panel.repaint();
+    }
+
+
 }
