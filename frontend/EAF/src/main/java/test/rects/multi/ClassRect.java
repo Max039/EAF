@@ -52,7 +52,6 @@ public class ClassRect extends RectWithRects {
 
     @Override
     public String toString(int level) {
-        String spacing = "  ";
         String res = "'" + clazz.name + "' {";
         boolean test = clazz.fields.values().stream().anyMatch(t -> t.getSecond() == null);
         if (test) {
@@ -61,13 +60,13 @@ public class ClassRect extends RectWithRects {
         int i = 0;
         for (var t : clazz.fields.entrySet()) {
             if (t.getValue().getSecond() == null) {
-                res += repeatString(spacing, level + 1 ) + "'" + t.getKey() + "' := " + subRects[i].toString(level + 1);
+                res += repeatString(stringPadding, level + 1 ) + "'" + t.getKey() + "' := " + subRects[i].toString(level + 1);
                 res += ";\n";
             }
             i++;
         }
         if (test) {
-            res += repeatString(spacing, level);
+            res += repeatString(stringPadding, level);
         }
         res += "}";
         return res;

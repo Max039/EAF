@@ -149,7 +149,6 @@ public class ArrayRect <T extends Rect> extends RectWithRects {
 
     @Override
     public String toString(int level) {
-        String spacing = "  ";
         String res = "";
         res += "[";
         boolean test = Arrays.stream(subRects).anyMatch(Objects::nonNull);
@@ -158,7 +157,7 @@ public class ArrayRect <T extends Rect> extends RectWithRects {
         }
 
         for (int i = 0; i < subRects.length; i++) {
-            var res2 = repeatString(spacing, level + 1 ) + subRects[i].toString(level + 1);
+            var res2 = repeatString(stringPadding, level + 1 ) + subRects[i].toString(level + 1);
             res += res2;
             if (i < subRects.length - 1) {
                 res += ",\n";
@@ -168,7 +167,7 @@ public class ArrayRect <T extends Rect> extends RectWithRects {
             }
         }
         if (test) {
-            res += repeatString(spacing, level);
+            res += repeatString(stringPadding, level);
         }
         res += "]";
         return res;

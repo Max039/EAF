@@ -131,5 +131,7 @@ public abstract class Rect {
         return result.toString();
     }
 
+    public static String stringPadding = "  ";
+
 }
 
