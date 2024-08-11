@@ -531,7 +531,7 @@ public abstract class RectWithRects extends Rect {
                 DragDropRectanglesWithSplitPane.subFrame.setDraggingRect(RectWithRects.this, e, new Point(e.getPoint().x - getX(), e.getPoint().y - getY()));
                 DragDropRectanglesWithSplitPane.subFrame.leftPanel.revalidate();
                 DragDropRectanglesWithSplitPane.subFrame.leftPanel.repaint();
-            } else {
+            } else if (!left) {
                 JPopupMenu popupMenu = new JPopupMenu();
 
                 Point p3 = new Point();
