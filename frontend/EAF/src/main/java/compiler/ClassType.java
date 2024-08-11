@@ -276,20 +276,19 @@ public class ClassType implements Comparable {
         panel.setBorder(BorderFactory.createEmptyBorder(15, 15, 15, 15));
 
         // Add a back button if there is history
-        if (!historyStack.isEmpty()) {
-            JButton backButton = new JButton("← Back");
-            backButton.addActionListener(new ActionListener() {
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    if (!historyStack.isEmpty()) {
-                        ClassType previousClass = historyStack.pop();
-                        updateClassInfo(container, previousClass, frame);
-                    }
+        JButton backButton = new JButton("← Back");
+        backButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (!historyStack.isEmpty()) {
+                    ClassType previousClass = historyStack.pop();
+                    updateClassInfo(container, previousClass, frame);
                 }
-            });
-            panel.add(backButton);
-            panel.add(Box.createRigidArea(new Dimension(0, 15))); // Add vertical space
-        }
+            }
+        });
+        panel.add(backButton);
+        panel.add(Box.createRigidArea(new Dimension(0, 15))); // Add vertical space
+
 
         // Add the class name
         JLabel nameLabel = new JLabel("Class Name: " + classType.getName());
