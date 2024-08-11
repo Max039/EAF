@@ -521,7 +521,7 @@ public abstract class RectWithRects extends Rect {
             }
 
         } else if (this instanceof ClassRect) {
-            if (left) {
+            if (left && parent != null) {
                 // Copy, set dragging, delete, etc.
                 DragDropRectanglesWithSplitPane.subFrame.leftPanel.removeRect(RectWithRects.this);
                 if (parent != null) {
