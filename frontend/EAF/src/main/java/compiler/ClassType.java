@@ -211,7 +211,7 @@ public class ClassType implements Comparable {
 
         StringBuilder sb = new StringBuilder();
         for (String pack : sortedPackages) {
-            sb.append("import ").append(pack).append(";\n");
+            sb.append("import \"definitions\" from ").append(pack).append(";\n");
         }
         return sb.toString();
     }

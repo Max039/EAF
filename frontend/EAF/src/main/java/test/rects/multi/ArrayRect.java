@@ -156,10 +156,11 @@ public class ArrayRect <T extends Rect> extends RectWithRects {
             res += "\n";
         }
 
-        for (int i = 0; i < subRects.length; i++) {
-            var res2 = repeatString(stringPadding, level + 1 ) + subRects[i].toString(level + 1);
+        Rect[] subRects2 = Arrays.stream(subRects).filter(Objects::nonNull).toArray(Rect[]::new);
+        for (int i = 0; i < subRects2.length; i++) {
+            var res2 = repeatString(stringPadding, level + 1 ) + subRects2[i].toString(level + 1);
             res += res2;
-            if (i < subRects.length - 1) {
+            if (i < subRects2.length - 1) {
                 res += ",\n";
             }
             else {

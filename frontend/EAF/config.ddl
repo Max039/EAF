@@ -1,4 +1,4 @@
-import de.evoal.routenoptimierung.statistics.generationPrintStatisticsWriter;
+import "definitions" from de.evoal.routenoptimierung.statistics.generationPrintStatisticsWriter;
 
 module 'config' {
 	quotient real data 'Num';

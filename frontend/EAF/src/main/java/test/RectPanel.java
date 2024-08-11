@@ -287,6 +287,21 @@ public class RectPanel extends JScrollPane {
         }
     }
 
+    public ArrayList<ClassType> getAllRects(ArrayList<ClassType> t, Rect r) {
+        var c = r.clazz;
+        if (!c.pack.equals("Array") && !c.pack.equals("Primitive")) {
+            t.add(c);
+        }
+
+        if (r instanceof RectWithRects) {
+            var rr = (RectWithRects) r;
+            for (var sr : rr.getSubRects()) {
+                getAllRects(t, sr);
+            }
+        }
+        return t;
+    }
+
     public String toString() {
         String res = "";
         String problemContent = rects.get(0).clazz.name;;
@@ -294,18 +309,12 @@ public class RectPanel extends JScrollPane {
         String algorithmContent = rects.get(1).clazz.name;
         String algorithmName = rects.get(1).toString(1).split(" ", 2)[1];
         ArrayList<ClassType> classesNeededForScript = new ArrayList<>();
-
-        /**
-        for (var d : dataFieldList) {
-            var c = ((DataField)d);
-            if (c.isInstance()) {
-                classesNeededForScript.add(SyntaxTree.classRegister.get(c.getType()));
-            }
-            data += "\t" + c.toFormat() + "\n";
-        }**/
+        for (var r : rects) {
+            getAllRects(classesNeededForScript, r);
+        }
 
         res += getUniqueImports(classesNeededForScript) + "\n";
-        res += "\"data\" from 'config';";
+        res += "import \"data\" from 'config';\n\n";
         res += "module 'config' {\n";
         res += Rect.stringPadding + "specify problem '" + problemName + "' ";
         res += problemContent;
