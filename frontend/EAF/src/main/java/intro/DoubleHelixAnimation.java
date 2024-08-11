@@ -19,6 +19,8 @@ public class DoubleHelixAnimation extends JPanel implements ActionListener {
     private final Timer timer;
     private final double stopTime;
     private boolean shouldStop = false;
+
+    private boolean unfinished = true;
     private boolean redOnTop = true; // Variable to alternate when helices are furthest apart
 
     private long stopMillis = -1; // To store milliseconds elapsed when the timer stops
@@ -28,12 +30,14 @@ public class DoubleHelixAnimation extends JPanel implements ActionListener {
     public static Color c2 = new Color(203, 116, 47, 255);
     public static Color c1 = new Color(255, 255, 255, 255);
 
-    public DoubleHelixAnimation() {
+    private JFrame frame;
+
+    public DoubleHelixAnimation(JFrame frame) {
         setDoubleBuffered(true);
         Random random = new Random();
         double randomSeconds = random.nextDouble() * 5; // Random time between 5 and 10 seconds
         this.stopTime = randomSeconds * 2 * Math.PI / (PERIOD / 1000.0); // Convert to animation time
-
+        this.frame = frame;
         timer = new Timer(1000 / FPS, this);
         timer.start();
 
@@ -108,7 +112,16 @@ public class DoubleHelixAnimation extends JPanel implements ActionListener {
 
     public double progressAfterTimer() {
         long elapsedMillis = System.currentTimeMillis() - stopMillis;
-        return Math.min(1.0, elapsedMillis / 2000.0);
+        var r =  Math.min(1.0, elapsedMillis / 2000.0);
+        if (r == 1.0) {
+            unfinished = false;
+            frame.dispose();
+        }
+        return r;
+    }
+
+    public boolean isUnfinished() {
+        return unfinished;
     }
 
     private void drawHelix(Graphics2D g2d, double centerX, double centerY, double waveLength, double time) {
@@ -174,16 +187,9 @@ public class DoubleHelixAnimation extends JPanel implements ActionListener {
     public void actionPerformed(ActionEvent e) {
         time += 2 * Math.PI / (FPS * PERIOD / 1000.0);
 
-        // Check if the random time has elapsed and if not yet signaled to stop
-        if (time >= stopTime && !shouldStop) {
-            shouldStop = true; // Signal to start stopping the animation
-        }
-
         // If we should stop, check if the lower meeting point is at the center
         if (shouldStop) {
-            double centerY = HEIGHT / 2.0;
             double waveLength = HEIGHT / 2.0;
-            double lowerMeetingPointY = centerY + waveLength;
 
             // If the lower meeting point reaches the center, stop the timer
             if (time % (2 * Math.PI) < 2 * Math.PI / (waveLength)) {
@@ -195,9 +201,15 @@ public class DoubleHelixAnimation extends JPanel implements ActionListener {
         }
     }
 
-    public static void main(String[] args) {
+
+
+    public void stop() {
+        shouldStop = true;
+    }
+
+    public static DoubleHelixAnimation create() {
         JFrame frame = new JFrame("Double Helix Animation");
-        DoubleHelixAnimation helixAnimation = new DoubleHelixAnimation();
+        DoubleHelixAnimation helixAnimation = new DoubleHelixAnimation(frame);
 
         frame.add(helixAnimation);
         frame.setSize(WIDTH, HEIGHT);
@@ -207,5 +219,6 @@ public class DoubleHelixAnimation extends JPanel implements ActionListener {
 
         Color bg = DragDropRectanglesWithSplitPane.bgColor;
         helixAnimation.setBackground(new Color(bg.getRed(), bg.getGreen(), bg.getBlue(), 255));
+        return helixAnimation;
     }
 }

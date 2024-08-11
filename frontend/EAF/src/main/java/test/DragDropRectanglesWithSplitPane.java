@@ -4,6 +4,7 @@ import compiler.ClassType;
 import compiler.FieldType;
 import compiler.FieldValue;
 import compiler.SyntaxTree;
+import intro.DoubleHelixAnimation;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import test.rects.*;
@@ -606,7 +607,12 @@ public class DragDropRectanglesWithSplitPane extends JPanel {
     public static void main(String[] args) throws Exception {
         int numRects = 20;  // Change this number to create more or fewer rectangles
         try {
+            var s = DoubleHelixAnimation.create();
             SyntaxTree.start();
+            s.stop();
+            while (s.isUnfinished()) {
+                Thread.sleep(100);
+            }
         }
         catch (Exception e) {
             throw new Exception(e);
