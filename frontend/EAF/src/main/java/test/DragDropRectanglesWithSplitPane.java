@@ -508,7 +508,7 @@ public class DragDropRectanglesWithSplitPane extends JPanel {
         newItem.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                writeToFile(dataPanel.toString(),"config.ol");
+                writeToFile(dataPanel.toString(),"config.ddl");
             }
         });
 
