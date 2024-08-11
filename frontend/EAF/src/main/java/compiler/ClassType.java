@@ -65,7 +65,7 @@ public class ClassType implements Comparable {
             return true;
         }
         for (var child : children) {
-            if (child.equals(c)) {
+            if (child.matchesType(c)) {
                 return true;
             }
         }
@@ -253,7 +253,6 @@ public class ClassType implements Comparable {
     // Method to create and show the main GUI window
     public static void displayClassInfo(ClassType classType, Point p) {
         JFrame frame = new JFrame("Class Information Viewer");
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         int width = 400;
         int height = 300;
 
