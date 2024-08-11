@@ -37,26 +37,11 @@ public class OptionsFieldRect extends Rect {
 
     String last = "";
 
-    public OptionsFieldRect(ArrayList<Object> options, String selectedOption, ClassType type, boolean editable) {
-        super(50, RectWithRects.emptyRowSize, new Color(255, 255, 255), type);
-        this.editable = editable;
-        this.options = options;
-        setComboBox(options, selectedOption);
-    }
-
     public OptionsFieldRect(ArrayList<Object> options, String selectedOption, int width, int height, Color color, ClassType type, boolean editable) {
         super(width, height, color, type);
         this.editable = editable;
         this.options = options;
         setComboBox(options, selectedOption);
-    }
-
-    public OptionsFieldRect(int width, int height, Color color, ClassType type, JComboBox<String> comboBox, boolean editable) {
-        super(width, height, color, type);
-        this.editable = editable;
-        this.comboBox = comboBox;
-        adjustComboBoxColor();
-        setUi();
     }
 
     @Override

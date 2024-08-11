@@ -9,17 +9,11 @@ import java.awt.*;
 
 public class ClassRect extends RectWithRects {
 
-    public ClassRect(ClassType type) {
-        super(type);
-    }
-
-    public ClassRect(int width, int height, Color color, ClassType type, String[] names, FieldType[] types) {
-        super(width, height, color, type, names, types);
-    }
-
     public ClassRect(int width, int height, Color color, ClassType type, String[] names, Rect[] rects, FieldType[] types) {
         super(width, height, color, type, names, rects, types);
     }
+
+
 
     @Override
     public Rect clone() {

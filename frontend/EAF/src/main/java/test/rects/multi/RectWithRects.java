@@ -66,10 +66,6 @@ public abstract class RectWithRects extends Rect {
     public abstract int extraSpacingBelow();
 
 
-    public RectWithRects(ClassType type) {
-        super(50, RectWithRects.emptyRowSize, new Color(255, 255, 255), type);
-    }
-
     public RectWithRects(int width, int height, Color color, ClassType type, String[] names, FieldType[] types) {
         this(width, height, color, type);
         setNamesAndTypes(names, types);
@@ -98,7 +94,7 @@ public abstract class RectWithRects extends Rect {
         for (int i = 0; i < subRects.length; i++) {
             var r = subRects[i];
             if (r != null) {
-                this.subRects[i] = r.clone();
+                setIndex(i, r.clone());
             }
         }
     }
@@ -447,7 +443,7 @@ public abstract class RectWithRects extends Rect {
             var r = subRects[i];
             if (r == null) {
                 var c = types[i];
-                subRects[i] = DragDropRectanglesWithSplitPane.getRectFromFieldType(c, null);
+                setIndex(i, DragDropRectanglesWithSplitPane.getRectFromFieldType(c, null));
             }
         }
     }
@@ -530,6 +526,9 @@ public abstract class RectWithRects extends Rect {
                 DragDropRectanglesWithSplitPane.subFrame.leftPanel.removeRect(RectWithRects.this);
                 if (parent != null) {
                     parent.subRects[parentIndex] = null;
+                }
+                else {
+                    System.out.println("Parent was null?");
                 }
                 DragDropRectanglesWithSplitPane.subFrame.setDraggingRect(RectWithRects.this, e, new Point(e.getPoint().x - getX(), e.getPoint().y - getY()));
                 DragDropRectanglesWithSplitPane.subFrame.leftPanel.revalidate();

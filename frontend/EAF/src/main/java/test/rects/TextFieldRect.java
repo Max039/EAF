@@ -32,12 +32,6 @@ public class TextFieldRect extends Rect {
 
     public static int spacing = 0;
 
-    public TextFieldRect(String content, ClassType type, boolean editable) {
-        super(50, RectWithRects.emptyRowSize, new Color(255, 255, 255), type);
-        this.editable = editable;
-        setTextBox(content);
-    }
-
     public TextFieldRect(String content, int width, int height, Color color, ClassType type, boolean editable) {
         super(width, height, color, type);
         this.editable = editable;

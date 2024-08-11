@@ -32,19 +32,6 @@ public class ArrayRect <T extends Rect> extends RectWithRects {
 
     public FieldType fillType;
 
-    public ArrayRect(ClassType type) {
-        super(type);
-    }
-
-    public ArrayRect(int width, int height, Color color, ClassType type, FieldType field, boolean fillOnCreation) {
-        super(width, height, color, type);
-        this.fillOnCreation = fillOnCreation;
-        this.fillType = field;
-        if (this.fillOnCreation) {
-            fillIfNecessary();
-        }
-    }
-
     public ArrayRect(int width, int height, Color color, ClassType type, FieldType field, int num, boolean fillOnCreation) {
         super(width, height, color, type);
         this.fillOnCreation = fillOnCreation;
