@@ -527,9 +527,7 @@ public abstract class RectWithRects extends Rect {
                 if (parent != null) {
                     parent.subRects[parentIndex] = null;
                 }
-                else {
-                    System.out.println("Parent was null?");
-                }
+                parent = null;
                 DragDropRectanglesWithSplitPane.subFrame.setDraggingRect(RectWithRects.this, e, new Point(e.getPoint().x - getX(), e.getPoint().y - getY()));
                 DragDropRectanglesWithSplitPane.subFrame.leftPanel.revalidate();
                 DragDropRectanglesWithSplitPane.subFrame.leftPanel.repaint();
