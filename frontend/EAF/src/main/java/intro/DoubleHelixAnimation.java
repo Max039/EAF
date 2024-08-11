@@ -113,7 +113,7 @@ public class DoubleHelixAnimation extends JPanel implements ActionListener {
     public double progressAfterTimer() {
         long elapsedMillis = System.currentTimeMillis() - stopMillis;
         var r =  Math.min(1.0, elapsedMillis / 2000.0);
-        if (r == 1.0) {
+        if (elapsedMillis >= 2500) {
             unfinished = false;
             frame.dispose();
         }
