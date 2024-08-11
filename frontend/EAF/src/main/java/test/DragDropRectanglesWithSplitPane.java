@@ -608,6 +608,7 @@ public class DragDropRectanglesWithSplitPane extends JPanel {
         int numRects = 20;  // Change this number to create more or fewer rectangles
         try {
             var s = DoubleHelixAnimation.create();
+            s.objective = "Constructing Syntax-Tree";
             SyntaxTree.start();
             s.stop();
             while (s.isUnfinished()) {

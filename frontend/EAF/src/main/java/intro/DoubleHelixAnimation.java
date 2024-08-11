@@ -30,6 +30,8 @@ public class DoubleHelixAnimation extends JPanel implements ActionListener {
     public static Color c2 = new Color(203, 116, 47, 255);
     public static Color c1 = new Color(255, 255, 255, 255);
 
+    public String objective = "";
+
     private JFrame frame;
 
     public DoubleHelixAnimation(JFrame frame) {
@@ -107,6 +109,13 @@ public class DoubleHelixAnimation extends JPanel implements ActionListener {
             g2d.fillRect(0, 301, 800, 299);
 
 
+        }
+        if (!shouldStop) {
+            g2d.setColor(new Color (255, 255, 255, 255));
+            int padding = 10;
+            int fontsize = 20;
+            g2d.setFont(new Font("Arial", Font.PLAIN, fontsize));
+            g2d.drawString(objective, padding, padding + fontsize);
         }
     }
 
