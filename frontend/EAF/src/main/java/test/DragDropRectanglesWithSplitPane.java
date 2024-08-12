@@ -70,6 +70,8 @@ public class DragDropRectanglesWithSplitPane extends JPanel {
 
     public HashMap<Rect, String> erroRects = new HashMap<>();
 
+    public JLabel contentLabel;
+
     static void customizeScrollBar(JScrollPane scrollPane) {
         JScrollBar verticalScrollBar = scrollPane.getVerticalScrollBar();
         JScrollBar horizontalScrollBar = scrollPane.getHorizontalScrollBar();
@@ -253,6 +255,9 @@ public class DragDropRectanglesWithSplitPane extends JPanel {
     public void filterChanged() {
         rightPanel.filter = rightPanelTextField.getText();
         rightPanel.getVerticalScrollBar().setValue(0);
+        contentLabel.setText(Long.toString(rightPanel.getMatchingRects()));
+        contentLabel.revalidate();
+        contentLabel.repaint();
         revalidate();
         repaint();
     }
@@ -282,6 +287,10 @@ public class DragDropRectanglesWithSplitPane extends JPanel {
     }
 
     public DragDropRectanglesWithSplitPane(int numRects) {
+        // Create the "Filter:" label and the content label
+        JLabel filterLabel = new JLabel("Filter:");
+        contentLabel = new JLabel("");
+
         this.setBorder(BorderFactory.createEmptyBorder());
         setLayout(new BorderLayout());
         subFrame = this;
@@ -289,7 +298,10 @@ public class DragDropRectanglesWithSplitPane extends JPanel {
         rightPanelTextField = new JTextField();
         rightPanelTextField.setBackground(searchBar);
         rightPanelTextField.setForeground(searchBarText);
-        Border border = BorderFactory.createLineBorder(searchBarBorder, 1);
+        rightPanelTextField.setCaretColor(searchBarText);
+        rightPanelTextField.setSelectionColor(searchBarText);
+        rightPanelTextField.setSelectedTextColor(searchBar);
+        Border border = BorderFactory.createEmptyBorder();
         rightPanelTextField.setBorder(border);
 
         dataPanel = new DataFieldListPane();
@@ -343,10 +355,55 @@ public class DragDropRectanglesWithSplitPane extends JPanel {
             }
         });
 
+
+
         // Create a panel to hold the text field and the right panel
         rightContainerPanel = new JPanel();
         rightContainerPanel.setLayout(new BorderLayout());
-        rightContainerPanel.add(rightPanelTextField, BorderLayout.NORTH);
+
+
+
+        // Set background and foreground colors for the labels
+        filterLabel.setOpaque(true);
+        filterLabel.setBackground(searchBar);
+        filterLabel.setForeground(searchBarText);
+
+        contentLabel.setOpaque(true);
+        contentLabel.setBackground(searchBar);
+        contentLabel.setForeground(searchBarText);
+
+        // Use GridBagLayout to arrange the components
+        JPanel panel = new JPanel(new GridBagLayout());
+        panel.setBackground(searchBar); // Set background for the panel
+        GridBagConstraints gbc = new GridBagConstraints();
+
+        // Place the "Filter:" label on the left
+        gbc.gridx = 0; // Column 0
+        gbc.gridy = 0; // Row 0
+        gbc.insets = new Insets(0, 5, 0, 5); // Add some padding
+        gbc.anchor = GridBagConstraints.WEST; // Align to the left
+        panel.add(filterLabel, gbc);
+
+        // Place the search bar in the middle
+        gbc.gridx = 1; // Column 1
+        gbc.fill = GridBagConstraints.HORIZONTAL; // Make the search bar fill the space
+        gbc.weightx = 1.0; // Allow the search bar to grow horizontally
+        panel.add(rightPanelTextField, gbc);
+
+        // Place the content label on the right
+        gbc.gridx = 2; // Column 2
+        gbc.fill = GridBagConstraints.NONE; // Do not stretch the label
+        gbc.weightx = 0.0; // Do not allow the label to grow
+        panel.add(contentLabel, gbc);
+
+        panel.setBackground(searchBar);
+
+        // Add the panel to the top of the container
+        JPanel rightContainerPanel = new JPanel(new BorderLayout());
+        rightContainerPanel.setBackground(searchBar);
+        panel.setBorder(BorderFactory.createLineBorder(searchBarBorder, 1));
+        rightContainerPanel.add(panel, BorderLayout.NORTH);
+        rightPanel.setBackground(searchBar);
         rightContainerPanel.add(rightPanel, BorderLayout.CENTER);
         rightContainerPanel.setBorder(BorderFactory.createEmptyBorder());
 

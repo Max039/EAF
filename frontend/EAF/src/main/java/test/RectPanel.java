@@ -54,6 +54,8 @@ public class RectPanel extends JScrollPane {
 
     public String filter = "";
 
+    public int lastMatchedCount = 0;
+
     public RectPanel() {
         super();
         drawingPanel = new DrawingPanel();
@@ -327,6 +329,21 @@ public class RectPanel extends JScrollPane {
         return res;
     }
 
+    public Long getMatchingRects() {
+        return rects.stream().filter(s -> {
+            var parts = filter.split(" ");
+            boolean found = true;
+            for (var part : parts) {
+                if (!s.clazz.name.toLowerCase().contains(part.toLowerCase())) {
+                    found = false;
+                    break;
+                }
+            }
+            return found;
+        }).count();
+    }
+
+
     class DrawingPanel extends JPanel {
 
         public DrawingPanel() {
@@ -342,11 +359,11 @@ public class RectPanel extends JScrollPane {
             rect.removeFrom(this);
         }
 
+
         @Override
         protected void paintComponent(Graphics g) {
             super.paintComponent(g);
             int y = verticalSpacing;
-
             Optional<Integer> minSpac = rects.stream().map(t -> (this.getWidth() - t.getWidth()) / 2).min(Integer::compareTo);
             for (Rect rect : rects) {
                 if (filter.isEmpty()) {

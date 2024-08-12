@@ -151,6 +151,7 @@ public class FolderPanel extends JPanel {
                 .collect(Collectors.toList());
 
         DragDropRectanglesWithSplitPane.subFrame.rightPanel.setRects(new ArrayList<>(sortedClassTypes));
+        DragDropRectanglesWithSplitPane.subFrame.filterChanged();
     }
 
     private void updatePathLabel() {
