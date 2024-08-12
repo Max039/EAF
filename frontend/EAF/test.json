@@ -2,427 +2,190 @@
     "data": [
         {
             "instance": false,
-            "name": "Num",
+            "name": "x0",
             "type": "quotient real"
         },
         {
             "instance": false,
-            "name": "Num2",
+            "name": "y0",
+            "type": "quotient real"
+        },
+        {
+            "instance": false,
+            "name": "ℝ",
             "type": "quotient real"
         },
         {
             "instance": true,
-            "name": "Test",
-            "type": "best"
+            "name": "regression-function",
+            "type": "program"
         }
     ],
-    "rects": [
-        {
-            "package": "de.evoal.optimisation.ea.optimisation",
-            "type": "instance",
-            "sub-type": "evolutionary-algorithm",
-            "value": [
-                {
-                    "field-name": "initialisation",
-                    "package": "de.evoal.routenoptimierung.initials.emptyStringInitial",
-                    "type": "instance",
-                    "sub-type": "empty-string-initial",
-                    "value": []
-                },
-                {
-                    "field-name": "offspring-fraction",
-                    "editable": false,
-                    "type": "text-field",
-                    "sub-type": "real",
-                    "value": "0.6"
-                },
-                {
-                    "field-name": "comparator",
-                    "package": "de.evoal.optimisation.core",
-                    "type": "instance",
-                    "sub-type": "hierarchical-comparator",
-                    "value": [{
-                        "field-name": "order",
-                        "package": "Array",
-                        "primitive": true,
-                        "count": 0,
-                        "type": "array",
-                        "sub-type": "data",
-                        "value": [
-                            {
-                                "field-name": "",
-                                "editable": true,
-                                "type": "option-field",
-                                "sub-type": "data",
-                                "value": "Num"
-                            },
-                            {
-                                "field-name": "",
-                                "editable": true,
-                                "type": "option-field",
-                                "sub-type": "data",
-                                "value": "Num2"
-                            },
-                            {
-                                "field-name": "",
-                                "editable": true,
-                                "type": "option-field",
-                                "sub-type": "data",
-                                "value": ""
-                            }
-                        ]
-                    }]
-                },
-                {
-                    "field-name": "size-of-population",
-                    "editable": true,
-                    "type": "text-field",
-                    "sub-type": "int",
-                    "value": "20"
-                },
-                {
-                    "field-name": "maximum-age",
-                    "editable": true,
-                    "type": "text-field",
-                    "sub-type": "int",
-                    "value": "5"
-                },
-                {
-                    "field-name": "handlers",
+    "rects": [{
+        "package": "de.evoal.optimisation.ea.optimisation",
+        "type": "instance",
+        "sub-type": "evolutionary-algorithm",
+        "value": [
+            {
+                "field-name": "initialisation",
+                "package": "de.evoal.optimisation.ea.'genetic-programming'",
+                "type": "instance",
+                "sub-type": "random-tree-population",
+                "value": []
+            },
+            {
+                "field-name": "offspring-fraction",
+                "editable": false,
+                "type": "text-field",
+                "sub-type": "real",
+                "value": "0.6"
+            },
+            {
+                "field-name": "comparator",
+                "package": "de.evoal.optimisation.core",
+                "type": "instance",
+                "sub-type": "numeric-comparator",
+                "value": []
+            },
+            {
+                "field-name": "size-of-population",
+                "editable": true,
+                "type": "text-field",
+                "sub-type": "int",
+                "value": "100"
+            },
+            {
+                "field-name": "maximum-age",
+                "editable": true,
+                "type": "text-field",
+                "sub-type": "int",
+                "value": "1000"
+            },
+            {
+                "field-name": "handlers",
+                "package": "Array",
+                "primitive": false,
+                "count": 0,
+                "type": "array",
+                "sub-type": "handler",
+                "value": []
+            },
+            {
+                "field-name": "number-of-generations",
+                "editable": true,
+                "type": "text-field",
+                "sub-type": "int",
+                "value": "1000"
+            },
+            {
+                "field-name": "genotype",
+                "package": "de.evoal.optimisation.ea.'genetic-programming'",
+                "type": "instance",
+                "sub-type": "program-genotype",
+                "value": [{
+                    "field-name": "chromosomes",
                     "package": "Array",
                     "primitive": false,
                     "count": 0,
                     "type": "array",
-                    "sub-type": "handler",
+                    "sub-type": "program-chromosome",
                     "value": [{
                         "field-name": "",
-                        "package": "de.evoal.optimisation.ea.optimisation",
+                        "package": "de.evoal.optimisation.ea.'genetic-programming'",
                         "type": "instance",
-                        "sub-type": "constraint-handler",
+                        "sub-type": "program-chromosome",
                         "value": [
                             {
-                                "field-name": "calculation",
-                                "package": "de.evoal.optimisation.ea.optimisation",
-                                "type": "instance",
-                                "sub-type": "normal-calculation",
-                                "value": []
-                            },
-                            {
-                                "field-name": "constraint-handling",
-                                "package": "de.evoal.optimisation.ea.optimisation",
-                                "type": "instance",
-                                "sub-type": "malus-for-fitness",
+                                "field-name": "variables",
+                                "package": "Array",
+                                "primitive": true,
+                                "count": 0,
+                                "type": "array",
+                                "sub-type": "data",
                                 "value": [{
-                                    "field-name": "smoothing",
+                                    "field-name": "",
                                     "editable": true,
-                                    "type": "text-field",
-                                    "sub-type": "real",
-                                    "value": "50"
+                                    "type": "option-field",
+                                    "sub-type": "data",
+                                    "value": "x0"
                                 }]
                             },
                             {
-                                "field-name": "category",
-                                "editable": true,
+                                "field-name": "operations",
+                                "package": "Array",
+                                "primitive": false,
+                                "count": 0,
+                                "type": "array",
+                                "sub-type": "operation",
+                                "value": [
+                                    {
+                                        "field-name": "",
+                                        "package": "de.evoal.optimisation.ea.'genetic-programming'",
+                                        "type": "instance",
+                                        "sub-type": "plus",
+                                        "value": []
+                                    },
+                                    {
+                                        "field-name": "",
+                                        "package": "de.evoal.optimisation.ea.'genetic-programming'",
+                                        "type": "instance",
+                                        "sub-type": "multiply",
+                                        "value": []
+                                    },
+                                    {
+                                        "field-name": "",
+                                        "package": "de.evoal.optimisation.ea.'genetic-programming'",
+                                        "type": "instance",
+                                        "sub-type": "minus",
+                                        "value": []
+                                    }
+                                ]
+                            },
+                            {
+                                "field-name": "validators",
+                                "package": "Array",
+                                "primitive": false,
+                                "count": 0,
+                                "type": "array",
+                                "sub-type": "validator",
+                                "value": []
+                            },
+                            {
+                                "field-name": "ephemeral-constants",
+                                "package": "Array",
+                                "primitive": false,
+                                "count": 0,
+                                "type": "array",
+                                "sub-type": "ephemeral-constant",
+                                "value": []
+                            },
+                            {
+                                "field-name": "constants",
+                                "package": "Array",
+                                "primitive": false,
+                                "count": 0,
+                                "type": "array",
+                                "sub-type": "ephemeral-constant",
+                                "value": []
+                            },
+                            {
+                                "field-name": "initial-depth",
+                                "editable": false,
                                 "type": "text-field",
-                                "sub-type": "string",
-                                "value": "Test string"
+                                "sub-type": "int",
+                                "value": "5"
+                            },
+                            {
+                                "field-name": "content",
+                                "editable": true,
+                                "type": "option-field",
+                                "sub-type": "data",
+                                "value": "regression-function"
                             }
                         ]
                     }]
-                },
-                {
-                    "field-name": "optimisation-function",
-                    "package": "de.evoal.surrogate.smile.ml",
-                    "type": "instance",
-                    "sub-type": "gaussian-svr",
-                    "value": [
-                        {
-                            "field-name": "σ",
-                            "editable": true,
-                            "type": "text-field",
-                            "sub-type": "real",
-                            "value": "5"
-                        },
-                        {
-                            "field-name": "soft-margin",
-                            "editable": true,
-                            "type": "text-field",
-                            "sub-type": "real",
-                            "value": "6"
-                        },
-                        {
-                            "field-name": "ε",
-                            "editable": true,
-                            "type": "text-field",
-                            "sub-type": "real",
-                            "value": "7"
-                        },
-                        {
-                            "field-name": "tolerance",
-                            "editable": true,
-                            "type": "text-field",
-                            "sub-type": "real",
-                            "value": "8"
-                        }
-                    ]
-                },
-                {
-                    "field-name": "alterers",
-                    "package": "de.evoal.optimisation.ea.optimisation",
-                    "type": "instance",
-                    "sub-type": "alterers",
-                    "value": [
-                        {
-                            "field-name": "crossover",
-                            "package": "Array",
-                            "primitive": false,
-                            "count": 0,
-                            "type": "array",
-                            "sub-type": "crossover",
-                            "value": [
-                                {
-                                    "field-name": "",
-                                    "package": "de.evoal.optimisation.ea.optimisation",
-                                    "type": "instance",
-                                    "sub-type": "correlation-line-crossover",
-                                    "value": [
-                                        {
-                                            "field-name": "probability",
-                                            "editable": true,
-                                            "type": "text-field",
-                                            "sub-type": "real",
-                                            "value": "5"
-                                        },
-                                        {
-                                            "field-name": "position",
-                                            "editable": true,
-                                            "type": "text-field",
-                                            "sub-type": "real",
-                                            "value": "8"
-                                        }
-                                    ]
-                                },
-                                {
-                                    "field-name": "",
-                                    "package": "de.evoal.optimisation.ea.optimisation",
-                                    "type": "instance",
-                                    "sub-type": "correlation-single-point-crossover",
-                                    "value": [{
-                                        "field-name": "probability",
-                                        "editable": true,
-                                        "type": "text-field",
-                                        "sub-type": "real",
-                                        "value": "5"
-                                    }]
-                                }
-                            ]
-                        },
-                        {
-                            "field-name": "mutator",
-                            "package": "Array",
-                            "primitive": false,
-                            "count": 0,
-                            "type": "array",
-                            "sub-type": "mutator",
-                            "value": [
-                                {
-                                    "field-name": "",
-                                    "package": "de.evoal.optimisation.ea.mdo",
-                                    "type": "instance",
-                                    "sub-type": "array-reorder-mutator",
-                                    "value": [{
-                                        "field-name": "probability",
-                                        "editable": true,
-                                        "type": "text-field",
-                                        "sub-type": "real",
-                                        "value": "3"
-                                    }]
-                                },
-                                {
-                                    "field-name": "",
-                                    "package": "de.evoal.optimisation.ea.optimisation",
-                                    "type": "instance",
-                                    "sub-type": "bit-flip-mutator",
-                                    "value": [{
-                                        "field-name": "probability",
-                                        "editable": true,
-                                        "type": "text-field",
-                                        "sub-type": "real",
-                                        "value": "2"
-                                    }]
-                                }
-                            ]
-                        }
-                    ]
-                },
-                {
-                    "field-name": "number-of-generations",
-                    "editable": true,
-                    "type": "text-field",
-                    "sub-type": "int",
-                    "value": "5"
-                },
-                {
-                    "field-name": "selectors",
-                    "package": "de.evoal.optimisation.ea.optimisation",
-                    "type": "instance",
-                    "sub-type": "selectors",
-                    "value": [
-                        {
-                            "field-name": "offspring",
-                            "package": "de.evoal.optimisation.ea.optimisation",
-                            "type": "instance",
-                            "sub-type": "boltzmann-selector",
-                            "value": [{
-                                "field-name": "beta",
-                                "editable": true,
-                                "type": "text-field",
-                                "sub-type": "real",
-                                "value": "3"
-                            }]
-                        },
-                        {
-                            "field-name": "survivor",
-                            "package": "de.evoal.optimisation.ea.optimisation",
-                            "type": "instance",
-                            "sub-type": "elite-selector",
-                            "value": [
-                                {
-                                    "field-name": "size-factor",
-                                    "editable": true,
-                                    "type": "text-field",
-                                    "sub-type": "real",
-                                    "value": "4"
-                                },
-                                {
-                                    "field-name": "non-elite-selector",
-                                    "package": "de.evoal.optimisation.ea.optimisation",
-                                    "type": "instance",
-                                    "sub-type": "linear-rank-selector",
-                                    "value": [{
-                                        "field-name": "nminus",
-                                        "editable": true,
-                                        "type": "text-field",
-                                        "sub-type": "int",
-                                        "value": "5"
-                                    }]
-                                }
-                            ]
-                        }
-                    ]
-                },
-                {
-                    "field-name": "genotype",
-                    "package": "de.evoal.optimisation.ea.optimisation",
-                    "type": "instance",
-                    "sub-type": "vector-genotype",
-                    "value": [{
-                        "field-name": "chromosomes",
-                        "package": "Array",
-                        "primitive": false,
-                        "count": 0,
-                        "type": "array",
-                        "sub-type": "chromosome",
-                        "value": [{
-                            "field-name": "",
-                            "package": "de.evoal.optimisation.ea.optimisation",
-                            "type": "instance",
-                            "sub-type": "bit-chromosome",
-                            "value": [
-                                {
-                                    "field-name": "genes",
-                                    "package": "Array",
-                                    "primitive": false,
-                                    "count": 0,
-                                    "type": "array",
-                                    "sub-type": "gene",
-                                    "value": [{
-                                        "field-name": "",
-                                        "package": "de.evoal.optimisation.ea.optimisation",
-                                        "type": "instance",
-                                        "sub-type": "gene",
-                                        "value": [{
-                                            "field-name": "content",
-                                            "editable": true,
-                                            "type": "option-field",
-                                            "sub-type": "data",
-                                            "value": "Num2"
-                                        }]
-                                    }]
-                                },
-                                {
-                                    "field-name": "scale",
-                                    "editable": true,
-                                    "type": "text-field",
-                                    "sub-type": "int",
-                                    "value": "5"
-                                }
-                            ]
-                        }]
-                    }]
-                }
-            ]
-        },
-        {
-            "package": "de.evoal.optimisation.ea.optimisation",
-            "type": "instance",
-            "sub-type": "alterers",
-            "value": [
-                {
-                    "field-name": "crossover",
-                    "package": "Array",
-                    "primitive": false,
-                    "count": 0,
-                    "type": "array",
-                    "sub-type": "crossover",
-                    "value": [
-                        {
-                            "field-name": "",
-                            "package": "de.evoal.optimisation.ea.optimisation",
-                            "type": "instance",
-                            "sub-type": "correlation-line-crossover",
-                            "value": [
-                                {
-                                    "field-name": "probability",
-                                    "editable": true,
-                                    "type": "text-field",
-                                    "sub-type": "real",
-                                    "value": "0"
-                                },
-                                {
-                                    "field-name": "position",
-                                    "editable": true,
-                                    "type": "text-field",
-                                    "sub-type": "real",
-                                    "value": "0"
-                                }
-                            ]
-                        },
-                        {
-                            "field-name": "",
-                            "package": "de.evoal.optimisation.ea.optimisation",
-                            "type": "instance",
-                            "sub-type": "correlation-mean-alterer",
-                            "value": [{
-                                "field-name": "probability",
-                                "editable": true,
-                                "type": "text-field",
-                                "sub-type": "real",
-                                "value": "0"
-                            }]
-                        }
-                    ]
-                },
-                {
-                    "field-name": "mutator",
-                    "package": "Array",
-                    "primitive": false,
-                    "count": 0,
-                    "type": "array",
-                    "sub-type": "mutator",
-                    "value": []
-                }
-            ]
-        }
-    ]
+                }]
+            }
+        ]
+    }]
 }

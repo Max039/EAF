@@ -17,7 +17,7 @@ import java.awt.event.*;
 import java.util.ArrayList;
 
 public class OptionsFieldRect extends Rect {
-    JComboBox<String> comboBox;
+    public JComboBox<String> comboBox;
 
     Color textColor = new Color(255, 255, 255);
     Color bgColor = new Color(55, 55, 55);

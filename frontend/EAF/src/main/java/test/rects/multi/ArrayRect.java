@@ -5,6 +5,7 @@ import compiler.FieldType;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import test.DragDropRectanglesWithSplitPane;
+import test.rects.OptionsFieldRect;
 import test.rects.Rect;
 
 import java.awt.*;
@@ -156,7 +157,7 @@ public class ArrayRect <T extends Rect> extends RectWithRects {
             res += "\n";
         }
 
-        Rect[] subRects2 = Arrays.stream(subRects).filter(Objects::nonNull).toArray(Rect[]::new);
+        Rect[] subRects2 = Arrays.stream(subRects).filter(Objects::nonNull).filter(t -> !(t instanceof OptionsFieldRect) || !((String) (((OptionsFieldRect) (t)).comboBox.getSelectedItem())).isEmpty()).toArray(Rect[]::new);
         for (int i = 0; i < subRects2.length; i++) {
             var res2 = repeatString(stringPadding, level + 1 ) + subRects2[i].toString(level + 1);
             res += res2;
