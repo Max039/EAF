@@ -71,11 +71,185 @@
                 "value": []
             },
             {
+                "field-name": "optimisation-function",
+                "package": "de.evoal.optimisation.ea.'genetic-programming'",
+                "type": "instance",
+                "sub-type": "regression-fitness",
+                "value": [{
+                    "field-name": "calculations",
+                    "package": "Array",
+                    "primitive": false,
+                    "count": 0,
+                    "type": "array",
+                    "sub-type": "quality-of-fit",
+                    "value": [{
+                        "field-name": "",
+                        "package": "de.evoal.optimisation.ea.'genetic-programming'",
+                        "type": "instance",
+                        "sub-type": "squared-error",
+                        "value": [
+                            {
+                                "field-name": "output",
+                                "package": "Array",
+                                "primitive": true,
+                                "count": 0,
+                                "type": "array",
+                                "sub-type": "data",
+                                "value": [{
+                                    "field-name": "",
+                                    "editable": true,
+                                    "type": "option-field",
+                                    "sub-type": "data",
+                                    "value": "y0"
+                                }]
+                            },
+                            {
+                                "field-name": "reference",
+                                "editable": true,
+                                "type": "text-field",
+                                "sub-type": "string",
+                                "value": "gp-example-function-data.csv"
+                            },
+                            {
+                                "field-name": "input",
+                                "package": "Array",
+                                "primitive": true,
+                                "count": 0,
+                                "type": "array",
+                                "sub-type": "data",
+                                "value": [{
+                                    "field-name": "",
+                                    "editable": true,
+                                    "type": "option-field",
+                                    "sub-type": "data",
+                                    "value": "x0"
+                                }]
+                            },
+                            {
+                                "field-name": "function",
+                                "editable": true,
+                                "type": "option-field",
+                                "sub-type": "data",
+                                "value": "regression-function"
+                            }
+                        ]
+                    }]
+                }]
+            },
+            {
+                "field-name": "alterers",
+                "package": "de.evoal.optimisation.ea.optimisation",
+                "type": "instance",
+                "sub-type": "alterers",
+                "value": [
+                    {
+                        "field-name": "crossover",
+                        "package": "Array",
+                        "primitive": false,
+                        "count": 0,
+                        "type": "array",
+                        "sub-type": "crossover",
+                        "value": [{
+                            "field-name": "",
+                            "package": "de.evoal.optimisation.ea.'genetic-programming'",
+                            "type": "instance",
+                            "sub-type": "single-node-crossover",
+                            "value": [{
+                                "field-name": "probability",
+                                "editable": true,
+                                "type": "text-field",
+                                "sub-type": "real",
+                                "value": "0.1"
+                            }]
+                        }]
+                    },
+                    {
+                        "field-name": "mutator",
+                        "package": "Array",
+                        "primitive": false,
+                        "count": 0,
+                        "type": "array",
+                        "sub-type": "mutator",
+                        "value": [
+                            {
+                                "field-name": "",
+                                "package": "de.evoal.optimisation.ea.optimisation",
+                                "type": "instance",
+                                "sub-type": "probability-mutator",
+                                "value": [{
+                                    "field-name": "probability",
+                                    "editable": true,
+                                    "type": "text-field",
+                                    "sub-type": "real",
+                                    "value": "0.2"
+                                }]
+                            },
+                            {
+                                "field-name": "",
+                                "package": "de.evoal.optimisation.ea.'genetic-programming'",
+                                "type": "instance",
+                                "sub-type": "mathematical-expression-rewriter",
+                                "value": [{
+                                    "field-name": "probability",
+                                    "editable": true,
+                                    "type": "text-field",
+                                    "sub-type": "real",
+                                    "value": "0.5"
+                                }]
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
                 "field-name": "number-of-generations",
                 "editable": true,
                 "type": "text-field",
                 "sub-type": "int",
                 "value": "1000"
+            },
+            {
+                "field-name": "selectors",
+                "package": "de.evoal.optimisation.ea.optimisation",
+                "type": "instance",
+                "sub-type": "selectors",
+                "value": [
+                    {
+                        "field-name": "offspring",
+                        "package": "de.evoal.optimisation.ea.optimisation",
+                        "type": "instance",
+                        "sub-type": "roulette-wheel-selector",
+                        "value": []
+                    },
+                    {
+                        "field-name": "survivor",
+                        "package": "de.evoal.optimisation.ea.optimisation",
+                        "type": "instance",
+                        "sub-type": "elite-selector",
+                        "value": [
+                            {
+                                "field-name": "size-factor",
+                                "editable": true,
+                                "type": "text-field",
+                                "sub-type": "real",
+                                "value": "0"
+                            },
+                            {
+                                "field-name": "non-elite-selector",
+                                "package": "de.evoal.optimisation.ea.optimisation",
+                                "type": "instance",
+                                "sub-type": "tournament-selector",
+                                "value": [{
+                                    "field-name": "size-factor",
+                                    "editable": true,
+                                    "type": "text-field",
+                                    "sub-type": "real",
+                                    "value": "0.1"
+                                }]
+                            }
+                        ]
+                    }
+                ]
             },
             {
                 "field-name": "genotype",
@@ -138,6 +312,27 @@
                                         "type": "instance",
                                         "sub-type": "minus",
                                         "value": []
+                                    },
+                                    {
+                                        "field-name": "",
+                                        "package": "de.evoal.optimisation.ea.'genetic-programming'",
+                                        "type": "instance",
+                                        "sub-type": "divide",
+                                        "value": []
+                                    },
+                                    {
+                                        "field-name": "",
+                                        "package": "de.evoal.optimisation.ea.'genetic-programming'",
+                                        "type": "instance",
+                                        "sub-type": "sqrt",
+                                        "value": []
+                                    },
+                                    {
+                                        "field-name": "",
+                                        "package": "de.evoal.optimisation.ea.'genetic-programming'",
+                                        "type": "instance",
+                                        "sub-type": "pow",
+                                        "value": []
                                     }
                                 ]
                             },
@@ -148,7 +343,34 @@
                                 "count": 0,
                                 "type": "array",
                                 "sub-type": "validator",
-                                "value": []
+                                "value": [
+                                    {
+                                        "field-name": "",
+                                        "package": "de.evoal.optimisation.ea.'genetic-programming'",
+                                        "type": "instance",
+                                        "sub-type": "must-use-variable",
+                                        "value": [{
+                                            "field-name": "count",
+                                            "editable": false,
+                                            "type": "text-field",
+                                            "sub-type": "int",
+                                            "value": "1"
+                                        }]
+                                    },
+                                    {
+                                        "field-name": "",
+                                        "package": "de.evoal.optimisation.ea.'genetic-programming'",
+                                        "type": "instance",
+                                        "sub-type": "program-size",
+                                        "value": [{
+                                            "field-name": "max-size",
+                                            "editable": false,
+                                            "type": "text-field",
+                                            "sub-type": "int",
+                                            "value": "10"
+                                        }]
+                                    }
+                                ]
                             },
                             {
                                 "field-name": "ephemeral-constants",
@@ -157,7 +379,35 @@
                                 "count": 0,
                                 "type": "array",
                                 "sub-type": "ephemeral-constant",
-                                "value": []
+                                "value": [{
+                                    "field-name": "",
+                                    "package": "de.evoal.optimisation.ea.'genetic-programming'",
+                                    "type": "instance",
+                                    "sub-type": "ephemeral-constant",
+                                    "value": [
+                                        {
+                                            "field-name": "lower",
+                                            "editable": true,
+                                            "type": "text-field",
+                                            "sub-type": "int:=-25",
+                                            "value": "-50"
+                                        },
+                                        {
+                                            "field-name": "upper",
+                                            "editable": false,
+                                            "type": "text-field",
+                                            "sub-type": "int",
+                                            "value": "25"
+                                        },
+                                        {
+                                            "field-name": "count",
+                                            "editable": false,
+                                            "type": "text-field",
+                                            "sub-type": "int",
+                                            "value": "10"
+                                        }
+                                    ]
+                                }]
                             },
                             {
                                 "field-name": "constants",
@@ -166,7 +416,35 @@
                                 "count": 0,
                                 "type": "array",
                                 "sub-type": "ephemeral-constant",
-                                "value": []
+                                "value": [{
+                                    "field-name": "",
+                                    "package": "de.evoal.optimisation.ea.'genetic-programming'",
+                                    "type": "instance",
+                                    "sub-type": "ephemeral-constant",
+                                    "value": [
+                                        {
+                                            "field-name": "lower",
+                                            "editable": true,
+                                            "type": "text-field",
+                                            "sub-type": "int:=-25",
+                                            "value": "-50"
+                                        },
+                                        {
+                                            "field-name": "upper",
+                                            "editable": false,
+                                            "type": "text-field",
+                                            "sub-type": "int",
+                                            "value": "25"
+                                        },
+                                        {
+                                            "field-name": "count",
+                                            "editable": false,
+                                            "type": "text-field",
+                                            "sub-type": "int",
+                                            "value": "10"
+                                        }
+                                    ]
+                                }]
                             },
                             {
                                 "field-name": "initial-depth",
