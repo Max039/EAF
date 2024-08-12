@@ -12,7 +12,7 @@ public class DoubleHelixAnimation extends JPanel implements ActionListener {
     private static final int WIDTH = 800;
     private static final int HEIGHT = 600;
     private static final int RADIUS = 20;
-    private static final int PERIOD = 2000; // milliseconds for one full wave
+    private static final int PERIOD = 1500; // milliseconds for one full wave
     private static final int FPS = 60;
 
     private double time = 0.0;
@@ -31,6 +31,10 @@ public class DoubleHelixAnimation extends JPanel implements ActionListener {
     public static Color c1 = new Color(255, 255, 255, 255);
 
     public String objective = "";
+
+    private static double decayTime = 1000;
+
+    private static double extraTime = 500;
 
     private JFrame frame;
 
@@ -121,8 +125,8 @@ public class DoubleHelixAnimation extends JPanel implements ActionListener {
 
     public double progressAfterTimer() {
         long elapsedMillis = System.currentTimeMillis() - stopMillis;
-        var r =  Math.min(1.0, elapsedMillis / 2000.0);
-        if (elapsedMillis >= 2500) {
+        var r =  Math.min(1.0, elapsedMillis / decayTime);
+        if (elapsedMillis >= decayTime + extraTime) {
             unfinished = false;
             frame.dispose();
         }
