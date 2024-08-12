@@ -231,6 +231,10 @@ public class ArrayRect <T extends Rect> extends RectWithRects {
         if (this.fillOnCreation) {
             fillIfNecessary();
         }
+
+        if (subRects[subRects.length - 1] != null) {
+            DragDropRectanglesWithSplitPane.subFrame.leftPanel.addRect(subRects[subRects.length - 1]);
+        }
     }
 
     public Pair<Boolean, Integer> getArrayButton(Point p) {

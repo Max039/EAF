@@ -257,7 +257,7 @@ public class RectPanel extends JScrollPane {
                     if (field.getValue().getSecond() == null) {
                         boolean found = false;
                         for (var jsonField : value3) {
-                            if (((String)((JSONObject)jsonField).get("field-name")).contains(field.getKey())) {
+                            if (((String)((JSONObject)jsonField).get("field-name")).equals(field.getKey())) {
                                 instance.setIndex(i, rectFromJson((JSONObject)jsonField));
                                 found = true;
                                 break;
