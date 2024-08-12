@@ -254,7 +254,7 @@ public class ClassType implements Comparable {
     public static void displayClassInfo(ClassType classType, Point p) {
         JFrame frame = new JFrame("Class Information Viewer");
         int width = 400;
-        int height = 300;
+        int height = 500;
 
 
         // Create the initial content
@@ -301,6 +301,39 @@ public class ClassType implements Comparable {
         panel.add(packageLabel);
         panel.add(Box.createRigidArea(new Dimension(0, 15))); // Add vertical space
 
+        JLabel fields = new JLabel("Fields");
+        panel.add(fields);
+
+        panel.add(Box.createRigidArea(new Dimension(0, 15))); // Add vertical space
+
+        // Add the child names with clickable buttons inside a scroll pane
+        JPanel fieldPanel = new JPanel();
+        fieldPanel.setLayout(new BoxLayout(fieldPanel, BoxLayout.Y_AXIS));
+        for (var field : classType.fields.entrySet()) {
+            var type = field.getValue().getFirst();
+            JButton fieldButton = new JButton(field.getKey() + " : "  + type.typeName);
+            fieldButton.setMaximumSize(new Dimension(Integer.MAX_VALUE, 30)); // Set button to full width
+            fieldButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+            fieldButton.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    if (!type.primitive) {
+                        var c = SyntaxTree.classRegister.get(type.typeName);
+                        historyStack.push(classType);
+                        updateClassInfo(container, c, frame);
+                    }
+                }
+            });
+            fieldButton.setEnabled(!type.primitive);
+            fieldPanel.add(fieldButton);
+        }
+
+        JScrollPane scrollPane2 = new JScrollPane(fieldPanel);
+        scrollPane2.setPreferredSize(new Dimension(380, 150));
+        panel.add(scrollPane2);
+
+        panel.add(Box.createRigidArea(new Dimension(0, 15))); // Add vertical space
+
         // Add the parent name with a clickable button
         JButton parentButton = new JButton("Parent: " + classType.getParentName());
         parentButton.setEnabled(classType.parent != null);
@@ -315,6 +348,13 @@ public class ClassType implements Comparable {
         });
         panel.add(parentButton);
         panel.add(Box.createRigidArea(new Dimension(0, 15))); // Add vertical space
+
+        JLabel children = new JLabel("Children");
+        panel.add(children);
+
+        panel.add(Box.createRigidArea(new Dimension(0, 15))); // Add vertical space
+
+
 
         // Add the child names with clickable buttons inside a scroll pane
         JPanel childrenPanel = new JPanel();
@@ -336,6 +376,10 @@ public class ClassType implements Comparable {
         JScrollPane scrollPane = new JScrollPane(childrenPanel);
         scrollPane.setPreferredSize(new Dimension(380, 150));
         panel.add(scrollPane);
+
+
+
+
 
         container.add(panel, BorderLayout.CENTER);
 
