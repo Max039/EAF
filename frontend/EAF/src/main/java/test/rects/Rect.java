@@ -139,7 +139,7 @@ public abstract class Rect {
         if (!DragDropRectanglesWithSplitPane.subFrame.leftPanelTextField.getText().isEmpty()) {
             if (DragDropRectanglesWithSplitPane.subFrame.leftPanel.hasRect(this)) {
                 var res = DragDropRectanglesWithSplitPane.subFrame.stringMarker.get(s);
-                if (res != null) {
+                if (res != null && !res.contains(y)) {
                     res.add(y);
                 } else {
                     var ar = new ArrayList<Integer>();

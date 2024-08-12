@@ -78,6 +78,9 @@ public class DragDropRectanglesWithSplitPane extends JPanel {
 
     public HashMap<String, ArrayList<Integer>> stringMarker = new HashMap<>();
 
+    int current = 0;
+
+
     static void customizeScrollBar(JScrollPane scrollPane) {
         JScrollBar verticalScrollBar = scrollPane.getVerticalScrollBar();
         JScrollBar horizontalScrollBar = scrollPane.getHorizontalScrollBar();
@@ -280,6 +283,12 @@ public class DragDropRectanglesWithSplitPane extends JPanel {
         else {
             leftPanelTextField.setForeground(searchBarText);
         }
+        if (leftPanelTextField.getText().isEmpty()) {
+            contentLabel2.setText("");
+        }
+        else {
+            contentLabel2.setText(current + "/" + res.size());
+        }
 
         revalidate();
         repaint();
@@ -451,6 +460,7 @@ public class DragDropRectanglesWithSplitPane extends JPanel {
             @Override
             public void keyPressed(KeyEvent e) {
                 if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+                    current = 0;
                     var res = getStringMarkers();
                     int value = leftPanel.getVerticalScrollBar().getValue();
                     int maximum = leftPanel.getVerticalScrollBar().getMaximum();
@@ -461,11 +471,14 @@ public class DragDropRectanglesWithSplitPane extends JPanel {
 
                     if (!res.isEmpty() && isScrolledFullyDown) {
                         leftPanel.getVerticalScrollBar().setValue(res.get(0));
+                        current = 1;
                     }
                     else {
                         int i = leftPanel.getVerticalScrollBar().getValue();
                         boolean found = false;
+
                         for (var y : res) {
+                            current++;
                             if (y > i) {
                                 i = y;
                                 found = true;
@@ -477,7 +490,6 @@ public class DragDropRectanglesWithSplitPane extends JPanel {
                         }
                         leftPanel.getVerticalScrollBar().setValue(i);
                     }
-
 
                 }
                 searchChanged();
@@ -502,6 +514,10 @@ public class DragDropRectanglesWithSplitPane extends JPanel {
                 var res = getStringMarkers();
                 if (!res.isEmpty() && !leftPanelTextField.getText().isEmpty()) {
                     leftPanel.getVerticalScrollBar().setValue(res.get(0));
+                    current = 1;
+                }
+                if (res.isEmpty() && !leftPanelTextField.getText().isEmpty()) {
+                    current = 0;
                 }
                 searchChanged();
             }
@@ -521,7 +537,7 @@ public class DragDropRectanglesWithSplitPane extends JPanel {
 
 
 
-        contentLabel2 = new JLabel("0");
+        contentLabel2 = new JLabel("");
         contentLabel2.setOpaque(true);
         contentLabel2.setBackground(searchBar);
         contentLabel2.setForeground(searchBarText);
