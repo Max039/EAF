@@ -5,6 +5,7 @@ import compiler.FieldType;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import test.DragDropRectanglesWithSplitPane;
+import test.Pair;
 import test.rects.OptionsFieldRect;
 import test.rects.Rect;
 
@@ -176,39 +177,106 @@ public class ArrayRect <T extends Rect> extends RectWithRects {
     }
 
     public void removeElement(int index) {
+
+
         // Check if the index is valid
         if (index < 0 || index >= subRects.length) {
             throw new IllegalArgumentException("Index out of bounds");
         }
 
-        // Create a new array with one less element
-        Rect[] newArray = new Rect[subRects.length - 1];
+        Rect[] newRects = new Rect[subRects.length - 1];
+        String[] newNames = new String[subRects.length - 1];
+        FieldType[] newTypes = new FieldType[subRects.length - 1];
 
         // Copy elements from the original array to the new array
         for (int i = 0, j = 0; i < subRects.length; i++) {
             if (i != index) {
-                newArray[j++] = subRects[i];
+                newRects[j] = subRects[i];
+                newNames[j] = names[i];
+                newTypes[j++] = types[i];
             }
             else {
-                DragDropRectanglesWithSplitPane.subFrame.leftPanel.removeRect(subRects[i]);
+                if (subRects[i] != null) {
+                    DragDropRectanglesWithSplitPane.subFrame.leftPanel.removeRect(subRects[i]);
+                }
             }
         }
 
-        subRects =  newArray;
+        subRects =  newRects;
+        names =  newNames;
+        types =  newTypes;
     }
 
     public void addElement() {
-        Rect[] newArray = new Rect[subRects.length + 1];
+        System.out.println("Name = " + names.length);
+        System.out.println("Rect = " + subRects.length);
+        System.out.println("Types = " + types.length);
+
+        Rect[] newRects = new Rect[subRects.length + 1];
+        String[] newNames = new String[subRects.length + 1];
+        FieldType[] newTypes = new FieldType[subRects.length + 1];
 
         for (int i = 0; i < subRects.length; i++) {
-            newArray[i] = subRects[i];
+            newRects[i] = subRects[i];
+            newNames[i] = names[i];
+            newTypes[i] = types[i];
         }
-        subRects =  newArray;
+        subRects =  newRects;
+        names =  newNames;
+        types =  newTypes;
+
+        names[names.length - 1] = "";
+        types[types.length - 1] = fillType;
 
         if (this.fillOnCreation) {
             fillIfNecessary();
         }
     }
 
+    public Pair<Boolean, Integer> getArrayButton(Point p) {
+        int heightAcc = realHeight();
+        if (p.x >= getX() + getWidth() - spacing - buttonWidth && p.x <= getX() + getWidth() - spacing) {
+            for (int i = 0; i < subRects.length + 1 && getY() + heightAcc <= p.y; i++) {
+                if (i < subRects.length) {
+                    Rect r = subRects[i];
+                    if (r != null) {
+                        if (p.y >= getY() + heightAcc && p.y <= getY() + heightAcc + r.getHeight()) {
+                            return new Pair<Boolean, Integer>(true, i);
+                        }
+                        heightAcc += r.getHeight() + spacing * 2;
+                    }
+                    else {
+                        if (p.y >= getY() + heightAcc && p.y <= getY() + heightAcc + emptyRowSize) {
+                            return new Pair<Boolean, Integer>(true, i);
+                        }
+                        heightAcc += emptyRowSize + spacing * 2;
+                    }
+                }
+                else {
+                    if (p.y >= getY() + heightAcc && p.y <= getY() + heightAcc + emptyRowSize) {
+                        return new Pair<Boolean, Integer>(true, -1);
+                    }
+                }
+            }
+        }
+        return new Pair<Boolean, Integer>(false, -1);
+    };
+
+    public boolean pressedButton(Point p) {
+        var res = getArrayButton(p);
+        System.out.println(res.getFirst() + " " + res.getSecond());
+        if (res.getFirst()) {
+            if (res.getSecond() == -1) {
+                addElement();
+            }
+            else {
+                removeElement(res.getSecond());
+            }
+
+        }
+        DragDropRectanglesWithSplitPane.subFrame.leftPanel.revalidate();
+        DragDropRectanglesWithSplitPane.subFrame.leftPanel.repaint();
+        return res.getFirst();
+    }
 
 }

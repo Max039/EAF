@@ -427,6 +427,9 @@ public abstract class RectWithRects extends Rect {
         return new Pair<Boolean, Integer>(false, -1);
     };
 
+
+
+
     @Override
     public void onMouseReleased() {
         for (int i = 0; i < subRects.length; i++) {
@@ -566,6 +569,11 @@ public abstract class RectWithRects extends Rect {
 
 
                 popupMenu.show(DragDropRectanglesWithSplitPane.mainFrame, p2.x, p2.y);
+            }
+        }
+        else if (this instanceof ArrayRect) {
+            if (left && DragDropRectanglesWithSplitPane.showButtons) {
+                ((ArrayRect)this).pressedButton(p);
             }
         }
     }
