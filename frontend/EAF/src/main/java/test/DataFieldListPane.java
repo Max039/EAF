@@ -132,13 +132,33 @@ public class DataFieldListPane extends JScrollPane {
 
     private void openCreateNumberDialog() {
         JDialog dialog = new JDialog((Frame) SwingUtilities.getWindowAncestor(this), "Create Number", true);
-        dialog.setLayout(new GridLayout(2, 2));
+        dialog.setLayout(new GridBagLayout());
         dialog.setSize(300, 100);
 
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.insets = new Insets(5, 5, 5, 5); // Add padding
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+
         JLabel nameLabel = new JLabel("Name:");
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        gbc.weightx = 0;
+        dialog.add(nameLabel, gbc);
+
         JTextField nameField = new JTextField();
+        gbc.gridx = 1;
+        gbc.gridy = 0;
+        gbc.weightx = 1;
+        dialog.add(nameField, gbc);
 
         JButton okButton = new JButton("OK");
+        gbc.gridx = 1;
+        gbc.gridy = 1;
+        gbc.gridwidth = 2;
+        gbc.weightx = 1;
+        gbc.anchor = GridBagConstraints.CENTER;
+        dialog.add(okButton, gbc);
+
         okButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -156,26 +176,51 @@ public class DataFieldListPane extends JScrollPane {
             }
         });
 
-        dialog.add(nameLabel);
-        dialog.add(nameField);
-        dialog.add(okButton);
-
         dialog.setLocationRelativeTo(this);
         dialog.setVisible(true);
     }
 
     private void openCreateInstanceDialog() {
         JDialog dialog = new JDialog((Frame) SwingUtilities.getWindowAncestor(this), "Create Instance", true);
-        dialog.setLayout(new GridLayout(3, 2));
+        dialog.setLayout(new GridBagLayout());
         dialog.setSize(300, 150);
 
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.insets = new Insets(5, 5, 5, 5); // Add padding
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+
         JLabel nameLabel = new JLabel("Name:");
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        gbc.weightx = 0;
+        dialog.add(nameLabel, gbc);
+
         JTextField nameField = new JTextField();
+        gbc.gridx = 1;
+        gbc.gridy = 0;
+        gbc.weightx = 1;
+        dialog.add(nameField, gbc);
 
         JLabel typeLabel = new JLabel("Type:");
+        gbc.gridx = 0;
+        gbc.gridy = 1;
+        gbc.weightx = 0;
+        dialog.add(typeLabel, gbc);
+
         JTextField typeField = new JTextField();
+        gbc.gridx = 1;
+        gbc.gridy = 1;
+        gbc.weightx = 1;
+        dialog.add(typeField, gbc);
 
         JButton okButton = new JButton("OK");
+        gbc.gridx = 1;
+        gbc.gridy = 2;
+        gbc.gridwidth = 2;
+        gbc.weightx = 1;
+        gbc.anchor = GridBagConstraints.CENTER;
+        dialog.add(okButton, gbc);
+
         okButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -203,31 +248,63 @@ public class DataFieldListPane extends JScrollPane {
             }
         });
 
-        dialog.add(nameLabel);
-        dialog.add(nameField);
-        dialog.add(typeLabel);
-        dialog.add(typeField);
-        dialog.add(okButton);
-
         dialog.setLocationRelativeTo(this);
         dialog.setVisible(true);
     }
 
     private void openAddDataFieldDialog() {
         JDialog dialog = new JDialog((Frame) SwingUtilities.getWindowAncestor(this), "Add Data Field", true);
-        dialog.setLayout(new GridLayout(4, 2));
+        dialog.setLayout(new GridBagLayout());
         dialog.setSize(300, 150);
 
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.insets = new Insets(5, 5, 5, 5); // Add padding
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+
         JLabel nameLabel = new JLabel("Name:");
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        gbc.weightx = 0;
+        dialog.add(nameLabel, gbc);
+
         JTextField nameField = new JTextField();
+        gbc.gridx = 1;
+        gbc.gridy = 0;
+        gbc.weightx = 1;
+        dialog.add(nameField, gbc);
 
         JLabel typeLabel = new JLabel("Type:");
+        gbc.gridx = 0;
+        gbc.gridy = 1;
+        gbc.weightx = 0;
+        dialog.add(typeLabel, gbc);
+
         JTextField typeField = new JTextField();
+        gbc.gridx = 1;
+        gbc.gridy = 1;
+        gbc.weightx = 1;
+        dialog.add(typeField, gbc);
 
         JLabel instanceLabel = new JLabel("Instance:");
+        gbc.gridx = 0;
+        gbc.gridy = 2;
+        gbc.weightx = 0;
+        dialog.add(instanceLabel, gbc);
+
         JCheckBox instanceCheckBox = new JCheckBox();
+        gbc.gridx = 1;
+        gbc.gridy = 2;
+        gbc.weightx = 1;
+        dialog.add(instanceCheckBox, gbc);
 
         JButton okButton = new JButton("OK");
+        gbc.gridx = 1;
+        gbc.gridy = 3;
+        gbc.gridwidth = 2;
+        gbc.weightx = 1;
+        gbc.anchor = GridBagConstraints.CENTER;
+        dialog.add(okButton, gbc);
+
         okButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -257,17 +334,10 @@ public class DataFieldListPane extends JScrollPane {
             }
         });
 
-        dialog.add(nameLabel);
-        dialog.add(nameField);
-        dialog.add(typeLabel);
-        dialog.add(typeField);
-        dialog.add(instanceLabel);
-        dialog.add(instanceCheckBox);
-        dialog.add(okButton);
-
         dialog.setLocationRelativeTo(this);
         dialog.setVisible(true);
     }
+
 
     private boolean isDuplicateName(String name) {
         return dataFieldList.stream()

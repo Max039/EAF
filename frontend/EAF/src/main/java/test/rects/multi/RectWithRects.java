@@ -13,6 +13,8 @@ import test.rects.Rect;
 import test.rects.TextFieldRect;
 
 import javax.swing.*;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -497,29 +499,80 @@ public abstract class RectWithRects extends Rect {
                             showMoreDialog.setSize(300, 400);
                             showMoreDialog.setLocationRelativeTo(DragDropRectanglesWithSplitPane.mainFrame);
 
+                            JPanel mainPanel = new JPanel();
+                            mainPanel.setLayout(new BorderLayout());
+
+                            // Create a panel with BorderLayout for the label and search bar
+                            JPanel searchPanel = new JPanel(new BorderLayout());
+
+                            JLabel filterLabel = new JLabel("Filter:");
+                            searchPanel.add(filterLabel, BorderLayout.WEST);
+
+                            JTextField searchField = new JTextField();
+                            searchPanel.add(searchField, BorderLayout.CENTER);
+
+                            mainPanel.add(searchPanel, BorderLayout.NORTH);
+
                             JPanel listPanel = new JPanel();
                             listPanel.setLayout(new BoxLayout(listPanel, BoxLayout.Y_AXIS));
                             JScrollPane scrollPane = new JScrollPane(listPanel);
+                            mainPanel.add(scrollPane, BorderLayout.CENTER);
 
-                            for (var fullItem : finalValid) {
-                                JButton button = new JButton(fullItem.name);
-                                button.setHorizontalAlignment(SwingConstants.CENTER);
-                                button.setMaximumSize(new Dimension(Integer.MAX_VALUE, 50)); // Ensure full width and fixed height
-                                button.addActionListener(new ActionListener() {
-                                    @Override
-                                    public void actionPerformed(ActionEvent e) {
-                                        setAndRedrawClass(fullItem, res.getSecond());
-                                        showMoreDialog.dispose(); // Close the dialog after selection
+                            // Method to update the list based on the search
+                            Runnable updateList = new Runnable() {
+                                @Override
+                                public void run() {
+                                    String searchText = searchField.getText().toLowerCase();
+                                    listPanel.removeAll();
+
+                                    for (var fullItem : finalValid) {
+                                        if (fullItem.name.toLowerCase().contains(searchText)) {
+                                            JButton button = new JButton(fullItem.name);
+                                            button.setHorizontalAlignment(SwingConstants.CENTER);
+                                            button.setMaximumSize(new Dimension(Integer.MAX_VALUE, 50)); // Ensure full width and fixed height
+                                            button.addActionListener(new ActionListener() {
+                                                @Override
+                                                public void actionPerformed(ActionEvent e) {
+                                                    setAndRedrawClass(fullItem, res.getSecond());
+                                                    showMoreDialog.dispose(); // Close the dialog after selection
+                                                }
+                                            });
+                                            listPanel.add(button);
+                                        }
                                     }
-                                });
-                                listPanel.add(button);
-                            }
 
-                            showMoreDialog.add(scrollPane);
+                                    listPanel.revalidate();
+                                    listPanel.repaint();
+                                }
+                            };
+
+                            // Add a listener to the search field to update the list as the user types
+                            searchField.getDocument().addDocumentListener(new DocumentListener() {
+                                @Override
+                                public void insertUpdate(DocumentEvent e) {
+                                    updateList.run();
+                                }
+
+                                @Override
+                                public void removeUpdate(DocumentEvent e) {
+                                    updateList.run();
+                                }
+
+                                @Override
+                                public void changedUpdate(DocumentEvent e) {
+                                    updateList.run();
+                                }
+                            });
+
+                            // Initial population of the list
+                            updateList.run();
+
+                            showMoreDialog.add(mainPanel);
                             showMoreDialog.setVisible(true);
                         }
                     });
                     popupMenu.add(showMoreItem);
+
                 }
 
                 popupMenu.show(DragDropRectanglesWithSplitPane.mainFrame, p2.x, p2.y);
