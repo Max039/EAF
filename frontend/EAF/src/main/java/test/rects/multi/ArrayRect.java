@@ -175,4 +175,40 @@ public class ArrayRect <T extends Rect> extends RectWithRects {
         return res;
     }
 
+    public void removeElement(int index) {
+        // Check if the index is valid
+        if (index < 0 || index >= subRects.length) {
+            throw new IllegalArgumentException("Index out of bounds");
+        }
+
+        // Create a new array with one less element
+        Rect[] newArray = new Rect[subRects.length - 1];
+
+        // Copy elements from the original array to the new array
+        for (int i = 0, j = 0; i < subRects.length; i++) {
+            if (i != index) {
+                newArray[j++] = subRects[i];
+            }
+            else {
+                DragDropRectanglesWithSplitPane.subFrame.leftPanel.removeRect(subRects[i]);
+            }
+        }
+
+        subRects =  newArray;
+    }
+
+    public void addElement() {
+        Rect[] newArray = new Rect[subRects.length + 1];
+
+        for (int i = 0; i < subRects.length; i++) {
+            newArray[i] = subRects[i];
+        }
+        subRects =  newArray;
+
+        if (this.fillOnCreation) {
+            fillIfNecessary();
+        }
+    }
+
+
 }
