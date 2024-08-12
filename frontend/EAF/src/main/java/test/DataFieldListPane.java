@@ -118,7 +118,7 @@ public class DataFieldListPane extends JScrollPane {
         });
         popupMenu.add(createInstanceItem);
 
-        JMenuItem newItem = new JMenuItem("New");
+        JMenuItem newItem = new JMenuItem("Create");
         newItem.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -255,7 +255,7 @@ public class DataFieldListPane extends JScrollPane {
     private void openAddDataFieldDialog() {
         JDialog dialog = new JDialog((Frame) SwingUtilities.getWindowAncestor(this), "Add Data Field", true);
         dialog.setLayout(new GridBagLayout());
-        dialog.setSize(300, 150);
+        dialog.setSize(300, 180);
 
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.insets = new Insets(5, 5, 5, 5); // Add padding
