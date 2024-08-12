@@ -1,5 +1,6 @@
 package compiler;
 
+import executor.ScriptWriter;
 import test.Pair;
 import test.RectPanel;
 
@@ -17,7 +18,7 @@ import static compiler.ClassType.getUniqueImports;
 
 public class SyntaxTree {
     public static ArrayList<String> pathToSyntax = new ArrayList<>();
-    public static String evoalBuild = "20240709-152420";
+    public static String evoalBuild = ScriptWriter.evoalVersion;
     public static TreeNode root = new TreeNode("Root", "");
 
     // ANSI escape codes for colors
@@ -254,14 +255,14 @@ public class SyntaxTree {
         // Extract module name
         String moduleName = extractModuleName(content);
         if (moduleName == null) {
-            System.out.println("Module name not found!");
+            System.out.println("Module name " + RED + moduleName + RESET + " not found!");
             return new Pair<>(null, clazzTypes);
         }
 
         // Extract types, extended types, and content within braces
         Pattern typePattern = Pattern.compile("(abstract\\s+)?type\\s+['\"]?([^'\"\\s]+)['\"]?(?:\\s+extends\\s+['\"]?([^'\"\\s]+)['\"]?)?\\s*\\{([^\\{\\}]|\\{[^\\{\\}]*\\})*\\}");
         Matcher typeMatcher = typePattern.matcher(content);
-
+        int i = 0;
         while (typeMatcher.find()) {
             boolean isAbstract = typeMatcher.group(1) != null;
             String typeName = typeMatcher.group(2);
@@ -274,7 +275,9 @@ public class SyntaxTree {
             //Here needs to be the real version no instance
             processContentOfType(clazz, typeContent);
             clazzTypes.add(clazz);
+            i++;
         }
+        System.out.println(typePrefix + "Found " + i + " types in module " + moduleName);
         return new Pair<>(moduleName, clazzTypes);
     }
 
@@ -283,7 +286,7 @@ public class SyntaxTree {
     }
 
     private static String extractModuleName(String content) {
-        Pattern modulePattern = Pattern.compile("module\\s+([\\w.]+)\\s*\\{");
+        Pattern modulePattern = Pattern.compile("module\\s+([^\\s\\{]+)\\s*\\{");
         Matcher moduleMatcher = modulePattern.matcher(content);
         if (moduleMatcher.find()) {
             return moduleMatcher.group(1);
