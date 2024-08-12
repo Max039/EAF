@@ -38,7 +38,7 @@ public class DragDropRectanglesWithSplitPane extends JPanel {
 
     public static Color scrollBarBg = new Color(43, 43, 43);
 
-
+    public static Color searchBarError = new Color(200, 100, 100);
 
     public static Color scrollBarButton = new Color(150, 150, 150);
 
@@ -273,6 +273,14 @@ public class DragDropRectanglesWithSplitPane extends JPanel {
     }
 
     public void searchChanged() {
+        var res = getStringMarkers();
+        if (res.isEmpty() && !leftPanelTextField.getText().isEmpty()) {
+            leftPanelTextField.setForeground(searchBarError);
+        }
+        else {
+            leftPanelTextField.setForeground(searchBarText);
+        }
+
         revalidate();
         repaint();
     }
