@@ -16,6 +16,7 @@ import test.rects.multi.RectWithRects;
 import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Optional;
 
 import static compiler.ClassType.getUniqueImports;
@@ -89,6 +90,32 @@ public class RectPanel extends JScrollPane {
 
     }
 
+    public boolean hasRect(Rect rect) {
+        for (var r : rects) {
+            if (isInRect(r, rect)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    public boolean isInRect(Rect rect, Rect toTest) {
+        if (rect == toTest) {
+            return true;
+        }
+        if (rect instanceof RectWithRects) {
+            var r = (RectWithRects) rect;
+            for (var subr : r.getSubRects()) {
+                if (isInRect(subr, toTest)) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
+
     public void addRect(Rect rect) {
         rects.add(rect);
         drawingPanel.add(rect);
@@ -140,6 +167,9 @@ public class RectPanel extends JScrollPane {
 
     @Override
     public void repaint() {
+        if (DragDropRectanglesWithSplitPane.subFrame != null) {
+            DragDropRectanglesWithSplitPane.subFrame.stringMarker = new HashMap<>();
+        }
         if (drawingPanel != null) {
             drawingPanel.repaint();
         }

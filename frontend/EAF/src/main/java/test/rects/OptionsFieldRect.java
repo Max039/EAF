@@ -176,6 +176,7 @@ public class OptionsFieldRect extends Rect {
         g2.fillRect(getX(), getY(), getWidth(), getHeight());
 
         comboBox.setBounds(getX() + spacing, getY() + spacing, getWidth() - spacing * 2, getHeight() - spacing * 2);
+        registerString((String)comboBox.getSelectedItem(), comboBox.getY());
     }
 
     @Override

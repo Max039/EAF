@@ -110,6 +110,7 @@ public class TextFieldRect extends Rect {
         g2.fillRect(getX(), getY(), getWidth(), getHeight());
 
         textBox.setBounds(getX() + spacing, getY() + spacing, getWidth() - spacing * 2, getHeight() - spacing * 2);
+        registerString(textBox.getText(), textBox.getY());
     }
 
 

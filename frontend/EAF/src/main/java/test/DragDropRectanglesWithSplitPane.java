@@ -26,7 +26,9 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.Map;
 
 public class DragDropRectanglesWithSplitPane extends JPanel {
 
@@ -65,12 +67,16 @@ public class DragDropRectanglesWithSplitPane extends JPanel {
 
     // Declare the text field and new panel
     private JTextField rightPanelTextField;
+    public JTextField leftPanelTextField;
     private JPanel rightContainerPanel;
     private FolderPanel folderPanel;
 
     public HashMap<Rect, String> erroRects = new HashMap<>();
 
     public JLabel contentLabel;
+    public JLabel contentLabel2;
+
+    public HashMap<String, ArrayList<Integer>> stringMarker = new HashMap<>();
 
     static void customizeScrollBar(JScrollPane scrollPane) {
         JScrollBar verticalScrollBar = scrollPane.getVerticalScrollBar();
@@ -262,6 +268,15 @@ public class DragDropRectanglesWithSplitPane extends JPanel {
         repaint();
     }
 
+    public ArrayList<Integer> getStringMarkers() {
+        return new ArrayList<>(stringMarker.entrySet().stream().filter(t -> t.getKey().toLowerCase().contains(leftPanelTextField.getText().toLowerCase())).map(Map.Entry::getValue).flatMap(Collection::stream).sorted().toList());
+    }
+
+    public void searchChanged() {
+        revalidate();
+        repaint();
+    }
+
     // Custom SplitPaneUI
     static class CustomSplitPaneUI extends BasicSplitPaneUI {
         @Override
@@ -303,6 +318,14 @@ public class DragDropRectanglesWithSplitPane extends JPanel {
         rightPanelTextField.setSelectedTextColor(searchBar);
         Border border = BorderFactory.createEmptyBorder();
         rightPanelTextField.setBorder(border);
+
+        leftPanelTextField = new JTextField();
+        leftPanelTextField.setBackground(searchBar);
+        leftPanelTextField.setForeground(searchBarText);
+        leftPanelTextField.setCaretColor(searchBarText);
+        leftPanelTextField.setSelectionColor(searchBarText);
+        leftPanelTextField.setSelectedTextColor(searchBar);
+        leftPanelTextField.setBorder(border);
 
         dataPanel = new DataFieldListPane();
         dataPanel.setBackground(bgColor);
@@ -403,6 +426,157 @@ public class DragDropRectanglesWithSplitPane extends JPanel {
         rightContainerPanel.setBackground(searchBar);
         panel.setBorder(BorderFactory.createLineBorder(searchBarBorder, 1));
         rightContainerPanel.add(panel, BorderLayout.NORTH);
+
+
+
+
+
+
+
+
+        leftPanelTextField.addKeyListener(new KeyListener() {
+            @Override
+            public void keyTyped(KeyEvent e) {
+                searchChanged();
+            }
+
+            @Override
+            public void keyPressed(KeyEvent e) {
+                if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+                    var res = getStringMarkers();
+                    int value = leftPanel.getVerticalScrollBar().getValue();
+                    int maximum = leftPanel.getVerticalScrollBar().getMaximum();
+                    int visibleAmount = leftPanel.getVerticalScrollBar().getVisibleAmount();
+
+                    // Determine if the scrollbar is scrolled fully down
+                    boolean isScrolledFullyDown = (value + visibleAmount >= maximum);
+
+                    if (!res.isEmpty() && isScrolledFullyDown) {
+                        leftPanel.getVerticalScrollBar().setValue(res.get(0));
+                    }
+                    else {
+                        int i = leftPanel.getVerticalScrollBar().getValue();
+                        boolean found = false;
+                        for (var y : res) {
+                            if (y > i) {
+                                i = y;
+                                found = true;
+                                break;
+                            }
+                        }
+                        if (!found && !res.isEmpty()) {
+                            i = res.get(0);
+                        }
+                        leftPanel.getVerticalScrollBar().setValue(i);
+                    }
+
+
+                }
+                searchChanged();
+            }
+
+            @Override
+            public void keyReleased(KeyEvent e) {
+                searchChanged();
+            }
+        });
+
+        leftPanelTextField.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                searchChanged();
+            }
+        });
+
+        leftPanelTextField.getDocument().addDocumentListener(new DocumentListener() {
+            @Override
+            public void insertUpdate(DocumentEvent e) {
+                var res = getStringMarkers();
+                if (!res.isEmpty() && !leftPanelTextField.getText().isEmpty()) {
+                    leftPanel.getVerticalScrollBar().setValue(res.get(0));
+                }
+                searchChanged();
+            }
+
+            @Override
+            public void removeUpdate(DocumentEvent e) {
+                searchChanged();
+            }
+
+            @Override
+            public void changedUpdate(DocumentEvent e) {
+                searchChanged();
+            }
+        });
+
+
+
+
+
+        contentLabel2 = new JLabel("0");
+        contentLabel2.setOpaque(true);
+        contentLabel2.setBackground(searchBar);
+        contentLabel2.setForeground(searchBarText);
+
+        var filterLabel2 = new JLabel("Search");
+        filterLabel2.setOpaque(true);
+        filterLabel2.setBackground(searchBar);
+        filterLabel2.setForeground(searchBarText);
+
+        // Use GridBagLayout to arrange the components
+        JPanel panel2 = new JPanel(new GridBagLayout());
+        panel2.setBackground(searchBar); // Set background for the panel
+        GridBagConstraints gbc2 = new GridBagConstraints();
+
+        // Place the "Filter:" label on the left
+        gbc2.gridx = 0; // Column 0
+        gbc2.gridy = 0; // Row 0
+        gbc2.insets = new Insets(0, 5, 0, 5); // Add some padding
+        gbc2.anchor = GridBagConstraints.WEST; // Align to the left
+        panel2.add(filterLabel2, gbc2);
+
+        // Place the search bar in the middle
+        gbc2.gridx = 1; // Column 1
+        gbc2.fill = GridBagConstraints.HORIZONTAL; // Make the search bar fill the space
+        gbc2.weightx = 1.0; // Allow the search bar to grow horizontally
+        panel2.add(leftPanelTextField, gbc2);
+
+        // Place the content label on the right
+        gbc2.gridx = 2; // Column 2
+        gbc2.fill = GridBagConstraints.NONE; // Do not stretch the label
+        gbc2.weightx = 0.0; // Do not allow the label to grow
+        panel2.add(contentLabel2, gbc2);
+
+        panel2.setBackground(searchBar);
+
+        // Add the panel to the top of the container
+        JPanel leftContainerPanel = new JPanel(new BorderLayout());
+        leftContainerPanel.setBackground(searchBar);
+        panel2.setBorder(BorderFactory.createLineBorder(searchBarBorder, 1));
+        leftContainerPanel.add(panel2, BorderLayout.NORTH);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        leftContainerPanel.add(leftPanel, BorderLayout.CENTER);
+        leftContainerPanel.setBorder(BorderFactory.createEmptyBorder());
+
+
+
+
         rightPanel.setBackground(searchBar);
         rightContainerPanel.add(rightPanel, BorderLayout.CENTER);
         rightContainerPanel.setBorder(BorderFactory.createEmptyBorder());
@@ -415,15 +589,12 @@ public class DragDropRectanglesWithSplitPane extends JPanel {
         rightSplitPane.setUI(new CustomSplitPaneUI());
         rightSplitPane.setBackground(bgColor);
 
-        // Create a scroll pane for the top left panel
-        JScrollPane leftBottomScrollPane = new JScrollPane(leftPanel);
-        leftBottomScrollPane.setBorder(BorderFactory.createEmptyBorder());
-        customizeScrollBar(leftBottomScrollPane);
+
 
 
 
         // Create a vertical split pane for the left side
-        JSplitPane leftSplitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, dataPanel, leftBottomScrollPane);
+        JSplitPane leftSplitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, dataPanel, leftContainerPanel);
         leftSplitPane.setDividerLocation(100); // Initial divider location
         leftSplitPane.setResizeWeight(0.1); // Adjust resize weight as needed
         leftSplitPane.setBorder(BorderFactory.createEmptyBorder());

@@ -2,12 +2,14 @@ package test.rects;
 
 import compiler.ClassType;
 import org.json.JSONObject;
+import test.DragDropRectanglesWithSplitPane;
 import test.Pair;
 import test.rects.multi.RectWithRects;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseEvent;
+import java.util.ArrayList;
 
 public abstract class Rect {
 
@@ -133,5 +135,20 @@ public abstract class Rect {
 
     public static String stringPadding = "  ";
 
-}
+    public void registerString(String s, int y) {
+        if (!DragDropRectanglesWithSplitPane.subFrame.leftPanelTextField.getText().isEmpty()) {
+            if (DragDropRectanglesWithSplitPane.subFrame.leftPanel.hasRect(this)) {
+                var res = DragDropRectanglesWithSplitPane.subFrame.stringMarker.get(s);
+                if (res != null) {
+                    res.add(y);
+                } else {
+                    var ar = new ArrayList<Integer>();
+                    ar.add(y);
+                    DragDropRectanglesWithSplitPane.subFrame.stringMarker.put(s, ar);
+                }
+
+            }
+        }
+    }
+    }
 

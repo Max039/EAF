@@ -42,6 +42,7 @@ public class ClassRect extends RectWithRects {
         g.setColor(new Color(nameColor.getRed(), nameColor.getGreen(), nameColor.getBlue(), a));
         if (!clazz.name.isEmpty()) {
             g.drawString(clazz.name, x + spacing, y + spacing + fontSize);
+            registerString(clazz.name, y + spacing);
         }
     };
 

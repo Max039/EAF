@@ -270,6 +270,7 @@ public abstract class RectWithRects extends Rect {
             g.setColor(new Color(fieldColor.getRed(), fieldColor.getGreen(), fieldColor.getBlue(), (int)(255 * a)));
             if (!name.isEmpty()) {
                 g.drawString(name, getX() + spacing, getY() + offset - (int)(fontSize * fontOffsetMultiplier));
+                registerString(name, getY() + offset - (int)(fontSize * fontOffsetMultiplier) - fontSize);
             }
             drawOnTopForEachRow(g, getX() + getWidth(), getY() + offset, getWidth() - spacing * 2, emptyRowSize, (int)(255 * a));
             return offset + emptyRowSize + spacing * 2;
@@ -294,6 +295,7 @@ public abstract class RectWithRects extends Rect {
         g.setColor(new Color(fieldColor.getRed(), fieldColor.getGreen(), fieldColor.getBlue(), (int)(255 * a)));
         if (!name.isEmpty()) {
             g.drawString(name, getX() + spacing, getY() + offset - (int)(fontSize * fontOffsetMultiplier));
+            registerString(name, getY() + offset - (int)(fontSize * fontOffsetMultiplier) - fontSize);
         }
         drawOnTopForEachRow(g, getX() + getWidth(), getY() + offset, r.getWidth(), r.getHeight(), (int)(255 * a));
         return offset + r.getHeight() + spacing * 2;
