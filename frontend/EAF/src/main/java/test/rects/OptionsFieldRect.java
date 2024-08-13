@@ -23,15 +23,21 @@ import java.util.ArrayList;
 public class OptionsFieldRect extends Rect {
     public JComboBox<String> comboBox;
 
-    Color textColor = new Color(255, 255, 255);
-    Color bgColor = new Color(55, 55, 55);
-    Color borderColor = new Color(85, 85, 85);
+    public void setTextColor(Color textColor) {
+        this.textColor = textColor;
+    }
 
-    Color selectedColor = new Color(0, 0, 0);
+    public static  Color defaultTextColor = new Color(255, 255, 255);
 
-    Color invalidColor = new Color(200, 90, 90);
+    Color textColor = defaultTextColor;
+    public static Color bgColor = new Color(55, 55, 55);
+    public static Color borderColor = new Color(85, 85, 85);
 
-    Color selectionColor = new Color(255, 255, 255);
+    public static Color selectedColor = new Color(0, 0, 0);
+
+    public static Color invalidColor = new Color(200, 90, 90);
+
+    public static Color selectionColor = new Color(255, 255, 255);
 
     boolean editable;
 
@@ -45,8 +51,9 @@ public class OptionsFieldRect extends Rect {
 
     private String snapshotText = ""; // Store the snapshot of the text
 
-    public OptionsFieldRect(ArrayList<Object> options, String selectedOption, int width, int height, Color color, ClassType type, boolean editable) {
+    public OptionsFieldRect(ArrayList<Object> options, String selectedOption, int width, int height, Color color, ClassType type, boolean editable, Color textColor) {
         super(width, height, color, type);
+        this.textColor = textColor;
         this.editable = editable;
         this.options = options;
         setComboBox(options, selectedOption);
@@ -215,7 +222,7 @@ public class OptionsFieldRect extends Rect {
 
     @Override
     public Rect clone() {
-        return new OptionsFieldRect(options, (String) comboBox.getSelectedItem(), getWidth(), getHeight(), color, clazz, editable);
+        return new OptionsFieldRect(options, (String) comboBox.getSelectedItem(), getWidth(), getHeight(), color, clazz, editable, textColor);
     }
 
     @Override

@@ -19,17 +19,24 @@ import java.awt.event.MouseEvent;
 public class TextFieldRect extends Rect {
     public JTextField textBox;
 
-    Color textColor = new Color(255, 255, 255);
+    public void setTextColor(Color textColor) {
+        this.textColor = textColor;
+    }
 
-    Color bgColor = new Color(55, 55, 55);
+    public static  Color defaultTextColor = new Color(255, 255, 255);
 
-    Color borderColor = new Color(85, 85, 85);
 
-    Color selectedColor = new Color(0, 0, 0);
+    Color  textColor = defaultTextColor;
 
-    Color selectionColor = new Color(255, 255, 255);
+    public static Color  bgColor = new Color(55, 55, 55);
 
-    Color uneditableColor = new Color(151, 111, 151);
+    public static Color  borderColor = new Color(85, 85, 85);
+
+    public static Color selectedColor = new Color(0, 0, 0);
+
+    public static Color selectionColor = new Color(255, 255, 255);
+
+    public static Color uneditableColor = new Color(151, 111, 151);
 
     private String snapshotText = ""; // Store the snapshot of the text
     boolean editable;
@@ -42,9 +49,10 @@ public class TextFieldRect extends Rect {
         setTextBox(content);
     }
 
-    public TextFieldRect(int width, int height, Color color, ClassType type, JTextField field, boolean editable) {
+    public TextFieldRect(int width, int height, Color color, ClassType type, JTextField field, boolean editable, Color textColor) {
         super(width, height, color, type);
         this.editable = editable;
+        this.textColor = textColor;
         setTextBox(field.getText());
     }
 
@@ -137,7 +145,7 @@ public class TextFieldRect extends Rect {
 
     @Override
     public Rect clone() {
-        return new TextFieldRect(getWidth(), getHeight(), color, clazz, textBox, editable);
+        return new TextFieldRect(getWidth(), getHeight(), color, clazz, textBox, editable, textColor);
     }
 
     @Override

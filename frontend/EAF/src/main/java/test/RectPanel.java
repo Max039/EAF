@@ -232,10 +232,10 @@ public class RectPanel extends JScrollPane {
                     var r = new ArrayList<Object>();
                     r.add(true);
                     r.add(false);
-                    return new OptionsFieldRect(r, value, RectPanel.textBoxWidth, RectPanel.textBoxHeight, RectPanel.primitiveColor, c, b1);
+                    return new OptionsFieldRect(r, value, RectPanel.textBoxWidth, RectPanel.textBoxHeight, RectPanel.primitiveColor, c, b1, TextFieldRect.defaultTextColor);
                 }
                 else {
-                    return new OptionsFieldRect(DragDropRectanglesWithSplitPane.dataPanel.getDataFieldList(), value, RectPanel.textBoxWidth, RectPanel.textBoxHeight, RectPanel.primitiveColor, c, b1);
+                    return new OptionsFieldRect(DragDropRectanglesWithSplitPane.dataPanel.getDataFieldList(), value, RectPanel.textBoxWidth, RectPanel.textBoxHeight, RectPanel.primitiveColor, c, b1, OptionsFieldRect.defaultTextColor);
                 }
             case "text-field" :
                 String value2 = (String) arr.get("value");

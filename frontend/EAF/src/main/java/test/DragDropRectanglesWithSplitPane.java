@@ -200,9 +200,29 @@ public class DragDropRectanglesWithSplitPane extends JPanel {
 
             }
             else {
+                Rect preR;
                 if (type.primitive) {
                     var c = new ClassType(type.typeName, null, "Primitive");
-                    return (T) new TextFieldRect(value.value, RectPanel.textBoxWidth, RectPanel.textBoxHeight, RectPanel.primitiveColor, c, false);
+                    String content;
+                    if (type.typeName.toLowerCase().contains("int") ||  type.typeName.toLowerCase().contains("real") || type.typeName.toLowerCase().contains("literal") || type.typeName.toLowerCase().contains("string") )  {
+                        content = value.value;
+                    } else if (type.typeName.toLowerCase().contains("bool")) {
+                        var r = new ArrayList<Object>();
+                        r.add(true);
+                        r.add(false);
+                        return (T)  new OptionsFieldRect(r, value.value, RectPanel.textBoxWidth, RectPanel.textBoxHeight, RectPanel.primitiveColor, c, true, TextFieldRect.uneditableColor);
+                    }
+                    else if (type.typeName.toLowerCase().contains("data")) {
+
+                        return (T)  new OptionsFieldRect(dataPanel.getDataFieldList(), value.value, RectPanel.textBoxWidth, RectPanel.textBoxHeight, RectPanel.primitiveColor, c, true, TextFieldRect.uneditableColor);
+                    }
+                    else {
+                        content  = "Unkown primitive";
+                        System.out.println("Unkown primitve: " + type.typeName);
+                    }
+                    preR = new TextFieldRect(content, RectPanel.textBoxWidth, RectPanel.textBoxHeight, RectPanel.primitiveColor, c, true);
+                    ((TextFieldRect) preR).setTextColor(TextFieldRect.uneditableColor);
+                    return (T)  preR;
                 }
                 else {
                     return getRectFromClassType(value.instance);
@@ -239,10 +259,10 @@ public class DragDropRectanglesWithSplitPane extends JPanel {
                         var r = new ArrayList<Object>();
                         r.add(true);
                         r.add(false);
-                        return (T) new OptionsFieldRect(r, "true", RectPanel.textBoxWidth, RectPanel.textBoxHeight, RectPanel.primitiveColor, c, true);
+                        return (T) new OptionsFieldRect(r, "true", RectPanel.textBoxWidth, RectPanel.textBoxHeight, RectPanel.primitiveColor, c, true, OptionsFieldRect.defaultTextColor);
                     }
                     else if (type.typeName.toLowerCase().contains("data")) {
-                        return (T) new OptionsFieldRect(dataPanel.getDataFieldList(), "", RectPanel.textBoxWidth, RectPanel.textBoxHeight, RectPanel.primitiveColor, c, true);
+                        return (T) new OptionsFieldRect(dataPanel.getDataFieldList(), "", RectPanel.textBoxWidth, RectPanel.textBoxHeight, RectPanel.primitiveColor, c, true, OptionsFieldRect.defaultTextColor);
                     }
                     else if (type.typeName.toLowerCase().contains("literal")) {
                         content  = "Enter literal here!";
