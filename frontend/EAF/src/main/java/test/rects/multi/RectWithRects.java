@@ -690,7 +690,7 @@ public abstract class RectWithRects extends Rect {
 
             var r = subRects[i];
 
-            if (r != null && (!(r instanceof ArrayRect) || clazz.fields.values().stream().toList().get(i).getSecond() == null)) {
+            if (r != null) {
                 if (!(r instanceof OptionsFieldRect) || !((String) (((OptionsFieldRect) (r)).comboBox.getSelectedItem())).isEmpty()) {
                     JSONObject o2 = r.toJson();
                     o2.put("field-name", names[i]);

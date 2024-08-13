@@ -60,10 +60,8 @@ public class ClassRect extends RectWithRects {
         }
         int i = 0;
         for (var t : clazz.fields.entrySet()) {
-            if (t.getValue().getSecond() == null) {
-                res += repeatString(stringPadding, level + 1 ) + "'" + t.getKey() + "' := " + subRects[i].toString(level + 1);
-                res += ";\n";
-            }
+            res += repeatString(stringPadding, level + 1 ) + "'" + t.getKey() + "' := " + subRects[i].toString(level + 1);
+            res += ";\n";
             i++;
         }
         if (test) {

@@ -254,29 +254,36 @@ public class RectPanel extends JScrollPane {
                 JSONArray value3 = (JSONArray) arr.get("value");
                 int i = 0;
                 for (var field : reg.fields.entrySet()) {
-                    if (field.getValue().getSecond() == null) {
-                        boolean found = false;
-                        for (var jsonField : value3) {
-                            if (((String)((JSONObject)jsonField).get("field-name")).equals(field.getKey())) {
-                                instance.setIndex(i, rectFromJson((JSONObject)jsonField));
-                                found = true;
-                                break;
+                    boolean found = false;
+                    for (var jsonField : value3) {
+                        if (((String)((JSONObject)jsonField).get("field-name")).equals(field.getKey())) {
+                            var fr = rectFromJson((JSONObject)jsonField);
+                            if (field.getValue().getSecond() != null) {
+                                if (fr instanceof OptionsFieldRect) {
+                                    ((OptionsFieldRect)fr).setTextColor(TextFieldRect.uneditableColor);
+                                }
+                                if (fr instanceof TextFieldRect) {
+                                    ((TextFieldRect)fr).setTextColor(TextFieldRect.uneditableColor);
+                                }
                             }
+                            instance.setIndex(i, fr);
+                            found = true;
+                            break;
                         }
-                        if (!found) {
-                            System.out.println("WARNING: For field \"" + field.getKey() + "\" in class \"" + reg.name + "\" no value was found in json!");
+                    }
+                    if (!found) {
+                        System.out.println("WARNING: For field \"" + field.getKey() + "\" in class \"" + reg.name + "\" no value was found in json!");
+                        if (field.getValue().getSecond() == null) {
                             if (field.getValue().getFirst().primitive) {
                                 instance.setIndex(i, DragDropRectanglesWithSplitPane.getRectFromFieldType(field.getValue().getFirst(), null));
                             }
+                            else {
+                                if (field.getValue().getFirst().primitive) {
+                                    instance.setIndex(i, DragDropRectanglesWithSplitPane.getRectFromFieldType(field.getValue().getFirst(), field.getValue().getSecond()));
+                                }
+                            }
                         }
                     }
-                    else {
-                        if (field.getValue().getFirst().primitive) {
-                            instance.setIndex(i, DragDropRectanglesWithSplitPane.getRectFromFieldType(field.getValue().getFirst(), field.getValue().getSecond()));
-                        }
-                    }
-
-
                     i++;
                 }
                 return instance;
