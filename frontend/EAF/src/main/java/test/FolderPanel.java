@@ -17,7 +17,7 @@ import static test.DragDropRectanglesWithSplitPane.customizeScrollBar;
 public class FolderPanel extends JPanel {
     private Stack<String> pathStack;
     private JButton backButton;
-    private JPanel folderDisplayPanel;
+    public JPanel folderDisplayPanel;
     private JScrollPane scrollPane;
     private JLabel pathLabel;  // Label for displaying the current path
     private Map<String, Set<String>> folderStructure;

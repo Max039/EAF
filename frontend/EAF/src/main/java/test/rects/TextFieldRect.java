@@ -11,6 +11,8 @@ import javax.swing.border.Border;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import java.awt.*;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
 import java.awt.event.MouseEvent;
 
 public class TextFieldRect extends Rect {
@@ -28,6 +30,7 @@ public class TextFieldRect extends Rect {
 
     Color uneditableColor = new Color(151, 111, 151);
 
+    private String snapshotText = ""; // Store the snapshot of the text
     boolean editable;
 
     public static int spacing = 0;
@@ -88,6 +91,23 @@ public class TextFieldRect extends Rect {
                 DragDropRectanglesWithSplitPane.mainFrame.repaint();
             }
         });
+
+        textBox.addFocusListener(new FocusListener() {
+            @Override
+            public void focusGained(FocusEvent e) {
+                snapshotText = textBox.getText(); // Snapshot the text when focus is gained
+            }
+
+            @Override
+            public void focusLost(FocusEvent e) {
+                String newText = textBox.getText();
+                if (!snapshotText.equals(newText)) {
+                    System.out.println("Text changed from " + snapshotText + " : " + newText);
+                }
+            }
+        });
+
+
         textBox.setEditable(editable);
     }
 

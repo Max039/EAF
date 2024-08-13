@@ -638,6 +638,26 @@ public class DragDropRectanglesWithSplitPane extends JPanel {
         add(mainSplitPane, BorderLayout.CENTER);
 
 
+        MouseAdapter focus = new MouseAdapter() {
+            @Override
+            public void mousePressed(MouseEvent e) {
+                rightPanel.requestFocusInWindow();
+
+            }
+
+            @Override
+            public void mouseDragged(MouseEvent e) {
+                DragDropRectanglesWithSplitPane.this.mouseDragged(e);
+            }
+
+            @Override
+            public void mouseReleased(MouseEvent e) {
+                DragDropRectanglesWithSplitPane.this.mouseReleased(e);
+            }
+
+
+        };
+
         MouseAdapter mouseAdapter = new MouseAdapter() {
             @Override
             public void mousePressed(MouseEvent e) {
@@ -685,9 +705,9 @@ public class DragDropRectanglesWithSplitPane extends JPanel {
                         matchingRect.onMouseClicked(e.getButton() == 1, leftPanelPos, panelRelativePos, e);
 
                     }
-                    else {
-                        leftPanel.requestFocusInWindow();
-                    }
+                }
+                if (matchingRect == null) {
+                    leftPanel.requestFocusInWindow();
                 }
                 repaint();
 
@@ -706,11 +726,14 @@ public class DragDropRectanglesWithSplitPane extends JPanel {
 
         };
 
-        dataPanel.getViewport().getView().addMouseListener(mouseAdapter);
-        dataPanel.getViewport().getView().addMouseMotionListener(mouseAdapter);
+        dataPanel.getViewport().getView().addMouseListener(focus);
+        dataPanel.getViewport().getView().addMouseMotionListener(focus);
 
-        folderPanel.addMouseListener(mouseAdapter);
-        folderPanel.addMouseMotionListener(mouseAdapter);
+        folderPanel.addMouseListener(focus);
+        folderPanel.addMouseMotionListener(focus);
+
+        folderPanel.folderDisplayPanel.addMouseListener(focus);
+        folderPanel.folderDisplayPanel.addMouseMotionListener(focus);
 
 
         rightPanel.getViewport().getView().addMouseListener(mouseAdapter);
