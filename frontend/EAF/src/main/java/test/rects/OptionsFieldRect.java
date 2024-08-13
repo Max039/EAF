@@ -9,6 +9,8 @@ import test.rects.multi.RectWithRects;
 
 import javax.swing.*;
 import javax.swing.border.Border;
+import javax.swing.event.PopupMenuEvent;
+import javax.swing.event.PopupMenuListener;
 import javax.swing.plaf.BorderUIResource;
 import javax.swing.plaf.basic.BasicComboBoxEditor;
 import javax.swing.plaf.basic.BasicComboBoxUI;
@@ -31,11 +33,15 @@ public class OptionsFieldRect extends Rect {
 
     boolean editable;
 
+    boolean first = true;
+
     public static int spacing = 0;
 
     public ArrayList<Object> options;
 
     String last = "";
+
+    private String snapshotText = ""; // Store the snapshot of the text
 
     public OptionsFieldRect(ArrayList<Object> options, String selectedOption, int width, int height, Color color, ClassType type, boolean editable) {
         super(width, height, color, type);
@@ -110,6 +116,32 @@ public class OptionsFieldRect extends Rect {
 
         // Update the comboBox model
         comboBox.setModel(new DefaultComboBoxModel<>(getOptions(selectedItem)));
+
+        if (first) {
+            comboBox.addPopupMenuListener(new PopupMenuListener() {
+                @Override
+                public void popupMenuWillBecomeVisible(PopupMenuEvent e) {
+                    // Snapshot the text when the menu is about to open
+                    snapshotText = (String)comboBox.getSelectedItem();
+                }
+
+                @Override
+                public void popupMenuWillBecomeInvisible(PopupMenuEvent e) {
+                    // Check for changes when the menu is about to close
+                    String newText = (String)comboBox.getSelectedItem();
+                    if (!snapshotText.equals(newText)) {
+                        System.out.println("Text changed from " + snapshotText + " : " + newText);
+                    }
+                }
+
+                @Override
+                public void popupMenuCanceled(PopupMenuEvent e) {
+                    // No action needed if the menu is canceled
+                }
+            });
+            first = false;
+        }
+
 
         // Restore the selected item
         comboBox.setSelectedItem(selectedItem);
