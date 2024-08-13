@@ -809,6 +809,7 @@ public class DragDropRectanglesWithSplitPane extends JPanel {
                     dataPanel.fromJson(a2);
                     JSONArray a = o.getJSONArray("rects");
                     subFrame.leftPanel.fromJson(a);
+                    actionHandler.reset();
                 } catch (IOException ex) {
                     throw new RuntimeException(ex);
                 }

@@ -34,4 +34,9 @@ public class ActionHandler {
             pastQue.add(action);
         }
     }
+
+    public void reset() {
+        futureQue.clear();
+        pastQue.clear();
+    }
 }

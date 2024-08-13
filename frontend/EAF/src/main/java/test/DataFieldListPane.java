@@ -1,5 +1,7 @@
 package test;
 
+import action.AddedDataAction;
+import action.RemovedDataAction;
 import compiler.ClassType;
 import compiler.Data;
 import compiler.SyntaxTree;
@@ -13,6 +15,7 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
 
@@ -35,6 +38,8 @@ public class DataFieldListPane extends JScrollPane {
     public static Color bgColor = new Color(49, 51, 53);
 
     public static Color minusColor = new Color(210, 100, 100);
+
+    public HashMap<DataField, ArrayList<Component>> componentMap = new HashMap<>();
 
     public DataFieldListPane() {
         dataFieldList = new ArrayList<>();
@@ -167,7 +172,7 @@ public class DataFieldListPane extends JScrollPane {
                     if (isDuplicateName(name)) {
                         JOptionPane.showMessageDialog(dialog, "Name already used!", "Error", JOptionPane.ERROR_MESSAGE);
                     } else {
-                        addDataField(new DataField(name, "quotient real", false));
+                        userAddedDataField(new DataField(name, "quotient real", false));
                         dialog.dispose();
                     }
                 } else {
@@ -230,7 +235,7 @@ public class DataFieldListPane extends JScrollPane {
                     if (isDuplicateName(name)) {
                         JOptionPane.showMessageDialog(dialog, "Name already used!", "Error", JOptionPane.ERROR_MESSAGE);
                     } else if (isInstanceNameValid(type)) {
-                        addDataField(new DataField(name, type, true));
+                        userAddedDataField(new DataField(name, type, true));
                         dialog.dispose();
                     } else {
                         String closestMatch = findClosestMatch(type);
@@ -238,7 +243,7 @@ public class DataFieldListPane extends JScrollPane {
                                 "Instance not found. Did you mean \"" + closestMatch + "\"?",
                                 "Instance Not Found", JOptionPane.YES_NO_OPTION);
                         if (response == JOptionPane.YES_OPTION) {
-                            addDataField(new DataField(name, closestMatch, true));
+                            userAddedDataField(new DataField(name, closestMatch, true));
                             dialog.dispose();
                         }
                     }
@@ -321,11 +326,11 @@ public class DataFieldListPane extends JScrollPane {
                                 "Instance not found. Did you mean \"" + closestMatch + "\"?",
                                 "Instance Not Found", JOptionPane.YES_NO_OPTION);
                         if (response == JOptionPane.YES_OPTION) {
-                            addDataField(new DataField(name, closestMatch, true));
+                            userAddedDataField(new DataField(name, closestMatch, true));
                             dialog.dispose();
                         }
                     } else {
-                        addDataField(new DataField(name, type, instance));
+                        userAddedDataField(new DataField(name, type, instance));
                         dialog.dispose(); // Only close if the instance is valid or the name isn't a duplicate
                     }
                 } else {
@@ -388,6 +393,11 @@ public class DataFieldListPane extends JScrollPane {
         return cost[len1 - 1];
     }
 
+    private void userAddedDataField(DataField dataField) {
+        addDataField(dataField);
+        DragDropRectanglesWithSplitPane.actionHandler.action(new AddedDataAction(dataField));
+    }
+
     public void addDataField(DataField dataField) {
         dataFieldList.add(dataField);
         addDataFieldComponent(dataField);
@@ -445,22 +455,45 @@ public class DataFieldListPane extends JScrollPane {
         removeButton.setForeground(minusColor);
         removeButton.setFocusPainted(false);
 
+        var arr = new ArrayList<Component>();
+        arr.add(nameLabel);
+        arr.add(typeLabel);
+        arr.add(removeButton);
+        componentMap.put(dataField, arr);
+
         // Remove button action
         removeButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 int response = JOptionPane.showConfirmDialog(panel, "Are you sure you want to remove this data field?", "Confirm Remove", JOptionPane.YES_NO_OPTION);
                 if (response == JOptionPane.YES_OPTION) {
-                    dataFieldList.remove(dataField);
-                    panel.remove(nameLabel);
-                    panel.remove(typeLabel);
-                    panel.remove(removeButton);
-                    DragDropRectanglesWithSplitPane.subFrame.checkForErrors();
-                    panel.revalidate();
-                    panel.repaint();
+                    userRemoveDataField(dataField);
+
                 }
             }
         });
+    }
+
+    private void userRemoveDataField(DataField dataField) {
+        removeDataField(dataField);
+        DragDropRectanglesWithSplitPane.actionHandler.action(new RemovedDataAction(dataField));
+    }
+
+    public void removeDataField(DataField f) {
+        var res = componentMap.get(f);
+        dataFieldList.remove(f);
+        for (var r : res) {
+            panel.remove(r);
+        }
+        DragDropRectanglesWithSplitPane.subFrame.checkForErrors();
+        panel.revalidate();
+        panel.repaint();
+    }
+
+    public void clearDataField() {
+        dataFieldList.clear();
+        componentMap.clear();
+        panel.removeAll();
     }
 
     public ArrayList<Object> getDataFieldList() {
@@ -478,8 +511,7 @@ public class DataFieldListPane extends JScrollPane {
 
     public void fromJson(JSONArray arr) {
         // Remove all data fields
-        dataFieldList.clear();
-        panel.removeAll();
+        clearDataField();
 
         // Re-add the header
         createHeader();
