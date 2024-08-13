@@ -212,8 +212,17 @@ public class DragDropRectanglesWithSplitPane extends JPanel {
                 var clazz = new ClassType(type.typeName, null, "Array");
                 FieldType ctype = type.clone();
                 ctype.arrayCount -= 1;
+                boolean fill = type.primitive;
+                if (!fill) {
+                    var check = SyntaxTree.classRegister.get(type.typeName).findSingleNonAbstractClass();
+                    if (check != null) {
+                        System.out.println("Info: Only 1 non abstract type available for " + type.typeName + " converting array to " + check.name);
+                        fill = true;
+                        ctype = new FieldType(check.name, false, ctype.arrayCount);
+                    }
+                }
 
-                return (T) new ArrayRect<>(RectPanel.arrayWidth, RectPanel.arrayHeight, RectPanel.arrayColor, clazz,  ctype, 3, type.primitive);
+                return (T) new ArrayRect<>(RectPanel.arrayWidth, RectPanel.arrayHeight, RectPanel.arrayColor, clazz,  ctype, 3, fill);
             }
             else {
                 if (type.primitive) {
@@ -240,12 +249,17 @@ public class DragDropRectanglesWithSplitPane extends JPanel {
                         content  = "Unkown primitive";
                         System.out.println("Unkown primitve: " + type.typeName);
                     }
-
-
                     return (T) new TextFieldRect(content, RectPanel.textBoxWidth, RectPanel.textBoxHeight, RectPanel.primitiveColor, c, true);
                 }
                 else {
-                    return null;
+                    var check = SyntaxTree.classRegister.get(type.typeName).findSingleNonAbstractClass();
+                    if (check != null) {
+                        System.out.println("Info: Only 1 non abstract type available for " + type.typeName + " creating and setting instance of " + check.name + " for field.");
+                        return (T) getRectFromClassType(check);
+                    }
+                    else {
+                        return null;
+                    }
                 }
             }
         }
