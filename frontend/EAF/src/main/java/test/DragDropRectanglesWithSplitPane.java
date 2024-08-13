@@ -2,6 +2,7 @@ package test;
 
 import action.ActionHandler;
 import action.AddedRectAction;
+import action.DeletedRectAction;
 import action.MovedRectAction;
 import compiler.ClassType;
 import compiler.FieldType;
@@ -973,15 +974,22 @@ public class DragDropRectanglesWithSplitPane extends JPanel {
                         }
                         draggedRect.addTo(leftPanel.drawingPanel);
                     }
+                    else {
+                        actionHandler.action(new DeletedRectAction(draggingSource, draggedRect, p));
+                    }
+
                 }
-                else {
+                else if (matchingRect == null) {
                     if (draggingSource != null) {
-                        actionHandler.action(new MovedRectAction(null, null, draggedRect, -1, leftPanel.getRects().size()));
+                        actionHandler.action(new MovedRectAction(draggingSource, null, draggedRect, draggedRect.parentIndex, leftPanel.getRects().size()));
                     }
                     else {
                         actionHandler.action(new AddedRectAction(null, draggedRect, leftPanel.getRects().size()));
                     }
                     leftPanel.addRect(leftPanel.draggingRect);
+                }
+                else {
+                    actionHandler.action(new DeletedRectAction(draggingSource, draggedRect, draggedRect.parentIndex));
                 }
                 leftPanel.requestFocusInWindow();
             }
