@@ -304,11 +304,11 @@ public class ArrayRect <T extends Rect> extends RectWithRects {
     }
 
     public Rect removeLast() {
-        return removeElement(subRects.length-1);
+        return removeElement(Math.max(subRects.length-1, 0));
     }
 
     public void addLast(Rect r) {
-        addElement(r, subRects.length-1);
+        addElement(r, Math.max(subRects.length-1, 0));
     }
 
 
