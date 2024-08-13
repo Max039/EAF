@@ -1,5 +1,7 @@
 package test.rects.multi;
 
+import action.ArrayElementAddedAction;
+import action.ArrayElementRemovedAction;
 import compiler.ClassType;
 import compiler.FieldType;
 import org.json.JSONArray;
@@ -176,14 +178,12 @@ public class ArrayRect <T extends Rect> extends RectWithRects {
         return res;
     }
 
-    public void removeElement(int index) {
-
-
+    public Rect removeElement(int index) {
         // Check if the index is valid
         if (index < 0 || index >= subRects.length) {
             throw new IllegalArgumentException("Index out of bounds");
         }
-
+        var r = subRects[index];
         Rect[] newRects = new Rect[subRects.length - 1];
         String[] newNames = new String[subRects.length - 1];
         FieldType[] newTypes = new FieldType[subRects.length - 1];
@@ -197,7 +197,7 @@ public class ArrayRect <T extends Rect> extends RectWithRects {
             }
             else {
                 if (subRects[i] != null) {
-                    DragDropRectanglesWithSplitPane.subFrame.leftPanel.removeRect(subRects[i]);
+                    subRects[i].removeFrom(DragDropRectanglesWithSplitPane.subFrame.leftPanel.drawingPanel);
                 }
             }
         }
@@ -205,35 +205,36 @@ public class ArrayRect <T extends Rect> extends RectWithRects {
         subRects =  newRects;
         names =  newNames;
         types =  newTypes;
+        return r;
     }
 
-    public void addElement() {
-        System.out.println("Name = " + names.length);
-        System.out.println("Rect = " + subRects.length);
-        System.out.println("Types = " + types.length);
-
+    public void addElement(Rect r, int index) {
         Rect[] newRects = new Rect[subRects.length + 1];
         String[] newNames = new String[subRects.length + 1];
         FieldType[] newTypes = new FieldType[subRects.length + 1];
 
-        for (int i = 0; i < subRects.length; i++) {
-            newRects[i] = subRects[i];
-            newNames[i] = names[i];
-            newTypes[i] = types[i];
+        for (int i = 0, j = 0; i < newRects.length; i++) {
+            if (i != index) {
+                newRects[i] = subRects[j];
+                newNames[i] = names[j];
+                newTypes[i] = types[j++];
+            }
+            else {
+                newNames[i] = "";
+                newTypes[i] = fillType;
+                newRects[i] = r;
+            }
         }
+
+
         subRects =  newRects;
         names =  newNames;
         types =  newTypes;
 
-        names[names.length - 1] = "";
-        types[types.length - 1] = fillType;
 
-        if (this.fillOnCreation) {
-            fillIfNecessary();
-        }
 
-        if (subRects[subRects.length - 1] != null) {
-            DragDropRectanglesWithSplitPane.subFrame.leftPanel.addRect(subRects[subRects.length - 1]);
+        if (r != null) {
+            r.addTo(DragDropRectanglesWithSplitPane.subFrame.leftPanel.drawingPanel);
         }
     }
 
@@ -268,13 +269,21 @@ public class ArrayRect <T extends Rect> extends RectWithRects {
 
     public boolean pressedButton(Point p) {
         var res = getArrayButton(p);
-        System.out.println(res.getFirst() + " " + res.getSecond());
         if (res.getFirst()) {
             if (res.getSecond() == -1) {
-                addElement();
+                Rect r;
+                if (fillOnCreation) {
+                    r = DragDropRectanglesWithSplitPane.getRectFromFieldType(fillType, null);
+                }
+                else {
+                    r = null;
+                }
+                addElement(r, subRects.length);
+                DragDropRectanglesWithSplitPane.actionHandler.action(new ArrayElementAddedAction(this, r));
             }
             else {
-                removeElement(res.getSecond());
+                var r = removeElement(res.getSecond());
+                DragDropRectanglesWithSplitPane.actionHandler.action(new ArrayElementRemovedAction(this, r, res.getSecond()));
             }
 
         }
@@ -282,5 +291,15 @@ public class ArrayRect <T extends Rect> extends RectWithRects {
         DragDropRectanglesWithSplitPane.subFrame.leftPanel.repaint();
         return res.getFirst();
     }
+
+
+    public Rect removeLast() {
+        return removeElement(subRects.length-1);
+    }
+
+    public void addLast(Rect r) {
+        addElement(r, subRects.length-1);
+    }
+
 
 }
