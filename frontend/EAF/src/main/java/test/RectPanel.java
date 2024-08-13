@@ -299,6 +299,17 @@ public class RectPanel extends JScrollPane {
 
                 var ft = new FieldType(clazz, (Boolean) arr.get("primitive"), (Integer) arr.get("count"));
 
+                boolean fill = ft.primitive;
+                if (!fill) {
+                    var check = SyntaxTree.classRegister.get(ft.typeName).findSingleNonAbstractClass();
+                    if (check != null) {
+                        System.out.println("Info: Only 1 non abstract type available for " + ft.typeName + " converting array to " + check.name);
+                        fill = true;
+                        ft = new FieldType(check.name, false, ft.arrayCount);
+                    }
+                }
+
+
                 int i3 = 0;
                 for (int i4 = 0; i4 < arrarr.length(); i4++) {
                     arrnames[i3] = "";
@@ -309,7 +320,9 @@ public class RectPanel extends JScrollPane {
 
                 var ct = new ClassType(clazz, null, "Array");
 
-                var arrRect = new ArrayRect<>(RectPanel.arrayWidth, RectPanel.arrayHeight, RectPanel.arrayColor, ct, ft, arrnames, arrrects, arrtypes, false, true);
+
+
+                var arrRect = new ArrayRect<>(RectPanel.arrayWidth, RectPanel.arrayHeight, RectPanel.arrayColor, ct, ft, arrnames, arrrects, arrtypes, fill, true);
 
                 int i2 = 0;
                 for (var jsonField : arrarr) {
