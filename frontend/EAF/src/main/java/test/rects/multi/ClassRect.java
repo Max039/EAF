@@ -19,6 +19,7 @@ public class ClassRect extends RectWithRects {
 
     @Override
     public Rect clone() {
+        System.out.println("class");
         return new ClassRect(realWidth(), realHeight(), color, getClazz(), names, subRects, types);
     }
 

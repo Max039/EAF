@@ -1,5 +1,8 @@
 package test.rects.multi;
 
+import action.AddedRectAction;
+import action.DeletedRectAction;
+import action.RemovedDataAction;
 import compiler.ClassType;
 import compiler.FieldType;
 import compiler.FieldValue;
@@ -325,7 +328,7 @@ public abstract class RectWithRects extends Rect {
         }
     }
 
-    public boolean setIndex(Point p, Rect rec) {
+    public Pair<Boolean, Pair<Rect, Integer>> setIndex(Point p, Rect rec) {
         if (contains(p) && p.x >= getX() + spacing && p.x <= getX() + getWidth() - spacing) {
             int heightAcc = realHeight();
             for (int i = 0; i < subRects.length && getY() + heightAcc <= p.y; i++) {
@@ -336,9 +339,9 @@ public abstract class RectWithRects extends Rect {
                 }
                 if (r != null) {
                     if (r instanceof RectWithRects) {
-                        boolean subRecursion = ((RectWithRects)r).setIndex(p, rec);
-                        if (subRecursion) {
-                            return true;
+                        var res = ((RectWithRects)r).setIndex(p, rec);
+                        if (res.getFirst()) {
+                            return res;
                         }
                     }
                     heightAcc += r.getHeight() + spacing * 2;
@@ -346,13 +349,13 @@ public abstract class RectWithRects extends Rect {
                 else {
                     if (p.y >= getY() + heightAcc && p.y <= getY() + heightAcc + emptyRowSize && !indexDoesNotMatchesDragged(i)) {
                         setIndex(i, rec);
-                        return true;
+                        return new Pair<>(true, new Pair<>(this, i));
                     }
                     heightAcc += emptyRowSize + spacing * 2;
                 }
             }
         }
-        return false;
+        return new Pair<>(false, new Pair<>(this, -1));
     }
 
     public Rect getSubRect(Point p) {
@@ -378,16 +381,14 @@ public abstract class RectWithRects extends Rect {
     }
 
     public void setIndex(int i, Rect r) {
-        if (r == null) {
-            System.out.println("Error trying to add null rect");
-        }
-        else {
-            subRects[i] = r;
+        if (r != null) {
             r.parent = this;
             r.parentIndex = i;
-            DragDropRectanglesWithSplitPane.subFrame.leftPanel.revalidate();
-            DragDropRectanglesWithSplitPane.subFrame.leftPanel.repaint();
         }
+        subRects[i] = r;
+
+        DragDropRectanglesWithSplitPane.subFrame.leftPanel.revalidate();
+        DragDropRectanglesWithSplitPane.subFrame.leftPanel.repaint();
     }
 
     @Override
@@ -480,7 +481,13 @@ public abstract class RectWithRects extends Rect {
                     menuItem.addActionListener(new ActionListener() {
                         @Override
                         public void actionPerformed(ActionEvent e) {
-                            setAndRedrawClass(item, res.getSecond());
+
+                            var rect = DragDropRectanglesWithSplitPane.getRectFromClassType(item);
+                            rect.addTo(DragDropRectanglesWithSplitPane.subFrame.leftPanel.drawingPanel);
+                            setIndex(res.getSecond(), rect);
+
+
+                            DragDropRectanglesWithSplitPane.actionHandler.action(new AddedRectAction(RectWithRects.this, rect, res.getSecond()));
                         }
                     });
                     popupMenu.add(menuItem);
@@ -533,7 +540,12 @@ public abstract class RectWithRects extends Rect {
                                             button.addActionListener(new ActionListener() {
                                                 @Override
                                                 public void actionPerformed(ActionEvent e) {
-                                                    setAndRedrawClass(fullItem, res.getSecond());
+                                                    var rect = DragDropRectanglesWithSplitPane.getRectFromClassType(fullItem);
+                                                    rect.addTo(DragDropRectanglesWithSplitPane.subFrame.leftPanel.drawingPanel);
+                                                    setIndex(res.getSecond(), rect);
+
+
+                                                    DragDropRectanglesWithSplitPane.actionHandler.action(new AddedRectAction(RectWithRects.this, rect, res.getSecond()));
                                                     showMoreDialog.dispose(); // Close the dialog after selection
                                                 }
                                             });
@@ -582,11 +594,10 @@ public abstract class RectWithRects extends Rect {
             if (left && parent != null) {
                 // Copy, set dragging, delete, etc.
                 DragDropRectanglesWithSplitPane.subFrame.leftPanel.removeRect(RectWithRects.this);
-                if (parent != null) {
-                    parent.subRects[parentIndex] = null;
-                }
+                var s = parent;
+                parent.subRects[parentIndex] = null;
                 parent = null;
-                DragDropRectanglesWithSplitPane.subFrame.setDraggingRect(RectWithRects.this, e, new Point(e.getPoint().x - getX(), e.getPoint().y - getY()));
+                DragDropRectanglesWithSplitPane.subFrame.setDraggingRect(RectWithRects.this, e, new Point(e.getPoint().x - getX(), e.getPoint().y - getY()), s);
                 DragDropRectanglesWithSplitPane.subFrame.leftPanel.revalidate();
                 DragDropRectanglesWithSplitPane.subFrame.leftPanel.repaint();
             } else if (!left) {
@@ -615,6 +626,8 @@ public abstract class RectWithRects extends Rect {
                         if (parent != null) {
                             parent.subRects[parentIndex] = null;
                         }
+
+                        DragDropRectanglesWithSplitPane.actionHandler.action(new DeletedRectAction(parent, RectWithRects.this, parentIndex));
                         DragDropRectanglesWithSplitPane.subFrame.leftPanel.removeRect(RectWithRects.this);
                         DragDropRectanglesWithSplitPane.subFrame.leftPanel.revalidate();
                         DragDropRectanglesWithSplitPane.subFrame.leftPanel.repaint();
@@ -633,11 +646,6 @@ public abstract class RectWithRects extends Rect {
         }
     }
 
-    public void setAndRedrawClass(ClassType t, int index) {
-        var rect = DragDropRectanglesWithSplitPane.getRectFromClassType(t);
-        rect.addTo(DragDropRectanglesWithSplitPane.subFrame.leftPanel.drawingPanel);
-        setIndex(index, rect);
-    }
 
     @Override
     public void setValidity() {

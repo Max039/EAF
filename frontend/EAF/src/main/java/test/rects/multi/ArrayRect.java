@@ -86,6 +86,7 @@ public class ArrayRect <T extends Rect> extends RectWithRects {
 
     @Override
     public Rect clone() {
+        System.out.println("array");
         return new ArrayRect<T>(realWidth(), realHeight(), color, getClazz(), fillType, names, subRects, types, fillOnCreation);
     }
 

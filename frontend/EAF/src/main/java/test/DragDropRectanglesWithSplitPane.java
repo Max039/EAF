@@ -1,6 +1,8 @@
 package test;
 
 import action.ActionHandler;
+import action.AddedRectAction;
+import action.MovedRectAction;
 import compiler.ClassType;
 import compiler.FieldType;
 import compiler.FieldValue;
@@ -49,6 +51,8 @@ public class DragDropRectanglesWithSplitPane extends JPanel {
 
     public static Color searchBar = new Color(100, 100, 100);
     public static Color searchBarBorder = new Color(85, 85, 85);
+
+    public static RectWithRects draggingSource = null;
 
     private static final int RECT_SPACING = 5;
     public final RectPanel leftPanel = new RectPanel();
@@ -255,11 +259,12 @@ public class DragDropRectanglesWithSplitPane extends JPanel {
         rightPanel.draggingRect.setPosition(newX, newY);
     }
 
-    public void setDraggingRect(Rect rect, MouseEvent e, Point offset) {
-        draggedRect = rect.clone();
+    public void setDraggingRect(Rect rect, MouseEvent e, Point offset, RectWithRects source) {
+        draggingSource = source;
+        draggedRect = rect;
         dragOffset = new Point(offset.x, offset.y);
-        rightPanel.setDraggingRect(draggedRect);
-        leftPanel.setDraggingRect(draggedRect.clone());
+        rightPanel.setDraggingRect(draggedRect.clone());
+        leftPanel.setDraggingRect(draggedRect);
         setPosOfDraggingRect(e);
     }
 
@@ -670,7 +675,7 @@ public class DragDropRectanglesWithSplitPane extends JPanel {
                 Rect rect = rightPanel.getRect(point);
 
                 if (rect != null && rect.contains(point)) {
-                    setDraggingRect(rect, e, new Point(point.x - rect.getX(), point.y - rect.getY()));
+                    setDraggingRect(rect.clone(), e, new Point(point.x - rect.getX(), point.y - rect.getY()), null);
                 }
 
             }
@@ -691,8 +696,6 @@ public class DragDropRectanglesWithSplitPane extends JPanel {
         MouseAdapter mouseAdapter2 = new MouseAdapter() {
             @Override
             public void mousePressed(MouseEvent e) {
-
-
 
                 Point leftPanelPos = SwingUtilities.convertPoint(e.getComponent(), e.getPoint(), leftPanel.getViewport().getView());
 
@@ -867,9 +870,13 @@ public class DragDropRectanglesWithSplitPane extends JPanel {
                 }
                 else if (e.getKeyCode() == KeyEvent.VK_Z && isControlPressed) {
                     actionHandler.ctrlZ();
+                    revalidate();
+                    repaint();
                 }
                 else if (e.getKeyCode() == KeyEvent.VK_Y && isControlPressed) {
                     actionHandler.ctrlY();
+                    revalidate();
+                    repaint();
                 }
             }
 
@@ -955,16 +962,31 @@ public class DragDropRectanglesWithSplitPane extends JPanel {
             if (leftPanel.contains(pointFromLeft)) {
                 Rect matchingRect = leftPanel.getRect(releasePoint);
                 if (matchingRect instanceof RectWithRects) {
-                    if (((RectWithRects)matchingRect).setIndex(releasePoint, draggedRect)) {
+                    int p = draggedRect.parentIndex;
+                    var res = ((RectWithRects)matchingRect).setIndex(releasePoint, draggedRect);
+                    if (res.getFirst()) {
+                        if (draggingSource != null) {
+                            actionHandler.action(new MovedRectAction(draggingSource, (RectWithRects)res.getSecond().getFirst(), draggedRect, p, res.getSecond().getSecond()));
+                        }
+                        else {
+                            actionHandler.action(new AddedRectAction((RectWithRects)res.getSecond().getFirst(), draggedRect, res.getSecond().getSecond()));
+                        }
                         draggedRect.addTo(leftPanel.drawingPanel);
                     }
                 }
                 else {
+                    if (draggingSource != null) {
+                        actionHandler.action(new MovedRectAction(null, null, draggedRect, -1, leftPanel.getRects().size()));
+                    }
+                    else {
+                        actionHandler.action(new AddedRectAction(null, draggedRect, leftPanel.getRects().size()));
+                    }
                     leftPanel.addRect(leftPanel.draggingRect);
                 }
+                leftPanel.requestFocusInWindow();
             }
 
-
+            draggingSource = null;
             draggedRect = null;
             dragOffset = null;
             leftPanel.clearDraggingRect();
