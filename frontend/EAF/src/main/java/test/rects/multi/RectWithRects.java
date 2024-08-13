@@ -31,7 +31,7 @@ import static compiler.FieldValue.doesTypesMatch;
 
 public abstract class RectWithRects extends Rect {
 
-    public static int spacing = 5;
+    public static int spacing = 10;
 
     public static int emptyRowSize = 25;
 
