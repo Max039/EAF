@@ -1,5 +1,7 @@
 package test.rects;
 
+import action.OptionsFieldAction;
+import action.TextFieldAction;
 import compiler.ClassType;
 import org.json.JSONObject;
 import test.DataField;
@@ -130,7 +132,7 @@ public class OptionsFieldRect extends Rect {
                     // Check for changes when the menu is about to close
                     String newText = (String)comboBox.getSelectedItem();
                     if (!snapshotText.equals(newText)) {
-                        System.out.println("Text changed from " + snapshotText + " : " + newText);
+                        DragDropRectanglesWithSplitPane.actionHandler.action(new OptionsFieldAction(OptionsFieldRect.this, snapshotText, newText));
                     }
                 }
 

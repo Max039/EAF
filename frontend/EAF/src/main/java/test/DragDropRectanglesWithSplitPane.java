@@ -1,5 +1,6 @@
 package test;
 
+import action.ActionHandler;
 import compiler.ClassType;
 import compiler.FieldType;
 import compiler.FieldValue;
@@ -80,6 +81,7 @@ public class DragDropRectanglesWithSplitPane extends JPanel {
 
     int current = 0;
 
+    public static ActionHandler actionHandler = new ActionHandler();
 
     static void customizeScrollBar(JScrollPane scrollPane) {
         JScrollBar verticalScrollBar = scrollPane.getVerticalScrollBar();
@@ -742,6 +744,8 @@ public class DragDropRectanglesWithSplitPane extends JPanel {
         leftPanel.getViewport().getView().addMouseMotionListener(mouseAdapter2);
         addKeyListener(leftPanel);
         addKeyListener(rightPanel);
+        addKeyListener(dataPanel);
+        addKeyListener(folderPanel.scrollPane);
 
     }
 
@@ -849,18 +853,31 @@ public class DragDropRectanglesWithSplitPane extends JPanel {
 
     public <T extends JScrollPane> void addKeyListener(T j) {
         j.addKeyListener(new KeyAdapter() {
+            private boolean isControlPressed = false;
             @Override
             public void keyPressed(KeyEvent e) {
                 if (e.getKeyCode() == KeyEvent.VK_CONTROL) {
+                    isControlPressed = true;
+                }
+                else if (e.getKeyCode() == KeyEvent.VK_SHIFT) {
                     showButtons = true;
                     revalidate();
                     repaint();
+                }
+                else if (e.getKeyCode() == KeyEvent.VK_Z && isControlPressed) {
+                    actionHandler.ctrlZ();
+                }
+                else if (e.getKeyCode() == KeyEvent.VK_Y && isControlPressed) {
+                    actionHandler.ctrlY();
                 }
             }
 
             @Override
             public void keyReleased(KeyEvent e) {
                 if (e.getKeyCode() == KeyEvent.VK_CONTROL) {
+                    isControlPressed = false;
+                }
+                else if (e.getKeyCode() == KeyEvent.VK_SHIFT) {
                     showButtons = false;
                     revalidate();
                     repaint();

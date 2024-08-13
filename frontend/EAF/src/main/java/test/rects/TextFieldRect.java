@@ -1,5 +1,6 @@
 package test.rects;
 
+import action.TextFieldAction;
 import compiler.ClassType;
 import org.json.JSONObject;
 import test.DragDropRectanglesWithSplitPane;
@@ -16,7 +17,7 @@ import java.awt.event.FocusListener;
 import java.awt.event.MouseEvent;
 
 public class TextFieldRect extends Rect {
-    JTextField textBox;
+    public JTextField textBox;
 
     Color textColor = new Color(255, 255, 255);
 
@@ -102,7 +103,7 @@ public class TextFieldRect extends Rect {
             public void focusLost(FocusEvent e) {
                 String newText = textBox.getText();
                 if (!snapshotText.equals(newText)) {
-                    System.out.println("Text changed from " + snapshotText + " : " + newText);
+                    DragDropRectanglesWithSplitPane.actionHandler.action(new TextFieldAction(TextFieldRect.this, snapshotText, newText));
                 }
             }
         });

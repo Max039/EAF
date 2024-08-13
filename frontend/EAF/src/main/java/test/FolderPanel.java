@@ -18,10 +18,12 @@ public class FolderPanel extends JPanel {
     private Stack<String> pathStack;
     private JButton backButton;
     public JPanel folderDisplayPanel;
-    private JScrollPane scrollPane;
+    public JScrollPane scrollPane;
     private JLabel pathLabel;  // Label for displaying the current path
     private Map<String, Set<String>> folderStructure;
     private Map<String, List<ClassType>> classTypeMap;
+
+
 
     public static Color pathColor = new Color(255, 255, 255);
     public static Color bgPath = new Color(43, 43, 43);
