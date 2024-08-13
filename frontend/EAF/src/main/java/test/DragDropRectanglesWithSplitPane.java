@@ -61,6 +61,8 @@ public class DragDropRectanglesWithSplitPane extends JPanel {
     public Rect draggedRect = null;
     private Point dragOffset = null;
 
+    public static int arrayDefaultCount = 1;
+
     public JSplitPane mainSplitPane = null;
 
     public static DragDropRectanglesWithSplitPane subFrame = null;
@@ -222,7 +224,7 @@ public class DragDropRectanglesWithSplitPane extends JPanel {
                     }
                 }
 
-                return (T) new ArrayRect<>(RectPanel.arrayWidth, RectPanel.arrayHeight, RectPanel.arrayColor, clazz,  ctype, 3, fill);
+                return (T) new ArrayRect<>(RectPanel.arrayWidth, RectPanel.arrayHeight, RectPanel.arrayColor, clazz,  ctype, arrayDefaultCount, fill);
             }
             else {
                 if (type.primitive) {
