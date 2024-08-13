@@ -302,7 +302,7 @@ public class RectPanel extends JScrollPane {
 
                 var ct = new ClassType(clazz, null, "Array");
 
-                var arrRect = new ArrayRect<>(RectPanel.arrayWidth, RectPanel.arrayHeight, RectPanel.arrayColor, ct, ft, arrnames, arrrects, arrtypes, false);
+                var arrRect = new ArrayRect<>(RectPanel.arrayWidth, RectPanel.arrayHeight, RectPanel.arrayColor, ct, ft, arrnames, arrrects, arrtypes, false, true);
 
                 int i2 = 0;
                 for (var jsonField : arrarr) {

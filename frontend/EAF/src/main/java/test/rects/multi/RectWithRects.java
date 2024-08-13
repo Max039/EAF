@@ -70,14 +70,25 @@ public abstract class RectWithRects extends Rect {
 
     public abstract int extraSpacingBelow();
 
+    public boolean isLocked() {
+        return locked;
+    }
+
+    public void setLocked(boolean locked) {
+        this.locked = locked;
+    }
+
+    boolean locked = false;
+
 
     public RectWithRects(int width, int height, Color color, ClassType type, String[] names, FieldType[] types) {
         this(width, height, color, type);
         setNamesAndTypes(names, types);
     }
 
-    public RectWithRects(int width, int height, Color color, ClassType type, String[] names, Rect[] subRects, FieldType[] types) {
+    public RectWithRects(int width, int height, Color color, ClassType type, String[] names, Rect[] subRects, FieldType[] types, boolean locked) {
         this(width, height, color, type, names, types);
+        this.locked = locked;
         setRects(subRects);
     }
 
@@ -446,16 +457,6 @@ public abstract class RectWithRects extends Rect {
         hoveringIndex = -1;
     };
 
-    public void fillIfNecessary() {
-        for (int i = 0; i < types.length; i++) {
-            var r = subRects[i];
-            if (r == null) {
-                var c = types[i];
-                setIndex(i, DragDropRectanglesWithSplitPane.getRectFromFieldType(c, null));
-            }
-        }
-    }
-
     @Override
     public void onMouseClicked(boolean left, Point p, Point p2, MouseEvent e) {
         var res = getIndex(p);
@@ -591,7 +592,7 @@ public abstract class RectWithRects extends Rect {
             }
 
         } else if (this instanceof ClassRect) {
-            if (left && parent != null) {
+            if (left && parent != null && !locked) {
                 // Copy, set dragging, delete, etc.
                 DragDropRectanglesWithSplitPane.subFrame.leftPanel.removeRect(RectWithRects.this);
                 var s = parent;
@@ -617,24 +618,23 @@ public abstract class RectWithRects extends Rect {
                 popupMenu.add(info);
 
 
+                if (!locked) {
+                    JMenuItem menuItem = new JMenuItem("Delete");
+                    menuItem.addActionListener(new ActionListener() {
+                        @Override
+                        public void actionPerformed(ActionEvent e) {
+                            if (parent != null) {
+                                parent.subRects[parentIndex] = null;
+                            }
 
-
-                JMenuItem menuItem = new JMenuItem("Delete");
-                menuItem.addActionListener(new ActionListener() {
-                    @Override
-                    public void actionPerformed(ActionEvent e) {
-                        if (parent != null) {
-                            parent.subRects[parentIndex] = null;
+                            DragDropRectanglesWithSplitPane.actionHandler.action(new DeletedRectAction(parent, RectWithRects.this, parentIndex));
+                            DragDropRectanglesWithSplitPane.subFrame.leftPanel.removeRect(RectWithRects.this);
+                            DragDropRectanglesWithSplitPane.subFrame.leftPanel.revalidate();
+                            DragDropRectanglesWithSplitPane.subFrame.leftPanel.repaint();
                         }
-
-                        DragDropRectanglesWithSplitPane.actionHandler.action(new DeletedRectAction(parent, RectWithRects.this, parentIndex));
-                        DragDropRectanglesWithSplitPane.subFrame.leftPanel.removeRect(RectWithRects.this);
-                        DragDropRectanglesWithSplitPane.subFrame.leftPanel.revalidate();
-                        DragDropRectanglesWithSplitPane.subFrame.leftPanel.repaint();
-                    }
-                });
-                popupMenu.add(menuItem);
-
+                    });
+                    popupMenu.add(menuItem);
+                }
 
                 popupMenu.show(DragDropRectanglesWithSplitPane.mainFrame, p2.x, p2.y);
             }

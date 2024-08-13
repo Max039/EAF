@@ -11,15 +11,15 @@ import java.util.Objects;
 
 public class ClassRect extends RectWithRects {
 
-    public ClassRect(int width, int height, Color color, ClassType type, String[] names, Rect[] rects, FieldType[] types) {
-        super(width, height, color, type, names, rects, types);
+    public ClassRect(int width, int height, Color color, ClassType type, String[] names, Rect[] rects, FieldType[] types, boolean locked) {
+        super(width, height, color, type, names, rects, types, locked);
     }
 
 
 
     @Override
     public Rect clone() {
-        return new ClassRect(realWidth(), realHeight(), color, getClazz(), names, subRects, types);
+        return new ClassRect(realWidth(), realHeight(), color, getClazz(), names, subRects, types, locked);
     }
 
     @Override

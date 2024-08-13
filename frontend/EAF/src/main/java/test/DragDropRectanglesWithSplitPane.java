@@ -171,7 +171,7 @@ public class DragDropRectanglesWithSplitPane extends JPanel {
             rects[i] = getRectFromFieldType(field.getValue().getFirst(), field.getValue().getSecond());
            i++;
         }
-        return (T) new ClassRect(RectPanel.instanceWidth, RectPanel.instanceHeight, RectPanel.instanceColor, type, names, rects, types);
+        return (T) new ClassRect(RectPanel.instanceWidth, RectPanel.instanceHeight, RectPanel.instanceColor, type, names, rects, types, false);
     }
 
     public static <T extends Rect> T getRectFromFieldType(FieldType type, FieldValue value) {
@@ -194,7 +194,7 @@ public class DragDropRectanglesWithSplitPane extends JPanel {
 
                 FieldType ctype = type.clone();
                 ctype.arrayCount -= 1;
-                return (T) new ArrayRect<>(RectPanel.arrayWidth, RectPanel.arrayHeight, RectPanel.arrayColor, clazz, ctype, names, rects, types, type.primitive);
+                return (T) new ArrayRect<>(RectPanel.arrayWidth, RectPanel.arrayHeight, RectPanel.arrayColor, clazz, ctype, names, rects, types, type.primitive, true);
 
             }
             else {
@@ -255,7 +255,9 @@ public class DragDropRectanglesWithSplitPane extends JPanel {
                     var check = SyntaxTree.classRegister.get(type.typeName).findSingleNonAbstractClass();
                     if (check != null) {
                         System.out.println("Info: Only 1 non abstract type available for " + type.typeName + " creating and setting instance of " + check.name + " for field.");
-                        return (T) getRectFromClassType(check);
+                        var newR = (ClassRect) getRectFromClassType(check);
+                        newR.setLocked(true);
+                        return (T) newR ;
                     }
                     else {
                         return null;

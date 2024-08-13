@@ -47,8 +47,8 @@ public class ArrayRect <T extends Rect> extends RectWithRects {
         }
     }
 
-    public ArrayRect(int width, int height, Color color, ClassType type, FieldType field, String[] names, Rect[] rects, FieldType[] types, boolean fillOnCreation) {
-        super(width, height, color, type, names, rects, types);
+    public ArrayRect(int width, int height, Color color, ClassType type, FieldType field, String[] names, Rect[] rects, FieldType[] types, boolean fillOnCreation, boolean locked) {
+        super(width, height, color, type, names, rects, types, locked);
         this.fillOnCreation = fillOnCreation;
         this.fillType = field;
         if (this.fillOnCreation) {
@@ -88,7 +88,7 @@ public class ArrayRect <T extends Rect> extends RectWithRects {
 
     @Override
     public Rect clone() {
-        return new ArrayRect<T>(realWidth(), realHeight(), color, getClazz(), fillType, names, subRects, types, fillOnCreation);
+        return new ArrayRect<T>(realWidth(), realHeight(), color, getClazz(), fillType, names, subRects, types, fillOnCreation, locked);
     }
 
 
@@ -292,6 +292,16 @@ public class ArrayRect <T extends Rect> extends RectWithRects {
         return res.getFirst();
     }
 
+
+    public void fillIfNecessary() {
+        for (int i = 0; i < types.length; i++) {
+            var r = subRects[i];
+            if (r == null) {
+                var c = types[i];
+                setIndex(i, DragDropRectanglesWithSplitPane.getRectFromFieldType(c, null));
+            }
+        }
+    }
 
     public Rect removeLast() {
         return removeElement(subRects.length-1);
