@@ -47,7 +47,6 @@ public class MovedRectAction extends  Action {
             DragDropRectanglesWithSplitPane.subFrame.leftPanel.getRects().remove(moved);
         }
         else {
-            System.out.println(index1);
             parent2.setIndex(index2, null);
         }
 
@@ -55,8 +54,6 @@ public class MovedRectAction extends  Action {
             DragDropRectanglesWithSplitPane.subFrame.leftPanel.getRects().add(index1, moved);
         }
         else {
-            System.out.println(moved);
-            System.out.println(index1);
             parent1.setIndex(index1, moved);
         }
 
