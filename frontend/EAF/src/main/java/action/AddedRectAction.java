@@ -20,7 +20,8 @@ public class AddedRectAction extends  Action {
     @Override
     public void execute() {
         if (parent == null) {
-            DragDropRectanglesWithSplitPane.subFrame.leftPanel.addRect(added);
+            DragDropRectanglesWithSplitPane.subFrame.leftPanel.getRects().add(index, added);
+            added.addTo(DragDropRectanglesWithSplitPane.subFrame.leftPanel.drawingPanel);
         }
         else {
             parent.setIndex(index, added);

@@ -676,7 +676,12 @@ public abstract class RectWithRects extends Rect {
                                 parent.subRects[parentIndex] = null;
                             }
 
-                            DragDropRectanglesWithSplitPane.actionHandler.action(new DeletedRectAction(parent, RectWithRects.this, parentIndex));
+                            int index = parentIndex;
+                            if (parent == null) {
+                                index = DragDropRectanglesWithSplitPane.subFrame.leftPanel.getRects().indexOf(RectWithRects.this);
+                            }
+
+                            DragDropRectanglesWithSplitPane.actionHandler.action(new DeletedRectAction(parent, RectWithRects.this, index));
                             DragDropRectanglesWithSplitPane.subFrame.leftPanel.removeRect(RectWithRects.this);
                             DragDropRectanglesWithSplitPane.subFrame.leftPanel.revalidate();
                             DragDropRectanglesWithSplitPane.subFrame.leftPanel.repaint();

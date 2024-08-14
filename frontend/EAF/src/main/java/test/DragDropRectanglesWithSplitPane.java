@@ -935,7 +935,7 @@ public class DragDropRectanglesWithSplitPane extends JPanel {
                     repaint();
                 }
                 else if (e.getKeyCode() == KeyEvent.VK_C && isControlPressed && selected != null) {
-                    clipBoard = (ClassRect) selected.clone();
+                    clipBoard = (ClassRect) selected;
                     revalidate();
                     repaint();
                 } else if (e.getKeyCode() == KeyEvent.VK_V && isControlPressed && clipBoard != null) {
@@ -971,11 +971,11 @@ public class DragDropRectanglesWithSplitPane extends JPanel {
                         actionHandler.action(new DeletedRectAction(selected.parent, selected, selected.parentIndex));
                     }
                     else {
+                        actionHandler.action(new DeletedRectAction(null, selected, leftPanel.getRects().indexOf(selected)));
                         leftPanel.removeRect(selected);
-                        actionHandler.action(new DeletedRectAction(null, selected, leftPanel.getRects().size()));
                     }
                     clipBoard = selected;
-                    
+
                     unselect();
                     revalidate();
                     repaint();

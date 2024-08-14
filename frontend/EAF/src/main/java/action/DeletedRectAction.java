@@ -33,7 +33,8 @@ public class DeletedRectAction extends  Action {
     @Override
     public void reverse() {
         if (parent == null) {
-            DragDropRectanglesWithSplitPane.subFrame.leftPanel.addRect(deleted);
+            DragDropRectanglesWithSplitPane.subFrame.leftPanel.getRects().add(index, deleted);
+            deleted.addTo(DragDropRectanglesWithSplitPane.subFrame.leftPanel.drawingPanel);
         }
         else {
             parent.setIndex(index, deleted);
