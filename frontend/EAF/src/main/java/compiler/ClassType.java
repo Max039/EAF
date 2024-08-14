@@ -311,7 +311,8 @@ public class ClassType implements Comparable {
         fieldPanel.setLayout(new BoxLayout(fieldPanel, BoxLayout.Y_AXIS));
         for (var field : classType.fields.entrySet()) {
             var type = field.getValue().getFirst();
-            JButton fieldButton = new JButton(field.getKey() + " : "  + type.typeName);
+
+            JButton fieldButton = new JButton(field.getKey() + " : " + repeatString("array ", type.arrayCount)  + type.typeName);
             fieldButton.setMaximumSize(new Dimension(Integer.MAX_VALUE, 30)); // Set button to full width
             fieldButton.setAlignmentX(Component.CENTER_ALIGNMENT);
             fieldButton.addActionListener(new ActionListener() {
@@ -400,6 +401,16 @@ public class ClassType implements Comparable {
             }
         }
         return result; // Return the single non-abstract class, or null if there's more than one
+    }
+
+    public static String repeatString(String str, int times) {
+        StringBuilder result = new StringBuilder();
+
+        for (int i = 0; i < times; i++) {
+            result.append(str);
+        }
+
+        return result.toString();
     }
 
 }
