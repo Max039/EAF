@@ -93,7 +93,7 @@ public class DragDropRectanglesWithSplitPane extends JPanel {
 
     public static String saveFormat = "eaf";
 
-    public static String savesPath = "saves/";
+    public static String savesPath = "/saves";
 
     public void setSelected(ClassRect r) {
         selected = r ;
@@ -885,7 +885,7 @@ public class DragDropRectanglesWithSplitPane extends JPanel {
             @Override
             public void actionPerformed(ActionEvent e) {
                 try {
-                    loadSave(readJSONFileToJSON(savesPath + "test" + "." + saveFormat));
+                    loadSave(readJSONFileToJSON(savesPath + "/test" + "." + saveFormat));
                 } catch (IOException ex) {
                     throw new RuntimeException(ex);
                 }
@@ -898,7 +898,7 @@ public class DragDropRectanglesWithSplitPane extends JPanel {
         exitItem.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                writeJSONToFile(createSave(), savesPath + "test" + "." + saveFormat);
+                writeJSONToFile(createSave(), savesPath + "/test" + "." + saveFormat);
             }
         });
 
@@ -922,7 +922,7 @@ public class DragDropRectanglesWithSplitPane extends JPanel {
             @Override
             public void actionPerformed(ActionEvent e) {
                 try {
-                    var file = chooseJavaFile("/saves", saveFormat);
+                    var file = chooseJavaFile(savesPath, saveFormat);
                     if (file != null) {
                         loadSave(readJSONFileToJSON(file));
                     }
@@ -933,6 +933,23 @@ public class DragDropRectanglesWithSplitPane extends JPanel {
         });
 
         fileMenu.add(openFileDotDotDot);
+
+
+        JMenuItem saveFileDotDotDot = new JMenuItem("save file ...");
+
+        saveFileDotDotDot.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                var file = saveJavaFile(savesPath, saveFormat, "save");
+                if (file != null) {
+                    writeJSONToFile(createSave(), file.getPath());
+                    System.out.println("File " + file.getName() + " saved!");
+                }
+            }
+        });
+
+        fileMenu.add(saveFileDotDotDot);
+
         menuBar.add(fileMenu);
 
 
@@ -1268,6 +1285,43 @@ public class DragDropRectanglesWithSplitPane extends JPanel {
         // Check if the user selected a file
         if (returnValue == JFileChooser.APPROVE_OPTION) {
             return fileChooser.getSelectedFile();
+        } else {
+            return null;
+        }
+    }
+
+    public static File saveJavaFile(String path, String filter, String defaultFileName) {
+        String currentDirectory = System.getProperty("user.dir");
+
+        // Specify the starting directory
+        File startingDirectory = new File(currentDirectory + path);
+
+        // Create a JFileChooser instance with the starting directory
+        JFileChooser fileChooser = new JFileChooser(startingDirectory);
+
+        // Set up the filter to only allow specific file types
+        FileNameExtensionFilter fileFilter = new FileNameExtensionFilter(filter + " Files", filter);
+        fileChooser.setFileFilter(fileFilter);
+
+        // Set default file name
+        fileChooser.setSelectedFile(new File(defaultFileName + "." + filter));
+
+        // Optionally set it to only show files with the given extension and hide others
+        fileChooser.setAcceptAllFileFilterUsed(false);
+
+        // Show the save file dialog
+        int returnValue = fileChooser.showSaveDialog(null);
+
+        // Check if the user selected a file
+        if (returnValue == JFileChooser.APPROVE_OPTION) {
+            File selectedFile = fileChooser.getSelectedFile();
+
+            // Ensure the file has the correct extension
+            if (!selectedFile.getName().endsWith("." + filter)) {
+                selectedFile = new File(selectedFile.getAbsolutePath() + "." + filter);
+            }
+
+            return selectedFile;
         } else {
             return null;
         }
