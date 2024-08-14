@@ -23,9 +23,13 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.font.FontRenderContext;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
+import javax.imageio.ImageIO;
 
 import static compiler.FieldValue.doesTypesMatch;
 
@@ -43,6 +47,23 @@ public abstract class RectWithRects extends Rect {
 
 
     private int hoveringIndex = -1;
+
+    public static BufferedImage img = null;
+
+    static {
+        try {
+            // Load the image from the root directory
+            img = ImageIO.read(new File("lock.png"));
+
+            if (img == null) {
+                throw new IOException("Image not found!");
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+            // Handle the case where the image could not be loaded
+            img = null;
+        }
+    }
 
 
     Color fieldColor = new Color(213, 234, 238);
@@ -151,7 +172,9 @@ public abstract class RectWithRects extends Rect {
             }
         }
         if (context != null && this instanceof ClassRect) {
-            maxWidth = Math.max(maxWidth, (int) getFont().getStringBounds(clazz.name, context).getWidth());
+            int extra = locked ? spacing + img.getWidth() : 0;
+
+            maxWidth = Math.max(maxWidth, (int) getFont().getStringBounds(clazz.name, context).getWidth() + extra);
         }
         return spacing * 2 + maxWidth + extraSpacingToRight();
     }
@@ -237,6 +260,15 @@ public abstract class RectWithRects extends Rect {
         g2.fillRect(getX(), getY(), getWidth(), getHeight());
         g2.setColor(new Color(color.getRed(), color.getGreen(), color.getBlue(), (int)(255 * a)));
         g2.fillRect(getX() + borderSize, getY() + borderSize, getWidth() - borderSize * 2, getHeight() - borderSize * 2);
+
+        // Draw a 16x16 PNG image in the top right corner of the rectangle
+        int picX = getX() + getWidth() - img.getWidth() - spacing; // Top right corner X position
+        int picY = getY() + spacing; // Top right corner Y position
+
+        if (img != null && this instanceof ClassRect && locked) {
+            g2.drawImage(img, picX, picY, img.getWidth(), img.getHeight(), null);
+        }
+
         int offset = realHeight();
         for (int i = 0; i < subRects.length; i++) {
             Rect r = subRects[i];
