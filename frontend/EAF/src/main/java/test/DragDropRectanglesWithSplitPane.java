@@ -172,6 +172,14 @@ public class DragDropRectanglesWithSplitPane extends JPanel {
                 return button;
             }
         });
+
+
+        verticalScrollBar.setUnitIncrement(16);  // Unit increment (for small scroll)
+        verticalScrollBar.setBlockIncrement(100); // Block increment (for larger scroll)
+
+        horizontalScrollBar.setUnitIncrement(16);  // Unit increment (for small scroll)
+        horizontalScrollBar.setBlockIncrement(100); // Block increment (for larger scroll)
+
     }
 
 
