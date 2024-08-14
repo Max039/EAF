@@ -17,15 +17,13 @@ import javax.swing.*;
 import javax.swing.border.Border;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.plaf.basic.BasicScrollBarUI;
 import javax.swing.plaf.basic.BasicSplitPaneDivider;
 import javax.swing.plaf.basic.BasicSplitPaneUI;
 import java.awt.*;
 import java.awt.event.*;
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -92,6 +90,10 @@ public class DragDropRectanglesWithSplitPane extends JPanel {
     int current = 0;
 
     public static ActionHandler actionHandler = new ActionHandler();
+
+    public static String saveFormat = "eaf";
+
+    public static String savesPath = "saves/";
 
     public void setSelected(ClassRect r) {
         selected = r ;
@@ -817,9 +819,21 @@ public class DragDropRectanglesWithSplitPane extends JPanel {
     }
 
     public static void writeToFile(String content, String filePath) {
+        System.out.println("Writing to " + filePath);
+
         FileWriter writer = null;
         try {
-            writer = new FileWriter(filePath);
+            // Create a File object for the specified file path
+            File file = new File(filePath);
+
+            // Create the parent directories if they do not exist
+            File parentDir = file.getParentFile();
+            if (parentDir != null && !parentDir.exists()) {
+                parentDir.mkdirs();
+            }
+
+            // Initialize the FileWriter with the file object
+            writer = new FileWriter(file);
             writer.write(content);
             System.out.println("Successfully wrote to the file.");
         } catch (IOException e) {
@@ -847,7 +861,7 @@ public class DragDropRectanglesWithSplitPane extends JPanel {
         JMenuBar menuBar = new JMenuBar();
 
         // Create the File menu
-        JMenu fileMenu = new JMenu("File");
+        JMenu testMenu = new JMenu("Test");
 
         // Create menu items
         JMenuItem newItem = new JMenuItem("Script");
@@ -871,12 +885,7 @@ public class DragDropRectanglesWithSplitPane extends JPanel {
             @Override
             public void actionPerformed(ActionEvent e) {
                 try {
-                    JSONObject o = readJSONFileToJSON("test.json");
-                    JSONArray a2 = o.getJSONArray("data");
-                    dataPanel.fromJson(a2);
-                    JSONArray a = o.getJSONArray("rects");
-                    subFrame.leftPanel.fromJson(a);
-                    actionHandler.reset();
+                    loadSave(readJSONFileToJSON(savesPath + "test" + "." + saveFormat));
                 } catch (IOException ex) {
                     throw new RuntimeException(ex);
                 }
@@ -889,21 +898,41 @@ public class DragDropRectanglesWithSplitPane extends JPanel {
         exitItem.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                JSONObject o = new JSONObject();
-                o.put("rects", subFrame.leftPanel.toJson());
-                o.put("data", dataPanel.toJson());
-                writeJSONToFile(o, "test.json");
+                writeJSONToFile(createSave(), savesPath + "test" + "." + saveFormat);
             }
         });
 
         // Add menu items to File menu
-        fileMenu.add(newItem);
-        fileMenu.add(openItem);
-        fileMenu.addSeparator();
-        fileMenu.add(exitItem);
+        testMenu.add(newItem);
+        testMenu.add(openItem);
+        testMenu.addSeparator();
+        testMenu.add(exitItem);
 
         // Add File menu to menu bar
+        menuBar.add(testMenu);
+
+
+        // Create the File menu
+        JMenu fileMenu = new JMenu("File");
+
+        // Create menu items
+        JMenuItem openFileDotDotDot = new JMenuItem("open file ...");
+
+        openFileDotDotDot.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                try {
+                    loadSave(readJSONFileToJSON(chooseJavaFile("/saves", saveFormat)));
+                } catch (IOException ex) {
+                    throw new RuntimeException(ex);
+                }
+            }
+        });
+
+        fileMenu.add(openFileDotDotDot);
         menuBar.add(fileMenu);
+
+
 
         // Set the menu bar to the frame
         mainFrame.setJMenuBar(menuBar);
@@ -918,6 +947,20 @@ public class DragDropRectanglesWithSplitPane extends JPanel {
         mainFrame.setVisible(true);
     }
 
+    public static void loadSave(JSONObject o) {
+        JSONArray a2 = o.getJSONArray("data");
+        dataPanel.fromJson(a2);
+        JSONArray a = o.getJSONArray("rects");
+        subFrame.leftPanel.fromJson(a);
+        actionHandler.reset();
+    }
+
+    public static JSONObject createSave() {
+        JSONObject o = new JSONObject();
+        o.put("rects", subFrame.leftPanel.toJson());
+        o.put("data", dataPanel.toJson());
+        return o;
+    }
 
     public <T extends JScrollPane> void addKeyListener(T j) {
         j.addKeyListener(new KeyAdapter() {
@@ -1149,9 +1192,22 @@ public class DragDropRectanglesWithSplitPane extends JPanel {
     }
 
     public static void writeJSONToFile(JSONObject jsonArray, String filePath) {
-        try (FileWriter file = new FileWriter(filePath)) {
-            file.write(jsonArray.toString(4)); // The "4" here is for pretty-printing with an indentation of 4 spaces
-            file.flush();
+        try {
+            System.out.println("Saving to " + filePath);
+            // Create a File object for the specified file path
+            File file = new File(filePath);
+
+            // Create the parent directories if they do not exist
+            File parentDir = file.getParentFile();
+            if (parentDir != null && !parentDir.exists()) {
+                parentDir.mkdirs();
+            }
+
+            // Write the JSON data to the file
+            try (FileWriter fileWriter = new FileWriter(file)) {
+                fileWriter.write(jsonArray.toString(4));
+                fileWriter.flush();
+            }
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -1171,6 +1227,47 @@ public class DragDropRectanglesWithSplitPane extends JPanel {
             return new JSONObject(jsonContent.toString());
         }
     }
+    public static JSONObject readJSONFileToJSON(File file) throws IOException, org.json.JSONException {
+        // Open the file using a BufferedReader
+        try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
+            // Read the entire content of the file into a String
+            StringBuilder jsonContent = new StringBuilder();
+            String line;
+            while ((line = reader.readLine()) != null) {
+                jsonContent.append(line);
+            }
 
+            // Convert the String content to a JSONArray
+            return new JSONObject(jsonContent.toString());
+        }
+    }
+
+
+    public static File chooseJavaFile(String path, String filter) {
+        String currentDirectory = System.getProperty("user.dir");
+
+        // Specify the starting directory
+        File startingDirectory = new File(currentDirectory + path);
+
+        // Create a JFileChooser instance with the starting directory
+        JFileChooser fileChooser = new JFileChooser(startingDirectory);
+
+        // Set up the filter to only allow .json files
+        FileNameExtensionFilter jsonFilter = new FileNameExtensionFilter(filter + " Files", filter);
+        fileChooser.setFileFilter(jsonFilter);
+
+        // Optionally set it to only show files with the given extension and hide others
+        fileChooser.setAcceptAllFileFilterUsed(false);
+
+        // Show the file chooser dialog
+        int returnValue = fileChooser.showOpenDialog(null);
+
+        // Check if the user selected a file
+        if (returnValue == JFileChooser.APPROVE_OPTION) {
+            return fileChooser.getSelectedFile();
+        } else {
+            return null;
+        }
+    }
 
 }
