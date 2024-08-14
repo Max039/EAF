@@ -922,7 +922,10 @@ public class DragDropRectanglesWithSplitPane extends JPanel {
             @Override
             public void actionPerformed(ActionEvent e) {
                 try {
-                    loadSave(readJSONFileToJSON(chooseJavaFile("/saves", saveFormat)));
+                    var file = chooseJavaFile("/saves", saveFormat);
+                    if (file != null) {
+                        loadSave(readJSONFileToJSON(file));
+                    }
                 } catch (IOException ex) {
                     throw new RuntimeException(ex);
                 }
