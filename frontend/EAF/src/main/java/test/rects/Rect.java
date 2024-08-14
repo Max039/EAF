@@ -4,6 +4,7 @@ import compiler.ClassType;
 import org.json.JSONObject;
 import test.DragDropRectanglesWithSplitPane;
 import test.Pair;
+import test.RectPanel;
 import test.rects.multi.RectWithRects;
 
 import javax.swing.*;
@@ -12,6 +13,16 @@ import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 
 public abstract class Rect {
+
+    public boolean selected = false;
+
+    public void select() {
+        selected = true;
+    }
+    public void unselect() {
+        selected = false;
+    }
+    public static Color selectedRectColor = new Color(RectPanel.instanceColor.getRed() + 20, RectPanel.instanceColor.getGreen() + 20, RectPanel.instanceColor.getBlue() + 20);
 
     public ClassType getClazz() {
         return clazz;

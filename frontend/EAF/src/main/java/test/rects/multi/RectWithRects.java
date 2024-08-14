@@ -2,10 +2,8 @@ package test.rects.multi;
 
 import action.AddedRectAction;
 import action.DeletedRectAction;
-import action.RemovedDataAction;
 import compiler.ClassType;
 import compiler.FieldType;
-import compiler.FieldValue;
 import compiler.SyntaxTree;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -75,6 +73,8 @@ public abstract class RectWithRects extends Rect {
     Color invalidRectsColor = new Color(190, 70, 70);
 
     Color arrayColor = new Color(104, 151, 187);
+
+
 
     FontRenderContext context = null;
 
@@ -258,7 +258,12 @@ public abstract class RectWithRects extends Rect {
         var g2 = (Graphics2D) g;
         g2.setColor(new Color(borderColor.getRed(), borderColor.getGreen(), borderColor.getBlue(), (int)(255 * a)));
         g2.fillRect(getX(), getY(), getWidth(), getHeight());
-        g2.setColor(new Color(color.getRed(), color.getGreen(), color.getBlue(), (int)(255 * a)));
+        if (selected) {
+            g2.setColor(new Color(selectedRectColor.getRed(), selectedRectColor.getGreen(), selectedRectColor.getBlue(), (int)(255 * a)));
+        }
+        else {
+            g2.setColor(new Color(color.getRed(), color.getGreen(), color.getBlue(), (int)(255 * a)));
+        }
         g2.fillRect(getX() + borderSize, getY() + borderSize, getWidth() - borderSize * 2, getHeight() - borderSize * 2);
 
         // Draw a 16x16 PNG image in the top right corner of the rectangle
@@ -636,7 +641,7 @@ public abstract class RectWithRects extends Rect {
             }
 
         } else if (this instanceof ClassRect) {
-            if (left && parent != null && !locked) {
+            if (left && parent != null && !locked && !DragDropRectanglesWithSplitPane.isControlPressed) {
                 // Copy, set dragging, delete, etc.
                 DragDropRectanglesWithSplitPane.subFrame.leftPanel.removeRect(RectWithRects.this);
                 var s = parent;
@@ -732,6 +737,26 @@ public abstract class RectWithRects extends Rect {
         }
         o.put("value", a);
         return  o;
+    }
+
+    @Override
+    public void select() {
+        super.select();
+        for (var r : subRects) {
+            if (r != null) {
+                r.select();
+            }
+        }
+    }
+
+    @Override
+    public void unselect() {
+        super.unselect();
+        for (var r : subRects) {
+            if (r != null) {
+                r.unselect();
+            }
+        }
     }
 
 }

@@ -1,9 +1,6 @@
 package test;
 
-import action.ActionHandler;
-import action.AddedRectAction;
-import action.DeletedRectAction;
-import action.MovedRectAction;
+import action.*;
 import compiler.ClassType;
 import compiler.FieldType;
 import compiler.FieldValue;
@@ -55,6 +52,8 @@ public class DragDropRectanglesWithSplitPane extends JPanel {
 
     public static RectWithRects draggingSource = null;
 
+    public static boolean isControlPressed = false;
+
     private static final int RECT_SPACING = 5;
     public final RectPanel leftPanel = new RectPanel();
     public final RectPanel rightPanel = new RectPanel();
@@ -79,6 +78,10 @@ public class DragDropRectanglesWithSplitPane extends JPanel {
     private JPanel rightContainerPanel;
     private FolderPanel folderPanel;
 
+    public static ClassRect selected = null;
+
+    public static ClassRect clipBoard = null;
+
     public HashMap<Rect, String> erroRects = new HashMap<>();
 
     public JLabel contentLabel;
@@ -89,6 +92,18 @@ public class DragDropRectanglesWithSplitPane extends JPanel {
     int current = 0;
 
     public static ActionHandler actionHandler = new ActionHandler();
+
+    public void setSelected(ClassRect r) {
+        selected = r ;
+        selected.select();
+    }
+
+    public void unselect() {
+        if (selected != null) {
+            selected.unselect();
+            selected = null;
+        }
+    }
 
     static void customizeScrollBar(JScrollPane scrollPane) {
         JScrollBar verticalScrollBar = scrollPane.getVerticalScrollBar();
@@ -740,14 +755,16 @@ public class DragDropRectanglesWithSplitPane extends JPanel {
 
                 // Convert the point from the source component's coordinate system to the left panel's coordinate system
                 Point panelRelativePos = SwingUtilities.convertPoint(e.getComponent(), e.getPoint(), mainFrame);
-
-
+                var prevSelected = selected;
+                unselect();
                 Rect matchingRect = leftPanel.getRect(leftPanelPos);
                 if (matchingRect instanceof RectWithRects) {
                     matchingRect = ((RectWithRects) matchingRect).getSubRect(leftPanelPos);
                     if (matchingRect != null && leftPanel.hasFocus()) {
                         matchingRect.onMouseClicked(e.getButton() == 1, leftPanelPos, panelRelativePos, e);
-
+                        if (isControlPressed && matchingRect instanceof ClassRect && prevSelected != matchingRect) {
+                            setSelected((ClassRect)matchingRect);
+                        }
                     }
                 }
                 if (matchingRect == null) {
@@ -896,7 +913,7 @@ public class DragDropRectanglesWithSplitPane extends JPanel {
 
     public <T extends JScrollPane> void addKeyListener(T j) {
         j.addKeyListener(new KeyAdapter() {
-            private boolean isControlPressed = false;
+
             @Override
             public void keyPressed(KeyEvent e) {
                 if (e.getKeyCode() == KeyEvent.VK_CONTROL) {
@@ -914,6 +931,52 @@ public class DragDropRectanglesWithSplitPane extends JPanel {
                 }
                 else if (e.getKeyCode() == KeyEvent.VK_Y && isControlPressed) {
                     actionHandler.ctrlY();
+                    revalidate();
+                    repaint();
+                }
+                else if (e.getKeyCode() == KeyEvent.VK_C && isControlPressed && selected != null) {
+                    clipBoard = (ClassRect) selected.clone();
+                    revalidate();
+                    repaint();
+                } else if (e.getKeyCode() == KeyEvent.VK_V && isControlPressed && clipBoard != null) {
+                    Point releasePoint = MouseInfo.getPointerInfo().getLocation();
+                    Point pointFromLeft = MouseInfo.getPointerInfo().getLocation();
+                    SwingUtilities.convertPointFromScreen(pointFromLeft, leftPanel);
+                    SwingUtilities.convertPointFromScreen(releasePoint, leftPanel.getViewport().getView());
+
+                    if (leftPanel.contains(pointFromLeft)) {
+                        Rect matchingRect = leftPanel.getRect(releasePoint);
+                        var clone = clipBoard.clone();
+                        if (matchingRect instanceof RectWithRects) {
+                            var res = ((RectWithRects) matchingRect).setIndex(releasePoint, clone);
+                            if (res.getFirst()) {
+                                res.getSecond().getFirst().addTo(leftPanel.drawingPanel);
+                                actionHandler.action(new AddedRectAction((RectWithRects) res.getSecond().getFirst(), clone, res.getSecond().getSecond()));
+                            }
+                        }
+                        else if (matchingRect == null) {
+
+                            leftPanel.addRect(clone);
+                            actionHandler.action(new AddedRectAction(null, clone, leftPanel.getRects().size()));
+                        }
+                        unselect();
+                        setSelected((ClassRect) clone);
+                    }
+                    revalidate();
+                    repaint();
+                } else if (e.getKeyCode() == KeyEvent.VK_X && isControlPressed && selected != null) {
+                    if (selected.parent != null) {
+                        selected.parent.setIndex(selected.parentIndex, null);
+                        selected.removeFrom(leftPanel.drawingPanel);
+                        actionHandler.action(new DeletedRectAction(selected.parent, selected, selected.parentIndex));
+                    }
+                    else {
+                        leftPanel.removeRect(selected);
+                        actionHandler.action(new DeletedRectAction(null, selected, leftPanel.getRects().size()));
+                    }
+                    clipBoard = selected;
+                    
+                    unselect();
                     revalidate();
                     repaint();
                 }

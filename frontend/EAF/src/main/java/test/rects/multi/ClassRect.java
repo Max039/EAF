@@ -9,6 +9,8 @@ import java.awt.*;
 import java.util.Arrays;
 import java.util.Objects;
 
+
+
 public class ClassRect extends RectWithRects {
 
     public ClassRect(int width, int height, Color color, ClassType type, String[] names, Rect[] rects, FieldType[] types, boolean locked) {

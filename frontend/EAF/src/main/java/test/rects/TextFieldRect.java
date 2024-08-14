@@ -5,7 +5,6 @@ import compiler.ClassType;
 import org.json.JSONObject;
 import test.DragDropRectanglesWithSplitPane;
 import test.Pair;
-import test.rects.multi.RectWithRects;
 
 import javax.swing.*;
 import javax.swing.border.Border;
@@ -63,7 +62,13 @@ public class TextFieldRect extends Rect {
     }
 
     private void adjustTextBoxColor() {
-        textBox.setBackground(new Color(bgColor.getRed(), bgColor.getGreen(), bgColor.getBlue(), (int)(getOpacity()*255)));
+        if (selected) {
+            textBox.setBackground(new Color(selectedRectColor.getRed(), selectedRectColor.getGreen(), selectedRectColor.getBlue(), (int)(getOpacity() * 255)));
+        }
+        else {
+            textBox.setBackground(new Color(bgColor.getRed(), bgColor.getGreen(), bgColor.getBlue(), (int)(getOpacity() * 255)));
+        }
+
         if (textBox.isEditable()) {
             textBox.setForeground(new Color(textColor.getRed(), textColor.getGreen(), textColor.getBlue(), (int)(getOpacity()*255)));
         }
@@ -135,7 +140,12 @@ public class TextFieldRect extends Rect {
         }
 
         var g2 = (Graphics2D) g;
-        g2.setColor(new Color(color.getRed(), color.getGreen(), color.getBlue(), (int)(255 * a)));
+        if (selected) {
+            g2.setColor(new Color(selectedRectColor.getRed(), selectedRectColor.getGreen(), selectedRectColor.getBlue(), (int)(255 * a)));
+        }
+        else {
+            g2.setColor(new Color(color.getRed(), color.getGreen(), color.getBlue(), (int)(255 * a)));
+        }
         g2.fillRect(getX(), getY(), getWidth(), getHeight());
 
         textBox.setBounds(getX() + spacing, getY() + spacing, getWidth() - spacing * 2, getHeight() - spacing * 2);
