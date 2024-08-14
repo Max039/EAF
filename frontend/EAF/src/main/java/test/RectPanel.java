@@ -266,7 +266,7 @@ public class RectPanel extends JScrollPane {
                                     ((TextFieldRect)fr).setTextColor(TextFieldRect.uneditableColor);
                                 }
                             }
-                            if (fr instanceof ClassRect && fr.clazz.findSingleNonAbstractClass() != null) {
+                            if (fr instanceof ClassRect && SyntaxTree.classRegister.get(field.getValue().getFirst().typeName).findSingleNonAbstractClass() != null) {
                                 ((ClassRect)fr).setLocked(true);
                             }
 
@@ -330,7 +330,11 @@ public class RectPanel extends JScrollPane {
 
                 int i2 = 0;
                 for (var jsonField : arrarr) {
-                    arrRect.setIndex(i2, rectFromJson((JSONObject)jsonField));
+                    var resRect = rectFromJson((JSONObject)jsonField);
+                    arrRect.setIndex(i2, resRect);
+                    if (resRect instanceof ClassRect && SyntaxTree.classRegister.get(ft.typeName).findSingleNonAbstractClass() != null) {
+                        ((ClassRect)resRect).setLocked(true);
+                    }
                     i2++;
                 }
                 return arrRect;
