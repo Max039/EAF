@@ -266,6 +266,10 @@ public class RectPanel extends JScrollPane {
                                     ((TextFieldRect)fr).setTextColor(TextFieldRect.uneditableColor);
                                 }
                             }
+                            if (fr instanceof ClassRect && fr.clazz.findSingleNonAbstractClass() != null) {
+                                ((ClassRect)fr).setLocked(true);
+                            }
+
                             instance.setIndex(i, fr);
                             found = true;
                             break;

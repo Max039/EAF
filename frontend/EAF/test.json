@@ -1,5 +1,9 @@
 {
-    "data": [],
+    "data": [{
+        "instance": false,
+        "name": "Test",
+        "type": "quotient real"
+    }],
     "rects": [{
         "package": "de.evoal.optimisation.ea.optimisation",
         "type": "instance",
@@ -407,6 +411,13 @@
                                 "type": "text-field",
                                 "sub-type": "int",
                                 "value": "7"
+                            },
+                            {
+                                "field-name": "content",
+                                "editable": true,
+                                "type": "option-field",
+                                "sub-type": "data",
+                                "value": "Test"
                             }
                         ]
                     }]
