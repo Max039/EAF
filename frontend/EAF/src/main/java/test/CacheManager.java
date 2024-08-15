@@ -99,4 +99,14 @@ public class CacheManager {
         return (LimitedBuffer<T>) buffer.get(s);
     }
 
+    public <T> T getFirstElement(Class<T> cl, String str) {
+        var c = getBuffer(cl, str);
+        if (!c.isEmpty()) {
+            return c.getElements().get(0);
+        }
+        else {
+            return null;
+        }
+    }
+
 }

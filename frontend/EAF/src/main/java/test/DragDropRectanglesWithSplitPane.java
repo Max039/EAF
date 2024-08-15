@@ -820,10 +820,14 @@ public class DragDropRectanglesWithSplitPane extends JPanel {
         addKeyListener(dataPanel);
         addKeyListener(folderPanel.scrollPane);
 
-        var c = cacheManager.getBuffer(String.class, "recentFile");
-        if (!c.isEmpty()) {
+        loadRecent();
+    }
+
+    public void loadRecent() {
+        var c = cacheManager.getFirstElement(String.class, "recentFile");
+        if (c != null) {
             try {
-                loadSave(readJSONFileToJSON(c.getElements().get(0)));
+                loadSave(readJSONFileToJSON(c));
             }
             catch (Exception e) {
                 System.out.println("Recent file could not be opened");
