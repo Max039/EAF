@@ -17,34 +17,8 @@ import java.awt.event.*;
 import java.io.IOException;
 
 public class GuiCreator {
-    static void createAndShowGUI() {
-        // Create the main frame
-        Main.mainFrame = new JFrame("EAF");
-        Main.mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-        // Create and set up the menu bar
-        JMenuBar menuBar = new JMenuBar();
-
-        addTestMenu(menuBar);
-
-
-        addFileMenu(menuBar);
-
-
-        // Set the menu bar to the frame
-        Main.mainFrame.setJMenuBar(menuBar);
-
-        // Create and add content to the frame
-        new Main();
-        Main.mainFrame.add(Main.mainPanel);
-
-        // Set frame size and location
-        Main.mainFrame.setSize(new Dimension(800, 600));
-        Main.mainFrame.setLocationRelativeTo(null);
-        Main.mainFrame.setVisible(true);
-    }
-
-    private static void addTestMenu(JMenuBar menuBar) {
+    static void addTestMenu(JMenuBar menuBar) {
         // Create the File menu
         JMenu testMenu = new JMenu("Test");
 
@@ -94,7 +68,7 @@ public class GuiCreator {
         menuBar.add(testMenu);
     }
 
-    private static void addFileMenu(JMenuBar menuBar) {
+    static void addFileMenu(JMenuBar menuBar) {
         // Create the File menu
         JMenu fileMenu = new JMenu("File");
 
@@ -641,6 +615,20 @@ public class GuiCreator {
         Main.dataPanel.setBackground(Main.bgColor);
         Main.dataPanel.setBackground(Main.bgColor);
         customizeScrollBar(Main.dataPanel);
+    }
+
+    static void createMenuBar() {
+        // Create and set up the menu bar
+        JMenuBar menuBar = new JMenuBar();
+
+        addTestMenu(menuBar);
+
+
+        addFileMenu(menuBar);
+
+
+        // Set the menu bar to the frame
+        Main.mainFrame.setJMenuBar(menuBar);
     }
 
     // Custom SplitPaneUI

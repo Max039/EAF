@@ -51,6 +51,41 @@ public class Main extends JPanel {
 
     public static CacheManager cacheManager = new CacheManager();
 
+    
+    public static void main(String[] args) throws Exception {
+        try {
+            var s = DoubleHelixAnimation.create();
+            s.objective = "Constructing Syntax-Tree";
+            SyntaxTree.start();
+            s.stop();
+            while (s.isUnfinished()) {
+                Thread.sleep(100);
+            }
+        }
+        catch (Exception e) {
+            throw new Exception(e);
+        }
+
+        SwingUtilities.invokeLater(() -> createAndShowGUI());
+    }
+
+
+    static void createAndShowGUI() {
+        // Create the main frame
+        mainFrame = new JFrame("EAF");
+        mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+        GuiCreator.createMenuBar();
+
+        // Create and add content to the frame
+        new Main();
+        mainFrame.add(mainPanel);
+
+        // Set frame size and location
+        mainFrame.setSize(new Dimension(800, 600));
+        mainFrame.setLocationRelativeTo(null);
+        mainFrame.setVisible(true);
+    }
 
     public Main() {
         GuiCreator.adjustMainPanel(this);
@@ -84,22 +119,7 @@ public class Main extends JPanel {
     }
 
 
-    public static void main(String[] args) throws Exception {
-        try {
-            var s = DoubleHelixAnimation.create();
-            s.objective = "Constructing Syntax-Tree";
-            SyntaxTree.start();
-            s.stop();
-            while (s.isUnfinished()) {
-                Thread.sleep(100);
-            }
-        }
-        catch (Exception e) {
-            throw new Exception(e);
-        }
 
-        SwingUtilities.invokeLater(() -> GuiCreator.createAndShowGUI());
-    }
 
 
 }
