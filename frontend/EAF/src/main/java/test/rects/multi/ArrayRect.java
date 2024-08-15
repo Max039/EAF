@@ -197,7 +197,7 @@ public class ArrayRect <T extends Rect> extends RectWithRects {
             }
             else {
                 if (subRects[i] != null) {
-                    subRects[i].removeFrom(Main.subFrame.leftPanel.drawingPanel);
+                    subRects[i].removeFrom(Main.mainPanel.leftPanel.drawingPanel);
                 }
             }
         }
@@ -234,7 +234,7 @@ public class ArrayRect <T extends Rect> extends RectWithRects {
 
 
         if (r != null) {
-            r.addTo(Main.subFrame.leftPanel.drawingPanel);
+            r.addTo(Main.mainPanel.leftPanel.drawingPanel);
         }
     }
 
@@ -287,8 +287,8 @@ public class ArrayRect <T extends Rect> extends RectWithRects {
             }
 
         }
-        Main.subFrame.leftPanel.revalidate();
-        Main.subFrame.leftPanel.repaint();
+        Main.mainPanel.leftPanel.revalidate();
+        Main.mainPanel.leftPanel.repaint();
         return res.getFirst();
     }
 

@@ -44,7 +44,7 @@ public class Main extends JPanel {
 
     public JSplitPane mainSplitPane = null;
 
-    public static Main subFrame = null;
+    public static Main mainPanel = null;
 
     public static DataFieldListPane dataPanel = null;
 
@@ -171,7 +171,7 @@ public class Main extends JPanel {
 
         this.setBorder(BorderFactory.createEmptyBorder());
         setLayout(new BorderLayout());
-        subFrame = this;
+        mainPanel = this;
         // Initialize the text field and new panel
         rightPanelTextField = new JTextField();
         rightPanelTextField.setBackground(searchBar);
@@ -615,7 +615,7 @@ public class Main extends JPanel {
             @Override
             public void actionPerformed(ActionEvent e) {
                 FileManager.writeToFile(dataPanel.toString(),"config.ddl");
-                FileManager.writeToFile(Main.subFrame.leftPanel.toString(),"config.ol");
+                FileManager.writeToFile(Main.mainPanel.leftPanel.toString(),"config.ol");
             }
         });
 
@@ -705,7 +705,7 @@ public class Main extends JPanel {
 
         // Create and add content to the frame
         new Main(numRects);
-        mainFrame.add(subFrame);
+        mainFrame.add(mainPanel);
 
         // Set frame size and location
         mainFrame.setSize(new Dimension(800, 600));

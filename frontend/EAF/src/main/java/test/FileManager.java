@@ -45,13 +45,13 @@ public class FileManager {
         JSONArray a2 = o.getJSONArray("data");
         Main.dataPanel.fromJson(a2);
         JSONArray a = o.getJSONArray("rects");
-        Main.subFrame.leftPanel.fromJson(a);
+        Main.mainPanel.leftPanel.fromJson(a);
         InputHandler.actionHandler.reset();
     }
 
     public static JSONObject createSave() {
         JSONObject o = new JSONObject();
-        o.put("rects", Main.subFrame.leftPanel.toJson());
+        o.put("rects", Main.mainPanel.leftPanel.toJson());
         o.put("data", Main.dataPanel.toJson());
         return o;
     }

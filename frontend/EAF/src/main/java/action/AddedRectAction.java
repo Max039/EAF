@@ -18,23 +18,23 @@ public class AddedRectAction extends  Action {
     @Override
     public void execute() {
         if (parent == null) {
-            Main.subFrame.leftPanel.getRects().add(index, added);
-            added.addTo(Main.subFrame.leftPanel.drawingPanel);
+            Main.mainPanel.leftPanel.getRects().add(index, added);
+            added.addTo(Main.mainPanel.leftPanel.drawingPanel);
         }
         else {
             parent.setIndex(index, added);
-            added.addTo(Main.subFrame.leftPanel.drawingPanel);
+            added.addTo(Main.mainPanel.leftPanel.drawingPanel);
         }
     }
 
     @Override
     public void reverse() {
         if (parent == null) {
-            Main.subFrame.leftPanel.removeRect(added);
+            Main.mainPanel.leftPanel.removeRect(added);
         }
         else {
             parent.setIndex(index, null);
-            added.removeFrom(Main.subFrame.leftPanel.drawingPanel);
+            added.removeFrom(Main.mainPanel.leftPanel.drawingPanel);
         }
     }
 

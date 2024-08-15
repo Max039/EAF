@@ -20,23 +20,23 @@ public class DeletedRectAction extends  Action {
     @Override
     public void execute() {
         if (parent == null) {
-            Main.subFrame.leftPanel.removeRect(deleted);
+            Main.mainPanel.leftPanel.removeRect(deleted);
         }
         else {
             parent.setIndex(index, null);
-            deleted.removeFrom(Main.subFrame.leftPanel.drawingPanel);
+            deleted.removeFrom(Main.mainPanel.leftPanel.drawingPanel);
         }
     }
 
     @Override
     public void reverse() {
         if (parent == null) {
-            Main.subFrame.leftPanel.getRects().add(index, deleted);
-            deleted.addTo(Main.subFrame.leftPanel.drawingPanel);
+            Main.mainPanel.leftPanel.getRects().add(index, deleted);
+            deleted.addTo(Main.mainPanel.leftPanel.drawingPanel);
         }
         else {
             parent.setIndex(index, deleted);
-            deleted.addTo(Main.subFrame.leftPanel.drawingPanel);
+            deleted.addTo(Main.mainPanel.leftPanel.drawingPanel);
         }
     }
 

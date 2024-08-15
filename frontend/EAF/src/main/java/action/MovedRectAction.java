@@ -24,14 +24,14 @@ public class MovedRectAction extends  Action {
     @Override
     public void execute() {
         if (parent1 == null) {
-            Main.subFrame.leftPanel.getRects().remove(moved);
+            Main.mainPanel.leftPanel.getRects().remove(moved);
         }
         else {
             parent1.setIndex(index1, null);
         }
 
         if (parent2 == null) {
-            Main.subFrame.leftPanel.getRects().add(index2, moved);
+            Main.mainPanel.leftPanel.getRects().add(index2, moved);
         }
         else {
             parent2.setIndex(index2, moved);
@@ -42,14 +42,14 @@ public class MovedRectAction extends  Action {
     public void reverse() {
 
         if (parent2 == null) {
-            Main.subFrame.leftPanel.getRects().remove(moved);
+            Main.mainPanel.leftPanel.getRects().remove(moved);
         }
         else {
             parent2.setIndex(index2, null);
         }
 
         if (parent1 == null) {
-            Main.subFrame.leftPanel.getRects().add(index1, moved);
+            Main.mainPanel.leftPanel.getRects().add(index1, moved);
         }
         else {
             parent1.setIndex(index1, moved);

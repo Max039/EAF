@@ -164,7 +164,7 @@ public abstract class RectWithRects extends Rect {
                 }
             }
             if (i == hoveringIndex && !indexDoesNotMatchesDragged(i)) {
-                maxWidth = Math.max(maxWidth, Main.subFrame.leftPanel.draggingRect.getWidth());
+                maxWidth = Math.max(maxWidth, Main.mainPanel.leftPanel.draggingRect.getWidth());
             }
             if (context != null) {
                 maxWidth = Math.max(maxWidth, (int) getFont().getStringBounds(name, context).getWidth());
@@ -185,7 +185,7 @@ public abstract class RectWithRects extends Rect {
             Rect r = subRects[i];
             String name = names[i];
             if (i == hoveringIndex && !indexDoesNotMatchesDragged(i)) {
-                heightAcc += Main.subFrame.leftPanel.draggingRect.getHeight() + spacing;
+                heightAcc += Main.mainPanel.leftPanel.draggingRect.getHeight() + spacing;
             }
             else {
                 if (r != null) {
@@ -237,8 +237,8 @@ public abstract class RectWithRects extends Rect {
                     offset += emptyRowSize + spacing * 2;
                 }
                 else {
-                    Main.subFrame.leftPanel.draggingRect.setPosition(getX() + spacing, getY() + offset);
-                    offset += Main.subFrame.leftPanel.draggingRect.getHeight() + spacing * 2;
+                    Main.mainPanel.leftPanel.draggingRect.setPosition(getX() + spacing, getY() + offset);
+                    offset += Main.mainPanel.leftPanel.draggingRect.getHeight() + spacing * 2;
                 }
 
             }
@@ -335,7 +335,7 @@ public abstract class RectWithRects extends Rect {
             return offset + emptyRowSize + spacing * 2;
         }
         else {
-            return drawSubRect(g, Main.subFrame.leftPanel.draggingRect, name, offset, index, transparencyFactor, depth + 1);
+            return drawSubRect(g, Main.mainPanel.leftPanel.draggingRect, name, offset, index, transparencyFactor, depth + 1);
 
         }
     }
@@ -446,8 +446,8 @@ public abstract class RectWithRects extends Rect {
         }
         subRects[i] = r;
 
-        Main.subFrame.leftPanel.revalidate();
-        Main.subFrame.leftPanel.repaint();
+        Main.mainPanel.leftPanel.revalidate();
+        Main.mainPanel.leftPanel.repaint();
     }
 
     @Override
@@ -532,7 +532,7 @@ public abstract class RectWithRects extends Rect {
                         public void actionPerformed(ActionEvent e) {
 
                             var rect = RectFactory.getRectFromClassType(item);
-                            rect.addTo(Main.subFrame.leftPanel.drawingPanel);
+                            rect.addTo(Main.mainPanel.leftPanel.drawingPanel);
                             setIndex(res.getSecond(), rect);
 
 
@@ -590,7 +590,7 @@ public abstract class RectWithRects extends Rect {
                                                 @Override
                                                 public void actionPerformed(ActionEvent e) {
                                                     var rect = RectFactory.getRectFromClassType(fullItem);
-                                                    rect.addTo(Main.subFrame.leftPanel.drawingPanel);
+                                                    rect.addTo(Main.mainPanel.leftPanel.drawingPanel);
                                                     setIndex(res.getSecond(), rect);
 
 
@@ -642,13 +642,13 @@ public abstract class RectWithRects extends Rect {
         } else if (this instanceof ClassRect) {
             if (left && parent != null && !locked && !InputHandler.isControlPressed) {
                 // Copy, set dragging, delete, etc.
-                Main.subFrame.leftPanel.removeRect(RectWithRects.this);
+                Main.mainPanel.leftPanel.removeRect(RectWithRects.this);
                 var s = parent;
                 parent.subRects[parentIndex] = null;
                 parent = null;
                 InputHandler.setDraggingRect(RectWithRects.this, e, new Point(e.getPoint().x - getX(), e.getPoint().y - getY()), s);
-                Main.subFrame.leftPanel.revalidate();
-                Main.subFrame.leftPanel.repaint();
+                Main.mainPanel.leftPanel.revalidate();
+                Main.mainPanel.leftPanel.repaint();
             } else if (!left) {
                 JPopupMenu popupMenu = new JPopupMenu();
 
@@ -677,13 +677,13 @@ public abstract class RectWithRects extends Rect {
 
                             int index = parentIndex;
                             if (parent == null) {
-                                index = Main.subFrame.leftPanel.getRects().indexOf(RectWithRects.this);
+                                index = Main.mainPanel.leftPanel.getRects().indexOf(RectWithRects.this);
                             }
 
                             InputHandler.actionHandler.action(new DeletedRectAction(parent, RectWithRects.this, index));
-                            Main.subFrame.leftPanel.removeRect(RectWithRects.this);
-                            Main.subFrame.leftPanel.revalidate();
-                            Main.subFrame.leftPanel.repaint();
+                            Main.mainPanel.leftPanel.removeRect(RectWithRects.this);
+                            Main.mainPanel.leftPanel.revalidate();
+                            Main.mainPanel.leftPanel.repaint();
                         }
                     });
                     popupMenu.add(menuItem);

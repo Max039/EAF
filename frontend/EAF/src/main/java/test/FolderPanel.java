@@ -63,9 +63,9 @@ public class FolderPanel extends JPanel {
                 String currentPath = String.join(".", pathStack);
                 updatePathLabel();
                 printClassTypesBelow(currentPath);
-                Main.subFrame.rightPanel.getVerticalScrollBar().setValue(0);
-                Main.subFrame.rightPanel.revalidate();
-                Main.subFrame.rightPanel.repaint();
+                Main.mainPanel.rightPanel.getVerticalScrollBar().setValue(0);
+                Main.mainPanel.rightPanel.revalidate();
+                Main.mainPanel.rightPanel.repaint();
             }
         });
 
@@ -125,9 +125,9 @@ public class FolderPanel extends JPanel {
                     updateFolderDisplay();
                     printClassTypesBelow(String.join(".", pathStack));
                     updatePathLabel();
-                    Main.subFrame.rightPanel.getVerticalScrollBar().setValue(0);
-                    Main.subFrame.rightPanel.revalidate();
-                    Main.subFrame.rightPanel.repaint();
+                    Main.mainPanel.rightPanel.getVerticalScrollBar().setValue(0);
+                    Main.mainPanel.rightPanel.revalidate();
+                    Main.mainPanel.rightPanel.repaint();
                     revalidate();
                     repaint();
                 }
@@ -151,7 +151,7 @@ public class FolderPanel extends JPanel {
                 .sorted(Comparator.comparing(classType -> classType.name))
                 .collect(Collectors.toList());
 
-        Main.subFrame.rightPanel.setRects(new ArrayList<>(sortedClassTypes));
+        Main.mainPanel.rightPanel.setRects(new ArrayList<>(sortedClassTypes));
         InputHandler.filterChanged();
     }
 

@@ -148,8 +148,8 @@ public abstract class Rect {
     public static String stringPadding = "  ";
 
     public void registerString(String s, int y) {
-        if (!Main.subFrame.leftPanelTextField.getText().isEmpty()) {
-            if (Main.subFrame.leftPanel.hasRect(this)) {
+        if (!Main.mainPanel.leftPanelTextField.getText().isEmpty()) {
+            if (Main.mainPanel.leftPanel.hasRect(this)) {
                 var res = InputHandler.stringMarker.get(s);
                 if (res != null && !res.contains(y)) {
                     res.add(y);

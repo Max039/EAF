@@ -30,7 +30,7 @@ public class ErrorManager {
     public static void checkForErrors() {
         clearErrors();
         System.out.println("Checking for errors");
-        for (var r : Main.subFrame.leftPanel.getRects()) {
+        for (var r : Main.mainPanel.leftPanel.getRects()) {
             checkForErrors(r);
         }
 

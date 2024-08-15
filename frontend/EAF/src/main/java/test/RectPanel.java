@@ -160,7 +160,7 @@ public class RectPanel extends JScrollPane {
 
     @Override
     public void repaint() {
-        if (Main.subFrame != null) {
+        if (Main.mainPanel != null) {
             InputHandler.stringMarker = new HashMap<>();
         }
         if (drawingPanel != null) {
