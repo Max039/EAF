@@ -312,7 +312,12 @@ public class ClassType implements Comparable {
         for (var field : classType.fields.entrySet()) {
             var type = field.getValue().getFirst();
 
-            JButton fieldButton = new JButton(field.getKey() + " : " + repeatString("array ", type.arrayCount)  + type.typeName);
+            String value = "";
+            if (field.getValue().getSecond() != null && field.getValue().getFirst().primitive) {
+                value = " = " +field.getValue().getSecond().value;
+            }
+
+            JButton fieldButton = new JButton(field.getKey() + " : " + repeatString("array ", type.arrayCount)  + type.typeName + value);
             fieldButton.setMaximumSize(new Dimension(Integer.MAX_VALUE, 30)); // Set button to full width
             fieldButton.setAlignmentX(Component.CENTER_ALIGNMENT);
             fieldButton.addActionListener(new ActionListener() {

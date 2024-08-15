@@ -916,7 +916,7 @@ public class DragDropRectanglesWithSplitPane extends JPanel {
         JMenu fileMenu = new JMenu("File");
 
         // Create menu items
-        JMenuItem openFileDotDotDot = new JMenuItem("open file ...");
+        JMenuItem openFileDotDotDot = new JMenuItem("open ...");
 
         openFileDotDotDot.addActionListener(new ActionListener() {
             @Override
@@ -935,7 +935,7 @@ public class DragDropRectanglesWithSplitPane extends JPanel {
         fileMenu.add(openFileDotDotDot);
 
 
-        JMenuItem saveFileDotDotDot = new JMenuItem("save file ...");
+        JMenuItem saveFileDotDotDot = new JMenuItem("save as ...");
 
         saveFileDotDotDot.addActionListener(new ActionListener() {
             @Override
