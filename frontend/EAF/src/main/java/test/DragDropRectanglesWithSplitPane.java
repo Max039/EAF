@@ -95,6 +95,8 @@ public class DragDropRectanglesWithSplitPane extends JPanel {
 
     public static String savesPath = "/saves";
 
+    public static CacheManager cacheManager = new CacheManager();
+
     public void setSelected(ClassRect r) {
         selected = r ;
         selected.select();
@@ -925,6 +927,7 @@ public class DragDropRectanglesWithSplitPane extends JPanel {
                     var file = chooseJavaFile(savesPath, saveFormat);
                     if (file != null) {
                         loadSave(readJSONFileToJSON(file));
+                        cacheManager.addToBuffer("filesOpened", file.getPath());
                     }
                 } catch (IOException ex) {
                     throw new RuntimeException(ex);
