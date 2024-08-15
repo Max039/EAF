@@ -1,9 +1,7 @@
 package action;
 
-import test.DataFieldListPane;
-import test.DragDropRectanglesWithSplitPane;
+import test.Main;
 import test.rects.Rect;
-import test.rects.TextFieldRect;
 import test.rects.multi.RectWithRects;
 
 public class DeletedRectAction extends  Action {
@@ -22,23 +20,23 @@ public class DeletedRectAction extends  Action {
     @Override
     public void execute() {
         if (parent == null) {
-            DragDropRectanglesWithSplitPane.subFrame.leftPanel.removeRect(deleted);
+            Main.subFrame.leftPanel.removeRect(deleted);
         }
         else {
             parent.setIndex(index, null);
-            deleted.removeFrom(DragDropRectanglesWithSplitPane.subFrame.leftPanel.drawingPanel);
+            deleted.removeFrom(Main.subFrame.leftPanel.drawingPanel);
         }
     }
 
     @Override
     public void reverse() {
         if (parent == null) {
-            DragDropRectanglesWithSplitPane.subFrame.leftPanel.getRects().add(index, deleted);
-            deleted.addTo(DragDropRectanglesWithSplitPane.subFrame.leftPanel.drawingPanel);
+            Main.subFrame.leftPanel.getRects().add(index, deleted);
+            deleted.addTo(Main.subFrame.leftPanel.drawingPanel);
         }
         else {
             parent.setIndex(index, deleted);
-            deleted.addTo(DragDropRectanglesWithSplitPane.subFrame.leftPanel.drawingPanel);
+            deleted.addTo(Main.subFrame.leftPanel.drawingPanel);
         }
     }
 

@@ -4,10 +4,10 @@ import action.ArrayElementAddedAction;
 import action.ArrayElementRemovedAction;
 import compiler.ClassType;
 import compiler.FieldType;
-import org.json.JSONArray;
-import org.json.JSONObject;
-import test.DragDropRectanglesWithSplitPane;
+import test.Main;
+import test.InputHandler;
 import test.Pair;
+import test.RectFactory;
 import test.rects.OptionsFieldRect;
 import test.rects.Rect;
 
@@ -58,7 +58,7 @@ public class ArrayRect <T extends Rect> extends RectWithRects {
 
     @Override
     public int getWidth() {
-        if (DragDropRectanglesWithSplitPane.showButtons) {
+        if (InputHandler.showButtons) {
             return super.getWidth() + buttonWidth + spacing;
         }
         else {
@@ -105,7 +105,7 @@ public class ArrayRect <T extends Rect> extends RectWithRects {
 
     @Override
     public int extraSpacingToRight() {
-        if (DragDropRectanglesWithSplitPane.showButtons) {
+        if (InputHandler.showButtons) {
             return spacing + buttonWidth;
         }
         else {
@@ -120,7 +120,7 @@ public class ArrayRect <T extends Rect> extends RectWithRects {
 
     @Override
     public int extraSpacingBelow() {
-        if (DragDropRectanglesWithSplitPane.showButtons) {
+        if (InputHandler.showButtons) {
             return spacing + emptyRowSize;
         }
         else {
@@ -129,7 +129,7 @@ public class ArrayRect <T extends Rect> extends RectWithRects {
     }
 
     private void drawButtonAt(Graphics g, int x, int y, int height, Color c, int a, ButtonType type) {
-        if (DragDropRectanglesWithSplitPane.showButtons) {
+        if (InputHandler.showButtons) {
             g.setColor(new Color(c.getRed(), c.getGreen(), c.getBlue(), a));
             g.fillRect(x, y, buttonWidth, height);
 
@@ -197,7 +197,7 @@ public class ArrayRect <T extends Rect> extends RectWithRects {
             }
             else {
                 if (subRects[i] != null) {
-                    subRects[i].removeFrom(DragDropRectanglesWithSplitPane.subFrame.leftPanel.drawingPanel);
+                    subRects[i].removeFrom(Main.subFrame.leftPanel.drawingPanel);
                 }
             }
         }
@@ -234,7 +234,7 @@ public class ArrayRect <T extends Rect> extends RectWithRects {
 
 
         if (r != null) {
-            r.addTo(DragDropRectanglesWithSplitPane.subFrame.leftPanel.drawingPanel);
+            r.addTo(Main.subFrame.leftPanel.drawingPanel);
         }
     }
 
@@ -273,22 +273,22 @@ public class ArrayRect <T extends Rect> extends RectWithRects {
             if (res.getSecond() == -1) {
                 Rect r;
                 if (fillOnCreation) {
-                    r = DragDropRectanglesWithSplitPane.getRectFromFieldType(fillType, null);
+                    r = RectFactory.getRectFromFieldType(fillType, null);
                 }
                 else {
                     r = null;
                 }
                 addElement(r, subRects.length);
-                DragDropRectanglesWithSplitPane.actionHandler.action(new ArrayElementAddedAction(this, r));
+                InputHandler.actionHandler.action(new ArrayElementAddedAction(this, r));
             }
             else {
                 var r = removeElement(res.getSecond());
-                DragDropRectanglesWithSplitPane.actionHandler.action(new ArrayElementRemovedAction(this, r, res.getSecond()));
+                InputHandler.actionHandler.action(new ArrayElementRemovedAction(this, r, res.getSecond()));
             }
 
         }
-        DragDropRectanglesWithSplitPane.subFrame.leftPanel.revalidate();
-        DragDropRectanglesWithSplitPane.subFrame.leftPanel.repaint();
+        Main.subFrame.leftPanel.revalidate();
+        Main.subFrame.leftPanel.repaint();
         return res.getFirst();
     }
 
@@ -298,7 +298,7 @@ public class ArrayRect <T extends Rect> extends RectWithRects {
             var r = subRects[i];
             if (r == null) {
                 var c = types[i];
-                setIndex(i, DragDropRectanglesWithSplitPane.getRectFromFieldType(c, null));
+                setIndex(i, RectFactory.getRectFromFieldType(c, null));
             }
         }
     }

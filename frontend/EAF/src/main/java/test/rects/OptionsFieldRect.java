@@ -3,9 +3,7 @@ package test.rects;
 import action.OptionsFieldAction;
 import compiler.ClassType;
 import org.json.JSONObject;
-import test.DataField;
-import test.DragDropRectanglesWithSplitPane;
-import test.Pair;
+import test.*;
 
 import javax.swing.*;
 import javax.swing.border.Border;
@@ -143,7 +141,7 @@ public class OptionsFieldRect extends Rect {
                     // Check for changes when the menu is about to close
                     String newText = (String)comboBox.getSelectedItem();
                     if (!snapshotText.equals(newText)) {
-                        DragDropRectanglesWithSplitPane.actionHandler.action(new OptionsFieldAction(OptionsFieldRect.this, snapshotText, newText));
+                        InputHandler.actionHandler.action(new OptionsFieldAction(OptionsFieldRect.this, snapshotText, newText));
                     }
                 }
 
@@ -194,7 +192,7 @@ public class OptionsFieldRect extends Rect {
         comboBox.setOpaque(false);
         Border border = BorderFactory.createLineBorder(borderColor, 1);
         comboBox.setBorder(border);
-        comboBox.addActionListener(e -> DragDropRectanglesWithSplitPane.mainFrame.repaint());
+        comboBox.addActionListener(e -> Main.mainFrame.repaint());
     }
 
     @Override
@@ -257,7 +255,7 @@ public class OptionsFieldRect extends Rect {
     @Override
     public void removeFrom(JPanel p) {
         p.remove(comboBox);
-        DragDropRectanglesWithSplitPane.subFrame.erroRects.remove(this);
+        ErrorManager.erroRects.remove(this);
     }
 
     @Override
@@ -266,12 +264,12 @@ public class OptionsFieldRect extends Rect {
 
     @Override
     public void setValidity() {
-        DragDropRectanglesWithSplitPane.subFrame.erroRects.remove(this);
+        ErrorManager.erroRects.remove(this);
         if (clazz.name.equals("data")) {
-            boolean res = DragDropRectanglesWithSplitPane.dataPanel.getDataFieldList().stream().anyMatch(t -> ((DataField) t).getName().equals(comboBox.getSelectedItem()));
+            boolean res = Main.dataPanel.getDataFieldList().stream().anyMatch(t -> ((DataField) t).getName().equals(comboBox.getSelectedItem()));
             if (!res) {
                 String err = "Data with name \"" + comboBox.getSelectedItem() + "\" was not found!";
-                DragDropRectanglesWithSplitPane.subFrame.erroRects.put(this, err);
+                ErrorManager.erroRects.put(this, err);
             }
             valid = res;
             return;

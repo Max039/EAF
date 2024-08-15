@@ -3,11 +3,9 @@ package test;
 import action.AddedDataAction;
 import action.RemovedDataAction;
 import compiler.ClassType;
-import compiler.Data;
 import compiler.SyntaxTree;
 import org.json.JSONArray;
 import org.json.JSONObject;
-import test.rects.Rect;
 
 import javax.swing.*;
 import javax.swing.border.MatteBorder;
@@ -16,7 +14,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Optional;
 
 import static compiler.ClassType.getUniqueImports;
@@ -395,13 +392,13 @@ public class DataFieldListPane extends JScrollPane {
 
     private void userAddedDataField(DataField dataField) {
         addDataField(dataField);
-        DragDropRectanglesWithSplitPane.actionHandler.action(new AddedDataAction(dataField));
+        InputHandler.actionHandler.action(new AddedDataAction(dataField));
     }
 
     public void addDataField(DataField dataField) {
         dataFieldList.add(dataField);
         addDataFieldComponent(dataField);
-        DragDropRectanglesWithSplitPane.subFrame.checkForErrors();
+        ErrorManager.checkForErrors();
         panel.revalidate();
         panel.repaint();
     }
@@ -476,7 +473,7 @@ public class DataFieldListPane extends JScrollPane {
 
     private void userRemoveDataField(DataField dataField) {
         removeDataField(dataField);
-        DragDropRectanglesWithSplitPane.actionHandler.action(new RemovedDataAction(dataField));
+        InputHandler.actionHandler.action(new RemovedDataAction(dataField));
     }
 
     public void removeDataField(DataField f) {
@@ -485,7 +482,7 @@ public class DataFieldListPane extends JScrollPane {
         for (var r : res) {
             panel.remove(r);
         }
-        DragDropRectanglesWithSplitPane.subFrame.checkForErrors();
+        ErrorManager.checkForErrors();
         panel.revalidate();
         panel.repaint();
     }

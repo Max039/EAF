@@ -7,8 +7,7 @@ import compiler.FieldType;
 import compiler.SyntaxTree;
 import org.json.JSONArray;
 import org.json.JSONObject;
-import test.DragDropRectanglesWithSplitPane;
-import test.Pair;
+import test.*;
 import test.rects.OptionsFieldRect;
 import test.rects.Rect;
 import test.rects.TextFieldRect;
@@ -165,7 +164,7 @@ public abstract class RectWithRects extends Rect {
                 }
             }
             if (i == hoveringIndex && !indexDoesNotMatchesDragged(i)) {
-                maxWidth = Math.max(maxWidth, DragDropRectanglesWithSplitPane.subFrame.leftPanel.draggingRect.getWidth());
+                maxWidth = Math.max(maxWidth, Main.subFrame.leftPanel.draggingRect.getWidth());
             }
             if (context != null) {
                 maxWidth = Math.max(maxWidth, (int) getFont().getStringBounds(name, context).getWidth());
@@ -186,7 +185,7 @@ public abstract class RectWithRects extends Rect {
             Rect r = subRects[i];
             String name = names[i];
             if (i == hoveringIndex && !indexDoesNotMatchesDragged(i)) {
-                heightAcc += DragDropRectanglesWithSplitPane.subFrame.leftPanel.draggingRect.getHeight() + spacing;
+                heightAcc += Main.subFrame.leftPanel.draggingRect.getHeight() + spacing;
             }
             else {
                 if (r != null) {
@@ -238,8 +237,8 @@ public abstract class RectWithRects extends Rect {
                     offset += emptyRowSize + spacing * 2;
                 }
                 else {
-                    DragDropRectanglesWithSplitPane.subFrame.leftPanel.draggingRect.setPosition(getX() + spacing, getY() + offset);
-                    offset += DragDropRectanglesWithSplitPane.subFrame.leftPanel.draggingRect.getHeight() + spacing * 2;
+                    Main.subFrame.leftPanel.draggingRect.setPosition(getX() + spacing, getY() + offset);
+                    offset += Main.subFrame.leftPanel.draggingRect.getHeight() + spacing * 2;
                 }
 
             }
@@ -292,8 +291,8 @@ public abstract class RectWithRects extends Rect {
     private boolean indexDoesNotMatchesDragged(int index) {
         var type = types[index];
 
-        if (DragDropRectanglesWithSplitPane.subFrame.draggedRect != null) {
-            var clazz = DragDropRectanglesWithSplitPane.subFrame.draggedRect.getClazz();
+        if (InputHandler.draggedRect != null) {
+            var clazz = InputHandler.draggedRect.getClazz();
             boolean typeCheck;
             if (type.primitive) {
                 typeCheck = type.typeName.equals(clazz.name);
@@ -336,7 +335,7 @@ public abstract class RectWithRects extends Rect {
             return offset + emptyRowSize + spacing * 2;
         }
         else {
-            return drawSubRect(g, DragDropRectanglesWithSplitPane.subFrame.leftPanel.draggingRect, name, offset, index, transparencyFactor, depth + 1);
+            return drawSubRect(g, Main.subFrame.leftPanel.draggingRect, name, offset, index, transparencyFactor, depth + 1);
 
         }
     }
@@ -379,7 +378,7 @@ public abstract class RectWithRects extends Rect {
 
     @Override
     public void removeFrom(JPanel p) {
-        DragDropRectanglesWithSplitPane.subFrame.erroRects.remove(this);
+        ErrorManager.erroRects.remove(this);
         for (int i = 0; i < subRects.length; i++) {
             Rect r = subRects[i];
             if (r != null) {
@@ -447,8 +446,8 @@ public abstract class RectWithRects extends Rect {
         }
         subRects[i] = r;
 
-        DragDropRectanglesWithSplitPane.subFrame.leftPanel.revalidate();
-        DragDropRectanglesWithSplitPane.subFrame.leftPanel.repaint();
+        Main.subFrame.leftPanel.revalidate();
+        Main.subFrame.leftPanel.repaint();
     }
 
     @Override
@@ -532,12 +531,12 @@ public abstract class RectWithRects extends Rect {
                         @Override
                         public void actionPerformed(ActionEvent e) {
 
-                            var rect = DragDropRectanglesWithSplitPane.getRectFromClassType(item);
-                            rect.addTo(DragDropRectanglesWithSplitPane.subFrame.leftPanel.drawingPanel);
+                            var rect = RectFactory.getRectFromClassType(item);
+                            rect.addTo(Main.subFrame.leftPanel.drawingPanel);
                             setIndex(res.getSecond(), rect);
 
 
-                            DragDropRectanglesWithSplitPane.actionHandler.action(new AddedRectAction(RectWithRects.this, rect, res.getSecond()));
+                            InputHandler.actionHandler.action(new AddedRectAction(RectWithRects.this, rect, res.getSecond()));
                         }
                     });
                     popupMenu.add(menuItem);
@@ -552,9 +551,9 @@ public abstract class RectWithRects extends Rect {
                         @Override
                         public void actionPerformed(ActionEvent e) {
                             // Create a new scrollable window with all options
-                            JDialog showMoreDialog = new JDialog(DragDropRectanglesWithSplitPane.mainFrame, "All Options", true);
+                            JDialog showMoreDialog = new JDialog(Main.mainFrame, "All Options", true);
                             showMoreDialog.setSize(300, 400);
-                            showMoreDialog.setLocationRelativeTo(DragDropRectanglesWithSplitPane.mainFrame);
+                            showMoreDialog.setLocationRelativeTo(Main.mainFrame);
 
                             JPanel mainPanel = new JPanel();
                             mainPanel.setLayout(new BorderLayout());
@@ -590,12 +589,12 @@ public abstract class RectWithRects extends Rect {
                                             button.addActionListener(new ActionListener() {
                                                 @Override
                                                 public void actionPerformed(ActionEvent e) {
-                                                    var rect = DragDropRectanglesWithSplitPane.getRectFromClassType(fullItem);
-                                                    rect.addTo(DragDropRectanglesWithSplitPane.subFrame.leftPanel.drawingPanel);
+                                                    var rect = RectFactory.getRectFromClassType(fullItem);
+                                                    rect.addTo(Main.subFrame.leftPanel.drawingPanel);
                                                     setIndex(res.getSecond(), rect);
 
 
-                                                    DragDropRectanglesWithSplitPane.actionHandler.action(new AddedRectAction(RectWithRects.this, rect, res.getSecond()));
+                                                    InputHandler.actionHandler.action(new AddedRectAction(RectWithRects.this, rect, res.getSecond()));
                                                     showMoreDialog.dispose(); // Close the dialog after selection
                                                 }
                                             });
@@ -637,25 +636,25 @@ public abstract class RectWithRects extends Rect {
 
                 }
 
-                popupMenu.show(DragDropRectanglesWithSplitPane.mainFrame, p2.x, p2.y);
+                popupMenu.show(Main.mainFrame, p2.x, p2.y);
             }
 
         } else if (this instanceof ClassRect) {
-            if (left && parent != null && !locked && !DragDropRectanglesWithSplitPane.isControlPressed) {
+            if (left && parent != null && !locked && !InputHandler.isControlPressed) {
                 // Copy, set dragging, delete, etc.
-                DragDropRectanglesWithSplitPane.subFrame.leftPanel.removeRect(RectWithRects.this);
+                Main.subFrame.leftPanel.removeRect(RectWithRects.this);
                 var s = parent;
                 parent.subRects[parentIndex] = null;
                 parent = null;
-                DragDropRectanglesWithSplitPane.subFrame.setDraggingRect(RectWithRects.this, e, new Point(e.getPoint().x - getX(), e.getPoint().y - getY()), s);
-                DragDropRectanglesWithSplitPane.subFrame.leftPanel.revalidate();
-                DragDropRectanglesWithSplitPane.subFrame.leftPanel.repaint();
+                InputHandler.setDraggingRect(RectWithRects.this, e, new Point(e.getPoint().x - getX(), e.getPoint().y - getY()), s);
+                Main.subFrame.leftPanel.revalidate();
+                Main.subFrame.leftPanel.repaint();
             } else if (!left) {
                 JPopupMenu popupMenu = new JPopupMenu();
 
                 Point p3 = new Point();
-                p3.x = p2.x + DragDropRectanglesWithSplitPane.mainFrame.getX();
-                p3.y = p2.y + DragDropRectanglesWithSplitPane.mainFrame.getY();
+                p3.x = p2.x + Main.mainFrame.getX();
+                p3.y = p2.y + Main.mainFrame.getY();
                 JMenuItem info = new JMenuItem("Info");
                 info.addActionListener(new ActionListener() {
                     @Override
@@ -678,23 +677,23 @@ public abstract class RectWithRects extends Rect {
 
                             int index = parentIndex;
                             if (parent == null) {
-                                index = DragDropRectanglesWithSplitPane.subFrame.leftPanel.getRects().indexOf(RectWithRects.this);
+                                index = Main.subFrame.leftPanel.getRects().indexOf(RectWithRects.this);
                             }
 
-                            DragDropRectanglesWithSplitPane.actionHandler.action(new DeletedRectAction(parent, RectWithRects.this, index));
-                            DragDropRectanglesWithSplitPane.subFrame.leftPanel.removeRect(RectWithRects.this);
-                            DragDropRectanglesWithSplitPane.subFrame.leftPanel.revalidate();
-                            DragDropRectanglesWithSplitPane.subFrame.leftPanel.repaint();
+                            InputHandler.actionHandler.action(new DeletedRectAction(parent, RectWithRects.this, index));
+                            Main.subFrame.leftPanel.removeRect(RectWithRects.this);
+                            Main.subFrame.leftPanel.revalidate();
+                            Main.subFrame.leftPanel.repaint();
                         }
                     });
                     popupMenu.add(menuItem);
                 }
 
-                popupMenu.show(DragDropRectanglesWithSplitPane.mainFrame, p2.x, p2.y);
+                popupMenu.show(Main.mainFrame, p2.x, p2.y);
             }
         }
         else if (this instanceof ArrayRect) {
-            if (left && DragDropRectanglesWithSplitPane.showButtons) {
+            if (left && InputHandler.showButtons) {
                 ((ArrayRect)this).pressedButton(p);
             }
         }
@@ -703,7 +702,7 @@ public abstract class RectWithRects extends Rect {
 
     @Override
     public void setValidity() {
-        DragDropRectanglesWithSplitPane.subFrame.erroRects.remove(this);
+        ErrorManager.erroRects.remove(this);
         valid = true;
     };
 

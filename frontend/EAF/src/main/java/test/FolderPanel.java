@@ -1,7 +1,6 @@
 package test;
 
 import compiler.ClassType;
-import compiler.SyntaxTree;
 
 import javax.swing.*;
 import javax.swing.border.Border;
@@ -12,7 +11,7 @@ import java.util.*;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static test.DragDropRectanglesWithSplitPane.customizeScrollBar;
+import static test.Main.customizeScrollBar;
 
 public class FolderPanel extends JPanel {
     private Stack<String> pathStack;
@@ -43,7 +42,7 @@ public class FolderPanel extends JPanel {
         this.classTypeMap = mapClassTypesToPackages(classTypes);
         this.pathStack = new Stack<>();
         this.setBorder(BorderFactory.createEmptyBorder());
-        this.setBackground(DragDropRectanglesWithSplitPane.bgColor);
+        this.setBackground(Main.bgColor);
         setLayout(new BorderLayout());
 
         // Initialize the path label
@@ -64,9 +63,9 @@ public class FolderPanel extends JPanel {
                 String currentPath = String.join(".", pathStack);
                 updatePathLabel();
                 printClassTypesBelow(currentPath);
-                DragDropRectanglesWithSplitPane.subFrame.rightPanel.getVerticalScrollBar().setValue(0);
-                DragDropRectanglesWithSplitPane.subFrame.rightPanel.revalidate();
-                DragDropRectanglesWithSplitPane.subFrame.rightPanel.repaint();
+                Main.subFrame.rightPanel.getVerticalScrollBar().setValue(0);
+                Main.subFrame.rightPanel.revalidate();
+                Main.subFrame.rightPanel.repaint();
             }
         });
 
@@ -78,13 +77,13 @@ public class FolderPanel extends JPanel {
 
         folderDisplayPanel = new JPanel();
         folderDisplayPanel.setBorder(BorderFactory.createEmptyBorder());
-        folderDisplayPanel.setBackground(DragDropRectanglesWithSplitPane.bgColor);
+        folderDisplayPanel.setBackground(Main.bgColor);
         folderDisplayPanel.setLayout(new WrapLayout(FlowLayout.LEFT, 5, 5));
         scrollPane = new JScrollPane(folderDisplayPanel);
         scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
         scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
         scrollPane.setBorder(BorderFactory.createEmptyBorder());
-        scrollPane.setBackground(DragDropRectanglesWithSplitPane.bgColor);
+        scrollPane.setBackground(Main.bgColor);
         customizeScrollBar(scrollPane);
 
         JPanel topPanel = new JPanel(new BorderLayout());
@@ -126,9 +125,9 @@ public class FolderPanel extends JPanel {
                     updateFolderDisplay();
                     printClassTypesBelow(String.join(".", pathStack));
                     updatePathLabel();
-                    DragDropRectanglesWithSplitPane.subFrame.rightPanel.getVerticalScrollBar().setValue(0);
-                    DragDropRectanglesWithSplitPane.subFrame.rightPanel.revalidate();
-                    DragDropRectanglesWithSplitPane.subFrame.rightPanel.repaint();
+                    Main.subFrame.rightPanel.getVerticalScrollBar().setValue(0);
+                    Main.subFrame.rightPanel.revalidate();
+                    Main.subFrame.rightPanel.repaint();
                     revalidate();
                     repaint();
                 }
@@ -152,8 +151,8 @@ public class FolderPanel extends JPanel {
                 .sorted(Comparator.comparing(classType -> classType.name))
                 .collect(Collectors.toList());
 
-        DragDropRectanglesWithSplitPane.subFrame.rightPanel.setRects(new ArrayList<>(sortedClassTypes));
-        DragDropRectanglesWithSplitPane.subFrame.filterChanged();
+        Main.subFrame.rightPanel.setRects(new ArrayList<>(sortedClassTypes));
+        InputHandler.filterChanged();
     }
 
     private void updatePathLabel() {

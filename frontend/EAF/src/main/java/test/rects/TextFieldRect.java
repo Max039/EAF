@@ -3,7 +3,9 @@ package test.rects;
 import action.TextFieldAction;
 import compiler.ClassType;
 import org.json.JSONObject;
-import test.DragDropRectanglesWithSplitPane;
+import test.Main;
+import test.ErrorManager;
+import test.InputHandler;
 import test.Pair;
 
 import javax.swing.*;
@@ -92,17 +94,17 @@ public class TextFieldRect extends Rect {
         textBox.getDocument().addDocumentListener(new DocumentListener() {
             @Override
             public void insertUpdate(DocumentEvent e) {
-                DragDropRectanglesWithSplitPane.mainFrame.repaint();
+                Main.mainFrame.repaint();
             }
 
             @Override
             public void removeUpdate(DocumentEvent e) {
-                DragDropRectanglesWithSplitPane.mainFrame.repaint();
+                Main.mainFrame.repaint();
             }
 
             @Override
             public void changedUpdate(DocumentEvent e) {
-                DragDropRectanglesWithSplitPane.mainFrame.repaint();
+                Main.mainFrame.repaint();
             }
         });
 
@@ -116,7 +118,7 @@ public class TextFieldRect extends Rect {
             public void focusLost(FocusEvent e) {
                 String newText = textBox.getText();
                 if (!snapshotText.equals(newText)) {
-                    DragDropRectanglesWithSplitPane.actionHandler.action(new TextFieldAction(TextFieldRect.this, snapshotText, newText));
+                    InputHandler.actionHandler.action(new TextFieldAction(TextFieldRect.this, snapshotText, newText));
                 }
             }
         });
@@ -195,7 +197,7 @@ public class TextFieldRect extends Rect {
     @Override
     public void removeFrom(JPanel p) {
         p.remove(textBox);
-        DragDropRectanglesWithSplitPane.subFrame.erroRects.remove(this);
+        ErrorManager.erroRects.remove(this);
     }
 
     @Override
@@ -205,7 +207,7 @@ public class TextFieldRect extends Rect {
 
     @Override
     public void setValidity() {
-        DragDropRectanglesWithSplitPane.subFrame.erroRects.remove(this);
+        ErrorManager.erroRects.remove(this);
         valid = true;
     };
 

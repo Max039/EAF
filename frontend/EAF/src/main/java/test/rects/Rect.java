@@ -2,7 +2,8 @@ package test.rects;
 
 import compiler.ClassType;
 import org.json.JSONObject;
-import test.DragDropRectanglesWithSplitPane;
+import test.Main;
+import test.InputHandler;
 import test.Pair;
 import test.RectPanel;
 import test.rects.multi.RectWithRects;
@@ -147,15 +148,15 @@ public abstract class Rect {
     public static String stringPadding = "  ";
 
     public void registerString(String s, int y) {
-        if (!DragDropRectanglesWithSplitPane.subFrame.leftPanelTextField.getText().isEmpty()) {
-            if (DragDropRectanglesWithSplitPane.subFrame.leftPanel.hasRect(this)) {
-                var res = DragDropRectanglesWithSplitPane.subFrame.stringMarker.get(s);
+        if (!Main.subFrame.leftPanelTextField.getText().isEmpty()) {
+            if (Main.subFrame.leftPanel.hasRect(this)) {
+                var res = InputHandler.stringMarker.get(s);
                 if (res != null && !res.contains(y)) {
                     res.add(y);
                 } else {
                     var ar = new ArrayList<Integer>();
                     ar.add(y);
-                    DragDropRectanglesWithSplitPane.subFrame.stringMarker.put(s, ar);
+                    InputHandler.stringMarker.put(s, ar);
                 }
 
             }

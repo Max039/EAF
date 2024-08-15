@@ -1,8 +1,7 @@
 package action;
 
 import test.DataField;
-import test.DragDropRectanglesWithSplitPane;
-import test.rects.TextFieldRect;
+import test.Main;
 
 public class AddedDataAction extends Action {
 
@@ -15,12 +14,12 @@ public class AddedDataAction extends Action {
 
     @Override
     public void execute() {
-        DragDropRectanglesWithSplitPane.dataPanel.addDataField(d);
+        Main.dataPanel.addDataField(d);
     }
 
     @Override
     public void reverse() {
-        DragDropRectanglesWithSplitPane.dataPanel.removeDataField(d);
+        Main.dataPanel.removeDataField(d);
     }
 
 }

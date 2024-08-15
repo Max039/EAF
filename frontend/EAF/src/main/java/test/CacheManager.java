@@ -3,7 +3,6 @@ package test;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import java.io.IOException;
 import java.util.HashMap;
 
 public class CacheManager {
@@ -24,7 +23,7 @@ public class CacheManager {
 
         JSONObject o = null;
         try {
-            o = DragDropRectanglesWithSplitPane.readJSONFileToJSON(cachePath + "." + cacheFileType);
+            o = FileManager.readJSONFileToJSON(cachePath + "." + cacheFileType);
             System.out.println("Cache found!");
         }
         catch (Exception e) {
@@ -75,7 +74,7 @@ public class CacheManager {
     }
 
     public void saveCache() {
-        DragDropRectanglesWithSplitPane.writeJSONToFile(toCache(), cachePath + "." + cacheFileType);
+        FileManager.writeJSONToFile(toCache(), cachePath + "." + cacheFileType);
     }
 
     public <T> void addToBuffer(String b, T item) {

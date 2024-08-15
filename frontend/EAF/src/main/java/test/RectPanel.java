@@ -1,16 +1,9 @@
 package test;
 
 import compiler.ClassType;
-import compiler.FieldType;
-import compiler.FieldValue;
-import compiler.SyntaxTree;
 import org.json.JSONArray;
 import org.json.JSONObject;
-import test.rects.OptionsFieldRect;
 import test.rects.Rect;
-import test.rects.TextFieldRect;
-import test.rects.multi.ArrayRect;
-import test.rects.multi.ClassRect;
 import test.rects.multi.RectWithRects;
 
 import javax.swing.*;
@@ -64,8 +57,8 @@ public class RectPanel extends JScrollPane {
 
 
         // Set background colors for demonstration (optional)
-        drawingPanel.setBackground(DragDropRectanglesWithSplitPane.bgColor);
-        drawingPanel.setForeground(DragDropRectanglesWithSplitPane.bgColor);
+        drawingPanel.setBackground(Main.bgColor);
+        drawingPanel.setForeground(Main.bgColor);
 
         layeredPane = new JLayeredPane() {
             @Override
@@ -167,8 +160,8 @@ public class RectPanel extends JScrollPane {
 
     @Override
     public void repaint() {
-        if (DragDropRectanglesWithSplitPane.subFrame != null) {
-            DragDropRectanglesWithSplitPane.subFrame.stringMarker = new HashMap<>();
+        if (Main.subFrame != null) {
+            InputHandler.stringMarker = new HashMap<>();
         }
         if (drawingPanel != null) {
             drawingPanel.repaint();
@@ -193,7 +186,7 @@ public class RectPanel extends JScrollPane {
             removeRect(r);
         }
         for (var c : cs) {
-            addRect(DragDropRectanglesWithSplitPane.getRectFromClassType(c));
+            addRect(RectFactory.getRectFromClassType(c));
         }
     }
 
@@ -213,137 +206,7 @@ public class RectPanel extends JScrollPane {
         rects.clear();
 
         for (var o : arr) {
-            addRect(rectFromJson((JSONObject)o));
-        }
-    }
-
-    public Rect rectFromJson(JSONObject arr) {
-
-        String clazz = (String) arr.get("sub-type");
-
-
-        switch ((String) arr.get("type")) {
-            case "option-field" :
-                String value = (String) arr.get("value");
-
-                var c = new ClassType(clazz, null, "Primitive");
-                boolean b1 = (Boolean) arr.get("editable");
-                if (clazz.contains("bool")) {
-                    var r = new ArrayList<Object>();
-                    r.add(true);
-                    r.add(false);
-                    return new OptionsFieldRect(r, value, RectPanel.textBoxWidth, RectPanel.textBoxHeight, RectPanel.primitiveColor, c, b1, TextFieldRect.defaultTextColor);
-                }
-                else {
-                    return new OptionsFieldRect(DragDropRectanglesWithSplitPane.dataPanel.getDataFieldList(), value, RectPanel.textBoxWidth, RectPanel.textBoxHeight, RectPanel.primitiveColor, c, b1, OptionsFieldRect.defaultTextColor);
-                }
-            case "text-field" :
-                String value2 = (String) arr.get("value");
-                boolean b2 = (Boolean) arr.get("editable");
-                var c2 = new ClassType(clazz, null, "Primitive");
-                return new TextFieldRect(value2, RectPanel.textBoxWidth, RectPanel.textBoxHeight, RectPanel.primitiveColor, c2, b2);
-            case "instance" :
-                var reg = SyntaxTree.classRegister.get(clazz);
-                String pack = (String) arr.get("package");
-                if (!reg.pack.equals(pack)) {
-                    System.out.println("WARNING: Unequal pack \"" + pack + "\" != \"" + reg.pack + "\" for class \"" + clazz + "\" you can ignore this if you changed the class domain.");
-                }
-
-                var v = new FieldValue(reg);
-                var instance =  (ClassRect) DragDropRectanglesWithSplitPane.getRectFromClassType(v.instance);
-                JSONArray value3 = (JSONArray) arr.get("value");
-                int i = 0;
-                for (var field : reg.fields.entrySet()) {
-                    boolean found = false;
-                    for (var jsonField : value3) {
-                        if (((String)((JSONObject)jsonField).get("field-name")).equals(field.getKey())) {
-                            var fr = rectFromJson((JSONObject)jsonField);
-                            if (field.getValue().getSecond() != null) {
-                                if (fr instanceof OptionsFieldRect) {
-                                    ((OptionsFieldRect)fr).setTextColor(TextFieldRect.uneditableColor);
-                                }
-                                if (fr instanceof TextFieldRect) {
-                                    ((TextFieldRect)fr).setTextColor(TextFieldRect.uneditableColor);
-                                }
-                            }
-                            if (fr instanceof ClassRect && SyntaxTree.classRegister.get(field.getValue().getFirst().typeName).findSingleNonAbstractClass() != null) {
-                                ((ClassRect)fr).setLocked(true);
-                            }
-
-                            instance.setIndex(i, fr);
-                            found = true;
-                            break;
-                        }
-                    }
-                    if (!found) {
-                        System.out.println("WARNING: For field \"" + field.getKey() + "\" in class \"" + reg.name + "\" no value was found in json!");
-                        if (field.getValue().getSecond() == null) {
-                            if (field.getValue().getFirst().primitive) {
-                                instance.setIndex(i, DragDropRectanglesWithSplitPane.getRectFromFieldType(field.getValue().getFirst(), null));
-                            }
-                            else {
-                                if (field.getValue().getFirst().primitive) {
-                                    instance.setIndex(i, DragDropRectanglesWithSplitPane.getRectFromFieldType(field.getValue().getFirst(), field.getValue().getSecond()));
-                                }
-                            }
-                        }
-                    }
-                    i++;
-                }
-                return instance;
-
-            case "array" :
-
-
-                JSONArray arrarr = (JSONArray) arr.get("value");
-
-                var arrnames = new String[arrarr.length()];
-                var arrtypes = new FieldType[arrarr.length()];
-                var arrrects = new Rect[arrarr.length()];
-
-                var ft = new FieldType(clazz, (Boolean) arr.get("primitive"), (Integer) arr.get("count"));
-
-                boolean fill = ft.primitive;
-                if (!fill) {
-                    var check = SyntaxTree.classRegister.get(ft.typeName).findSingleNonAbstractClass();
-                    if (check != null) {
-                        System.out.println("Info: Only 1 non abstract type available for " + ft.typeName + " converting array to " + check.name);
-                        fill = true;
-                        ft = new FieldType(check.name, false, ft.arrayCount);
-                    }
-                }
-
-
-                int i3 = 0;
-                for (int i4 = 0; i4 < arrarr.length(); i4++) {
-                    arrnames[i3] = "";
-                    arrtypes[i3] = ft;
-                    arrrects[i3] = null;
-                    i3++;
-                }
-
-                var ct = new ClassType(clazz, null, "Array");
-
-
-
-                var arrRect = new ArrayRect<>(RectPanel.arrayWidth, RectPanel.arrayHeight, RectPanel.arrayColor, ct, ft, arrnames, arrrects, arrtypes, fill, true);
-
-                int i2 = 0;
-                for (var jsonField : arrarr) {
-                    var resRect = rectFromJson((JSONObject)jsonField);
-                    arrRect.setIndex(i2, resRect);
-                    if (resRect instanceof ClassRect && SyntaxTree.classRegister.get(ft.typeName).findSingleNonAbstractClass() != null) {
-                        ((ClassRect)resRect).setLocked(true);
-                    }
-                    i2++;
-                }
-                return arrRect;
-
-
-            default:
-                throw new RuntimeException("Invalid rect type \"" + arr.get("type") + "\"!");
-
-
+            addRect(RectFactory.rectFromJson((JSONObject)o));
         }
     }
 

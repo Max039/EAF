@@ -1,9 +1,7 @@
 package action;
 
-import test.DataFieldListPane;
-import test.DragDropRectanglesWithSplitPane;
+import test.Main;
 import test.rects.Rect;
-import test.rects.TextFieldRect;
 import test.rects.multi.RectWithRects;
 
 public class AddedRectAction extends  Action {
@@ -20,23 +18,23 @@ public class AddedRectAction extends  Action {
     @Override
     public void execute() {
         if (parent == null) {
-            DragDropRectanglesWithSplitPane.subFrame.leftPanel.getRects().add(index, added);
-            added.addTo(DragDropRectanglesWithSplitPane.subFrame.leftPanel.drawingPanel);
+            Main.subFrame.leftPanel.getRects().add(index, added);
+            added.addTo(Main.subFrame.leftPanel.drawingPanel);
         }
         else {
             parent.setIndex(index, added);
-            added.addTo(DragDropRectanglesWithSplitPane.subFrame.leftPanel.drawingPanel);
+            added.addTo(Main.subFrame.leftPanel.drawingPanel);
         }
     }
 
     @Override
     public void reverse() {
         if (parent == null) {
-            DragDropRectanglesWithSplitPane.subFrame.leftPanel.removeRect(added);
+            Main.subFrame.leftPanel.removeRect(added);
         }
         else {
             parent.setIndex(index, null);
-            added.removeFrom(DragDropRectanglesWithSplitPane.subFrame.leftPanel.drawingPanel);
+            added.removeFrom(Main.subFrame.leftPanel.drawingPanel);
         }
     }
 

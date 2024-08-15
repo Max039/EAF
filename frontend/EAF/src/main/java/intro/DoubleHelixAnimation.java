@@ -1,6 +1,6 @@
 package intro;
 
-import test.DragDropRectanglesWithSplitPane;
+import test.Main;
 
 import javax.swing.*;
 import java.awt.*;
@@ -71,7 +71,7 @@ public class DoubleHelixAnimation extends JPanel implements ActionListener {
         // Anti-aliasing for smoother lines
         g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
-        Color bg = DragDropRectanglesWithSplitPane.bgColor;
+        Color bg = Main.bgColor;
 
         double centerX = WIDTH / 2.0;
         double centerY = HEIGHT / 2.0;
@@ -230,7 +230,7 @@ public class DoubleHelixAnimation extends JPanel implements ActionListener {
         frame.setLocationRelativeTo(null);
         frame.setVisible(true);
 
-        Color bg = DragDropRectanglesWithSplitPane.bgColor;
+        Color bg = Main.bgColor;
         helixAnimation.setBackground(new Color(bg.getRed(), bg.getGreen(), bg.getBlue(), 255));
         return helixAnimation;
     }

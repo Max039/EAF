@@ -1,6 +1,5 @@
 package action;
 
-import test.DragDropRectanglesWithSplitPane;
 import test.rects.Rect;
 import test.rects.multi.ArrayRect;
 
