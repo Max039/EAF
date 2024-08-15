@@ -9,12 +9,19 @@ import javax.swing.*;
 import javax.swing.border.Border;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
+import javax.swing.event.MenuEvent;
+import javax.swing.event.MenuListener;
 import javax.swing.plaf.basic.BasicScrollBarUI;
 import javax.swing.plaf.basic.BasicSplitPaneDivider;
 import javax.swing.plaf.basic.BasicSplitPaneUI;
 import java.awt.*;
 import java.awt.event.*;
+import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+
+import static test.FileManager.loadSave;
+import static test.FileManager.readJSONFileToJSON;
 
 public class GuiCreator {
 
@@ -41,7 +48,7 @@ public class GuiCreator {
             @Override
             public void actionPerformed(ActionEvent e) {
                 try {
-                    FileManager.loadSave(FileManager.readJSONFileToJSON(Main.savesPath + "/test" + "." + Main.saveFormat));
+                    loadSave(readJSONFileToJSON(Main.savesPath + "/test" + "." + Main.saveFormat));
                 } catch (IOException ex) {
                     throw new RuntimeException(ex);
                 }
@@ -81,7 +88,7 @@ public class GuiCreator {
                 try {
                     var file = FileManager.chooseJavaFile(Main.savesPath, Main.saveFormat);
                     if (file != null) {
-                        FileManager.loadSave(FileManager.readJSONFileToJSON(file));
+                        loadSave(readJSONFileToJSON(file));
                         Main.cacheManager.addToBuffer("filesOpened", file.getPath());
                     }
                 } catch (IOException ex) {
@@ -90,7 +97,7 @@ public class GuiCreator {
             }
         });
 
-        fileMenu.add(openFileDotDotDot);
+
 
 
         JMenuItem saveFileDotDotDot = new JMenuItem("save as ...");
@@ -101,13 +108,91 @@ public class GuiCreator {
                 var file = FileManager.saveJavaFile(Main.savesPath, Main.saveFormat, "save");
                 if (file != null) {
                     FileManager.writeJSONToFile(FileManager.createSave(), file.getPath());
+                    Main.cacheManager.addToBuffer("filesOpened", file.getPath());
                     System.out.println("File " + file.getName() + " saved!");
                 }
             }
         });
 
-        fileMenu.add(saveFileDotDotDot);
 
+
+        // Create a JMenuItem that will have a submenu
+        JMenuItem open = new JMenu("open recent");
+
+        // Add a MenuListener to update the submenu before it is shown
+        ((JMenu) open).addMenuListener(new MenuListener() {
+            @Override
+            public void menuSelected(MenuEvent e) {
+                // Clear the submenu before repopulating
+                open.removeAll();
+
+                // Get the latest elements from the ArrayList
+                ArrayList<String> items = Main.cacheManager.getBuffer(String.class, "filesOpened").getElements();
+
+                // Populate the submenu with the updated items
+                for (String item : items) {
+                    JMenuItem menuItem = new JMenuItem(item);
+                    menuItem.addActionListener(new ActionListener() {
+                        @Override
+                        public void actionPerformed(ActionEvent e) {
+                            try {
+                                if (new File(item).exists()) {
+                                    loadSave(readJSONFileToJSON(item));
+                                    Main.cacheManager.addToBuffer("filesOpened", item);
+                                }
+                                else {
+                                    JOptionPane.showMessageDialog(null, "File was not found!", "Error", JOptionPane.ERROR_MESSAGE);
+                                }
+                            } catch (IOException ex) {
+                                throw new RuntimeException(ex);
+                            }
+                        }
+                    });
+                    open.add(menuItem);
+                }
+                // Refresh the submenu (optional, depending on your use case)
+                open.revalidate();
+                open.repaint();
+            }
+
+            @Override
+            public void menuDeselected(MenuEvent e) {
+                // Optional: Handle the event when the menu is deselected
+            }
+
+            @Override
+            public void menuCanceled(MenuEvent e) {
+                // Optional: Handle the event when the menu is canceled
+            }
+        });
+
+        JMenuItem save = new JMenuItem("save");
+
+        save.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                FileManager.save();
+            }
+        });
+
+
+
+        JMenuItem newSave = new JMenuItem("new");
+
+        newSave.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                FileManager.newFile();
+                FileManager.emptySave();
+            }
+        });
+
+        // Add the submenu to the main menu
+        fileMenu.add(newSave);
+        fileMenu.add(open);
+        fileMenu.add(openFileDotDotDot);
+        fileMenu.add(saveFileDotDotDot);
+        fileMenu.add(save);
         menuBar.add(fileMenu);
     }
 

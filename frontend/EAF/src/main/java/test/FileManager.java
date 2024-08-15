@@ -49,6 +49,12 @@ public class FileManager {
         InputHandler.actionHandler.reset();
     }
 
+    public static void emptySave() {
+        Main.dataPanel.fromJson(new JSONArray());
+        Main.mainPanel.leftPanel.fromJson(new JSONArray());
+        InputHandler.actionHandler.reset();
+    }
+
     public static JSONObject createSave() {
         JSONObject o = new JSONObject();
         o.put("rects", Main.mainPanel.leftPanel.toJson());
@@ -185,5 +191,31 @@ public class FileManager {
         else {
             System.out.println("No recent file in cache!");
         }
+    }
+
+    static void newFile() {
+        String saveName = JOptionPane.showInputDialog(null, "Enter the name for the save:", "Save Name", JOptionPane.QUESTION_MESSAGE);
+        if (saveName == null || saveName.trim().isEmpty()) {
+            // User canceled the input or entered an empty name
+            System.out.println("Save operation canceled or no name entered.");
+            return;
+        }
+        // Construct the full path to the file
+        String currentDirectory = System.getProperty("user.dir");
+        File file = new File(currentDirectory + Main.savesPath, saveName + "." + Main.saveFormat);
+
+        // Check if a file with the given name already exists
+        if (file.exists()) {
+            JOptionPane.showMessageDialog(null, "A file with that name already exists. Please choose a different name.", "Error", JOptionPane.ERROR_MESSAGE);
+            newFile();
+        }
+        writeJSONToFile(createSave(), file.getAbsolutePath());
+        Main.cacheManager.addToBuffer("filesOpened", file.getAbsolutePath());
+        System.out.println("File " + file.getName() + " saved!");
+    }
+
+    static void save() {
+        System.out.println("Saving!");
+        writeJSONToFile(createSave(), Main.cacheManager.getFirstElement(String.class, "filesOpened"));
     }
 }
