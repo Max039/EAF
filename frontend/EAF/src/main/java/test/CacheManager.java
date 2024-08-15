@@ -21,7 +21,6 @@ public class CacheManager {
     CacheManager() {
 
         bufferNamesAndSize.put("filesOpened", new Pair<>(String.class, 5));
-        bufferNamesAndSize.put("recentFile", new Pair<>(String.class, 1));
 
         JSONObject o = null;
         try {

@@ -824,7 +824,7 @@ public class DragDropRectanglesWithSplitPane extends JPanel {
     }
 
     public void loadRecent() {
-        var c = cacheManager.getFirstElement(String.class, "recentFile");
+        var c = cacheManager.getFirstElement(String.class, "filesOpened");
         if (c != null) {
             try {
                 loadSave(readJSONFileToJSON(c));
@@ -946,7 +946,6 @@ public class DragDropRectanglesWithSplitPane extends JPanel {
                     if (file != null) {
                         loadSave(readJSONFileToJSON(file));
                         cacheManager.addToBuffer("filesOpened", file.getPath());
-                        cacheManager.addToBuffer("recentFile", file.getPath());
                     }
                 } catch (IOException ex) {
                     throw new RuntimeException(ex);
