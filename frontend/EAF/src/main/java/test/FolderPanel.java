@@ -11,7 +11,7 @@ import java.util.*;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static test.Main.customizeScrollBar;
+import static test.GuiCreator.customizeScrollBar;
 
 public class FolderPanel extends JPanel {
     private Stack<String> pathStack;
