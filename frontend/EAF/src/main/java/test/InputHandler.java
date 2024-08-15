@@ -112,6 +112,9 @@ public class InputHandler {
                     Main.mainPanel.revalidate();
                     Main.mainPanel.repaint();
                 }
+                else if (e.getKeyCode() == KeyEvent.VK_S && isControlPressed) {
+                    FileManager.save();
+                }
             }
 
             @Override
