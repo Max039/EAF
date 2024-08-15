@@ -14,7 +14,7 @@ public class CacheManager {
 
     private HashMap<String, LimitedBuffer<?>> buffer = new HashMap<>();
 
-    private String cachePath = "cache";
+    private String cachePath = "session";
 
     private String cacheFileType = "cache";
 
