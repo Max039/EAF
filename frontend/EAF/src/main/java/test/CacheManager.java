@@ -21,6 +21,7 @@ public class CacheManager {
     CacheManager() {
 
         bufferNamesAndSize.put("filesOpened", new Pair<>(String.class, 5));
+        bufferNamesAndSize.put("recentFile", new Pair<>(String.class, 1));
 
         JSONObject o = null;
         try {
@@ -42,7 +43,13 @@ public class CacheManager {
 
     public void readCache(JSONObject o) {
         for (var b : bufferNamesAndSize.entrySet()) {
-            buffer.put(b.getKey(), makeBuffer(b.getValue().getFirst(), b.getValue().getSecond(), (JSONArray) o.get(b.getKey())));
+            if (o.has(b.getKey())) {
+                buffer.put(b.getKey(), makeBuffer(b.getValue().getFirst(), b.getValue().getSecond(), (JSONArray) o.get(b.getKey())));
+            }
+            else {
+                System.out.println("Field \"" + b.getKey() + "\" was not found in cache!");
+                buffer.put(b.getKey(), makeBuffer(b.getValue().getFirst(), b.getValue().getSecond()));
+            }
         }
     }
 
@@ -86,6 +93,10 @@ public class CacheManager {
         for (var e : buffer.get(buf).getElements()) {
             System.out.println(e.toString());
         }
+    }
+
+    public <T> LimitedBuffer<T> getBuffer(Class<T> c, String s) {
+        return (LimitedBuffer<T>) buffer.get(s);
     }
 
 }

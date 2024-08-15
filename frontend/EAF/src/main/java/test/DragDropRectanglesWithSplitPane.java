@@ -708,6 +708,8 @@ public class DragDropRectanglesWithSplitPane extends JPanel {
         mainSplitPane.setBorder(border2);
 
 
+
+
         add(mainSplitPane, BorderLayout.CENTER);
 
 
@@ -818,6 +820,18 @@ public class DragDropRectanglesWithSplitPane extends JPanel {
         addKeyListener(dataPanel);
         addKeyListener(folderPanel.scrollPane);
 
+        var c = cacheManager.getBuffer(String.class, "recentFile");
+        if (!c.isEmpty()) {
+            try {
+                loadSave(readJSONFileToJSON(c.getElements().get(0)));
+            }
+            catch (Exception e) {
+                System.out.println("Recent file could not be opened");
+            }
+        }
+        else {
+            System.out.println("No recent file in cache!");
+        }
     }
 
     public static void writeToFile(String content, String filePath) {
@@ -928,6 +942,7 @@ public class DragDropRectanglesWithSplitPane extends JPanel {
                     if (file != null) {
                         loadSave(readJSONFileToJSON(file));
                         cacheManager.addToBuffer("filesOpened", file.getPath());
+                        cacheManager.addToBuffer("recentFile", file.getPath());
                     }
                 } catch (IOException ex) {
                     throw new RuntimeException(ex);
