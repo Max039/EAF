@@ -1,31 +1,58 @@
 {
     "data": [],
-    "rects": [{
-        "package": "de.evoal.generator.generator",
-        "type": "instance",
-        "sub-type": "ackley",
-        "value": [
-            {
-                "field-name": "a",
-                "editable": true,
-                "type": "text-field",
-                "sub-type": "real",
-                "value": "test"
-            },
-            {
-                "field-name": "b",
-                "editable": true,
-                "type": "text-field",
-                "sub-type": "real",
-                "value": "0.2"
-            },
-            {
-                "field-name": "c",
-                "editable": true,
-                "type": "text-field",
-                "sub-type": "real",
-                "value": "2*PI"
-            }
-        ]
-    }]
+    "rects": [
+        {
+            "package": "de.evoal.generator.generator",
+            "type": "instance",
+            "sub-type": "ackley",
+            "value": [
+                {
+                    "field-name": "a",
+                    "editable": true,
+                    "type": "text-field",
+                    "sub-type": "real",
+                    "value": "reas"
+                },
+                {
+                    "field-name": "b",
+                    "editable": true,
+                    "type": "text-field",
+                    "sub-type": "real",
+                    "value": "0.2"
+                },
+                {
+                    "field-name": "c",
+                    "editable": true,
+                    "type": "text-field",
+                    "sub-type": "real",
+                    "value": "2*PI"
+                }
+            ]
+        },
+        {
+            "package": "de.evoal.optimisation.ea.optimisation",
+            "type": "instance",
+            "sub-type": "alterers",
+            "value": [
+                {
+                    "field-name": "crossover",
+                    "package": "Array",
+                    "primitive": false,
+                    "count": 0,
+                    "type": "array",
+                    "sub-type": "crossover",
+                    "value": []
+                },
+                {
+                    "field-name": "mutator",
+                    "package": "Array",
+                    "primitive": false,
+                    "count": 0,
+                    "type": "array",
+                    "sub-type": "mutator",
+                    "value": []
+                }
+            ]
+        }
+    ]
 }

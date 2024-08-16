@@ -5,6 +5,7 @@ import test.rects.Rect;
 import test.rects.multi.ClassRect;
 import test.rects.multi.RectWithRects;
 
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.border.Border;
 import javax.swing.event.DocumentEvent;
@@ -16,6 +17,7 @@ import javax.swing.plaf.basic.BasicSplitPaneDivider;
 import javax.swing.plaf.basic.BasicSplitPaneUI;
 import java.awt.*;
 import java.awt.event.*;
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -23,7 +25,35 @@ import java.util.ArrayList;
 import static test.FileManager.loadSave;
 import static test.FileManager.readJSONFileToJSON;
 
+
+
 public class GuiCreator {
+
+    public static BufferedImage cross = null;
+    public static BufferedImage checkmark = null;
+
+    static {
+        try {
+            // Load the image from the root directory
+            cross = ImageIO.read(new File("cross.png"));
+
+            if (cross == null) {
+                throw new IOException("Image not found!");
+            }
+
+            // Load the image from the root directory
+            checkmark = ImageIO.read(new File("checkmark.png"));
+
+            if (checkmark == null) {
+                throw new IOException("Image not found!");
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+            // Handle the case where the image could not be loaded
+            cross = null;
+            checkmark = null;
+        }
+    }
 
     static void addFileMenu(JMenuBar menuBar) {
         // Create the File menu
@@ -473,7 +503,24 @@ public class GuiCreator {
         panel2.setBackground(Main.searchBar);
 
         // Add the panel to the top of the container
-        JPanel leftContainerPanel = new JPanel(new BorderLayout());
+        JPanel leftContainerPanel = new JPanel(new BorderLayout()) {
+            @Override
+            public void paint(Graphics g) {
+                super.paint(g);
+                var g2 = (Graphics2D) g;
+                if (InputHandler.actionHandler.areChangesMadeSinceSave()) {
+                    var picX = getWidth() - cross.getWidth() - RectWithRects.spacing;
+                    var picY = main.leftPanelTextField.getHeight() + RectWithRects.spacing;
+                    g2.drawImage(cross, picX, picY, cross.getWidth(), cross.getHeight(), null);
+                }
+                else {
+                    var picX = getWidth() - checkmark.getWidth() - RectWithRects.spacing;
+                    var picY = main.leftPanelTextField.getHeight() + RectWithRects.spacing;;
+                    g2.drawImage(checkmark, picX, picY, checkmark.getWidth(), checkmark.getHeight(), null);
+                }
+
+            }
+        };
         leftContainerPanel.setBackground(Main.searchBar);
         panel2.setBorder(BorderFactory.createLineBorder(Main.searchBarBorder, 1));
         leftContainerPanel.add(panel2, BorderLayout.NORTH);

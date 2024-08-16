@@ -27,7 +27,7 @@ public class Main extends JPanel {
 
     private static final int RECT_SPACING = 5;
     public final RectPanel leftPanel = new RectPanel();
-    public final RectPanel rightPanel = new RectPanel();
+    public final RectPanel rightPanel = new RectPanel() ;
 
     public static int arrayDefaultCount = 1;
 

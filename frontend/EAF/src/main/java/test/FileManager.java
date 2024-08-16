@@ -225,6 +225,8 @@ public class FileManager {
         else {
             FileManager.saveAs();
         }
+        Main.mainPanel.revalidate();
+        Main.mainPanel.repaint();
     }
 
     static void saveAs() {
@@ -242,5 +244,7 @@ public class FileManager {
             InputHandler.actionHandler.saved();
             System.out.println("File " + file.getName() + " saved!");
         }
+        Main.mainPanel.revalidate();
+        Main.mainPanel.repaint();
     }
 }

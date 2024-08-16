@@ -45,20 +45,20 @@ public abstract class RectWithRects extends Rect {
 
     private int hoveringIndex = -1;
 
-    public static BufferedImage img = null;
+    public static BufferedImage lock = null;
 
     static {
         try {
             // Load the image from the root directory
-            img = ImageIO.read(new File("lock.png"));
+            lock = ImageIO.read(new File("lock.png"));
 
-            if (img == null) {
+            if (lock == null) {
                 throw new IOException("Image not found!");
             }
         } catch (IOException e) {
             e.printStackTrace();
             // Handle the case where the image could not be loaded
-            img = null;
+            lock = null;
         }
     }
 
@@ -171,7 +171,7 @@ public abstract class RectWithRects extends Rect {
             }
         }
         if (context != null && this instanceof ClassRect) {
-            int extra = locked ? spacing + img.getWidth() : 0;
+            int extra = locked ? spacing + lock.getWidth() : 0;
 
             maxWidth = Math.max(maxWidth, (int) getFont().getStringBounds(clazz.name, context).getWidth() + extra);
         }
@@ -266,11 +266,11 @@ public abstract class RectWithRects extends Rect {
         g2.fillRect(getX() + borderSize, getY() + borderSize, getWidth() - borderSize * 2, getHeight() - borderSize * 2);
 
         // Draw a 16x16 PNG image in the top right corner of the rectangle
-        int picX = getX() + getWidth() - img.getWidth() - spacing; // Top right corner X position
+        int picX = getX() + getWidth() - lock.getWidth() - spacing; // Top right corner X position
         int picY = getY() + spacing; // Top right corner Y position
 
-        if (img != null && this instanceof ClassRect && locked) {
-            g2.drawImage(img, picX, picY, img.getWidth(), img.getHeight(), null);
+        if (lock != null && this instanceof ClassRect && locked) {
+            g2.drawImage(lock, picX, picY, lock.getWidth(), lock.getHeight(), null);
         }
 
         int offset = realHeight();
