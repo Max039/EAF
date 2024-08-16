@@ -228,7 +228,14 @@ public class FileManager {
     }
 
     static void saveAs() {
-        var file = FileManager.saveJavaFile(Main.savesPath, Main.saveFormat, "save");
+        String fileName = "save";
+        var r = Main.cacheManager.getFirstElement(String.class, "filesOpened");
+        if (r != null) {
+            var parts =  r.split("/");
+            fileName = parts[parts.length - 1].split("\\.")[0];
+        }
+
+        var file = FileManager.saveJavaFile(Main.savesPath, Main.saveFormat, fileName);
         if (file != null) {
             FileManager.writeJSONToFile(FileManager.createSave(), file.getPath());
             Main.cacheManager.addToBuffer("filesOpened", file.getPath());
