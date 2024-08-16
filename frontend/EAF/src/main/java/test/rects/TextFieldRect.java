@@ -94,16 +94,19 @@ public class TextFieldRect extends Rect {
         textBox.getDocument().addDocumentListener(new DocumentListener() {
             @Override
             public void insertUpdate(DocumentEvent e) {
+                InputHandler.actionHandler.changesMade();
                 Main.mainFrame.repaint();
             }
 
             @Override
             public void removeUpdate(DocumentEvent e) {
+                InputHandler.actionHandler.changesMade();
                 Main.mainFrame.repaint();
             }
 
             @Override
             public void changedUpdate(DocumentEvent e) {
+                InputHandler.actionHandler.changesMade();
                 Main.mainFrame.repaint();
             }
         });

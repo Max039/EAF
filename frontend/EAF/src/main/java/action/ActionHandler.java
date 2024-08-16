@@ -51,4 +51,8 @@ public class ActionHandler {
     public boolean areChangesMadeSinceSave() {
         return actionPerformedSince;
     }
+
+    public void changesMade() {
+        actionPerformedSince = true;
+    }
 }
