@@ -105,12 +105,7 @@ public class GuiCreator {
         saveFileDotDotDot.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                var file = FileManager.saveJavaFile(Main.savesPath, Main.saveFormat, "save");
-                if (file != null) {
-                    FileManager.writeJSONToFile(FileManager.createSave(), file.getPath());
-                    Main.cacheManager.addToBuffer("filesOpened", file.getPath());
-                    System.out.println("File " + file.getName() + " saved!");
-                }
+                FileManager.saveAs();
             }
         });
 

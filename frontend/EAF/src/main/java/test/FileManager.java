@@ -216,6 +216,21 @@ public class FileManager {
 
     static void save() {
         System.out.println("Saving!");
-        writeJSONToFile(createSave(), Main.cacheManager.getFirstElement(String.class, "filesOpened"));
+        var r = Main.cacheManager.getFirstElement(String.class, "filesOpened");
+        if (r != null) {
+            writeJSONToFile(createSave(), r);
+        }
+        else {
+            FileManager.saveAs();
+        }
+    }
+
+    static void saveAs() {
+        var file = FileManager.saveJavaFile(Main.savesPath, Main.saveFormat, "save");
+        if (file != null) {
+            FileManager.writeJSONToFile(FileManager.createSave(), file.getPath());
+            Main.cacheManager.addToBuffer("filesOpened", file.getPath());
+            System.out.println("File " + file.getName() + " saved!");
+        }
     }
 }
