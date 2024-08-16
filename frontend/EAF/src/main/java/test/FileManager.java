@@ -210,6 +210,7 @@ public class FileManager {
             newFile();
         }
         writeJSONToFile(createSave(), file.getAbsolutePath());
+        FileManager.emptySave();
         Main.cacheManager.addToBuffer("filesOpened", file.getAbsolutePath());
         System.out.println("File " + file.getName() + " saved!");
     }
@@ -219,6 +220,7 @@ public class FileManager {
         var r = Main.cacheManager.getFirstElement(String.class, "filesOpened");
         if (r != null) {
             writeJSONToFile(createSave(), r);
+            InputHandler.actionHandler.saved();
         }
         else {
             FileManager.saveAs();
@@ -230,6 +232,7 @@ public class FileManager {
         if (file != null) {
             FileManager.writeJSONToFile(FileManager.createSave(), file.getPath());
             Main.cacheManager.addToBuffer("filesOpened", file.getPath());
+            InputHandler.actionHandler.saved();
             System.out.println("File " + file.getName() + " saved!");
         }
     }

@@ -17,6 +17,7 @@ public class CacheManager {
 
     private String cacheFileType = "cache";
 
+
     CacheManager() {
 
         bufferNamesAndSize.put("filesOpened", new Pair<>(String.class, 5));

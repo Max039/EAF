@@ -10,7 +10,7 @@
                 "editable": true,
                 "type": "text-field",
                 "sub-type": "real",
-                "value": "20.0"
+                "value": "re"
             },
             {
                 "field-name": "b",

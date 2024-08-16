@@ -5,6 +5,8 @@ import java.util.Queue;
 
 public class ActionHandler {
 
+    boolean actionPerformedSince = false;
+
     private ArrayList<Action> futureQue = new ArrayList<>();
     private ArrayList<Action> pastQue = new ArrayList<>();
 
@@ -15,6 +17,7 @@ public class ActionHandler {
     public void action(Action a) {
         futureQue = new ArrayList<>();
         pastQue.add(a);
+        actionPerformedSince = true;
     }
 
     public void ctrlZ() {
@@ -38,5 +41,14 @@ public class ActionHandler {
     public void reset() {
         futureQue.clear();
         pastQue.clear();
+        actionPerformedSince = false;
+    }
+
+    public void saved() {
+        actionPerformedSince = false;
+    }
+
+    public boolean areChangesMadeSinceSave() {
+        return actionPerformedSince;
     }
 }

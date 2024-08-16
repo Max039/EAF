@@ -25,56 +25,6 @@ import static test.FileManager.readJSONFileToJSON;
 
 public class GuiCreator {
 
-    static void addTestMenu(JMenuBar menuBar) {
-        // Create the File menu
-        JMenu testMenu = new JMenu("Test");
-
-        // Create menu items
-        JMenuItem newItem = new JMenuItem("Script");
-
-        newItem.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                FileManager.writeToFile(Main.dataPanel.toString(),"config.ddl");
-                FileManager.writeToFile(Main.mainPanel.leftPanel.toString(),"config.ol");
-            }
-        });
-
-
-        JMenuItem openItem = new JMenuItem("Open");
-
-
-        openItem.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                try {
-                    loadSave(readJSONFileToJSON(Main.savesPath + "/test" + "." + Main.saveFormat));
-                } catch (IOException ex) {
-                    throw new RuntimeException(ex);
-                }
-            }
-        });
-
-        JMenuItem exitItem = new JMenuItem("Save");
-
-        // Add action listeners for menu items
-        exitItem.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                FileManager.writeJSONToFile(FileManager.createSave(), Main.savesPath + "/test" + "." + Main.saveFormat);
-            }
-        });
-
-        // Add menu items to File menu
-        testMenu.add(newItem);
-        testMenu.add(openItem);
-        testMenu.addSeparator();
-        testMenu.add(exitItem);
-
-        // Add File menu to menu bar
-        menuBar.add(testMenu);
-    }
-
     static void addFileMenu(JMenuBar menuBar) {
         // Create the File menu
         JMenu fileMenu = new JMenu("File");
@@ -86,10 +36,13 @@ public class GuiCreator {
             @Override
             public void actionPerformed(ActionEvent e) {
                 try {
-                    var file = FileManager.chooseJavaFile(Main.savesPath, Main.saveFormat);
-                    if (file != null) {
-                        loadSave(readJSONFileToJSON(file));
-                        Main.cacheManager.addToBuffer("filesOpened", file.getPath());
+                    var cancle = showUnsaveDialog();
+                    if (!cancle) {
+                        var file = FileManager.chooseJavaFile(Main.savesPath, Main.saveFormat);
+                        if (file != null) {
+                            loadSave(readJSONFileToJSON(file));
+                            Main.cacheManager.addToBuffer("filesOpened", file.getPath());
+                        }
                     }
                 } catch (IOException ex) {
                     throw new RuntimeException(ex);
@@ -132,8 +85,11 @@ public class GuiCreator {
                         public void actionPerformed(ActionEvent e) {
                             try {
                                 if (new File(item).exists()) {
-                                    loadSave(readJSONFileToJSON(item));
-                                    Main.cacheManager.addToBuffer("filesOpened", item);
+                                    var cancle = showUnsaveDialog();
+                                    if (!cancle) {
+                                        loadSave(readJSONFileToJSON(item));
+                                        Main.cacheManager.addToBuffer("filesOpened", item);
+                                    }
                                 }
                                 else {
                                     JOptionPane.showMessageDialog(null, "File was not found!", "Error", JOptionPane.ERROR_MESSAGE);
@@ -177,8 +133,10 @@ public class GuiCreator {
         newSave.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                FileManager.newFile();
-                FileManager.emptySave();
+                var cancle = showUnsaveDialog();
+                if (!cancle) {
+                    FileManager.newFile();
+                }
             }
         });
 
@@ -189,6 +147,41 @@ public class GuiCreator {
         fileMenu.add(saveFileDotDotDot);
         fileMenu.add(save);
         menuBar.add(fileMenu);
+    }
+
+    public static boolean showUnsaveDialog() {
+
+        if (!InputHandler.actionHandler.areChangesMadeSinceSave()) {
+            return false;
+        }
+        else {
+            // Options for the dialog
+            String[] options = {"Yes", "No", "Cancel"};
+
+            // Show the dialog and store the selected option
+            int choice = JOptionPane.showOptionDialog(
+                    null,
+                    "The current file is not saved, do you wish to save?",
+                    "Unsaved File",
+                    JOptionPane.YES_NO_CANCEL_OPTION,
+                    JOptionPane.WARNING_MESSAGE,
+                    null,
+                    options,
+                    options[2]
+            );
+
+            // Handle the choice and return the corresponding value
+            switch (choice) {
+                case JOptionPane.YES_OPTION:
+                    FileManager.save();
+                    return false;
+                case JOptionPane.CANCEL_OPTION:
+                case JOptionPane.CLOSED_OPTION: // Also handle if the dialog is closed
+                    return true;
+                default:
+                    return false;
+            }
+        }
     }
 
     static void customizeScrollBar(JScrollPane scrollPane) {
@@ -700,8 +693,6 @@ public class GuiCreator {
     static void createMenuBar() {
         // Create and set up the menu bar
         JMenuBar menuBar = new JMenuBar();
-
-        addTestMenu(menuBar);
 
 
         addFileMenu(menuBar);
