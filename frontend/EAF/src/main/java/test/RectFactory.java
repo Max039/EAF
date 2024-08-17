@@ -95,7 +95,7 @@ public class RectFactory {
                 if (!fill) {
                     var check = SyntaxTree.classRegister.get(type.typeName).findSingleNonAbstractClass();
                     if (check != null) {
-                        System.out.println(LogManager.reactFactory() + LogManager.info() + ": Only " + ColorManager.colorText("1", ColorManager.warningColor) + " non abstract type available for \"" + ColorManager.colorText(type.typeName, ColorManager.infoColor) + "\" " + ColorManager.colorText("converting", ColorManager.warningColor) + " array to \"" + ColorManager.colorText(check.name, ColorManager.infoColor) + "\"");
+                        System.out.println(LogManager.reactFactory() + LogManager.info() + " Only " + ColorManager.colorText("1", ColorManager.warningColor) + " non abstract type available for \"" + ColorManager.colorText(type.typeName, ColorManager.infoColor) + "\" " + ColorManager.colorText("converting", ColorManager.warningColor) + " array to \"" + ColorManager.colorText(check.name, ColorManager.infoColor) + "\"");
                         fill = true;
                         ctype = new FieldType(check.name, false, ctype.arrayCount);
                     }
@@ -133,7 +133,7 @@ public class RectFactory {
                 else {
                     var check = SyntaxTree.classRegister.get(type.typeName).findSingleNonAbstractClass();
                     if (check != null) {
-                        System.out.println(LogManager.reactFactory() + LogManager.info() + ": Only " + ColorManager.colorText("1", ColorManager.warningColor) + " non abstract type available for \"" + ColorManager.colorText(type.typeName, ColorManager.infoColor) + "\" "  + ColorManager.colorText("creating and setting instance", ColorManager.warningColor) +  " of \"" + ColorManager.colorText(check.name, ColorManager.infoColor) + "\" for field.");
+                        System.out.println(LogManager.reactFactory() + LogManager.info() + " Only " + ColorManager.colorText("1", ColorManager.warningColor) + " non abstract type available for \"" + ColorManager.colorText(type.typeName, ColorManager.infoColor) + "\" "  + ColorManager.colorText("creating and setting instance", ColorManager.warningColor) +  " of \"" + ColorManager.colorText(check.name, ColorManager.infoColor) + "\" for field.");
                         var newR = (ClassRect) getRectFromClassType(check);
                         newR.setLocked(true);
                         return (T) newR ;
@@ -205,7 +205,7 @@ public class RectFactory {
                         }
                     }
                     if (!found) {
-                        System.out.println(LogManager.reactFactory() + LogManager.warning() + ": For field \"" + field.getKey() + "\" in class \"" + reg.name + "\" no value was found in json!");
+                        System.out.println(LogManager.reactFactory() + LogManager.warning() + " For field \"" + field.getKey() + "\" in class \"" + reg.name + "\" no value was found in json!");
                         if (field.getValue().getSecond() == null) {
                             if (field.getValue().getFirst().primitive) {
                                 instance.setIndex(i, getRectFromFieldType(field.getValue().getFirst(), null));
@@ -236,7 +236,7 @@ public class RectFactory {
                 if (!fill) {
                     var check = SyntaxTree.classRegister.get(ft.typeName).findSingleNonAbstractClass();
                     if (check != null) {
-                        System.out.println(LogManager.reactFactory() + LogManager.info() + ": Only " + ColorManager.colorText("1", ColorManager.warningColor) + " non abstract type available for \"" + ColorManager.colorText(ft.typeName, ColorManager.infoColor) + "\" " + ColorManager.colorText("converting", ColorManager.warningColor) +  " array to " + ColorManager.colorText(check.name, ColorManager.infoColor) + "\"");
+                        System.out.println(LogManager.reactFactory() + LogManager.info() + " Only " + ColorManager.colorText("1", ColorManager.warningColor) + " non abstract type available for \"" + ColorManager.colorText(ft.typeName, ColorManager.infoColor) + "\" " + ColorManager.colorText("converting", ColorManager.warningColor) +  " array to " + ColorManager.colorText(check.name, ColorManager.infoColor) + "\"");
                         fill = true;
                         ft = new FieldType(check.name, false, ft.arrayCount);
                     }
