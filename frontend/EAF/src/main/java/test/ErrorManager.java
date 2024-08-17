@@ -2,6 +2,7 @@ package test;
 
 import test.rects.OptionsFieldRect;
 import test.rects.Rect;
+import test.rects.multi.ClassRect;
 import test.rects.multi.RectWithRects;
 
 import java.util.HashMap;
@@ -9,8 +10,11 @@ import java.util.HashMap;
 public class ErrorManager {
     public static HashMap<Rect, String> erroRects = new HashMap<>();
 
+    public static int errors = 0;
+
     public static void clearErrors() {
         erroRects = new HashMap<>();
+        System.out.println("Clearing!");
     }
 
     public static void checkForErrors(Rect r) {
@@ -24,7 +28,6 @@ public class ErrorManager {
         } else if (r instanceof OptionsFieldRect) {
             ((OptionsFieldRect)r).refreshComboBoxOptions();
         }
-
     }
 
     public static void checkForErrors() {
@@ -37,6 +40,7 @@ public class ErrorManager {
         for (var e : erroRects.values()) {
             System.out.println("Error in rect: " + e);
         }
-
+        System.out.println("Total errors: " + erroRects.size());
+        errors = erroRects.size();
     }
 }

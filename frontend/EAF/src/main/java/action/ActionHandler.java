@@ -1,5 +1,7 @@
 package action;
 
+import test.ErrorManager;
+
 import java.util.ArrayList;
 import java.util.Queue;
 
@@ -18,6 +20,7 @@ public class ActionHandler {
         futureQue = new ArrayList<>();
         pastQue.add(a);
         actionPerformedSince = true;
+        ErrorManager.checkForErrors();
     }
 
     public void ctrlZ() {
@@ -27,6 +30,8 @@ public class ActionHandler {
             pastQue.remove(action);
             futureQue.add(action);
         }
+        actionPerformedSince = true;
+        ErrorManager.checkForErrors();
     }
 
     public void ctrlY() {
@@ -36,6 +41,8 @@ public class ActionHandler {
             futureQue.remove(action);
             pastQue.add(action);
         }
+        actionPerformedSince = true;
+        ErrorManager.checkForErrors();
     }
 
     public void reset() {

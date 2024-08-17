@@ -26,7 +26,7 @@ public class Main extends JPanel {
     public static Color searchBarBorder = new Color(85, 85, 85);
 
     private static final int RECT_SPACING = 5;
-    public final RectPanel leftPanel = new RectPanel();
+    public final RectPanel leftPanel = GuiCreator.createLeftRectPanel();
     public final RectPanel rightPanel = new RectPanel() ;
 
     public static int arrayDefaultCount = 1;

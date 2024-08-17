@@ -47,12 +47,14 @@ public class FileManager {
         JSONArray a = o.getJSONArray("rects");
         Main.mainPanel.leftPanel.fromJson(a);
         InputHandler.actionHandler.reset();
+        ErrorManager.checkForErrors();
     }
 
     public static void emptySave() {
         Main.dataPanel.fromJson(new JSONArray());
         Main.mainPanel.leftPanel.fromJson(new JSONArray());
         InputHandler.actionHandler.reset();
+        ErrorManager.checkForErrors();
     }
 
     public static JSONObject createSave() {

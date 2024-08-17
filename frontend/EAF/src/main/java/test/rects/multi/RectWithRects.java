@@ -23,12 +23,16 @@ import java.awt.font.FontRenderContext;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 import javax.imageio.ImageIO;
 
 import static compiler.FieldValue.doesTypesMatch;
+import static java.util.stream.IntStream.range;
 
 public abstract class RectWithRects extends Rect {
 
@@ -445,7 +449,6 @@ public abstract class RectWithRects extends Rect {
             r.parentIndex = i;
         }
         subRects[i] = r;
-
         Main.mainPanel.leftPanel.revalidate();
         Main.mainPanel.leftPanel.repaint();
     }
@@ -680,8 +683,8 @@ public abstract class RectWithRects extends Rect {
                                 index = Main.mainPanel.leftPanel.getRects().indexOf(RectWithRects.this);
                             }
 
-                            InputHandler.actionHandler.action(new DeletedRectAction(parent, RectWithRects.this, index));
                             Main.mainPanel.leftPanel.removeRect(RectWithRects.this);
+                            InputHandler.actionHandler.action(new DeletedRectAction(parent, RectWithRects.this, index));
                             Main.mainPanel.leftPanel.revalidate();
                             Main.mainPanel.leftPanel.repaint();
                         }
@@ -702,8 +705,28 @@ public abstract class RectWithRects extends Rect {
 
     @Override
     public void setValidity() {
-        ErrorManager.erroRects.remove(this);
-        valid = true;
+        if (this instanceof ClassRect) {
+            valid = Arrays.stream(getSubRects()).noneMatch(Objects::isNull);
+            if (!valid) {
+                var comb = IntStream.range(0, getSubRects().length)
+                        .mapToObj(i -> new Pair<>(names[i], subRects[i]));
+                var fields = comb.filter(t -> t.getSecond() == null).toList();
+                String r = "";
+                int i = 0;
+                for (var f : fields) {
+                    if (i != 0) {
+                        r += ", ";
+                    }
+                    r += f.getFirst();
+                    i++;
+                }
+                ErrorManager.erroRects.put(this, "Not all fields set for " + clazz.name + "! [" + r + "]");
+            }
+            else {
+                System.out.println("Removing");
+                ErrorManager.erroRects.remove(this);
+            }
+        }
     };
 
     @Override
@@ -762,5 +785,7 @@ public abstract class RectWithRects extends Rect {
             }
         }
     }
+
+
 
 }

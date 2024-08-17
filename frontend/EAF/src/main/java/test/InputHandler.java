@@ -103,8 +103,9 @@ public class InputHandler {
                         actionHandler.action(new DeletedRectAction(selected.parent, selected, selected.parentIndex));
                     }
                     else {
-                        actionHandler.action(new DeletedRectAction(null, selected, leftPanel.getRects().indexOf(selected)));
                         leftPanel.removeRect(selected);
+                        actionHandler.action(new DeletedRectAction(null, selected, leftPanel.getRects().indexOf(selected)));
+
                     }
                     clipBoard = selected;
 
@@ -209,13 +210,13 @@ public class InputHandler {
                     int p = draggedRect.parentIndex;
                     var res = ((RectWithRects)matchingRect).setIndex(releasePoint, draggedRect);
                     if (res.getFirst()) {
+                        draggedRect.addTo(leftPanel.drawingPanel);
                         if (draggingSource != null) {
                             actionHandler.action(new MovedRectAction(draggingSource, (RectWithRects)res.getSecond().getFirst(), draggedRect, p, res.getSecond().getSecond()));
                         }
                         else {
                             actionHandler.action(new AddedRectAction((RectWithRects)res.getSecond().getFirst(), draggedRect, res.getSecond().getSecond()));
                         }
-                        draggedRect.addTo(leftPanel.drawingPanel);
                     }
                     else {
                         actionHandler.action(new DeletedRectAction(draggingSource, draggedRect, p));
@@ -223,13 +224,13 @@ public class InputHandler {
 
                 }
                 else if (matchingRect == null) {
+                    leftPanel.addRect(leftPanel.draggingRect);
                     if (draggingSource != null) {
                         actionHandler.action(new MovedRectAction(draggingSource, null, draggedRect, draggedRect.parentIndex, leftPanel.getRects().size()));
                     }
                     else {
                         actionHandler.action(new AddedRectAction(null, draggedRect, leftPanel.getRects().size()));
                     }
-                    leftPanel.addRect(leftPanel.draggingRect);
                 }
                 else {
                     actionHandler.action(new DeletedRectAction(draggingSource, draggedRect, draggedRect.parentIndex));

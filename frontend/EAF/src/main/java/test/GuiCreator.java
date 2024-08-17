@@ -32,6 +32,9 @@ public class GuiCreator {
     public static BufferedImage cross = null;
     public static BufferedImage checkmark = null;
 
+    public static BufferedImage runable = null;
+    public static BufferedImage unrunable = null;
+
     static {
         try {
             // Load the image from the root directory
@@ -47,11 +50,28 @@ public class GuiCreator {
             if (checkmark == null) {
                 throw new IOException("Image not found!");
             }
+
+            // Load the image from the root directory
+            runable = ImageIO.read(new File("runable.png"));
+
+            if (runable == null) {
+                throw new IOException("Image not found!");
+            }
+
+            // Load the image from the root directory
+            unrunable = ImageIO.read(new File("unrunable.png"));
+
+            if (unrunable == null) {
+                throw new IOException("Image not found!");
+            }
+
         } catch (IOException e) {
             e.printStackTrace();
             // Handle the case where the image could not be loaded
             cross = null;
             checkmark = null;
+            runable = null;
+            unrunable = null;
         }
     }
 
@@ -503,24 +523,7 @@ public class GuiCreator {
         panel2.setBackground(Main.searchBar);
 
         // Add the panel to the top of the container
-        JPanel leftContainerPanel = new JPanel(new BorderLayout()) {
-            @Override
-            public void paint(Graphics g) {
-                super.paint(g);
-                var g2 = (Graphics2D) g;
-                if (InputHandler.actionHandler.areChangesMadeSinceSave()) {
-                    var picX = getWidth() - cross.getWidth() - RectWithRects.spacing;
-                    var picY = main.leftPanelTextField.getHeight() + RectWithRects.spacing;
-                    g2.drawImage(cross, picX, picY, cross.getWidth(), cross.getHeight(), null);
-                }
-                else {
-                    var picX = getWidth() - checkmark.getWidth() - RectWithRects.spacing;
-                    var picY = main.leftPanelTextField.getHeight() + RectWithRects.spacing;;
-                    g2.drawImage(checkmark, picX, picY, checkmark.getWidth(), checkmark.getHeight(), null);
-                }
-
-            }
-        };
+        JPanel leftContainerPanel = new JPanel(new BorderLayout());
         leftContainerPanel.setBackground(Main.searchBar);
         panel2.setBorder(BorderFactory.createLineBorder(Main.searchBarBorder, 1));
         leftContainerPanel.add(panel2, BorderLayout.NORTH);
@@ -528,6 +531,37 @@ public class GuiCreator {
         leftContainerPanel.add(main.leftPanel, BorderLayout.CENTER);
         leftContainerPanel.setBorder(BorderFactory.createEmptyBorder());
         return leftContainerPanel;
+    }
+
+    public static RectPanel createLeftRectPanel() {
+        return new RectPanel()  {
+            @Override
+            public void paint(Graphics g) {
+                super.paint(g);
+                var g2 = (Graphics2D) g;
+                if (InputHandler.actionHandler.areChangesMadeSinceSave()) {
+                    var picX = getWidth() - cross.getWidth() - RectWithRects.spacing - Main.mainPanel.leftPanel.getVerticalScrollBar().getWidth();
+                    var picY = RectWithRects.spacing + Main.mainPanel.leftPanel.getHorizontalScrollBar().getHeight();
+                    g2.drawImage(cross, picX, picY, cross.getWidth(), cross.getHeight(), null);
+                }
+                else {
+                    var picX = getWidth() - checkmark.getWidth() - RectWithRects.spacing - Main.mainPanel.leftPanel.getVerticalScrollBar().getWidth();
+                    var picY =RectWithRects.spacing + Main.mainPanel.leftPanel.getHorizontalScrollBar().getHeight();
+                    g2.drawImage(checkmark, picX, picY, checkmark.getWidth(), checkmark.getHeight(), null);
+                }
+                if (ErrorManager.errors > 0) {
+                    var picX = getWidth() - cross.getWidth() - unrunable.getWidth() - RectWithRects.spacing * 2  - Main.mainPanel.leftPanel.getVerticalScrollBar().getWidth();
+                    var picY = RectWithRects.spacing + Main.mainPanel.leftPanel.getHorizontalScrollBar().getHeight();
+                    g2.drawImage(unrunable, picX, picY, unrunable.getWidth(), unrunable.getHeight(), null);
+                }
+                else {
+                    var picX = getWidth() - checkmark.getWidth() - runable.getWidth() - RectWithRects.spacing * 2 - Main.mainPanel.leftPanel.getVerticalScrollBar().getWidth();
+                    var picY = RectWithRects.spacing + Main.mainPanel.leftPanel.getHorizontalScrollBar().getHeight();;
+                    g2.drawImage(runable, picX, picY, runable.getWidth(), runable.getHeight(), null);
+                }
+
+            }
+        };
     }
 
     static void setLeftPanelTextFieldListeners(final Main main) {
