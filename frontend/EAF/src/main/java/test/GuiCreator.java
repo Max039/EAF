@@ -533,35 +533,30 @@ public class GuiCreator {
         return leftContainerPanel;
     }
 
-    public static RectPanel createLeftRectPanel() {
-        return new RectPanel()  {
-            @Override
-            public void paint(Graphics g) {
-                super.paint(g);
-                var g2 = (Graphics2D) g;
-                if (InputHandler.actionHandler.areChangesMadeSinceSave()) {
-                    var picX = getWidth() - cross.getWidth() - RectWithRects.spacing - Main.mainPanel.leftPanel.getVerticalScrollBar().getWidth();
-                    var picY = RectWithRects.spacing + Main.mainPanel.leftPanel.getHorizontalScrollBar().getHeight();
-                    g2.drawImage(cross, picX, picY, cross.getWidth(), cross.getHeight(), null);
-                }
-                else {
-                    var picX = getWidth() - checkmark.getWidth() - RectWithRects.spacing - Main.mainPanel.leftPanel.getVerticalScrollBar().getWidth();
-                    var picY =RectWithRects.spacing + Main.mainPanel.leftPanel.getHorizontalScrollBar().getHeight();
-                    g2.drawImage(checkmark, picX, picY, checkmark.getWidth(), checkmark.getHeight(), null);
-                }
-                if (ErrorManager.errors > 0) {
-                    var picX = getWidth() - cross.getWidth() - unrunable.getWidth() - RectWithRects.spacing * 2  - Main.mainPanel.leftPanel.getVerticalScrollBar().getWidth();
-                    var picY = RectWithRects.spacing + Main.mainPanel.leftPanel.getHorizontalScrollBar().getHeight();
-                    g2.drawImage(unrunable, picX, picY, unrunable.getWidth(), unrunable.getHeight(), null);
-                }
-                else {
-                    var picX = getWidth() - checkmark.getWidth() - runable.getWidth() - RectWithRects.spacing * 2 - Main.mainPanel.leftPanel.getVerticalScrollBar().getWidth();
-                    var picY = RectWithRects.spacing + Main.mainPanel.leftPanel.getHorizontalScrollBar().getHeight();;
-                    g2.drawImage(runable, picX, picY, runable.getWidth(), runable.getHeight(), null);
-                }
-
+    public static void drawIcons(RectPanel r, Graphics g) {
+            var g2 = (Graphics2D) g;
+            if (InputHandler.actionHandler.areChangesMadeSinceSave()) {
+                var picX = r.getWidth() - cross.getWidth() - RectWithRects.spacing - Main.mainPanel.leftPanel.getVerticalScrollBar().getWidth();
+                var picY = r.getVerticalScrollBar().getValue() + RectWithRects.spacing + Main.mainPanel.leftPanel.getHorizontalScrollBar().getHeight();
+                g2.drawImage(cross, picX, picY, cross.getWidth(), cross.getHeight(), null);
             }
-        };
+            else {
+                var picX = r.getWidth() - checkmark.getWidth() - RectWithRects.spacing - Main.mainPanel.leftPanel.getVerticalScrollBar().getWidth();
+                var picY = r.getVerticalScrollBar().getValue() + RectWithRects.spacing + Main.mainPanel.leftPanel.getHorizontalScrollBar().getHeight();
+                g2.drawImage(checkmark, picX, picY, checkmark.getWidth(), checkmark.getHeight(), null);
+            }
+            if (ErrorManager.errors > 0) {
+                var picX = r.getWidth() - cross.getWidth() - unrunable.getWidth() - RectWithRects.spacing * 2  - Main.mainPanel.leftPanel.getVerticalScrollBar().getWidth();
+                var picY = r.getVerticalScrollBar().getValue() + RectWithRects.spacing + Main.mainPanel.leftPanel.getHorizontalScrollBar().getHeight();
+                g2.drawImage(unrunable, picX, picY, unrunable.getWidth(), unrunable.getHeight(), null);
+            }
+            else {
+                var picX = r.getWidth() - checkmark.getWidth() - runable.getWidth() - RectWithRects.spacing * 2 - Main.mainPanel.leftPanel.getVerticalScrollBar().getWidth();
+                var picY = r.getVerticalScrollBar().getValue() + RectWithRects.spacing + Main.mainPanel.leftPanel.getHorizontalScrollBar().getHeight();;
+                g2.drawImage(runable, picX, picY, runable.getWidth(), runable.getHeight(), null);
+            }
+
+
     }
 
     static void setLeftPanelTextFieldListeners(final Main main) {

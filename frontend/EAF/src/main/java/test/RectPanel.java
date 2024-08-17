@@ -164,23 +164,23 @@ public class RectPanel extends JScrollPane {
 
     @Override
     public void repaint() {
+        super.repaint();
         if (Main.mainPanel != null) {
             InputHandler.stringMarker = new HashMap<>();
         }
         if (drawingPanel != null) {
             drawingPanel.repaint();
         }
-        super.repaint();
+
 
     }
 
     @Override
     public void revalidate() {
+        super.revalidate();
         if (drawingPanel != null) {
             drawingPanel.revalidate();
         }
-        super.revalidate();
-
     }
 
 
@@ -317,6 +317,9 @@ public class RectPanel extends JScrollPane {
                     }
                 }
 
+            }
+            if (Main.mainPanel.leftPanel == RectPanel.this) {
+                GuiCreator.drawIcons(RectPanel.this, g);
             }
         }
 
