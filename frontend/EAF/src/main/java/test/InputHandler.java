@@ -262,7 +262,11 @@ public class InputHandler {
         rightPanel.getVerticalScrollBar().setValue(0);
         var cnt = rightPanel.getMatchingRects();
         if (cnt < 1) {
+            Main.mainPanel.rightPanelTextField.setForeground(Main.searchBarError);
             SoundManager.playExclamationSound();
+        }
+        else {
+            Main.mainPanel.rightPanelTextField.setForeground(Main.searchBarText);
         }
         contentLabel.setText(Long.toString(cnt));
         contentLabel.revalidate();
