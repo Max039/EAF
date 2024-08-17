@@ -35,43 +35,27 @@ public class GuiCreator {
     public static BufferedImage runable = null;
     public static BufferedImage unrunable = null;
 
+    public static BufferedImage warning = null;
+
     static {
         try {
             // Load the image from the root directory
             cross = ImageIO.read(new File("cross.png"));
 
-            if (cross == null) {
-                throw new IOException("Image not found!");
-            }
-
             // Load the image from the root directory
             checkmark = ImageIO.read(new File("checkmark.png"));
-
-            if (checkmark == null) {
-                throw new IOException("Image not found!");
-            }
 
             // Load the image from the root directory
             runable = ImageIO.read(new File("runable.png"));
 
-            if (runable == null) {
-                throw new IOException("Image not found!");
-            }
-
             // Load the image from the root directory
             unrunable = ImageIO.read(new File("unrunable.png"));
 
-            if (unrunable == null) {
-                throw new IOException("Image not found!");
-            }
+            warning = ImageIO.read(new File("warning.png"));
+
 
         } catch (IOException e) {
             e.printStackTrace();
-            // Handle the case where the image could not be loaded
-            cross = null;
-            checkmark = null;
-            runable = null;
-            unrunable = null;
         }
     }
 
@@ -552,9 +536,17 @@ public class GuiCreator {
                 g2.drawImage(unrunable, picX, picY, unrunable.getWidth(), unrunable.getHeight(), null);
             }
             else {
-                var picX = r.getWidth() - checkmark.getWidth() - runable.getWidth() - RectWithRects.spacing * 2 - Main.mainPanel.leftPanel.getVerticalScrollBar().getWidth();
-                var picY = r.getVerticalScrollBar().getValue() + RectWithRects.spacing + Main.mainPanel.leftPanel.getHorizontalScrollBar().getHeight();;
-                g2.drawImage(runable, picX, picY, runable.getWidth(), runable.getHeight(), null);
+                if (ErrorManager.warnings > 0) {
+                    var picX = r.getWidth() - checkmark.getWidth() - warning.getWidth() - RectWithRects.spacing * 2 - Main.mainPanel.leftPanel.getVerticalScrollBar().getWidth();
+                    var picY = r.getVerticalScrollBar().getValue() + RectWithRects.spacing + Main.mainPanel.leftPanel.getHorizontalScrollBar().getHeight();;
+                    g2.drawImage(warning, picX, picY, warning.getWidth(), warning.getHeight(), null);
+                }
+                else {
+                    var picX = r.getWidth() - checkmark.getWidth() - runable.getWidth() - RectWithRects.spacing * 2 - Main.mainPanel.leftPanel.getVerticalScrollBar().getWidth();
+                    var picY = r.getVerticalScrollBar().getValue() + RectWithRects.spacing + Main.mainPanel.leftPanel.getHorizontalScrollBar().getHeight();;
+                    g2.drawImage(runable, picX, picY, runable.getWidth(), runable.getHeight(), null);
+                }
+
             }
 
 
@@ -801,5 +793,28 @@ public class GuiCreator {
             // Fill the divider with the chosen color
             g.fillRect(0, 0, getWidth(), getHeight());
         }
+    }
+
+
+    public static String rgbToAnsi(int r, int g, int b) {
+        // Ensure RGB values are within the 0-255 range
+        r = Math.max(0, Math.min(255, r));
+        g = Math.max(0, Math.min(255, g));
+        b = Math.max(0, Math.min(255, b));
+
+        // ANSI escape code for RGB foreground color
+        return String.format("\033[38;2;%d;%d;%dm", r, g, b);
+    }
+
+    public static String colorText(String text, int r, int g, int b) {
+        String colorAnsi = rgbToAnsi(r, g, b);
+        String resetAnsi = "\033[0m"; // Reset ANSI code to default color
+        return colorAnsi + text + resetAnsi;
+    }
+
+    public static String colorText(String text, Color c) {
+        String colorAnsi = rgbToAnsi(c.getRed(), c.getGreen(), c.getBlue());
+        String resetAnsi = "\033[0m"; // Reset ANSI code to default color
+        return colorAnsi + text + resetAnsi;
     }
 }

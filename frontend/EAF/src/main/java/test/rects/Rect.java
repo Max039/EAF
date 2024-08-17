@@ -82,6 +82,7 @@ public abstract class Rect {
     }
 
     public boolean valid = true;
+    public boolean warning = false;
 
     public void setTransparent() {
         setOpacity(transparencyFactor);

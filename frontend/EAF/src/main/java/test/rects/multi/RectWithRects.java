@@ -76,6 +76,7 @@ public abstract class RectWithRects extends Rect {
     Color invalidRectsColor = new Color(190, 70, 70);
 
     Color errorColor = new Color(70, 43, 43, 255);
+    Color warningColor = new Color(70, 70, 43, 255);
 
     Color arrayColor = new Color(104, 151, 187);
 
@@ -323,7 +324,12 @@ public abstract class RectWithRects extends Rect {
             }
             else {
                 if (valid) {
-                    g.setColor(new Color(emptyRectsColor.getRed(), emptyRectsColor.getGreen(), emptyRectsColor.getBlue(), (int)(255 * a)));
+                    if (warning) {
+                        g.setColor(new Color(warningColor.getRed(), warningColor.getGreen(), warningColor.getBlue(), (int)(255 * a)));
+                    }
+                    else {
+                        g.setColor(new Color(emptyRectsColor.getRed(), emptyRectsColor.getGreen(), emptyRectsColor.getBlue(), (int)(255 * a)));
+                    }
                 }
                 else {
                     g.setColor(new Color(invalidRectsColor.getRed(), invalidRectsColor.getGreen(), invalidRectsColor.getBlue(), (int)(255 * a)));
@@ -728,11 +734,15 @@ public abstract class RectWithRects extends Rect {
 
     @Override
     public void setValidity() {
+        color = RectPanel.instanceColor;
        if (this instanceof ArrayRect && subRects.length < 1) {
-           valid = false;
-           color = errorColor;
-           ErrorManager.erroRects.put(this, new Pair(getY()," Empty Array!"));
-           return;
+           color = warningColor;
+           warning = false;
+           ErrorManager.warningRects.put(this, new Pair(getY(),"Empty Array!"));
+       }
+       else {
+           ErrorManager.warningRects.remove(this);
+           warning = false;
        }
 
         valid = Arrays.stream(getSubRects()).noneMatch(Objects::isNull);
@@ -758,7 +768,6 @@ public abstract class RectWithRects extends Rect {
             return;
         }
         ErrorManager.erroRects.remove(this);
-        color = RectPanel.instanceColor;
     };
 
     @Override
