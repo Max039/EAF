@@ -69,4 +69,9 @@ public class LogManager {
         return encased(ColorManager.colorText("Cache-Manager", ColorManager.cacheManagerColor));
     }
 
+    public static String reactFactory() {
+        return encased(ColorManager.colorText("Rect-Factory", ColorManager.rectFactoryColor));
+    }
+
 }
+

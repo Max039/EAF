@@ -57,6 +57,13 @@ public class ColorManager {
     public static Color cacheManagerColor = new Color(255,240, 180);
 
     //==========================================
+    //               RectFactory
+    //==========================================
+
+    public static Color rectFactoryColor = new Color(190,230, 240);
+
+
+    //==========================================
     //==========================================
 
 
