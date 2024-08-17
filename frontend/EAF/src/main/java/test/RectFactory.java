@@ -15,6 +15,8 @@ import test.rects.multi.ClassRect;
 import java.util.ArrayList;
 
 public class RectFactory {
+
+
     public static <T extends Rect> T getRectFromClassType(ClassType type) {
 
         int length = type.fields.size();
@@ -93,7 +95,7 @@ public class RectFactory {
                 if (!fill) {
                     var check = SyntaxTree.classRegister.get(type.typeName).findSingleNonAbstractClass();
                     if (check != null) {
-                        System.out.println("Info: Only 1 non abstract type available for " + type.typeName + " converting array to " + check.name);
+                        System.out.println(LogManager.info() + ": Only 1 non abstract type available for " + type.typeName + " converting array to " + check.name);
                         fill = true;
                         ctype = new FieldType(check.name, false, ctype.arrayCount);
                     }
@@ -131,7 +133,7 @@ public class RectFactory {
                 else {
                     var check = SyntaxTree.classRegister.get(type.typeName).findSingleNonAbstractClass();
                     if (check != null) {
-                        System.out.println("Info: Only 1 non abstract type available for " + type.typeName + " creating and setting instance of " + check.name + " for field.");
+                        System.out.println(LogManager.info() + ": Only 1 non abstract type available for " + type.typeName + " creating and setting instance of " + check.name + " for field.");
                         var newR = (ClassRect) getRectFromClassType(check);
                         newR.setLocked(true);
                         return (T) newR ;
@@ -173,7 +175,7 @@ public class RectFactory {
                 var reg = SyntaxTree.classRegister.get(clazz);
                 String pack = (String) arr.get("package");
                 if (!reg.pack.equals(pack)) {
-                    System.out.println("WARNING: Unequal pack \"" + pack + "\" != \"" + reg.pack + "\" for class \"" + clazz + "\" you can ignore this if you changed the class domain.");
+                    System.out.println(LogManager.warning() + ": Unequal pack \"" + pack + "\" != \"" + reg.pack + "\" for class \"" + clazz + "\" you can ignore this if you changed the class domain.");
                 }
 
                 var v = new FieldValue(reg);
@@ -203,7 +205,7 @@ public class RectFactory {
                         }
                     }
                     if (!found) {
-                        System.out.println("WARNING: For field \"" + field.getKey() + "\" in class \"" + reg.name + "\" no value was found in json!");
+                        System.out.println(LogManager.warning() + ": For field \"" + field.getKey() + "\" in class \"" + reg.name + "\" no value was found in json!");
                         if (field.getValue().getSecond() == null) {
                             if (field.getValue().getFirst().primitive) {
                                 instance.setIndex(i, getRectFromFieldType(field.getValue().getFirst(), null));
@@ -234,7 +236,7 @@ public class RectFactory {
                 if (!fill) {
                     var check = SyntaxTree.classRegister.get(ft.typeName).findSingleNonAbstractClass();
                     if (check != null) {
-                        System.out.println("Info: Only 1 non abstract type available for " + ft.typeName + " converting array to " + check.name);
+                        System.out.println(LogManager.info() + ": Only 1 non abstract type available for " + ft.typeName + " converting array to " + check.name);
                         fill = true;
                         ft = new FieldType(check.name, false, ft.arrayCount);
                     }

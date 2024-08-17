@@ -1,6 +1,8 @@
 package compiler;
 
 import executor.ScriptWriter;
+import test.ColorManager;
+import test.LogManager;
 import test.Pair;
 import test.RectPanel;
 
@@ -21,22 +23,7 @@ public class SyntaxTree {
     public static String evoalBuild = ScriptWriter.evoalVersion;
     public static TreeNode root = new TreeNode("Root", "");
 
-    // ANSI escape codes for colors
-    public static final String RESET = "\u001B[0m";
 
-    public static final String RED = "\u001B[31m";
-    public static final String GREEN = "\u001B[32m";
-    public static final String BLUE = "\u001B[34m";
-
-    public static final String PURPLE = "\033[0;35m";
-    public static final String ORANGE = "\u001B[38;5;214m"; // Note: Standard ANSI doesn't support orange, so this uses an extended code
-
-    // Colored prefixes
-    public static String importPrefix = "[" + RESET + GREEN + "Import" + RESET + "] ";
-    public static String typePrefix = "[" + RESET + BLUE + "Type" + RESET + "] ";
-    public static String fieldPrefix = "[" + RESET + ORANGE + "Field" + RESET + "] ";
-
-    public static String parsingPrefix = "[" + RESET + PURPLE + "Parse" + RESET + "] ";
 
     public static HashMap<String, Module> moduleRegister = new HashMap<>();
 
@@ -73,7 +60,7 @@ public class SyntaxTree {
         for (String path : pathToSyntax) {
             File rootDir = new File(path);
             if (rootDir.exists() && rootDir.isDirectory()) {
-                System.out.println("Building file tree for: " + path);
+                System.out.println(LogManager.syntax() + LogManager.read() + " Building file tree for: " + path);
                 buildFileTree(root, rootDir); // Start building the file tree recursively
             } else {
                 System.err.println("Directory does not exist or is not a directory: " + path);
@@ -93,16 +80,7 @@ public class SyntaxTree {
         //processFile("EvoAlScripts\\genetic-programming\\config.ol", "script", false);
 
         System.out.println("============================");
-        System.out.println("============================");
-        System.out.println("============================");
-
-        System.out.println("============================");
-        for (var im : moduleRegister.values().stream().map(Module::toString).sorted().toList()) {
-            System.out.println(im);
-        }
-        System.out.println("============================");
-
-
+        /**
         ClassType type = new ClassType("ZeTestType", null, "TestPackage");
         processContentOfType(type, "{ " +
                 "    test : int := 5;\n" +
@@ -137,7 +115,7 @@ public class SyntaxTree {
                 "     ooo : string;\n" +
                 "     ooo := test;\n" +
                 "}");
-
+         **/
 
 
 
@@ -152,13 +130,6 @@ public class SyntaxTree {
         for (var im : baseClassRegister.values().stream().sorted().toList()) {
             System.out.print(getClassHierarchy(im, "", true, true));
         }
-        System.out.println("============================");
-        System.out.println("Simulating classes needed for imports: ");
-        //ArrayList<ClassType> classesNeededForScript = new ArrayList<>(baseClassRegister.values());
-        ArrayList<ClassType> classesNeededForScript = new ArrayList<>();
-        classesNeededForScript.add(classRegister.get("thin-plate-spline-svr"));
-        classesNeededForScript.add(classRegister.get("generation-print-crossover"));
-        System.out.println(getUniqueImports(classesNeededForScript));
         System.out.println("============================");
     }
 
@@ -199,8 +170,8 @@ public class SyntaxTree {
 
     public static void processDlFileForImports(String filename, String definitionName) throws IOException {
         if (moduleRegister.get(definitionName) == null) {
-            System.out.println(importPrefix + "\"" + definitionName + "\"" + RED + " is not " + RESET + "yet in memory!");
-            System.out.println(importPrefix + "Processing definition " + definitionName + " under path " + filename);
+            System.out.println(LogManager.imp() + " \"" + definitionName + "\"" + ColorManager.colorText(" is not ", ColorManager.errorColor) + "yet in memory!");
+            System.out.println(LogManager.imp() + " Processing definition " + definitionName + " under path " + filename);
             try (BufferedReader reader = new BufferedReader(new FileReader(filename))) {
                 String line;
                 while ((line = reader.readLine()) != null) {
@@ -236,7 +207,7 @@ public class SyntaxTree {
             }
         }
         else {
-            System.out.println(importPrefix + "Skipping \"" + definitionName +"\"" +  GREEN + " is " + RESET + "already in memory!");
+            System.out.println(LogManager.imp() + " Skipping \"" + definitionName +"\"" +  ColorManager.colorText(" is ", ColorManager.sucessColor) + "already in memory!");
         }
     }
 
@@ -255,7 +226,7 @@ public class SyntaxTree {
         // Extract module name
         String moduleName = extractModuleName(content);
         if (moduleName == null) {
-            System.out.println("Module name " + RED + moduleName + RESET + " not found!");
+            System.out.println(" Module name " + ColorManager.colorText(moduleName, ColorManager.errorColor) + " not found!");
             return new Pair<>(null, clazzTypes);
         }
 
@@ -277,7 +248,7 @@ public class SyntaxTree {
             clazzTypes.add(clazz);
             i++;
         }
-        System.out.println(typePrefix + "Found " + i + " types in module " + moduleName);
+        System.out.println(LogManager.type() + " Found " + i + " types in module " + moduleName);
         return new Pair<>(moduleName, clazzTypes);
     }
 
@@ -308,19 +279,19 @@ public class SyntaxTree {
     }
 
     static void UniversalFieldDefiner(ClassType context, String field, String typename, boolean isInstance, int isArray) {
-        System.out.println(fieldPrefix + "DefiningField called with field: " + field + ", typename: " + typename + ", isInstance: " + isInstance+ ", isArray: " + isArray);
+        System.out.println(LogManager.field() + " DefiningField called with field: " + field + ", typename: " + typename + ", isInstance: " + isInstance+ ", isArray: " + isArray);
         context.addField(field, new FieldType(typename, !isInstance, isArray));
     }
 
     static void PrimitiveFieldSetter(ClassType context, String field, String typename, String rawValue) {
         typename = getFieldTypeIfNull(context, field, typename);
-        System.out.println(fieldPrefix + "FieldSetterPrimitive called with field: " + field + ", typename: " + typename + ", value: " + rawValue);
+        System.out.println(LogManager.field() + " FieldSetterPrimitive called with field: " + field + ", typename: " + typename + ", value: " + rawValue);
         context.setField(field, primitiveStringToFieldValue(typename, rawValue));
     }
 
     static void InstanceFieldSetter(ClassType context, String field, String typename, String rawValue) {
         typename = getFieldTypeIfNull(context, field, typename);
-        System.out.println(fieldPrefix + "FieldSetterInstance called with field: " + field + ", typename: " + typename + ", value: " + rawValue);
+        System.out.println(LogManager.field() + " FieldSetterInstance called with field: " + field + ", typename: " + typename + ", value: " + rawValue);
         ClassType instanceContext = getInstanceOfClass(typename);
         FieldValue value = processContentOfType(instanceContext, rawValue);
         context.setField(field, value);
@@ -328,7 +299,7 @@ public class SyntaxTree {
 
     static void ArrayFieldSetter(ClassType context, String field, String typename, String rawValue, boolean defineAndSet) {
         typename = getFieldTypeIfNull(context, field, typename);
-        System.out.println(fieldPrefix + "ArraySetter called with field: " + field + " type: " + typename + ", value: " + rawValue);
+        System.out.println(LogManager.field() + " ArraySetter called with field: " + field + " type: " + typename + ", value: " + rawValue);
         if (!rawValue.isEmpty()) {
             int arrayDepth ;
             boolean instance;
@@ -437,7 +408,7 @@ public class SyntaxTree {
             Matcher floatMatcher = floatPattern.matcher(item);
 
             if (item.startsWith("[") && item.endsWith("]")) {
-                System.out.println(parsingPrefix + "Parsing sub array: " + item);
+                System.out.println(LogManager.parsing() + " Parsing sub array: " + item);
                 values.add(processArrayField(fieldType, item));
             } else if (instanceMatcher.find()) {
                 String type = item.split("\\s*\\{")[0];
@@ -465,7 +436,7 @@ public class SyntaxTree {
     public static FieldValue processContentOfType(ClassType context, String input) {
         input = input.replace("'", "");
 
-        System.out.println(parsingPrefix + "Parsing: ");
+        System.out.println(LogManager.parsing() + " Parsing: ");
         System.out.println(input);
 
         Pattern definingFieldPattern = Pattern.compile("\\b\\b.+:\\b.");
@@ -519,7 +490,7 @@ public class SyntaxTree {
     }
 
     public static void printArrayElement(String typename, String value) {
-        System.out.println(parsingPrefix + "Array Element: type= " + typename + " value= " + value);
+        System.out.println(LogManager.parsing() + " Array Element: type= " + typename + " value= " + value);
     }
 
 
@@ -543,9 +514,9 @@ public class SyntaxTree {
 
 
     public static ClassType DefineType(String typeName, String parent, String module, boolean isAbstract) {
-        System.out.println(typePrefix + "Registering Type: " + module + ", Type: " + typeName + ", Extending Type: " + parent + ", isAbstract: " + isAbstract);
+        System.out.println(LogManager.type() + " Registering Type: " + module + ", Type: " + typeName + ", Extending Type: " + parent + ", isAbstract: " + isAbstract);
         var test = classRegister.get(typeName);
-        System.out.println(module);
+        System.out.println(LogManager.pack() + " " + module);
         if (test != null && test.pack.equals(module)) {
             throw new TypeNameAlreadyUsedException("Type \"" + typeName + "\" in module \"" + module + "\" already defined!");
         }

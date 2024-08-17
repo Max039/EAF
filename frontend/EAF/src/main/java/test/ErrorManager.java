@@ -2,10 +2,8 @@ package test;
 
 import test.rects.OptionsFieldRect;
 import test.rects.Rect;
-import test.rects.multi.ClassRect;
 import test.rects.multi.RectWithRects;
 
-import java.awt.*;
 import java.util.HashMap;
 
 public class ErrorManager {
@@ -18,10 +16,7 @@ public class ErrorManager {
 
     public static int first = 0;
 
-    public static Color errorColor = new Color(255, 0, 0);
-    public static Color warningColor = new Color(255, 255, 0);
 
-    public static Color saveColor = new Color(0, 255, 0);
 
     public static void clearErrors() {
         erroRects = new HashMap<>();
@@ -50,23 +45,23 @@ public class ErrorManager {
             checkForErrors(r);
         }
         for (var e : warningRects.values()) {
-            System.out.println(GuiCreator.colorText("Warning", warningColor) + ": " + e.getSecond());
+            System.out.println(ColorManager.colorText("Warning", ColorManager.warningColor) + ": " + e.getSecond());
         }
         for (var e : erroRects.values()) {
-            System.out.println(GuiCreator.colorText("Error", errorColor) + ": " + e.getSecond());
+            System.out.println(ColorManager.colorText("Error", ColorManager.errorColor) + ": " + e.getSecond());
         }
         System.out.println("======================");
         if (warningRects.isEmpty()) {
-            System.out.println(GuiCreator.colorText("No Warnings!", saveColor));
+            System.out.println(ColorManager.colorText("No Warnings!", ColorManager.sucessColor));
         }
         else {
-            System.out.println(GuiCreator.colorText("Total Warnings", warningColor) + ": " + warningRects.size());
+            System.out.println(ColorManager.colorText("Total Warnings", ColorManager.warningColor) + ": " + warningRects.size());
         }
         if (erroRects.isEmpty()) {
-            System.out.println(GuiCreator.colorText("No Errors!", saveColor));
+            System.out.println(ColorManager.colorText("No Errors!", ColorManager.sucessColor));
         }
         else {
-            System.out.println( GuiCreator.colorText("Total Errors", errorColor) + ": " + erroRects.size());
+            System.out.println( ColorManager.colorText("Total Errors", ColorManager.errorColor) + ": " + erroRects.size());
         }
         System.out.println("======================");
         warnings = warningRects.size();

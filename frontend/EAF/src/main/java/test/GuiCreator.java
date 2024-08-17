@@ -796,25 +796,4 @@ public class GuiCreator {
     }
 
 
-    public static String rgbToAnsi(int r, int g, int b) {
-        // Ensure RGB values are within the 0-255 range
-        r = Math.max(0, Math.min(255, r));
-        g = Math.max(0, Math.min(255, g));
-        b = Math.max(0, Math.min(255, b));
-
-        // ANSI escape code for RGB foreground color
-        return String.format("\033[38;2;%d;%d;%dm", r, g, b);
-    }
-
-    public static String colorText(String text, int r, int g, int b) {
-        String colorAnsi = rgbToAnsi(r, g, b);
-        String resetAnsi = "\033[0m"; // Reset ANSI code to default color
-        return colorAnsi + text + resetAnsi;
-    }
-
-    public static String colorText(String text, Color c) {
-        String colorAnsi = rgbToAnsi(c.getRed(), c.getGreen(), c.getBlue());
-        String resetAnsi = "\033[0m"; // Reset ANSI code to default color
-        return colorAnsi + text + resetAnsi;
-    }
 }

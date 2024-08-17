@@ -1,5 +1,6 @@
 package compiler;
 
+import test.LogManager;
 import test.Pair;
 
 import javax.swing.*;
@@ -94,7 +95,7 @@ public class ClassType implements Comparable {
             fields.put(name, new Pair<>(v.type, v));
         }
         else {
-            System.out.println(SyntaxTree.fieldPrefix + "Trying to set field \"" + name + "\" of type \"" + currVal.getFirst() + "\" with current value \"" + currVal.getSecond() + "\" to \"" + v + "\"" );
+            System.out.println(LogManager.field() + "Trying to set field \"" + name + "\" of type \"" + currVal.getFirst() + "\" with current value \"" + currVal.getSecond() + "\" to \"" + v + "\"" );
             boolean typesMatch;
             if (currVal.getFirst().primitive) {
                 typesMatch = currVal.getFirst().equals(v.type);
