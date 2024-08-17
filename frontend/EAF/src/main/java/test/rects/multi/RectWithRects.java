@@ -705,28 +705,38 @@ public abstract class RectWithRects extends Rect {
 
     @Override
     public void setValidity() {
-        if (this instanceof ClassRect) {
-            valid = Arrays.stream(getSubRects()).noneMatch(Objects::isNull);
-            if (!valid) {
-                var comb = IntStream.range(0, getSubRects().length)
-                        .mapToObj(i -> new Pair<>(names[i], subRects[i]));
-                var fields = comb.filter(t -> t.getSecond() == null).toList();
-                String r = "";
-                int i = 0;
-                for (var f : fields) {
-                    if (i != 0) {
-                        r += ", ";
-                    }
-                    r += f.getFirst();
-                    i++;
+       if (this instanceof ArrayRect && subRects.length < 1) {
+           valid = false;
+           ErrorManager.erroRects.put(this, "Empty Array!");
+           return;
+       }
+
+        valid = Arrays.stream(getSubRects()).noneMatch(Objects::isNull);
+        if (!valid) {
+            var comb = IntStream.range(0, getSubRects().length)
+                    .mapToObj(i -> new Pair<>(names[i], subRects[i]));
+            var fields = comb.filter(t -> t.getSecond() == null).toList();
+            String r = "";
+            int i = 0;
+            for (var f : fields) {
+                if (i != 0) {
+                    r += ", ";
                 }
+                r += f.getFirst();
+                i++;
+            }
+            if (this instanceof ArrayRect) {
+                ErrorManager.erroRects.put(this, "Not all fields set for Array!");
+            } else {
                 ErrorManager.erroRects.put(this, "Not all fields set for " + clazz.name + "! [" + r + "]");
             }
-            else {
-                System.out.println("Removing");
-                ErrorManager.erroRects.remove(this);
-            }
+
+
         }
+        else {
+            ErrorManager.erroRects.remove(this);
+        }
+
     };
 
     @Override

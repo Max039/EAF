@@ -14,7 +14,6 @@ public class ErrorManager {
 
     public static void clearErrors() {
         erroRects = new HashMap<>();
-        System.out.println("Clearing!");
     }
 
     public static void checkForErrors(Rect r) {
@@ -32,15 +31,18 @@ public class ErrorManager {
 
     public static void checkForErrors() {
         clearErrors();
+        System.out.println("======================");
         System.out.println("Checking for errors");
         for (var r : Main.mainPanel.leftPanel.getRects()) {
             checkForErrors(r);
         }
 
         for (var e : erroRects.values()) {
-            System.out.println("Error in rect: " + e);
+            System.out.println(e);
         }
+        System.out.println("======================");
         System.out.println("Total errors: " + erroRects.size());
+        System.out.println("======================");
         errors = erroRects.size();
     }
 }
