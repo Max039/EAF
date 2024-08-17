@@ -276,6 +276,7 @@ public class InputHandler {
     }
 
     public static void searchChanged() {
+        Main.mainPanel.leftPanel.forceAdjustRects();
         var leftPanelTextField = Main.mainPanel.leftPanelTextField;
         var res = getStringMarkers();
         if (res.isEmpty() && !leftPanelTextField.getText().isEmpty()) {
