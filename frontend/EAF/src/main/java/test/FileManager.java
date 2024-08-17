@@ -9,7 +9,7 @@ import java.io.*;
 
 public class FileManager {
     public static void writeToFile(String content, String filePath) {
-        System.out.println("Writing to " + filePath);
+        System.out.println(LogManager.write() + " Writing to " + filePath);
 
         FileWriter writer = null;
         try {
@@ -25,9 +25,9 @@ public class FileManager {
             // Initialize the FileWriter with the file object
             writer = new FileWriter(file);
             writer.write(content);
-            System.out.println("Successfully wrote to the file.");
+            System.out.println(LogManager.file() + ColorManager.colorText(" Successfully", ColorManager.sucessColor) + " wrote to the file.");
         } catch (IOException e) {
-            System.out.println("An error occurred while writing to the file.");
+            System.out.println(LogManager.file() + LogManager.error() + " An error occurred while writing to the file.");
             e.printStackTrace();
         } finally {
             try {
@@ -35,7 +35,7 @@ public class FileManager {
                     writer.close();
                 }
             } catch (IOException e) {
-                System.out.println("An error occurred while closing the writer.");
+                System.out.println(LogManager.file() + LogManager.error() + " An error occurred while closing the writer.");
                 e.printStackTrace();
             }
         }
@@ -66,7 +66,7 @@ public class FileManager {
 
     public static void writeJSONToFile(JSONObject jsonArray, String filePath) {
         try {
-            System.out.println("Saving to " + filePath);
+            System.out.println(LogManager.write() + " Saving to " + filePath);
             // Create a File object for the specified file path
             File file = new File(filePath);
 
@@ -187,11 +187,11 @@ public class FileManager {
                 loadSave(readJSONFileToJSON(c));
             }
             catch (Exception e) {
-                System.out.println("Recent file could not be opened");
+                System.out.println(LogManager.file() + LogManager.warning() + " Recent file could not be opened!");
             }
         }
         else {
-            System.out.println("No recent file in cache!");
+            System.out.println(LogManager.file() + LogManager.warning() + " No recent file in cache!");
         }
     }
 
@@ -199,7 +199,7 @@ public class FileManager {
         String saveName = JOptionPane.showInputDialog(null, "Enter the name for the save:", "Save Name", JOptionPane.QUESTION_MESSAGE);
         if (saveName == null || saveName.trim().isEmpty()) {
             // User canceled the input or entered an empty name
-            System.out.println("Save operation canceled or no name entered.");
+            System.out.println(LogManager.file() + " Save operation " + ColorManager.colorText("canceled", ColorManager.warningColor) + " or no name entered.");
             return;
         }
         // Construct the full path to the file
@@ -214,11 +214,10 @@ public class FileManager {
         writeJSONToFile(createSave(), file.getAbsolutePath());
         FileManager.emptySave();
         Main.cacheManager.addToBuffer("filesOpened", file.getAbsolutePath());
-        System.out.println("File " + file.getName() + " saved!");
+        System.out.println(LogManager.file() + " File " + file.getName() + " " + ColorManager.colorText("saved", ColorManager.sucessColor) + "!");
     }
 
     static void save() {
-        System.out.println("Saving!");
         var r = Main.cacheManager.getFirstElement(String.class, "filesOpened");
         if (r != null) {
             writeJSONToFile(createSave(), r);
@@ -244,7 +243,7 @@ public class FileManager {
             FileManager.writeJSONToFile(FileManager.createSave(), file.getPath());
             Main.cacheManager.addToBuffer("filesOpened", file.getPath());
             InputHandler.actionHandler.saved();
-            System.out.println("File " + file.getName() + " saved!");
+            System.out.println(LogManager.file() + " File " + file.getName() + " " + ColorManager.colorText("saved", ColorManager.sucessColor) + "!");
         }
         Main.mainPanel.revalidate();
         Main.mainPanel.repaint();

@@ -95,7 +95,7 @@ public class RectFactory {
                 if (!fill) {
                     var check = SyntaxTree.classRegister.get(type.typeName).findSingleNonAbstractClass();
                     if (check != null) {
-                        System.out.println(LogManager.info() + ": Only 1 non abstract type available for " + type.typeName + " converting array to " + check.name);
+                        System.out.println(LogManager.info() + ": Only " + ColorManager.colorText("1", ColorManager.warningColor) + " non abstract type available for \"" + ColorManager.colorText(type.typeName, ColorManager.infoColor) + "\" " + ColorManager.colorText("converting", ColorManager.warningColor) + " array to \"" + ColorManager.colorText(check.name, ColorManager.infoColor) + "\"");
                         fill = true;
                         ctype = new FieldType(check.name, false, ctype.arrayCount);
                     }
@@ -133,7 +133,7 @@ public class RectFactory {
                 else {
                     var check = SyntaxTree.classRegister.get(type.typeName).findSingleNonAbstractClass();
                     if (check != null) {
-                        System.out.println(LogManager.info() + ": Only 1 non abstract type available for " + type.typeName + " creating and setting instance of " + check.name + " for field.");
+                        System.out.println(LogManager.info() + ": Only " + ColorManager.colorText("1", ColorManager.warningColor) + " non abstract type available for \"" + ColorManager.colorText(type.typeName, ColorManager.infoColor) + "\" "  + ColorManager.colorText("creating and setting instance", ColorManager.warningColor) +  " of \"" + ColorManager.colorText(check.name, ColorManager.infoColor) + "\" for field.");
                         var newR = (ClassRect) getRectFromClassType(check);
                         newR.setLocked(true);
                         return (T) newR ;
@@ -236,7 +236,7 @@ public class RectFactory {
                 if (!fill) {
                     var check = SyntaxTree.classRegister.get(ft.typeName).findSingleNonAbstractClass();
                     if (check != null) {
-                        System.out.println(LogManager.info() + ": Only 1 non abstract type available for " + ft.typeName + " converting array to " + check.name);
+                        System.out.println(LogManager.info() + ": Only " + ColorManager.colorText("1", ColorManager.warningColor) + " non abstract type available for \"" + ColorManager.colorText(ft.typeName, ColorManager.infoColor) + "\" " + ColorManager.colorText("converting", ColorManager.warningColor) +  " array to " + ColorManager.colorText(check.name, ColorManager.infoColor) + "\"");
                         fill = true;
                         ft = new FieldType(check.name, false, ft.arrayCount);
                     }

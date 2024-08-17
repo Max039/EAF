@@ -39,6 +39,12 @@ public class ColorManager {
     public static Color writeColor = new Color(80,255, 170);
 
     //==========================================
+    //                    ErrorManager
+    //==========================================
+
+    public static Color errorManagerColor = new Color(200,0, 200);
+
+    //==========================================
     //==========================================
 
 

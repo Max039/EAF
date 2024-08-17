@@ -57,4 +57,8 @@ public class LogManager {
         return file() + encased(ColorManager.colorText("Write", ColorManager.writeColor));
     }
 
+    public static String errorManager() {
+        return encased(ColorManager.colorText("Error-Manager", ColorManager.errorManagerColor));
+    }
+
 }

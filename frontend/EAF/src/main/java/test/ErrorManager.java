@@ -39,29 +39,28 @@ public class ErrorManager {
     public static void checkForErrors() {
         Main.mainPanel.leftPanel.forceAdjustRects();
         clearErrors();
-        System.out.println("======================");
-        System.out.println("Checking for errors");
+        System.out.println(LogManager.errorManager() + " Checking for errors");
         for (var r : Main.mainPanel.leftPanel.getRects()) {
             checkForErrors(r);
         }
         for (var e : warningRects.values()) {
-            System.out.println(ColorManager.colorText("Warning", ColorManager.warningColor) + ": " + e.getSecond());
+            System.out.println(LogManager.errorManager() + LogManager.error() + ": " + e.getSecond());
         }
         for (var e : erroRects.values()) {
-            System.out.println(ColorManager.colorText("Error", ColorManager.errorColor) + ": " + e.getSecond());
+            System.out.println(LogManager.errorManager() + LogManager.error() + ": " + e.getSecond());
         }
         System.out.println("======================");
         if (warningRects.isEmpty()) {
-            System.out.println(ColorManager.colorText("No Warnings!", ColorManager.sucessColor));
+            System.out.println(LogManager.errorManager() + ColorManager.colorText(" No Warnings!", ColorManager.sucessColor));
         }
         else {
-            System.out.println(ColorManager.colorText("Total Warnings", ColorManager.warningColor) + ": " + warningRects.size());
+            System.out.println(LogManager.errorManager() + ColorManager.colorText(" Total Warnings", ColorManager.warningColor) + ": " + warningRects.size());
         }
         if (erroRects.isEmpty()) {
-            System.out.println(ColorManager.colorText("No Errors!", ColorManager.sucessColor));
+            System.out.println(LogManager.errorManager() + ColorManager.colorText(" No Errors!", ColorManager.sucessColor));
         }
         else {
-            System.out.println( ColorManager.colorText("Total Errors", ColorManager.errorColor) + ": " + erroRects.size());
+            System.out.println(LogManager.errorManager() + ColorManager.colorText(" Total Errors", ColorManager.errorColor) + ": " + erroRects.size());
         }
         System.out.println("======================");
         warnings = warningRects.size();
