@@ -118,6 +118,7 @@ public class InputHandler {
                 }
                 else if (e.getKeyCode() == KeyEvent.VK_R && isControlPressed) {
                     if (ErrorManager.errors > 0) {
+                        SoundManager.playExclamationSound();
                         Main.mainPanel.leftPanel.getVerticalScrollBar().setValue(ErrorManager.first);
                     }
                 }

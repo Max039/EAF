@@ -205,6 +205,7 @@ public class GuiCreator {
             return false;
         }
         else {
+            SoundManager.playExclamationSound();
             // Options for the dialog
             String[] options = {"Yes", "No", "Cancel"};
 
