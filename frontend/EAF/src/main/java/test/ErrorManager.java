@@ -44,12 +44,11 @@ public class ErrorManager {
             checkForErrors(r);
         }
         for (var e : warningRects.values()) {
-            System.out.println(LogManager.errorManager() + LogManager.error() + ": " + e.getSecond());
+            System.out.println(LogManager.errorManager() + LogManager.error() + " " + e.getSecond());
         }
         for (var e : erroRects.values()) {
-            System.out.println(LogManager.errorManager() + LogManager.error() + ": " + e.getSecond());
+            System.out.println(LogManager.errorManager() + LogManager.error() + " " + e.getSecond());
         }
-        System.out.println("======================");
         if (warningRects.isEmpty()) {
             System.out.println(LogManager.errorManager() + ColorManager.colorText(" No Warnings!", ColorManager.sucessColor));
         }
@@ -62,7 +61,6 @@ public class ErrorManager {
         else {
             System.out.println(LogManager.errorManager() + ColorManager.colorText(" Total Errors", ColorManager.errorColor) + ": " + erroRects.size());
         }
-        System.out.println("======================");
         warnings = warningRects.size();
         errors = erroRects.size();
 

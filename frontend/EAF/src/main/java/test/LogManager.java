@@ -61,4 +61,12 @@ public class LogManager {
         return encased(ColorManager.colorText("Error-Manager", ColorManager.errorManagerColor));
     }
 
+    public static String fileManager() {
+        return encased(ColorManager.colorText("File-Manager", ColorManager.fileManagerColor));
+    }
+
+    public static String cacheManager() {
+        return encased(ColorManager.colorText("Cache-Manager", ColorManager.cacheManagerColor));
+    }
+
 }

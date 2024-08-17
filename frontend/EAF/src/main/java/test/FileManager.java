@@ -8,7 +8,7 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 import java.io.*;
 
 public class FileManager {
-    
+
     public static void loadSave(JSONObject o) {
         JSONArray a2 = o.getJSONArray("data");
         Main.dataPanel.fromJson(a2);
@@ -34,7 +34,7 @@ public class FileManager {
 
     public static void writeJSONToFile(JSONObject jsonArray, String filePath) {
         try {
-            System.out.println(LogManager.write() + " Saving to " + filePath);
+            System.out.println(LogManager.fileManager() + LogManager.write() + " Saving to " + filePath);
             // Create a File object for the specified file path
             File file = new File(filePath);
 
@@ -155,11 +155,11 @@ public class FileManager {
                 loadSave(readJSONFileToJSON(c));
             }
             catch (Exception e) {
-                System.out.println(LogManager.file() + LogManager.warning() + " Recent file could not be opened!");
+                System.out.println(LogManager.fileManager() + LogManager.file() + LogManager.warning() + " Recent file could not be opened!");
             }
         }
         else {
-            System.out.println(LogManager.file() + LogManager.warning() + " No recent file in cache!");
+            System.out.println(LogManager.fileManager() + LogManager.file() + LogManager.warning() + " No recent file in cache!");
         }
     }
 
@@ -167,7 +167,7 @@ public class FileManager {
         String saveName = JOptionPane.showInputDialog(null, "Enter the name for the save:", "Save Name", JOptionPane.QUESTION_MESSAGE);
         if (saveName == null || saveName.trim().isEmpty()) {
             // User canceled the input or entered an empty name
-            System.out.println(LogManager.file() + " Save operation " + ColorManager.colorText("canceled", ColorManager.warningColor) + " or no name entered.");
+            System.out.println(LogManager.fileManager() + LogManager.file() + " Save operation " + ColorManager.colorText("canceled", ColorManager.warningColor) + " or no name entered.");
             return;
         }
         // Construct the full path to the file
@@ -182,7 +182,7 @@ public class FileManager {
         writeJSONToFile(createSave(), file.getAbsolutePath());
         FileManager.emptySave();
         Main.cacheManager.addToBuffer("filesOpened", file.getAbsolutePath());
-        System.out.println(LogManager.file() + " File " + file.getName() + " " + ColorManager.colorText("saved", ColorManager.sucessColor) + "!");
+        System.out.println(LogManager.fileManager() + LogManager.file() + " File " + file.getName() + " " + ColorManager.colorText("saved", ColorManager.sucessColor) + "!");
     }
 
     static void save() {
@@ -211,7 +211,7 @@ public class FileManager {
             FileManager.writeJSONToFile(FileManager.createSave(), file.getPath());
             Main.cacheManager.addToBuffer("filesOpened", file.getPath());
             InputHandler.actionHandler.saved();
-            System.out.println(LogManager.file() + " File " + file.getName() + " " + ColorManager.colorText("saved", ColorManager.sucessColor) + "!");
+            System.out.println(LogManager.fileManager() + LogManager.file() + " File " + file.getName() + " " + ColorManager.colorText("saved", ColorManager.sucessColor) + "!");
         }
         Main.mainPanel.revalidate();
         Main.mainPanel.repaint();

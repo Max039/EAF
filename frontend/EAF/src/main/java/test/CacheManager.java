@@ -25,10 +25,10 @@ public class CacheManager {
         JSONObject o = null;
         try {
             o = FileManager.readJSONFileToJSON(cachePath + "." + cacheFileType);
-            System.out.println("Cache found!");
+            System.out.println(LogManager.cacheManager() + " Cache found!");
         }
         catch (Exception e) {
-            System.out.println("Cache could not be found!");
+            System.out.println(LogManager.cacheManager() + " Cache could not be found!");
         }
         if (o != null) {
             readCache(o);
@@ -46,7 +46,7 @@ public class CacheManager {
                 buffer.put(b.getKey(), makeBuffer(b.getValue().getFirst(), b.getValue().getSecond(), (JSONArray) o.get(b.getKey())));
             }
             else {
-                System.out.println("Field \"" + b.getKey() + "\" was not found in cache!");
+                System.out.println(LogManager.cacheManager() + LogManager.error() + " Field \"" + b.getKey() + "\" was not found in cache!");
                 buffer.put(b.getKey(), makeBuffer(b.getValue().getFirst(), b.getValue().getSecond()));
             }
         }
@@ -81,16 +81,14 @@ public class CacheManager {
     public <T> void addToBuffer(String b, T item) {
         LimitedBuffer<T> buf = (LimitedBuffer<T>) buffer.get(b);
         buf.add(item);
-        System.out.println("=====================");
-        System.out.println("Cache \"" + b + "\" updated to: ");
+        System.out.println(LogManager.cacheManager() + " Cache \"" + b + "\" updated to: ");
         print(b);
-        System.out.println("=====================");
         saveCache();
     }
 
     public void print(String buf) {
         for (var e : buffer.get(buf).getElements()) {
-            System.out.println(e.toString());
+            System.out.println(LogManager.cacheManager() + " " + e.toString());
         }
     }
 
