@@ -44,7 +44,7 @@ public class ErrorManager {
             checkForErrors(r);
         }
         for (var e : warningRects.values()) {
-            System.out.println(LogManager.errorManager() + LogManager.error() + " " + e.getSecond());
+            System.out.println(LogManager.errorManager() + LogManager.warning() + " " + e.getSecond());
         }
         for (var e : erroRects.values()) {
             System.out.println(LogManager.errorManager() + LogManager.error() + " " + e.getSecond());
