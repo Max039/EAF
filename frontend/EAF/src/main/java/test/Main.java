@@ -5,6 +5,10 @@ import intro.DoubleHelixAnimation;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+
+import static test.GuiCreator.showUnsaveDialog;
 
 public class Main extends JPanel {
 
@@ -73,7 +77,17 @@ public class Main extends JPanel {
     static void createAndShowGUI() {
         // Create the main frame
         mainFrame = new JFrame("EAF");
-        mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        mainFrame.addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                var cancle = showUnsaveDialog();
+                if (!cancle) {
+                    mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+                } else {
+                    mainFrame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+                }
+            }
+        });
 
         GuiCreator.createMenuBar();
 
