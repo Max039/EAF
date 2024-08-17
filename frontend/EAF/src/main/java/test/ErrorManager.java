@@ -49,7 +49,6 @@ public class ErrorManager {
         errors = erroRects.size();
         if (!erroRects.isEmpty()) {
             first = erroRects.values().stream().map(Pair::getFirst).min(Integer::compareTo).get();;
-            System.out.println(first);
         }
     }
 }
