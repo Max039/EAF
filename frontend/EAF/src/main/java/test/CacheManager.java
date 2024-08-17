@@ -81,7 +81,7 @@ public class CacheManager {
     public <T> void addToBuffer(String b, T item) {
         LimitedBuffer<T> buf = (LimitedBuffer<T>) buffer.get(b);
         buf.add(item);
-        System.out.println(LogManager.cacheManager() + " Cache \"" + b + "\" updated to: ");
+        System.out.println(LogManager.cacheManager() + " Cache \"" + ColorManager.colorText(b, ColorManager.infoColor) + "\" updated to: ");
         print(b);
         saveCache();
     }
