@@ -8,39 +8,7 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 import java.io.*;
 
 public class FileManager {
-    public static void writeToFile(String content, String filePath) {
-        System.out.println(LogManager.write() + " Writing to " + filePath);
-
-        FileWriter writer = null;
-        try {
-            // Create a File object for the specified file path
-            File file = new File(filePath);
-
-            // Create the parent directories if they do not exist
-            File parentDir = file.getParentFile();
-            if (parentDir != null && !parentDir.exists()) {
-                parentDir.mkdirs();
-            }
-
-            // Initialize the FileWriter with the file object
-            writer = new FileWriter(file);
-            writer.write(content);
-            System.out.println(LogManager.file() + ColorManager.colorText(" Successfully", ColorManager.sucessColor) + " wrote to the file.");
-        } catch (IOException e) {
-            System.out.println(LogManager.file() + LogManager.error() + " An error occurred while writing to the file.");
-            e.printStackTrace();
-        } finally {
-            try {
-                if (writer != null) {
-                    writer.close();
-                }
-            } catch (IOException e) {
-                System.out.println(LogManager.file() + LogManager.error() + " An error occurred while closing the writer.");
-                e.printStackTrace();
-            }
-        }
-    }
-
+    
     public static void loadSave(JSONObject o) {
         JSONArray a2 = o.getJSONArray("data");
         Main.dataPanel.fromJson(a2);
