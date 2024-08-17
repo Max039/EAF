@@ -116,6 +116,11 @@ public class InputHandler {
                 else if (e.getKeyCode() == KeyEvent.VK_S && isControlPressed) {
                     FileManager.save();
                 }
+                else if (e.getKeyCode() == KeyEvent.VK_R && isControlPressed) {
+                    if (ErrorManager.errors > 0) {
+                        Main.mainPanel.leftPanel.getVerticalScrollBar().setValue(ErrorManager.first);
+                    }
+                }
             }
 
             @Override

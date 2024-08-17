@@ -8,9 +8,11 @@ import test.rects.multi.RectWithRects;
 import java.util.HashMap;
 
 public class ErrorManager {
-    public static HashMap<Rect, String> erroRects = new HashMap<>();
+    public static HashMap<Rect, Pair<Integer, String>> erroRects = new HashMap<>();
 
     public static int errors = 0;
+
+    public static int first = 0;
 
     public static void clearErrors() {
         erroRects = new HashMap<>();
@@ -30,6 +32,7 @@ public class ErrorManager {
     }
 
     public static void checkForErrors() {
+        Main.mainPanel.leftPanel.forceAdjustRects();
         clearErrors();
         System.out.println("======================");
         System.out.println("Checking for errors");
@@ -38,11 +41,15 @@ public class ErrorManager {
         }
 
         for (var e : erroRects.values()) {
-            System.out.println(e);
+            System.out.println(e.getSecond());
         }
         System.out.println("======================");
         System.out.println("Total errors: " + erroRects.size());
         System.out.println("======================");
         errors = erroRects.size();
+        if (!erroRects.isEmpty()) {
+            first = erroRects.values().stream().map(Pair::getFirst).min(Integer::compareTo).get();;
+            System.out.println(first);
+        }
     }
 }

@@ -64,6 +64,7 @@ public class FolderPanel extends JPanel {
                 updatePathLabel();
                 printClassTypesBelow(currentPath);
                 Main.mainPanel.rightPanel.getVerticalScrollBar().setValue(0);
+                Main.mainPanel.rightPanel.forceAdjustRects();
                 Main.mainPanel.rightPanel.revalidate();
                 Main.mainPanel.rightPanel.repaint();
             }
@@ -126,6 +127,7 @@ public class FolderPanel extends JPanel {
                     printClassTypesBelow(String.join(".", pathStack));
                     updatePathLabel();
                     Main.mainPanel.rightPanel.getVerticalScrollBar().setValue(0);
+                    Main.mainPanel.rightPanel.forceAdjustRects();
                     Main.mainPanel.rightPanel.revalidate();
                     Main.mainPanel.rightPanel.repaint();
                     revalidate();

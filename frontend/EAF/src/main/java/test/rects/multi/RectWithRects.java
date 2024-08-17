@@ -75,6 +75,8 @@ public abstract class RectWithRects extends Rect {
 
     Color invalidRectsColor = new Color(190, 70, 70);
 
+    Color errorColor = new Color(70, 43, 43, 255);
+
     Color arrayColor = new Color(104, 151, 187);
 
 
@@ -320,7 +322,12 @@ public abstract class RectWithRects extends Rect {
                 g.setColor(new Color(invalidRectsColor.getRed(), invalidRectsColor.getGreen(), invalidRectsColor.getBlue(), (int)(255 * a)));
             }
             else {
-                g.setColor(new Color(emptyRectsColor.getRed(), emptyRectsColor.getGreen(), emptyRectsColor.getBlue(), (int)(255 * a)));
+                if (valid) {
+                    g.setColor(new Color(emptyRectsColor.getRed(), emptyRectsColor.getGreen(), emptyRectsColor.getBlue(), (int)(255 * a)));
+                }
+                else {
+                    g.setColor(new Color(invalidRectsColor.getRed(), invalidRectsColor.getGreen(), invalidRectsColor.getBlue(), (int)(255 * a)));
+                }
             }
             g.fillRect(getX() + spacing, getY() + offset, getWidth() - spacing * 2 - extraSpacingToRight(), emptyRowSize);
 
@@ -494,7 +501,23 @@ public abstract class RectWithRects extends Rect {
         return new Pair<Boolean, Integer>(false, -1);
     };
 
-
+    public Integer getYOfIndex(int index) {
+        int heightAcc = getY() + realHeight();
+        for (int i = 0; i < index; i++) {
+            Rect r = subRects[i];
+            String name = names[i];
+            if (!name.isEmpty()) {
+                heightAcc += (int) (fontSize);;
+            }
+            if (r != null) {
+                heightAcc += r.getHeight() + spacing * 2;
+            }
+            else {
+                heightAcc += emptyRowSize + spacing * 2;
+            }
+        }
+        return heightAcc;
+    }
 
 
     @Override
@@ -707,36 +730,35 @@ public abstract class RectWithRects extends Rect {
     public void setValidity() {
        if (this instanceof ArrayRect && subRects.length < 1) {
            valid = false;
-           ErrorManager.erroRects.put(this, "Empty Array!");
+           color = errorColor;
+           ErrorManager.erroRects.put(this, new Pair(getY()," Empty Array!"));
            return;
        }
 
         valid = Arrays.stream(getSubRects()).noneMatch(Objects::isNull);
         if (!valid) {
             var comb = IntStream.range(0, getSubRects().length)
-                    .mapToObj(i -> new Pair<>(names[i], subRects[i]));
-            var fields = comb.filter(t -> t.getSecond() == null).toList();
+                    .mapToObj(i -> new Pair<>(new Pair<>(names[i], subRects[i]), i));
+            var fields = comb.filter(t -> t.getFirst().getSecond() == null).toList();
             String r = "";
             int i = 0;
             for (var f : fields) {
                 if (i != 0) {
                     r += ", ";
                 }
-                r += f.getFirst();
+                r += f.getFirst().getFirst();
                 i++;
             }
             if (this instanceof ArrayRect) {
-                ErrorManager.erroRects.put(this, "Not all fields set for Array!");
+                ErrorManager.erroRects.put(this, new Pair(getYOfIndex(fields.get(0).getSecond()), "Not all fields set for Array!"));
             } else {
-                ErrorManager.erroRects.put(this, "Not all fields set for " + clazz.name + "! [" + r + "]");
+                ErrorManager.erroRects.put(this, new Pair(getYOfIndex(fields.get(0).getSecond()), "Not all fields set for " + clazz.name + "! [" + r + "]"));
             }
-
-
+            color = errorColor;
+            return;
         }
-        else {
-            ErrorManager.erroRects.remove(this);
-        }
-
+        ErrorManager.erroRects.remove(this);
+        color = RectPanel.instanceColor;
     };
 
     @Override
@@ -795,7 +817,5 @@ public abstract class RectWithRects extends Rect {
             }
         }
     }
-
-
 
 }

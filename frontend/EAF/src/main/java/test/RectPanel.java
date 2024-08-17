@@ -143,6 +143,10 @@ public class RectPanel extends JScrollPane {
         repaint();
     }
 
+    public void forceAdjustRects() {
+        paintComponents(getGraphics());
+    }
+
     public Rect getRect(Point p) {
         for (Rect r : rects) {
             if (r.contains(p)) {

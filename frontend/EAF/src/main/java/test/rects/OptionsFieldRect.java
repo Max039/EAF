@@ -31,7 +31,8 @@ public class OptionsFieldRect extends Rect {
 
     public static Color selectedColor = new Color(0, 0, 0);
 
-    public static Color invalidColor = new Color(200, 90, 90);
+
+    Color invalidRectsColor = new Color(190, 70, 70);
 
     public static Color selectionColor = new Color(255, 255, 255);
 
@@ -103,7 +104,13 @@ public class OptionsFieldRect extends Rect {
             comboBox.setBackground(new Color(selectedRectColor.getRed(), selectedRectColor.getGreen(), selectedRectColor.getBlue(), (int)(getOpacity() * 255)));
         }
         else {
-            comboBox.setBackground(new Color(bgColor.getRed(), bgColor.getGreen(), bgColor.getBlue(), (int)(getOpacity() * 255)));
+            if (valid) {
+                comboBox.setBackground(new Color(bgColor.getRed(), bgColor.getGreen(), bgColor.getBlue(), (int)(getOpacity() * 255)));
+            }
+            else {
+                comboBox.setBackground(new Color(invalidRectsColor.getRed(), invalidRectsColor.getGreen(), invalidRectsColor.getBlue(), (int)(getOpacity() * 255)));
+            }
+
         }
 
         comboBox.setForeground(new Color(textColor.getRed(), textColor.getGreen(), textColor.getBlue(), (int)(getOpacity() * 255)));
@@ -269,7 +276,7 @@ public class OptionsFieldRect extends Rect {
             boolean res = Main.dataPanel.getDataFieldList().stream().anyMatch(t -> ((DataField) t).getName().equals(comboBox.getSelectedItem()));
             if (!res) {
                 String err = "Data with name \"" + comboBox.getSelectedItem() + "\" was not found!";
-                ErrorManager.erroRects.put(this, err);
+                ErrorManager.erroRects.put(this, new Pair<>(getY(), err));
             }
             valid = res;
             return;
@@ -280,7 +287,7 @@ public class OptionsFieldRect extends Rect {
 
     @Override
     public void ifInvalid() {
-        comboBox.setForeground(invalidColor);
+
     };
 
 
