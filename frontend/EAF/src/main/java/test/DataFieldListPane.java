@@ -167,12 +167,14 @@ public class DataFieldListPane extends JScrollPane {
                 String name = nameField.getText();
                 if (!name.isEmpty()) {
                     if (isDuplicateName(name)) {
+                        SoundManager.playExclamationSound();
                         JOptionPane.showMessageDialog(dialog, "Name already used!", "Error", JOptionPane.ERROR_MESSAGE);
                     } else {
                         userAddedDataField(new DataField(name, "quotient real", false));
                         dialog.dispose();
                     }
                 } else {
+                    SoundManager.playExclamationSound();
                     JOptionPane.showMessageDialog(dialog, "Name must be filled in!", "Error", JOptionPane.ERROR_MESSAGE);
                 }
             }
@@ -230,11 +232,13 @@ public class DataFieldListPane extends JScrollPane {
                 String type = typeField.getText();
                 if (!name.isEmpty() && !type.isEmpty()) {
                     if (isDuplicateName(name)) {
+                        SoundManager.playExclamationSound();
                         JOptionPane.showMessageDialog(dialog, "Name already used!", "Error", JOptionPane.ERROR_MESSAGE);
                     } else if (isInstanceNameValid(type)) {
                         userAddedDataField(new DataField(name, type, true));
                         dialog.dispose();
                     } else {
+                        SoundManager.playExclamationSound();
                         String closestMatch = findClosestMatch(type);
                         int response = JOptionPane.showConfirmDialog(dialog,
                                 "Instance not found. Did you mean \"" + closestMatch + "\"?",
@@ -316,8 +320,10 @@ public class DataFieldListPane extends JScrollPane {
 
                 if (!type.isEmpty() && !name.isEmpty()) {
                     if (isDuplicateName(name)) {
+                        SoundManager.playExclamationSound();
                         JOptionPane.showMessageDialog(dialog, "Name already used!", "Error", JOptionPane.ERROR_MESSAGE);
                     } else if (instance && !isInstanceNameValid(type)) {
+                        SoundManager.playExclamationSound();
                         String closestMatch = findClosestMatch(type);
                         int response = JOptionPane.showConfirmDialog(dialog,
                                 "Instance not found. Did you mean \"" + closestMatch + "\"?",
@@ -331,6 +337,7 @@ public class DataFieldListPane extends JScrollPane {
                         dialog.dispose(); // Only close if the instance is valid or the name isn't a duplicate
                     }
                 } else {
+                    SoundManager.playExclamationSound();
                     JOptionPane.showMessageDialog(dialog, "Both fields must be filled in!", "Error", JOptionPane.ERROR_MESSAGE);
                 }
             }
@@ -462,6 +469,7 @@ public class DataFieldListPane extends JScrollPane {
         removeButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                SoundManager.playExclamationSound();
                 int response = JOptionPane.showConfirmDialog(panel, "Are you sure you want to remove this data field?", "Confirm Remove", JOptionPane.YES_NO_OPTION);
                 if (response == JOptionPane.YES_OPTION) {
                     userRemoveDataField(dataField);

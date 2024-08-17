@@ -260,7 +260,11 @@ public class InputHandler {
         var rightPanel = Main.mainPanel.rightPanel;
         rightPanel.filter = Main.mainPanel.rightPanelTextField.getText();
         rightPanel.getVerticalScrollBar().setValue(0);
-        contentLabel.setText(Long.toString(rightPanel.getMatchingRects()));
+        var cnt = rightPanel.getMatchingRects();
+        if (cnt < 1) {
+            SoundManager.playExclamationSound();
+        }
+        contentLabel.setText(Long.toString(cnt));
         contentLabel.revalidate();
         contentLabel.repaint();
         Main.mainPanel.revalidate();
@@ -276,6 +280,7 @@ public class InputHandler {
         var res = getStringMarkers();
         if (res.isEmpty() && !leftPanelTextField.getText().isEmpty()) {
             leftPanelTextField.setForeground(Main.searchBarError);
+            SoundManager.playExclamationSound();
         }
         else {
             leftPanelTextField.setForeground(Main.searchBarText);
@@ -286,7 +291,6 @@ public class InputHandler {
         else {
             contentLabel2.setText(current + "/" + res.size());
         }
-
         Main.mainPanel.revalidate();
         Main.mainPanel.repaint();
     }
