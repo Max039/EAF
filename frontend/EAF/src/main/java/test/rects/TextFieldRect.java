@@ -227,16 +227,26 @@ public class TextFieldRect extends Rect {
     @Override
     public void setValidity() {
         ErrorManager.erroRects.remove(this);
+        ErrorManager.warningRects.remove(this);
         valid = true;
         warning = false;
         if (clazz.name.contains("string")) {
             warning = textBox.getText().isBlank();
             if (warning) {
                 ErrorManager.warningRects.put(this, new Pair<>(getY(), "String is empty!"));
+                return;
+            }
+
+            warning = textBox.getText().equals("Enter String here!");
+            if (warning) {
+                ErrorManager.warningRects.put(this, new Pair<>(getY(), "Default String!"));
             }
         }
         else if (clazz.name.contains("literal")) {
-            return;
+            warning = textBox.getText().equals("Enter Literal here!");
+            if (warning) {
+                ErrorManager.warningRects.put(this, new Pair<>(getY(), "Default literal!"));
+            }
         }
         else {
             valid = !textBox.getText().isEmpty();
@@ -248,6 +258,13 @@ public class TextFieldRect extends Rect {
             valid = isValidFormat(textBox.getText(), ty, new ArrayList<>(ConstantManager.getConstantsByType(clazz.name).stream().map(Pair::getFirst).toList()));
             if (!valid) {
                 ErrorManager.erroRects.put(this, new Pair<>(getY(), "Input is not valid!"));
+                return;
+            }
+
+            warning = textBox.getText().equals("0");
+            if (warning) {
+                ErrorManager.warningRects.put(this, new Pair<>(getY(), "Number value 0!"));
+                return;
             }
         }
 

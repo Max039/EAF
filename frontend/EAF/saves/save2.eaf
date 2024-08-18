@@ -42,14 +42,14 @@
                     "editable": true,
                     "type": "text-field",
                     "sub-type": "int",
-                    "value": "0"
+                    "value": "100"
                 },
                 {
                     "field-name": "maximum-age",
                     "editable": true,
                     "type": "text-field",
                     "sub-type": "int",
-                    "value": "0"
+                    "value": "50"
                 },
                 {
                     "field-name": "handlers",
@@ -89,7 +89,7 @@
                                 "editable": true,
                                 "type": "text-field",
                                 "sub-type": "string",
-                                "value": "Enter string here!"
+                                "value": "String"
                             }
                         ]
                     }]
@@ -199,7 +199,7 @@
                                         "editable": true,
                                         "type": "text-field",
                                         "sub-type": "literal",
-                                        "value": "Enter literal here!"
+                                        "value": "Test Literal"
                                     },
                                     {
                                         "field-name": "name",
@@ -237,14 +237,14 @@
                                         "editable": true,
                                         "type": "text-field",
                                         "sub-type": "real",
-                                        "value": "0"
+                                        "value": "5"
                                     },
                                     {
                                         "field-name": "position",
                                         "editable": true,
                                         "type": "text-field",
                                         "sub-type": "real",
-                                        "value": "0"
+                                        "value": "5"
                                     }
                                 ]
                             }]
@@ -266,7 +266,7 @@
                                     "editable": true,
                                     "type": "text-field",
                                     "sub-type": "real",
-                                    "value": "0"
+                                    "value": "3"
                                 }]
                             }]
                         }
@@ -277,7 +277,7 @@
                     "editable": true,
                     "type": "text-field",
                     "sub-type": "int",
-                    "value": "0"
+                    "value": "5"
                 },
                 {
                     "field-name": "selectors",
@@ -295,7 +295,7 @@
                                 "editable": true,
                                 "type": "text-field",
                                 "sub-type": "int",
-                                "value": "0"
+                                "value": "3"
                             }]
                         },
                         {
@@ -308,7 +308,7 @@
                                 "editable": true,
                                 "type": "text-field",
                                 "sub-type": "real",
-                                "value": "0"
+                                "value": "20"
                             }]
                         }
                     ]
@@ -357,7 +357,7 @@
                                     "editable": true,
                                     "type": "text-field",
                                     "sub-type": "int",
-                                    "value": "0"
+                                    "value": "5"
                                 }
                             ]
                         }]

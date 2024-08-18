@@ -331,10 +331,16 @@ public class GuiCreator {
     }
 
     static void createSplitPanes(Main main, JPanel rightContainerPanel, JPanel leftContainerPanel) {
-        JSplitPane rightSplitPane = createSplitPane(new JSplitPane(JSplitPane.VERTICAL_SPLIT, main.folderPanel, rightContainerPanel));
+
+        JSplitPane rightTopSplitPane = createSplitPane(new JSplitPane(JSplitPane.VERTICAL_SPLIT, Main.constantManager, main.folderPanel), 100, 0.1);
+
+        JSplitPane rightSplitPane = createSplitPane(new JSplitPane(JSplitPane.VERTICAL_SPLIT, rightTopSplitPane, rightContainerPanel), 200, 0.2);
+
+
+        JSplitPane leftTopSplitPane = createSplitPane(new JSplitPane(JSplitPane.VERTICAL_SPLIT, Main.dataPanel, Main.errorManager), 100, 0.1);
 
         // Create a vertical split pane for the left side
-        JSplitPane leftSplitPane = createSplitPane(new JSplitPane(JSplitPane.VERTICAL_SPLIT, Main.dataPanel, leftContainerPanel));
+        JSplitPane leftSplitPane = createSplitPane(new JSplitPane(JSplitPane.VERTICAL_SPLIT, leftTopSplitPane, leftContainerPanel), 200, 0.2);
 
         createMainSplitPane(main, leftSplitPane, rightSplitPane);
     }
@@ -364,11 +370,11 @@ public class GuiCreator {
         main.add(main.mainSplitPane, BorderLayout.CENTER);
     }
 
-    private static JSplitPane createSplitPane(JSplitPane VERTICAL_SPLIT) {
+    private static JSplitPane createSplitPane(JSplitPane VERTICAL_SPLIT, int dividerLocation, double resize) {
         // Create a vertical split pane to hold the new panel and the right container panel
         JSplitPane rightSplitPane = VERTICAL_SPLIT;
-        rightSplitPane.setDividerLocation(100); // Initial divider location
-        rightSplitPane.setResizeWeight(0.1); // Adjust resize weight as needed
+        rightSplitPane.setDividerLocation(dividerLocation); // Initial divider location
+        rightSplitPane.setResizeWeight(resize); // Adjust resize weight as needed
         rightSplitPane.setBorder(BorderFactory.createEmptyBorder());
         rightSplitPane.setUI(new CustomSplitPaneUI());
         rightSplitPane.setBackground(Main.bgColor);

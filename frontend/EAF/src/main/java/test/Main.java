@@ -31,6 +31,8 @@ public class Main extends JPanel {
 
     public static ConstantManager constantManager;
 
+    public static ErrorManager errorManager;
+
     private static final int RECT_SPACING = 5;
     public final RectPanel leftPanel = new RectPanel();
     public final RectPanel rightPanel = new RectPanel();
@@ -113,6 +115,7 @@ public class Main extends JPanel {
 
     private void setupUi() {
         constantManager = new ConstantManager();
+        errorManager = new ErrorManager();
 
         GuiCreator.createContentLabel();
 

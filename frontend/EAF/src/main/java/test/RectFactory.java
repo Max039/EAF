@@ -108,7 +108,7 @@ public class RectFactory {
                     var c = new ClassType(type.typeName, null, "Primitive");
                     String content;
                     if (type.typeName.toLowerCase().contains("string") ) {
-                        content = "Enter string here!";
+                        content = "Enter String here!";
                     }
                     else if (type.typeName.toLowerCase().contains("int") ||  type.typeName.toLowerCase().contains("real"))  {
                         content = "0";
@@ -122,7 +122,7 @@ public class RectFactory {
                         return (T) new OptionsFieldRect(Main.dataPanel.getDataFieldList(), "", RectPanel.textBoxWidth, RectPanel.textBoxHeight, RectPanel.primitiveColor, c, true, OptionsFieldRect.defaultTextColor);
                     }
                     else if (type.typeName.toLowerCase().contains("literal")) {
-                        content  = "Enter literal here!";
+                        content  = "Enter Literal here!";
                     }
                     else {
                         content  = "Unkown primitive";

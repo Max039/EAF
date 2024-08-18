@@ -6,10 +6,11 @@ import test.rects.Rect;
 import test.rects.TextFieldRect;
 import test.rects.multi.RectWithRects;
 
+import javax.swing.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class ConstantManager {
+public class ConstantManager extends JScrollPane {
 
 
     public static HashMap<String, Constant> constants;

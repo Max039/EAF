@@ -4,9 +4,10 @@ import test.rects.OptionsFieldRect;
 import test.rects.Rect;
 import test.rects.multi.RectWithRects;
 
+import javax.swing.*;
 import java.util.HashMap;
 
-public class ErrorManager {
+public class ErrorManager extends JPanel {
     public static HashMap<Rect, Pair<Integer, String>> erroRects = new HashMap<>();
     public static HashMap<Rect, Pair<Integer, String>> warningRects = new HashMap<>();
 
