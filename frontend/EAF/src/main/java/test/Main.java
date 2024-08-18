@@ -5,6 +5,8 @@ import intro.DoubleHelixAnimation;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
@@ -91,7 +93,9 @@ public class Main extends JPanel {
                     mainFrame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
                 }
             }
+
         });
+
 
         GuiCreator.createMenuBar();
 
@@ -114,8 +118,8 @@ public class Main extends JPanel {
     }
 
     private void setupUi() {
-        constantManager = new ConstantManager();
-        errorManager = new ErrorManager();
+        GuiCreator.createConstantPanel();
+        GuiCreator.createErrorPanel();
 
         GuiCreator.createContentLabel();
 

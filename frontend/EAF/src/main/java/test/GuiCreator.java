@@ -247,69 +247,10 @@ public class GuiCreator {
         JScrollBar verticalScrollBar = scrollPane.getVerticalScrollBar();
         JScrollBar horizontalScrollBar = scrollPane.getHorizontalScrollBar();
 
-        verticalScrollBar.setUI(new BasicScrollBarUI() {
-            @Override
-            protected void configureScrollBarColors() {
-                this.thumbColor = Main.scrollBarButton;
-                this.trackColor = Main.scrollBarBg;
-                this.thumbDarkShadowColor = Main.scrollBarBg;
-                this.thumbHighlightColor = Main.scrollBarButton;
-            }
 
-            @Override
-            protected JButton createDecreaseButton(int orientation) {
-                return createArrowButton(orientation);
-            }
+        verticalScrollBar.setUI(createScrollbarUi());
 
-            @Override
-            protected JButton createIncreaseButton(int orientation) {
-                return createArrowButton(orientation);
-            }
-
-            private JButton createArrowButton(int orientation) {
-                JButton button = new JButton();
-                button.setPreferredSize(new Dimension(16, 16));
-                button.setBackground(Main.scrollBarTopAndBottom);
-                button.setForeground(Main.scrollBarButton);
-                button.setBorder(BorderFactory.createEmptyBorder());
-                button.setOpaque(true);
-                button.setContentAreaFilled(true);
-                button.setFocusPainted(false);
-                return button;
-            }
-        });
-
-        horizontalScrollBar.setUI(new BasicScrollBarUI() {
-            @Override
-            protected void configureScrollBarColors() {
-                this.thumbColor = Main.scrollBarButton;
-                this.trackColor = Main.scrollBarBg;
-                this.thumbDarkShadowColor = Main.scrollBarBg;
-                this.thumbHighlightColor = Main.scrollBarButton;
-            }
-
-            @Override
-            protected JButton createDecreaseButton(int orientation) {
-                return createArrowButton(orientation);
-            }
-
-            @Override
-            protected JButton createIncreaseButton(int orientation) {
-                return createArrowButton(orientation);
-            }
-
-            private JButton createArrowButton(int orientation) {
-                JButton button = new JButton();
-                button.setPreferredSize(new Dimension(16, 16));
-                button.setBackground(Main.scrollBarTopAndBottom);
-                button.setForeground(Main.scrollBarButton);
-                button.setBorder(BorderFactory.createEmptyBorder());
-                button.setOpaque(true);
-                button.setContentAreaFilled(true);
-                button.setFocusPainted(false);
-                return button;
-            }
-        });
+        horizontalScrollBar.setUI(createScrollbarUi());
 
 
         verticalScrollBar.setUnitIncrement(16);  // Unit increment (for small scroll)
@@ -318,6 +259,40 @@ public class GuiCreator {
         horizontalScrollBar.setUnitIncrement(16);  // Unit increment (for small scroll)
         horizontalScrollBar.setBlockIncrement(100); // Block increment (for larger scroll)
 
+    }
+
+    private static BasicScrollBarUI createScrollbarUi() {
+        return new BasicScrollBarUI() {
+            @Override
+            protected void configureScrollBarColors() {
+                this.thumbColor = Main.scrollBarButton;
+                this.trackColor = Main.scrollBarBg;
+                this.thumbDarkShadowColor = Main.scrollBarBg;
+                this.thumbHighlightColor = Main.scrollBarButton;
+            }
+
+            @Override
+            protected JButton createDecreaseButton(int orientation) {
+                return createArrowButton(orientation);
+            }
+
+            @Override
+            protected JButton createIncreaseButton(int orientation) {
+                return createArrowButton(orientation);
+            }
+
+            private JButton createArrowButton(int orientation) {
+                JButton button = new JButton();
+                button.setPreferredSize(new Dimension(16, 16));
+                button.setBackground(Main.scrollBarTopAndBottom);
+                button.setForeground(Main.scrollBarButton);
+                button.setBorder(BorderFactory.createEmptyBorder());
+                button.setOpaque(true);
+                button.setContentAreaFilled(true);
+                button.setFocusPainted(false);
+                return button;
+            }
+        };
     }
 
     static void adjustMainPanel(Main main) {
@@ -768,6 +743,16 @@ public class GuiCreator {
         main.folderPanel = new FolderPanel(SyntaxTree.getNonAbstractClasses());
         customizeScrollBar(main.rightPanel);
         customizeScrollBar(main.leftPanel);
+    }
+
+    static void createErrorPanel() {
+        Main.errorManager = new ErrorManager();
+        customizeScrollBar(Main.errorManager);
+    }
+
+    static void createConstantPanel() {
+        Main.constantManager = new ConstantManager();
+        customizeScrollBar(Main.constantManager);
     }
 
     static JTextField createTextField() {
