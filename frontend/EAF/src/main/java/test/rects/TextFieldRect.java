@@ -235,6 +235,9 @@ public class TextFieldRect extends Rect {
                 ErrorManager.warningRects.put(this, new Pair<>(getY(), "String is empty!"));
             }
         }
+        else if (clazz.name.contains("literal")) {
+            return;
+        }
         else {
             valid = !textBox.getText().isEmpty();
             if (!valid) {
