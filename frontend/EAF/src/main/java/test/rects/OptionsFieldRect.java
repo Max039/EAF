@@ -105,7 +105,12 @@ public class OptionsFieldRect extends Rect {
         }
         else {
             if (valid) {
-                comboBox.setBackground(new Color(bgColor.getRed(), bgColor.getGreen(), bgColor.getBlue(), (int)(getOpacity() * 255)));
+                if (warning) {
+                    comboBox.setBackground(new Color(warningColor.getRed(), warningColor.getGreen(), warningColor.getBlue(), (int)(getOpacity() * 255)));
+                }
+                else {
+                    comboBox.setBackground(new Color(bgColor.getRed(), bgColor.getGreen(), bgColor.getBlue(), (int)(getOpacity() * 255)));
+                }
             }
             else {
                 comboBox.setBackground(new Color(invalidRectsColor.getRed(), invalidRectsColor.getGreen(), invalidRectsColor.getBlue(), (int)(getOpacity() * 255)));
