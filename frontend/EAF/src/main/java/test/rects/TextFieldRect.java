@@ -241,7 +241,6 @@ public class TextFieldRect extends Rect {
                 ErrorManager.erroRects.put(this, new Pair<>(getY(), "Field is empty!"));
                 return;
             }
-            System.out.println("Test");
             boolean ty = clazz.name.contains("real");
             valid = isValidFormat(textBox.getText(), ty, new ArrayList<>(SyntaxTree.constantRegister.keySet().stream().toList()));
             if (!valid) {
