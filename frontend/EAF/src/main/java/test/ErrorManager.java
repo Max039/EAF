@@ -22,20 +22,25 @@ public class ErrorManager extends JScrollPane {
     public static int warnings = 0;
     public static int first = 0;
 
+    public static int spacingX = 10;
+    public static int spacingY = 5;
+
+    public static Color bg = Main.bgColor;
+
     public static Color header = new Color(255, 255, 255);
 
     public ErrorManager() {
 
-        setBackground(Main.bgColor);
+        setBackground(bg);
         setBorder(BorderFactory.createEmptyBorder());
 
         contentPanel = new JPanel();
         contentPanel.setLayout(new GridBagLayout());
-        contentPanel.setBackground(Main.bgColor);
+        contentPanel.setBackground(bg);
         contentPanel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));  // Slight padding to keep content from touching the edges
 
         GridBagConstraints gbc = new GridBagConstraints();
-        gbc.insets = new Insets(0, 0, 0, 0);  // Removed padding around components
+        gbc.insets = new Insets(5, 0, 0, 0);  // Removed padding around components
         gbc.anchor = GridBagConstraints.WEST;
         gbc.fill = GridBagConstraints.HORIZONTAL;  // Ensure components fill horizontally
         gbc.gridx = 0;
@@ -49,12 +54,12 @@ public class ErrorManager extends JScrollPane {
 
         // Create panels for the error and warning lists
         errorListPanel = new JPanel();
-        errorListPanel.setBackground(Main.bgColor);
+        errorListPanel.setBackground(bg);
         errorListPanel.setBorder(BorderFactory.createEmptyBorder());
         errorListPanel.setLayout(new BoxLayout(errorListPanel, BoxLayout.Y_AXIS));
 
         warningListPanel = new JPanel();
-        warningListPanel.setBackground(Main.bgColor);
+        warningListPanel.setBackground(bg);
         warningListPanel.setBorder(BorderFactory.createEmptyBorder());
         warningListPanel.setLayout(new BoxLayout(warningListPanel, BoxLayout.Y_AXIS));
 
@@ -73,11 +78,11 @@ public class ErrorManager extends JScrollPane {
 
         // Create containerPanel to encapsulate contentPanel
         JPanel containerPanel = new JPanel(null);  // Use null layout to control the position of contentPanel
-        containerPanel.setBackground(Main.bgColor);
+        containerPanel.setBackground(bg);
 
         // Set size of containerPanel to match contentPanel's preferred size
         Dimension contentSize = contentPanel.getPreferredSize();
-        contentPanel.setBounds(0, 0, contentSize.width, contentSize.height);
+        contentPanel.setBounds(spacingX, spacingY, contentSize.width, contentSize.height);
         containerPanel.setPreferredSize(contentSize);
         containerPanel.add(contentPanel);
 
@@ -136,7 +141,7 @@ public class ErrorManager extends JScrollPane {
                     Main.mainPanel.leftPanel.getVerticalScrollBar().setValue(pair.getFirst());
                 }
             });
-            warningButton.setBackground(Main.bgColor);
+            warningButton.setBackground(bg);
             warningButton.setForeground(ColorManager.warningColor);
             warningButton.setFocusPainted(false);
             warningButton.setBorder(BorderFactory.createEmptyBorder());
@@ -153,7 +158,7 @@ public class ErrorManager extends JScrollPane {
                     Main.mainPanel.leftPanel.getVerticalScrollBar().setValue(pair.getFirst());
                 }
             });
-            errorButton.setBackground(Main.bgColor);
+            errorButton.setBackground(bg);
             errorButton.setForeground(ColorManager.errorColor);
             errorButton.setFocusPainted(false);
             errorButton.setBorder(BorderFactory.createEmptyBorder());
@@ -166,7 +171,7 @@ public class ErrorManager extends JScrollPane {
 
         // Adjust the size of the containerPanel
         Dimension contentSize = contentPanel.getPreferredSize();
-        contentPanel.setBounds(0, 0, contentSize.width, contentSize.height);
+        contentPanel.setBounds(spacingX, spacingY, contentSize.width, contentSize.height);
 
         // Get the parent container panel and update its preferred size
         Container parent = contentPanel.getParent();
