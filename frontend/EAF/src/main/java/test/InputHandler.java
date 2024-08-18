@@ -117,10 +117,7 @@ public class InputHandler {
                     FileManager.save();
                 }
                 else if (e.getKeyCode() == KeyEvent.VK_R && isControlPressed) {
-                    if (ErrorManager.errors > 0) {
-                        SoundManager.playExclamationSound();
-                        Main.mainPanel.leftPanel.getVerticalScrollBar().setValue(ErrorManager.first);
-                    }
+                    run();
                 }
             }
 
@@ -145,6 +142,17 @@ public class InputHandler {
                 Main.mainPanel.repaint();
             }
         });
+    }
+
+    public static void run() {
+        ErrorManager.checkForErrors();
+        if (ErrorManager.errors > 0) {
+            SoundManager.playExclamationSound();
+            Main.mainPanel.leftPanel.getVerticalScrollBar().setValue(ErrorManager.first);
+        }
+        else {
+            System.out.println("Running :)");
+        }
     }
 
     public static void setPosOfDraggingRect(MouseEvent e) {
