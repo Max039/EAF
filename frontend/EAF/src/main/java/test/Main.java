@@ -29,6 +29,8 @@ public class Main extends JPanel {
     public static Color searchBar = new Color(100, 100, 100);
     public static Color searchBarBorder = new Color(85, 85, 85);
 
+    public static ConstantManager constantManager;
+
     private static final int RECT_SPACING = 5;
     public final RectPanel leftPanel = new RectPanel();
     public final RectPanel rightPanel = new RectPanel();
@@ -110,6 +112,8 @@ public class Main extends JPanel {
     }
 
     private void setupUi() {
+        constantManager = new ConstantManager();
+
         GuiCreator.createContentLabel();
 
         rightPanelTextField = GuiCreator.createTextField();

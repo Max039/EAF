@@ -245,7 +245,7 @@ public class TextFieldRect extends Rect {
                 return;
             }
             boolean ty = clazz.name.contains("real");
-            valid = isValidFormat(textBox.getText(), ty, new ArrayList<>(SyntaxTree.constantRegister.keySet().stream().toList()));
+            valid = isValidFormat(textBox.getText(), ty, new ArrayList<>(ConstantManager.constants.keySet().stream().toList()));
             if (!valid) {
                 ErrorManager.erroRects.put(this, new Pair<>(getY(), "Input is not valid!"));
             }
