@@ -240,7 +240,15 @@ public class RectPanel extends JScrollPane {
             getAllRects(classesNeededForScript, r);
         }
 
-        res += getUniqueImports(classesNeededForScript) + "\n";
+        var imports = getUniqueImports(classesNeededForScript);
+        for (var r : ConstantManager.getUsedConstants()) {
+            if (!imports.contains(r.pack)) {
+                imports += "import \"definitions\" from " + r.pack + "\n";
+            }
+        }
+
+
+        res += imports + "\n";
         res += "import \"data\" from 'config';\n\n";
         res += "module 'config' {\n";
         res += Rect.stringPadding + "specify problem '" + problemName + "' ";

@@ -183,6 +183,29 @@ public class GuiCreator {
         menuBar.add(fileMenu);
     }
 
+
+    static void addScriptMenu(JMenuBar menuBar) {
+        // Create the File menu
+        JMenu scriptMenu = new JMenu("File");
+
+        // Create menu items
+        JMenuItem run = new JMenuItem("run");
+
+        run.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                FileManager.write(Main.dataPanel.toString(), "config.ddl");
+                FileManager.write(Main.mainPanel.leftPanel.toString(), "config.ol");
+            }
+        });
+
+
+        scriptMenu.add(run);
+        menuBar.add(scriptMenu);
+    }
+
+
+
     public static boolean showUnsaveDialog() {
 
         if (!InputHandler.actionHandler.areChangesMadeSinceSave()) {
@@ -218,6 +241,8 @@ public class GuiCreator {
             }
         }
     }
+
+
 
     static void customizeScrollBar(JScrollPane scrollPane) {
         JScrollBar verticalScrollBar = scrollPane.getVerticalScrollBar();
@@ -765,6 +790,8 @@ public class GuiCreator {
 
 
         addFileMenu(menuBar);
+
+        addScriptMenu(menuBar);
 
 
         // Set the menu bar to the frame

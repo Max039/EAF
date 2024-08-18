@@ -33,6 +33,10 @@ public class FileManager {
     }
 
     public static void writeJSONToFile(JSONObject jsonArray, String filePath) {
+        write(jsonArray.toString(4), filePath);
+    }
+
+    public static void write(String content, String filePath) {
         try {
             System.out.println(LogManager.fileManager() + LogManager.write() + " Saving to " + filePath);
             // Create a File object for the specified file path
@@ -46,7 +50,7 @@ public class FileManager {
 
             // Write the JSON data to the file
             try (FileWriter fileWriter = new FileWriter(file)) {
-                fileWriter.write(jsonArray.toString(4));
+                fileWriter.write(content);
                 fileWriter.flush();
             }
         } catch (IOException e) {
@@ -55,23 +59,20 @@ public class FileManager {
     }
 
     public static JSONObject readJSONFileToJSON(String filePath) throws IOException, org.json.JSONException {
-        // Open the file using a BufferedReader
-        try (BufferedReader reader = new BufferedReader(new FileReader(filePath))) {
-            // Read the entire content of the file into a String
-            StringBuilder jsonContent = new StringBuilder();
-            String line;
-            while ((line = reader.readLine()) != null) {
-                jsonContent.append(line);
-            }
-
-            // Convert the String content to a JSONArray
-            return new JSONObject(jsonContent.toString());
-        }
+        return new JSONObject(read(new FileReader(filePath)));
     }
 
     public static JSONObject readJSONFileToJSON(File file) throws IOException, org.json.JSONException {
+        return new JSONObject(read(new FileReader(file)));
+    }
+
+    public static String read(String path) throws IOException {
+        return read(new FileReader(path));
+    }
+
+    private static String read(FileReader fileReader) throws IOException, org.json.JSONException {
         // Open the file using a BufferedReader
-        try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
+        try (BufferedReader reader = new BufferedReader(fileReader)) {
             // Read the entire content of the file into a String
             StringBuilder jsonContent = new StringBuilder();
             String line;
@@ -80,7 +81,7 @@ public class FileManager {
             }
 
             // Convert the String content to a JSONArray
-            return new JSONObject(jsonContent.toString());
+            return jsonContent.toString();
         }
     }
 
