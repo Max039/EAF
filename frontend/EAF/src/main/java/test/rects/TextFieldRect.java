@@ -3,10 +3,7 @@ package test.rects;
 import action.TextFieldAction;
 import compiler.ClassType;
 import org.json.JSONObject;
-import test.Main;
-import test.ErrorManager;
-import test.InputHandler;
-import test.Pair;
+import test.*;
 
 import javax.swing.*;
 import javax.swing.border.Border;
@@ -94,18 +91,21 @@ public class TextFieldRect extends Rect {
         textBox.getDocument().addDocumentListener(new DocumentListener() {
             @Override
             public void insertUpdate(DocumentEvent e) {
+                setValidity();
                 InputHandler.actionHandler.changesMade();
                 Main.mainFrame.repaint();
             }
 
             @Override
             public void removeUpdate(DocumentEvent e) {
+                setValidity();
                 InputHandler.actionHandler.changesMade();
                 Main.mainFrame.repaint();
             }
 
             @Override
             public void changedUpdate(DocumentEvent e) {
+                setValidity();
                 InputHandler.actionHandler.changesMade();
                 Main.mainFrame.repaint();
             }
@@ -149,7 +149,19 @@ public class TextFieldRect extends Rect {
             g2.setColor(new Color(selectedRectColor.getRed(), selectedRectColor.getGreen(), selectedRectColor.getBlue(), (int)(255 * a)));
         }
         else {
-            g2.setColor(new Color(color.getRed(), color.getGreen(), color.getBlue(), (int)(255 * a)));
+            if (!valid) {
+                g2.setColor(new Color(errorColor.getRed(), errorColor.getGreen(), errorColor.getBlue(), (int)(255 * a)));
+            }
+            else {
+                if (warning) {
+                    g2.setColor(new Color(warningColor.getRed(), warningColor.getGreen(), warningColor.getBlue(), (int)(255 * a)));
+                }
+                else {
+                    g2.setColor(new Color(color.getRed(), color.getGreen(), color.getBlue(), (int)(255 * a)));
+                }
+
+            }
+
         }
         g2.fillRect(getX(), getY(), getWidth(), getHeight());
 
@@ -212,6 +224,20 @@ public class TextFieldRect extends Rect {
     public void setValidity() {
         ErrorManager.erroRects.remove(this);
         valid = true;
+        warning = false;
+        if (clazz.name.contains("string")) {
+            warning = textBox.getText().isBlank();
+            if (warning) {
+                ErrorManager.warningRects.put(this, new Pair<>(getY(), "String is empty!"));
+            }
+        }
+        else {
+            valid = !textBox.getText().isBlank();
+            if (!valid) {
+                ErrorManager.erroRects.put(this, new Pair<>(getY(), "Field is empty!"));
+            }
+        }
+
     };
 
     @Override

@@ -32,7 +32,6 @@ import java.util.stream.IntStream;
 import javax.imageio.ImageIO;
 
 import static compiler.FieldValue.doesTypesMatch;
-import static java.util.stream.IntStream.range;
 
 public abstract class RectWithRects extends Rect {
 
@@ -67,18 +66,17 @@ public abstract class RectWithRects extends Rect {
     }
 
 
-    Color fieldColor = new Color(213, 234, 238);
+    public static Color fieldColor = new Color(213, 234, 238);
 
-    Color nameColor = new Color(203, 116, 47);
+    public static Color nameColor = new Color(203, 116, 47);
 
-    Color emptyRectsColor = new Color(255, 255, 255);
+    public static Color emptyRectsColor = new Color(255, 255, 255);
 
-    Color invalidRectsColor = new Color(190, 70, 70);
+    public static Color invalidRectsColor = new Color(190, 70, 70);
 
-    Color errorColor = new Color(70, 43, 43, 255);
-    Color warningColor = new Color(70, 70, 43, 255);
 
-    Color arrayColor = new Color(104, 151, 187);
+
+    public static Color arrayColor = new Color(104, 151, 187);
 
 
 
@@ -323,17 +321,7 @@ public abstract class RectWithRects extends Rect {
                 g.setColor(new Color(invalidRectsColor.getRed(), invalidRectsColor.getGreen(), invalidRectsColor.getBlue(), (int)(255 * a)));
             }
             else {
-                if (valid) {
-                    if (warning) {
-                        g.setColor(new Color(warningColor.getRed(), warningColor.getGreen(), warningColor.getBlue(), (int)(255 * a)));
-                    }
-                    else {
-                        g.setColor(new Color(emptyRectsColor.getRed(), emptyRectsColor.getGreen(), emptyRectsColor.getBlue(), (int)(255 * a)));
-                    }
-                }
-                else {
-                    g.setColor(new Color(invalidRectsColor.getRed(), invalidRectsColor.getGreen(), invalidRectsColor.getBlue(), (int)(255 * a)));
-                }
+                setColorBasedOnErrorAndWarning(this, g, a);
             }
             g.fillRect(getX() + spacing, getY() + offset, getWidth() - spacing * 2 - extraSpacingToRight(), emptyRowSize);
 

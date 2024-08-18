@@ -222,12 +222,7 @@ public class OptionsFieldRect extends Rect {
         }
 
         var g2 = (Graphics2D) g;
-        if (selected) {
-            g2.setColor(new Color(selectedRectColor.getRed(), selectedRectColor.getGreen(), selectedRectColor.getBlue(), (int)(255 * a)));
-        }
-        else {
-            g2.setColor(new Color(color.getRed(), color.getGreen(), color.getBlue(), (int)(255 * a)));
-        }
+        setColorBasedOnErrorAndWarning(this, g, a);
         g2.fillRect(getX(), getY(), getWidth(), getHeight());
 
         comboBox.setBounds(getX() + spacing, getY() + spacing, getWidth() - spacing * 2, getHeight() - spacing * 2);

@@ -15,7 +15,24 @@ import java.util.ArrayList;
 
 public abstract class Rect {
 
+    public static Color errorColor = new Color(70, 43, 43, 255);
+    public static Color warningColor = new Color(70, 70, 43, 255);
+
     public boolean selected = false;
+
+    public static void setColorBasedOnErrorAndWarning(Rect r, Graphics g, double a) {
+        if (r.valid) {
+            if (r.warning) {
+                g.setColor(new Color(warningColor.getRed(), warningColor.getGreen(), warningColor.getBlue(), (int)(255 * a)));
+            }
+            else {
+                g.setColor(new Color(RectWithRects.emptyRectsColor.getRed(), RectWithRects.emptyRectsColor.getGreen(), RectWithRects.emptyRectsColor.getBlue(), (int)(255 * a)));
+            }
+        }
+        else {
+            g.setColor(new Color(RectWithRects.invalidRectsColor.getRed(), RectWithRects.invalidRectsColor.getGreen(), RectWithRects.invalidRectsColor.getBlue(), (int)(255 * a)));
+        }
+    }
 
     public void select() {
         selected = true;
