@@ -194,8 +194,6 @@ public class GuiCreator {
         run.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                FileManager.write(Main.dataPanel.toString(), "config.ddl");
-                FileManager.write(Main.mainPanel.leftPanel.toString(), "config.ol");
                 run();
             }
         });

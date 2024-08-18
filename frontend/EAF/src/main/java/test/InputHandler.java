@@ -151,7 +151,11 @@ public class InputHandler {
             Main.mainPanel.leftPanel.getVerticalScrollBar().setValue(ErrorManager.first);
         }
         else {
-            System.out.println("Running :)");
+            System.out.println("Writing Data ...");
+            FileManager.write(Main.dataPanel.toString(), "config.ddl");
+            System.out.println("Writing Script ...");
+            FileManager.write(Main.mainPanel.leftPanel.toString(), "config.ol");
+            System.out.println("Running ...");
         }
     }
 
