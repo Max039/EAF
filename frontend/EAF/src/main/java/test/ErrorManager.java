@@ -9,12 +9,9 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.HashMap;
-import java.util.Map;
 
 public class ErrorManager extends JScrollPane {
     private static JPanel contentPanel;
-    private JButton errorButton;
-    private JButton warningButton;
     private static JPanel errorListPanel;
     private static JPanel warningListPanel;
 
@@ -34,21 +31,23 @@ public class ErrorManager extends JScrollPane {
 
         contentPanel = new JPanel();
         contentPanel.setLayout(new GridBagLayout());
-
         contentPanel.setBackground(Main.bgColor);
-        contentPanel.setBorder(BorderFactory.createEmptyBorder());
+        contentPanel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));  // Slight padding to keep content from touching the edges
 
         GridBagConstraints gbc = new GridBagConstraints();
-        gbc.insets = new Insets(5, 5, 5, 5); // Padding around components
+        gbc.insets = new Insets(0, 0, 0, 0);  // Removed padding around components
         gbc.anchor = GridBagConstraints.WEST;
-        gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.fill = GridBagConstraints.HORIZONTAL;  // Ensure components fill horizontally
+        gbc.gridx = 0;
+        gbc.gridy = 0;
 
-        // Create buttons and panels for errors and warnings
+        // Create labels for errors and warnings
         JLabel errorLabel = new JLabel("Errors:");
         errorLabel.setForeground(header);
         JLabel warningLabel = new JLabel("Warnings:");
         warningLabel.setForeground(header);
 
+        // Create panels for the error and warning lists
         errorListPanel = new JPanel();
         errorListPanel.setBackground(Main.bgColor);
         errorListPanel.setBorder(BorderFactory.createEmptyBorder());
@@ -64,21 +63,30 @@ public class ErrorManager extends JScrollPane {
         contentPanel.add(errorLabel, gbc);
 
         gbc.gridy = 1;
-        gbc.fill = GridBagConstraints.BOTH;
         contentPanel.add(errorListPanel, gbc);
 
         gbc.gridy = 2;
-        gbc.fill = GridBagConstraints.NONE;
         contentPanel.add(warningLabel, gbc);
 
         gbc.gridy = 3;
-        gbc.fill = GridBagConstraints.BOTH;
         contentPanel.add(warningListPanel, gbc);
 
-        setViewportView(contentPanel);
+        // Create containerPanel to encapsulate contentPanel
+        JPanel containerPanel = new JPanel(null);  // Use null layout to control the position of contentPanel
+        containerPanel.setBackground(Main.bgColor);
+
+        // Set size of containerPanel to match contentPanel's preferred size
+        Dimension contentSize = contentPanel.getPreferredSize();
+        contentPanel.setBounds(0, 0, contentSize.width, contentSize.height);
+        containerPanel.setPreferredSize(contentSize);
+        containerPanel.add(contentPanel);
+
+        // Set the containerPanel as the viewport view
+        setViewportView(containerPanel);
         setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
         setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
     }
+
 
     public static void clearErrors() {
         erroRects.clear();
@@ -152,8 +160,22 @@ public class ErrorManager extends JScrollPane {
             errorListPanel.add(errorButton);
         }
 
-        // Refresh the view
+        // Recalculate size of contentPanel
         contentPanel.revalidate();
         contentPanel.repaint();
+
+        // Adjust the size of the containerPanel
+        Dimension contentSize = contentPanel.getPreferredSize();
+        contentPanel.setBounds(0, 0, contentSize.width, contentSize.height);
+
+        // Get the parent container panel and update its preferred size
+        Container parent = contentPanel.getParent();
+        if (parent instanceof JPanel) {
+            JPanel containerPanel = (JPanel) parent;
+            containerPanel.setPreferredSize(contentSize);
+            containerPanel.revalidate();
+            containerPanel.repaint();
+        }
     }
+
 }
