@@ -2,6 +2,7 @@ package test.rects;
 
 import action.TextFieldAction;
 import compiler.ClassType;
+import compiler.SyntaxTree;
 import org.json.JSONObject;
 import test.*;
 
@@ -13,6 +14,9 @@ import java.awt.*;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.awt.event.MouseEvent;
+import java.util.ArrayList;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class TextFieldRect extends Rect {
     public JTextField textBox;
@@ -232,13 +236,36 @@ public class TextFieldRect extends Rect {
             }
         }
         else {
-            valid = !textBox.getText().isBlank();
+            valid = !textBox.getText().isEmpty();
             if (!valid) {
                 ErrorManager.erroRects.put(this, new Pair<>(getY(), "Field is empty!"));
+                return;
+            }
+            System.out.println("Test");
+            boolean ty = clazz.name.contains("real");
+            valid = isValidFormat(textBox.getText(), ty, new ArrayList<>(SyntaxTree.constantRegister.keySet().stream().toList()));
+            if (!valid) {
+                ErrorManager.erroRects.put(this, new Pair<>(getY(), "Input is not valid!"));
             }
         }
 
     };
+
+    public static boolean isValidFormat(String input, boolean allowFloatingPoint, ArrayList<String> constants) {
+        // Create regex pattern based on the value of allowFloatingPoint
+        String numberPattern = allowFloatingPoint ? "\\d*\\.\\d+|\\d+" : "\\d+";
+        String constantsPattern = String.join("|", constants);
+
+        // Build the regex pattern
+        String regex = "^(" + numberPattern + "|" + constantsPattern + ")([+\\-*/](" + numberPattern + "|" + constantsPattern + "))*$";
+
+        // Compile and match the pattern
+        Pattern pattern = Pattern.compile(regex);
+        Matcher matcher = pattern.matcher(input);
+
+        return matcher.matches();
+    }
+
 
     @Override
     public void ifInvalid() {
