@@ -24,7 +24,7 @@ import java.util.ArrayList;
 
 import static test.FileManager.loadSave;
 import static test.FileManager.readJSONFileToJSON;
-
+import static test.InputHandler.run;
 
 
 public class GuiCreator {
@@ -196,6 +196,7 @@ public class GuiCreator {
             public void actionPerformed(ActionEvent e) {
                 FileManager.write(Main.dataPanel.toString(), "config.ddl");
                 FileManager.write(Main.mainPanel.leftPanel.toString(), "config.ol");
+                run();
             }
         });
 
