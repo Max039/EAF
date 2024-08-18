@@ -30,7 +30,6 @@ public class ErrorManager extends JScrollPane {
     public static Color header = new Color(255, 255, 255);
 
     public ErrorManager() {
-
         setBackground(bg);
         setBorder(BorderFactory.createEmptyBorder());
 
@@ -44,7 +43,6 @@ public class ErrorManager extends JScrollPane {
         gbc.anchor = GridBagConstraints.WEST;
         gbc.fill = GridBagConstraints.HORIZONTAL;  // Ensure components fill horizontally
         gbc.gridx = 0;
-        gbc.gridy = 0;
 
         // Create labels for errors and warnings
         JLabel errorLabel = new JLabel("Errors:");
@@ -63,18 +61,40 @@ public class ErrorManager extends JScrollPane {
         warningListPanel.setBorder(BorderFactory.createEmptyBorder());
         warningListPanel.setLayout(new BoxLayout(warningListPanel, BoxLayout.Y_AXIS));
 
+        // Create separators
+        JSeparator separator1 = new JSeparator(SwingConstants.HORIZONTAL);
+        separator1.setForeground(Color.WHITE);  // Set color to white
+        JSeparator separator2 = new JSeparator(SwingConstants.HORIZONTAL);
+        separator2.setForeground(Color.WHITE);  // Set color to white
+        JSeparator separator3 = new JSeparator(SwingConstants.HORIZONTAL);
+        separator2.setForeground(Color.WHITE);  // Set color to white
+        JSeparator separator4 = new JSeparator(SwingConstants.HORIZONTAL);
+        separator2.setForeground(Color.WHITE);  // Set color to white
+
         // Add components to contentPanel
         gbc.gridy = 0;
         contentPanel.add(errorLabel, gbc);
 
         gbc.gridy = 1;
-        contentPanel.add(errorListPanel, gbc);
+        contentPanel.add(separator1, gbc);
 
         gbc.gridy = 2;
-        contentPanel.add(warningLabel, gbc);
+        contentPanel.add(errorListPanel, gbc);
 
         gbc.gridy = 3;
+        contentPanel.add(separator2, gbc);  // Add separator between error list and warning label
+
+        gbc.gridy = 4;
+        contentPanel.add(warningLabel, gbc);
+
+        gbc.gridy = 5;
+        contentPanel.add(separator3, gbc);
+
+        gbc.gridy = 6;
         contentPanel.add(warningListPanel, gbc);
+
+        gbc.gridy = 7;
+        contentPanel.add(separator4, gbc);  // Optional: Add another separator if needed
 
         // Create containerPanel to encapsulate contentPanel
         JPanel containerPanel = new JPanel(null);  // Use null layout to control the position of contentPanel
@@ -91,6 +111,7 @@ public class ErrorManager extends JScrollPane {
         setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
         setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
     }
+
 
 
     public static void clearErrors() {
