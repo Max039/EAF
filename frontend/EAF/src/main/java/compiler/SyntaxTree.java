@@ -30,6 +30,8 @@ public class SyntaxTree {
     public static HashMap<String, ClassType> classRegister = new HashMap<>();
     public static HashMap<String, ClassType> baseClassRegister = new HashMap<>();
 
+    public static HashMap<String, Constant> constantRegister = new HashMap<>();
+
     public static String buildPath = "\\EvoAlBuilds\\" + evoalBuild + "\\evoal\\definitions\\de";
 
     //=======================================================================
@@ -131,6 +133,10 @@ public class SyntaxTree {
             System.out.print(getClassHierarchy(im, "", true, true));
         }
         System.out.println("============================");
+        for (var im : constantRegister.values().stream().sorted().toList()) {
+            System.out.println(im.toString());
+        }
+        System.out.println("============================");
     }
 
 
@@ -212,6 +218,7 @@ public class SyntaxTree {
     }
 
     public static Pair<String, ArrayList<ClassType>> processContentOfModule(BufferedReader reader) throws IOException {
+
         ArrayList<ClassType> clazzTypes = new ArrayList<>();
         StringBuilder contentBuilder = new StringBuilder();
         String line;
@@ -248,7 +255,24 @@ public class SyntaxTree {
             clazzTypes.add(clazz);
             i++;
         }
-        System.out.println(LogManager.type() + " Found " + i + " types in module " + moduleName);
+
+        int constCount = 0;
+        String regex = "const\\s*+([^\\s]+)\\s*+([^\\s]+)\\s*:=\\s*+([^\\s]+);";
+        //String regex = "const\\s+([\\w'\\s]+)\\s+([\\w'\\s]+)\\s*:=\\s+([\\w.]+);";
+
+
+        Pattern pattern = Pattern.compile(regex);
+        Matcher matcher = pattern.matcher(content);
+        while (matcher.find()) {
+            String type = matcher.group(1);
+            String name = matcher.group(2).replace("'", "");
+            String value = matcher.group(3).replace("\"", "");
+            System.out.println(LogManager.type() + " Found constant \"" + name + "\" of type \"" + type + "\" with value \"" + value + "\" in module " + moduleName);
+            constantRegister.put(name, new Constant(name, value, type, moduleName));
+            constCount++;
+        }
+
+        System.out.println(LogManager.type() + " Found " + i + " types and " + constCount + " constants in module " + moduleName);
         return new Pair<>(moduleName, clazzTypes);
     }
 
@@ -542,52 +566,6 @@ public class SyntaxTree {
         }
         return c;
     };
-
-    /**
-    public static void DefineField(String clazzTypeName, String field, FieldType fieldType) {
-        var clazz = classRegister.get(clazzTypeName);
-        if (clazz == null) {
-            throw new ClassTypeNotFoundException("When trying to define field \"" + field + "\" for type \"" + clazzTypeName + "\" the type was not found!");
-        }
-        else {
-            if (clazz.getFieldPair(field) == null) {
-                System.out.println("Defined field \"" + field + "\" for type \"" + clazzTypeName + "\" with type " + fieldType.toString());
-                clazz.addField(field, fieldType);
-            } else {
-                throw new FieldAlreadyDefinedException("When trying to define field \"" + field + "\" for type \"" + clazzTypeName + "\" field name was already defined!");
-            }
-        }
-    }
-    public static void SetField(String clazzTypeName, String field, FieldValue fieldValue) {
-        var clazz = classRegister.get(clazzTypeName);
-        if (clazz == null) {
-            throw new ClassTypeNotFoundException("When trying to set field \"" + field + "\" for type \"" + clazzTypeName + "\" the type was not found!");
-        }
-        else {
-            var res = clazz.getFieldPair(field);
-            if (res != null) {
-                if (res.getFirst().equals(fieldValue.type)) {
-                    if (res.getSecond() == null) {
-                        clazz.setField(field, fieldValue);
-                    }
-                    else {
-                        throw new FieldValueAlreadyDefined("When trying to set field \"" + field + "\" for type \"" + clazzTypeName + "\" the value was already defined!");
-                    }
-                } else {
-                    throw new FieldTypeMismatchException("When trying to set field \"" + field + "\" for type \"" + clazzTypeName + "\" there was a type mismatch \"" + fieldValue.type.toString() + "\" != \"" + res.getFirst().toString() + "\"");
-                }
-            } else {
-                throw new FieldNotFoundException("When trying to set field \"" + field + "\" for type \"" + clazzTypeName + "\" the field was not found!");
-            }
-        }
-    }
-    **/
-
-    public static class FieldValueAlreadyDefined extends RuntimeException {
-        public FieldValueAlreadyDefined(String s) {
-            super(s);
-        }
-    }
 
     public static class TypeNameAlreadyUsedException extends RuntimeException {
         public TypeNameAlreadyUsedException(String s) {
