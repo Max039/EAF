@@ -28,7 +28,7 @@ public class DataFieldListPane extends JScrollPane {
 
     public static Color fieldColor = new Color(43, 43, 43, 255);
 
-    public Color borderColor = new Color(85, 85, 85);
+    public static Color borderColor = new Color(85, 85, 85);
     public static Color nameColor = new Color(255, 255, 255);
 
     public static Color headColor = new Color(203, 116, 47);

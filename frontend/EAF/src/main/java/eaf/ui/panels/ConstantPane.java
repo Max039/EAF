@@ -3,12 +3,15 @@ package eaf.ui.panels;
 import eaf.models.Constant;
 import eaf.compiler.SyntaxTree;
 import eaf.Main;
+import eaf.models.DataField;
 import eaf.models.Pair;
 import eaf.rects.Rect;
 import eaf.rects.TextFieldRect;
 import eaf.rects.multi.RectWithRects;
+import eaf.ui.UiUtil;
 
 import javax.swing.*;
+import javax.swing.border.MatteBorder;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -20,10 +23,15 @@ public class ConstantPane extends JScrollPane {
     public static HashMap<String, Constant> additionalConstants = new HashMap<>();
     public static HashMap<String, Constant> constants;
 
+    private static final int ROW_HEIGHT = 30; // Fixed height for each row
     private JPanel contentPanel;
 
     public ConstantPane() {
+        setBackground(Main.bgColor);
+        setBorder(BorderFactory.createEmptyBorder());
         contentPanel = new JPanel();
+        contentPanel.setBackground(Main.bgColor);
+        contentPanel.setBorder(BorderFactory.createEmptyBorder());
         contentPanel.setLayout(new GridBagLayout());  // Use GridBagLayout for flexibility
         setViewportView(contentPanel);
         refreshConstants();
@@ -42,8 +50,8 @@ public class ConstantPane extends JScrollPane {
 
     public static void refreshConstants() {
         constants = new HashMap<>();
-        constants.putAll(SyntaxTree.constantRegister);
         constants.putAll(additionalConstants);
+        constants.putAll(SyntaxTree.constantRegister);
     }
 
     public void refreshUI() {
@@ -59,56 +67,147 @@ public class ConstantPane extends JScrollPane {
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.gridx = 0;
         gbc.gridy = 0;
-        gbc.insets = new Insets(0, 5, 0, 5);  // Add padding between components
+        gbc.insets = new Insets(0, 0, 0, 0);  // Add padding between components
         gbc.fill = GridBagConstraints.HORIZONTAL;
 
         gbc.weightx = 1.0;  // Ensure the columns resize horizontally
-        contentPanel.add(new JLabel("Name"), gbc);
+        var name = new JLabel("Name");
+        name.setForeground(DataFieldListPane.headColor);
+        name.setBackground(DataFieldListPane.fieldColor);
+        name.setOpaque(true);
+        name.setBorder(new MatteBorder(0, 0, 1, 1, DataFieldListPane.borderColor)); // White border (none, none, bottom, right)
+        name.setPreferredSize(new Dimension(30, ROW_HEIGHT));
+        contentPanel.add(name, gbc);
 
         gbc.gridx++;
-        contentPanel.add(new JLabel("Type"), gbc);
+        var type = new JLabel("Type");
+        type.setForeground(DataFieldListPane.typeColor);
+        type.setBackground(DataFieldListPane.fieldColor);
+        type.setOpaque(true);
+        type.setBorder(new MatteBorder(0, 0, 1, 1, DataFieldListPane.borderColor)); // White border (none, none, bottom, right)
+        type.setPreferredSize(new Dimension(30, ROW_HEIGHT));
+        contentPanel.add(type, gbc);
 
         gbc.gridx++;
-        contentPanel.add(new JLabel("Value"), gbc);
+        var value = new JLabel("Value");
+        value.setForeground(DataFieldListPane.typeColor);
+        value.setBackground(DataFieldListPane.fieldColor);
+        value.setOpaque(true);
+        value.setBorder(new MatteBorder(0, 0, 1, 1, DataFieldListPane.borderColor)); // White border (none, none, bottom, right)
+        value.setPreferredSize(new Dimension(80, ROW_HEIGHT));
+        contentPanel.add(value, gbc);
 
         gbc.gridx++;
-        contentPanel.add(new JLabel("Package"), gbc);
+        var pack = new JLabel("Package");
+        pack.setForeground(DataFieldListPane.typeColor);
+        pack.setBackground(DataFieldListPane.fieldColor);
+        pack.setOpaque(true);
+        pack.setBorder(new MatteBorder(0, 0, 1, 1, DataFieldListPane.borderColor)); // White border (none, none, bottom, right)
+        pack.setPreferredSize(new Dimension(80, ROW_HEIGHT));
+        contentPanel.add(pack, gbc);
 
         gbc.gridx++;
         gbc.weightx = 0;  // Prevent the button column from resizing
         JButton addButton = new JButton("+");
+        addButton.setForeground(Main.searchBarText);
+        addButton.setBackground(DataFieldListPane.fieldColor);
+        addButton.setOpaque(true);
+        addButton.setBorder(new MatteBorder(0, 0, 1, 1, DataFieldListPane.borderColor)); // White border (none, none, bottom, right)
         addButton.addActionListener(e -> openAddConstantWindow());
+        addButton.setPreferredSize(new Dimension(80, ROW_HEIGHT));
+        gbc.weightx = 0.2;
+        gbc.anchor = GridBagConstraints.EAST;
         contentPanel.add(addButton, gbc);
     }
 
     private void addConstantRows() {
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.gridy = 1;  // Start after the header
-        gbc.insets = new Insets(0, 5, 0, 5);  // Add padding between components
+        gbc.insets = new Insets(0, 0, 0, 0);  // Add padding between components
         gbc.fill = GridBagConstraints.HORIZONTAL;
         gbc.weightx = 1.0;  // Make the columns expand to fill the available space
 
-        for (var entry : constants.entrySet()) {
+        var sorted = constants.entrySet().stream().sorted((entry1, entry2) -> {
+            boolean inMap2Entry1 = additionalConstants.containsKey(entry1.getKey());
+            boolean inMap2Entry2 = additionalConstants.containsKey(entry2.getKey());
+
+            // Primary sort: Entries that exist in map2 should come first
+            if (inMap2Entry1 && !inMap2Entry2) {
+                return -1;
+            } else if (!inMap2Entry1 && inMap2Entry2) {
+                return 1;
+            } else {
+                // Secondary sort: Sort by the package name (pack field)
+                int packageComparison = entry1.getValue().pack.compareTo(entry2.getValue().pack);
+                if (packageComparison != 0) {
+                    return packageComparison;
+                }
+
+                // Tertiary sort: Sort by the constant name (name field)
+                return entry1.getValue().getName().compareTo(entry2.getValue().getName());
+            }
+        });
+
+        for (var entry : sorted.toList()) {
             gbc.gridx = 0;
-            String name = entry.getKey();
+            String n = entry.getKey();
             Constant constant = entry.getValue();
 
-            contentPanel.add(new JLabel(name), gbc);
+            var name = new JLabel(n);
+            name.setForeground(Main.searchBarText);
+            name.setBackground(DataFieldListPane.fieldColor);
+            name.setOpaque(true);
+            name.setBorder(new MatteBorder(0, 0, 1, 1, DataFieldListPane.borderColor)); // White border (none, none, bottom, right)
+            name.setPreferredSize(new Dimension(30, ROW_HEIGHT));
+            contentPanel.add(name, gbc);
 
             gbc.gridx++;
-            contentPanel.add(new JLabel(constant.getType()), gbc);
+            var type = new JLabel(constant.getType());
+            type.setForeground(Main.searchBarText);
+            type.setBackground(DataFieldListPane.fieldColor);
+            type.setOpaque(true);
+            type.setBorder(new MatteBorder(0, 0, 1, 1, DataFieldListPane.borderColor)); // White border (none, none, bottom, right)
+            type.setPreferredSize(new Dimension(30, ROW_HEIGHT));
+            contentPanel.add(type, gbc);
 
             gbc.gridx++;
-            contentPanel.add(new JLabel(constant.getValue()), gbc);
+            var value = new JLabel(constant.getValue());
+            value.setForeground(Main.searchBarText);
+            value.setBackground(DataFieldListPane.fieldColor);
+            value.setOpaque(true);
+            value.setBorder(new MatteBorder(0, 0, 1, 1, DataFieldListPane.borderColor)); // White border (none, none, bottom, right)
+            value.setPreferredSize(new Dimension(80, ROW_HEIGHT));
+            contentPanel.add(value, gbc);
 
             gbc.gridx++;
-            contentPanel.add(new JLabel(constant.pack), gbc);
+            var pack = new JLabel(constant.pack);
+            pack.setForeground(Main.searchBarText);
+            pack.setBackground(DataFieldListPane.fieldColor);
+            pack.setOpaque(true);
+            pack.setBorder(new MatteBorder(0, 0, 1, 1, DataFieldListPane.borderColor)); // White border (none, none, bottom, right)
+            pack.setPreferredSize(new Dimension(80, ROW_HEIGHT));
+            contentPanel.add(pack, gbc);
+
+
 
             gbc.gridx++;
             gbc.weightx = 0;  // Prevent the button column from resizing
             JButton removeButton = new JButton("-");
-            removeButton.setEnabled(additionalConstants.containsKey(name));
-            removeButton.addActionListener(e -> confirmAndRemoveConstant(name));
+            removeButton.setEnabled(additionalConstants.containsKey(n));
+            if (additionalConstants.containsKey(n)) {
+                removeButton.setForeground(DataFieldListPane.minusColor);
+            }
+            else {
+                removeButton.setForeground(Main.searchBarText);
+            }
+
+            removeButton.setBackground(DataFieldListPane.fieldColor);
+            removeButton.setOpaque(true);
+            removeButton.setBorder(new MatteBorder(0, 0, 1, 1, DataFieldListPane.borderColor)); // White border (none, none, bottom, right)
+            removeButton.setPreferredSize(new Dimension(80, ROW_HEIGHT));
+            removeButton.addActionListener(e -> confirmAndRemoveConstant(n));
+            gbc.weightx = 0.2;
+            gbc.anchor = GridBagConstraints.EAST;
             contentPanel.add(removeButton, gbc);
 
             gbc.gridy++;  // Move to the next row
@@ -154,6 +253,7 @@ public class ConstantPane extends JScrollPane {
                 // If all checks pass, add the constant
                 additionalConstants.put(name, new Constant(name, value, type, ""));
                 refreshUI();
+                break;
             }
         } while (result == JOptionPane.OK_OPTION && (nameField.getText().trim().isEmpty() || valueField.getText().trim().isEmpty() || constants.containsKey(nameField.getText().trim()) || additionalConstants.containsKey(nameField.getText().trim())));
     }
