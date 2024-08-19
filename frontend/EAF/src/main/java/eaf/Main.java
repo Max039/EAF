@@ -143,6 +143,8 @@ public class Main extends JPanel {
         UiUtil.createSplitPanes(this, rightContainerPanel, leftContainerPanel);
 
         UiUtil.setAdaptersAndListeners(this);
+
+        constantManager.refreshUI();
     }
 
 
