@@ -73,10 +73,6 @@ public class ClassType implements Comparable {
         return false;
     }
 
-    boolean doesExtend() {
-        return parent != null;
-    }
-
     Pair<FieldType, FieldValue> getFieldPair(String name) {
         return fields.get(name);
     }
@@ -255,7 +251,7 @@ public class ClassType implements Comparable {
     public static void displayClassInfo(ClassType classType, Point p) {
         JFrame frame = new JFrame("Class Information Viewer");
         int width = 400;
-        int height = 500;
+        int height = 680;
 
 
         // Create the initial content
@@ -362,7 +358,6 @@ public class ClassType implements Comparable {
         panel.add(Box.createRigidArea(new Dimension(0, 15))); // Add vertical space
 
 
-
         // Add the child names with clickable buttons inside a scroll pane
         JPanel childrenPanel = new JPanel();
         childrenPanel.setLayout(new BoxLayout(childrenPanel, BoxLayout.Y_AXIS));
@@ -379,12 +374,49 @@ public class ClassType implements Comparable {
             });
             childrenPanel.add(childButton);
         }
-
         JScrollPane scrollPane = new JScrollPane(childrenPanel);
         scrollPane.setPreferredSize(new Dimension(380, 150));
         panel.add(scrollPane);
 
 
+
+
+
+        panel.add(Box.createRigidArea(new Dimension(0, 15))); // Add vertical space
+
+        JLabel uses = new JLabel("Uses");
+        panel.add(uses);
+
+        panel.add(Box.createRigidArea(new Dimension(0, 15))); // Add vertical space
+
+
+        // Add the child names with clickable buttons inside a scroll pane
+        JPanel usesPanel = new JPanel();
+        usesPanel.setLayout(new BoxLayout(usesPanel, BoxLayout.Y_AXIS));
+
+        for (var c : SyntaxTree.classRegister.values()) {
+            for (var f : c.fields.entrySet()) {
+                var type = f.getValue().getFirst();
+                var class2 = SyntaxTree.classRegister.get(type.typeName);
+                if (!type.primitive && class2.matchesType(classType)) {
+                    JButton childButton = new JButton(c.name + " - " + f.getKey() + " : " + repeatString("array ", type.arrayCount)  + type.typeName);
+                    childButton.setMaximumSize(new Dimension(Integer.MAX_VALUE, 30)); // Set button to full width
+                    childButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+                    childButton.addActionListener(new ActionListener() {
+                        @Override
+                        public void actionPerformed(ActionEvent e) {
+                            historyStack.push(classType);
+                            updateClassInfo(container, c, frame);
+                        }
+                    });
+                    usesPanel.add(childButton);
+                }
+
+            }
+        }
+        JScrollPane scrollPane3 = new JScrollPane(usesPanel);
+        scrollPane3.setPreferredSize(new Dimension(380, 150));
+        panel.add(scrollPane3);
 
 
 
