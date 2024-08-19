@@ -1,16 +1,17 @@
 package test;
 
-import compiler.SyntaxTree;
-import intro.DoubleHelixAnimation;
+import test.compiler.SyntaxTree;
+import test.intro.DoubleHelixAnimation;
+import test.manager.CacheManager;
+import test.ui.*;
+import test.manager.FileManager;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ComponentAdapter;
-import java.awt.event.ComponentEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
-import static test.GuiCreator.showUnsaveDialog;
+import static test.ui.GuiCreator.showUnsaveDialog;
 
 public class Main extends JPanel {
 
@@ -31,9 +32,9 @@ public class Main extends JPanel {
     public static Color searchBar = new Color(100, 100, 100);
     public static Color searchBarBorder = new Color(85, 85, 85);
 
-    public static ConstantManager constantManager;
+    public static ConstantPane constantManager;
 
-    public static ErrorManager errorManager;
+    public static ErrorPane errorManager;
 
     private static final int RECT_SPACING = 5;
     public final RectPanel leftPanel = new RectPanel();
@@ -50,10 +51,10 @@ public class Main extends JPanel {
     public static JFrame mainFrame = null;
 
     // Declare the text field and new panel
-    JTextField rightPanelTextField;
+    public JTextField rightPanelTextField;
     public JTextField leftPanelTextField;
-    JPanel rightContainerPanel;
-    FolderPanel folderPanel;
+    public JPanel rightContainerPanel;
+    public FolderPanel folderPanel;
 
     public static String saveFormat = "eaf";
 

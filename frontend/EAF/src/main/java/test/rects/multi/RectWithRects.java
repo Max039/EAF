@@ -1,16 +1,21 @@
 package test.rects.multi;
 
-import action.AddedRectAction;
-import action.DeletedRectAction;
-import compiler.ClassType;
-import compiler.FieldType;
-import compiler.SyntaxTree;
+import test.action.AddedRectAction;
+import test.action.DeletedRectAction;
+import test.input.InputHandler;
+import test.models.ClassType;
+import test.models.FieldType;
+import test.compiler.SyntaxTree;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import test.*;
+import test.models.Pair;
 import test.rects.OptionsFieldRect;
 import test.rects.Rect;
+import test.rects.RectFactory;
 import test.rects.TextFieldRect;
+import test.ui.ErrorPane;
+import test.ui.RectPanel;
 
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;
@@ -31,7 +36,7 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import javax.imageio.ImageIO;
 
-import static compiler.FieldValue.doesTypesMatch;
+import static test.models.FieldValue.doesTypesMatch;
 
 public abstract class RectWithRects extends Rect {
 
@@ -383,7 +388,7 @@ public abstract class RectWithRects extends Rect {
 
     @Override
     public void removeFrom(JPanel p) {
-        ErrorManager.erroRects.remove(this);
+        ErrorPane.erroRects.remove(this);
         for (int i = 0; i < subRects.length; i++) {
             Rect r = subRects[i];
             if (r != null) {
@@ -727,10 +732,10 @@ public abstract class RectWithRects extends Rect {
            String filed = parent.names[parentIndex];
            color = warningColor;
            warning = false;
-           ErrorManager.warningRects.put(this, new Pair(getY(), filed + ": Empty Array!"));
+           ErrorPane.warningRects.put(this, new Pair(getY(), filed + ": Empty Array!"));
        }
        else {
-           ErrorManager.warningRects.remove(this);
+           ErrorPane.warningRects.remove(this);
            warning = false;
        }
 
@@ -750,14 +755,14 @@ public abstract class RectWithRects extends Rect {
             }
             if (this instanceof ArrayRect) {
                 String filed = parent.names[parentIndex];
-                ErrorManager.erroRects.put(this, new Pair(parent.getYOfIndex(parentIndex), filed + ": Not all fields set for Array!"));
+                ErrorPane.erroRects.put(this, new Pair(parent.getYOfIndex(parentIndex), filed + ": Not all fields set for Array!"));
             } else {
-                ErrorManager.erroRects.put(this, new Pair(getYOfIndex(fields.get(0).getSecond()), clazz.name + ": Not all fields set! [" + r + "]"));
+                ErrorPane.erroRects.put(this, new Pair(getYOfIndex(fields.get(0).getSecond()), clazz.name + ": Not all fields set! [" + r + "]"));
             }
             color = errorColor;
             return;
         }
-        ErrorManager.erroRects.remove(this);
+        ErrorPane.erroRects.remove(this);
     };
 
     @Override

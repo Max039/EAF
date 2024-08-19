@@ -1,13 +1,13 @@
 package test.rects.multi;
 
-import action.ArrayElementAddedAction;
-import action.ArrayElementRemovedAction;
-import compiler.ClassType;
-import compiler.FieldType;
+import test.action.ArrayElementAddedAction;
+import test.action.ArrayElementRemovedAction;
+import test.models.ClassType;
+import test.models.FieldType;
 import test.Main;
-import test.InputHandler;
-import test.Pair;
-import test.RectFactory;
+import test.input.InputHandler;
+import test.models.Pair;
+import test.rects.RectFactory;
 import test.rects.OptionsFieldRect;
 import test.rects.Rect;
 

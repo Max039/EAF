@@ -1,11 +1,11 @@
 package test.rects;
 
-import compiler.ClassType;
+import test.models.ClassType;
 import org.json.JSONObject;
 import test.Main;
-import test.InputHandler;
-import test.Pair;
-import test.RectPanel;
+import test.input.InputHandler;
+import test.models.Pair;
+import test.ui.RectPanel;
 import test.rects.multi.RectWithRects;
 
 import javax.swing.*;

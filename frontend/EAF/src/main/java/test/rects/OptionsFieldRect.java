@@ -1,9 +1,13 @@
 package test.rects;
 
-import action.OptionsFieldAction;
-import compiler.ClassType;
+import test.action.OptionsFieldAction;
+import test.input.InputHandler;
+import test.models.ClassType;
 import org.json.JSONObject;
 import test.*;
+import test.models.DataField;
+import test.models.Pair;
+import test.ui.ErrorPane;
 
 import javax.swing.*;
 import javax.swing.border.Border;
@@ -262,7 +266,7 @@ public class OptionsFieldRect extends Rect {
     @Override
     public void removeFrom(JPanel p) {
         p.remove(comboBox);
-        ErrorManager.erroRects.remove(this);
+        ErrorPane.erroRects.remove(this);
     }
 
     @Override
@@ -271,13 +275,13 @@ public class OptionsFieldRect extends Rect {
 
     @Override
     public void setValidity() {
-        ErrorManager.erroRects.remove(this);
+        ErrorPane.erroRects.remove(this);
         if (clazz.name.equals("data")) {
             boolean res = Main.dataPanel.getDataFieldList().stream().anyMatch(t -> ((DataField) t).getName().equals(comboBox.getSelectedItem()));
             if (!res) {
                 String field = parent.names[parentIndex];
                 String err = field + ": Data with name \"" + comboBox.getSelectedItem() + "\" was not found!";
-                ErrorManager.erroRects.put(this, new Pair<>(getY(), err));
+                ErrorPane.erroRects.put(this, new Pair<>(getY(), err));
             }
             valid = res;
             return;

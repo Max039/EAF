@@ -1,14 +1,10 @@
 package test.rects.multi;
 
-import compiler.ClassType;
-import compiler.FieldType;
-import org.json.JSONObject;
+import test.models.ClassType;
+import test.models.FieldType;
 import test.rects.Rect;
 
 import java.awt.*;
-import java.util.Arrays;
-import java.util.Objects;
-
 
 
 public class ClassRect extends RectWithRects {
