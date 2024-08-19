@@ -5,6 +5,7 @@ import compiler.ClassType;
 import compiler.SyntaxTree;
 import org.json.JSONObject;
 import test.*;
+import test.rects.multi.RectWithRects;
 
 import javax.swing.*;
 import javax.swing.border.Border;
@@ -228,42 +229,43 @@ public class TextFieldRect extends Rect {
     public void setValidity() {
         ErrorManager.erroRects.remove(this);
         ErrorManager.warningRects.remove(this);
+        String fieldName = parent.names[parentIndex];
         valid = true;
         warning = false;
         if (clazz.name.contains("string")) {
             warning = textBox.getText().isBlank();
             if (warning) {
-                ErrorManager.warningRects.put(this, new Pair<>(getY(), "String is empty!"));
+                ErrorManager.warningRects.put(this, new Pair<>(getY(), fieldName + ": String is empty!"));
                 return;
             }
 
             warning = textBox.getText().equals("Enter String here!");
             if (warning) {
-                ErrorManager.warningRects.put(this, new Pair<>(getY(), "Default String!"));
+                ErrorManager.warningRects.put(this, new Pair<>(getY(), fieldName + ": Default String!"));
             }
         }
         else if (clazz.name.contains("literal")) {
             warning = textBox.getText().equals("Enter Literal here!");
             if (warning) {
-                ErrorManager.warningRects.put(this, new Pair<>(getY(), "Default literal!"));
+                ErrorManager.warningRects.put(this, new Pair<>(getY(), fieldName + ": Default literal!"));
             }
         }
         else {
             valid = !textBox.getText().isEmpty();
             if (!valid) {
-                ErrorManager.erroRects.put(this, new Pair<>(getY(), "Field is empty!"));
+                ErrorManager.erroRects.put(this, new Pair<>(getY(), fieldName + ": Field is empty!"));
                 return;
             }
             boolean ty = clazz.name.contains("real");
             valid = isValidFormat(textBox.getText(), ty, new ArrayList<>(ConstantManager.getConstantsByType(clazz.name).stream().map(Pair::getFirst).toList()));
             if (!valid) {
-                ErrorManager.erroRects.put(this, new Pair<>(getY(), "Input is not valid!"));
+                ErrorManager.erroRects.put(this, new Pair<>(getY(), fieldName + ": Input is not valid!"));
                 return;
             }
 
             warning = textBox.getText().equals("0");
             if (warning) {
-                ErrorManager.warningRects.put(this, new Pair<>(getY(), "Number value 0!"));
+                ErrorManager.warningRects.put(this, new Pair<>(getY(), fieldName + ": Number value 0!"));
                 return;
             }
         }

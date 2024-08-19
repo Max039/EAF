@@ -87,7 +87,7 @@ public abstract class RectWithRects extends Rect {
     }
 
     Rect[] subRects = new Rect[0];
-    String[] names = new String[0];
+    public String[] names = new String[0];
 
     FieldType[] types = new FieldType[0];
 
@@ -748,9 +748,10 @@ public abstract class RectWithRects extends Rect {
                 i++;
             }
             if (this instanceof ArrayRect) {
-                ErrorManager.erroRects.put(this, new Pair(getYOfIndex(fields.get(0).getSecond()), "Not all fields set for Array!"));
+                String filed = parent.names[parentIndex];
+                ErrorManager.erroRects.put(this, new Pair(getYOfIndex(fields.get(0).getSecond()), filed + ": Not all fields set for Array!"));
             } else {
-                ErrorManager.erroRects.put(this, new Pair(getYOfIndex(fields.get(0).getSecond()), "Not all fields set for " + clazz.name + "! [" + r + "]"));
+                ErrorManager.erroRects.put(this, new Pair(getYOfIndex(fields.get(0).getSecond()), clazz.name + ": Not all fields set! [" + r + "]"));
             }
             color = errorColor;
             return;
