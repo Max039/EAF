@@ -5,7 +5,7 @@ import org.json.JSONObject;
 import eaf.Main;
 import eaf.input.InputHandler;
 import eaf.models.Pair;
-import eaf.ui.RectPanel;
+import eaf.ui.panels.RectPanel;
 import eaf.rects.multi.RectWithRects;
 
 import javax.swing.*;

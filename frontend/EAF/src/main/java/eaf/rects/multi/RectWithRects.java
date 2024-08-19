@@ -14,8 +14,8 @@ import eaf.rects.OptionsFieldRect;
 import eaf.rects.Rect;
 import eaf.rects.RectFactory;
 import eaf.rects.TextFieldRect;
-import eaf.ui.ErrorPane;
-import eaf.ui.RectPanel;
+import eaf.ui.panels.ErrorPane;
+import eaf.ui.panels.RectPanel;
 
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;

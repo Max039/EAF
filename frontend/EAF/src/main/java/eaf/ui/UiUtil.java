@@ -7,6 +7,8 @@ import eaf.manager.FileManager;
 import eaf.rects.Rect;
 import eaf.rects.multi.ClassRect;
 import eaf.rects.multi.RectWithRects;
+import eaf.sound.SoundManager;
+import eaf.ui.panels.*;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -30,7 +32,7 @@ import static eaf.manager.FileManager.readJSONFileToJSON;
 import static eaf.input.InputHandler.run;
 
 
-public class GuiCreator {
+public class UiUtil {
 
     public static BufferedImage cross = null;
     public static BufferedImage checkmark = null;
@@ -246,7 +248,7 @@ public class GuiCreator {
 
 
 
-    static void customizeScrollBar(JScrollPane scrollPane) {
+    public static void customizeScrollBar(JScrollPane scrollPane) {
         JScrollBar verticalScrollBar = scrollPane.getVerticalScrollBar();
         JScrollBar horizontalScrollBar = scrollPane.getHorizontalScrollBar();
 

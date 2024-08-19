@@ -1,7 +1,7 @@
 {
     "data": [{
         "instance": false,
-        "name": "test",
+        "name": "eaf",
         "type": "quotient real"
     }],
     "rects": [
@@ -159,7 +159,7 @@
                                                 "editable": true,
                                                 "type": "option-field",
                                                 "sub-type": "data",
-                                                "value": "test"
+                                                "value": "eaf"
                                             }]
                                         },
                                         {
@@ -174,7 +174,7 @@
                                                 "editable": true,
                                                 "type": "option-field",
                                                 "sub-type": "data",
-                                                "value": "test"
+                                                "value": "eaf"
                                             }]
                                         }
                                     ]
@@ -206,7 +206,7 @@
                                         "editable": true,
                                         "type": "option-field",
                                         "sub-type": "data",
-                                        "value": "test"
+                                        "value": "eaf"
                                     }
                                 ]
                             }]
@@ -348,7 +348,7 @@
                                             "editable": true,
                                             "type": "option-field",
                                             "sub-type": "data",
-                                            "value": "test"
+                                            "value": "eaf"
                                         }]
                                     }]
                                 },

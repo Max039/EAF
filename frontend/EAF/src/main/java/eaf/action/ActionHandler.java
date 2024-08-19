@@ -1,6 +1,6 @@
 package eaf.action;
 
-import eaf.ui.ErrorPane;
+import eaf.ui.panels.ErrorPane;
 
 import java.util.ArrayList;
 

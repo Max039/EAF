@@ -9,8 +9,8 @@ import eaf.manager.FileManager;
 import eaf.rects.Rect;
 import eaf.rects.multi.ClassRect;
 import eaf.rects.multi.RectWithRects;
-import eaf.ui.ErrorPane;
-import eaf.ui.SoundManager;
+import eaf.ui.panels.ErrorPane;
+import eaf.sound.SoundManager;
 
 import javax.swing.*;
 import java.awt.*;

@@ -4,7 +4,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 import eaf.input.InputHandler;
 import eaf.Main;
-import eaf.ui.ErrorPane;
+import eaf.ui.panels.ErrorPane;
 
 import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;

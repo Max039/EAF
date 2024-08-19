@@ -1,4 +1,4 @@
-package eaf.ui;
+package eaf.sound;
 
 import java.awt.*;
 

@@ -1,8 +1,9 @@
-package eaf.ui;
+package eaf.ui.panels;
 
 import eaf.input.InputHandler;
 import eaf.Main;
 import eaf.models.ClassType;
+import eaf.ui.UiUtil;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import eaf.rects.Rect;
@@ -330,7 +331,7 @@ public class RectPanel extends JScrollPane {
 
             }
             if (Main.mainPanel.leftPanel == RectPanel.this) {
-                GuiCreator.drawIcons(RectPanel.this, g);
+                UiUtil.drawIcons(RectPanel.this, g);
             }
         }
 

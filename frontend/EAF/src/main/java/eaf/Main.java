@@ -5,13 +5,14 @@ import eaf.intro.DoubleHelixAnimation;
 import eaf.manager.CacheManager;
 import eaf.ui.*;
 import eaf.manager.FileManager;
+import eaf.ui.panels.*;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
-import static eaf.ui.GuiCreator.showUnsaveDialog;
+import static eaf.ui.UiUtil.showUnsaveDialog;
 
 public class Main extends JPanel {
 
@@ -98,7 +99,7 @@ public class Main extends JPanel {
         });
 
 
-        GuiCreator.createMenuBar();
+        UiUtil.createMenuBar();
 
         // Create and add content to the frame
         new Main();
@@ -111,7 +112,7 @@ public class Main extends JPanel {
     }
 
     public Main() {
-        GuiCreator.adjustMainPanel(this);
+        UiUtil.adjustMainPanel(this);
 
         setupUi();
 
@@ -119,29 +120,29 @@ public class Main extends JPanel {
     }
 
     private void setupUi() {
-        GuiCreator.createConstantPanel();
-        GuiCreator.createErrorPanel();
+        UiUtil.createConstantPanel();
+        UiUtil.createErrorPanel();
 
-        GuiCreator.createContentLabel();
+        UiUtil.createContentLabel();
 
-        rightPanelTextField = GuiCreator.createTextField();
-        leftPanelTextField = GuiCreator.createTextField();
+        rightPanelTextField = UiUtil.createTextField();
+        leftPanelTextField = UiUtil.createTextField();
 
-        GuiCreator.createDataPanel();
+        UiUtil.createDataPanel();
 
-        GuiCreator.createFolderPanel(this);
+        UiUtil.createFolderPanel(this);
 
-        GuiCreator.setRightPanelTextFieldListeners(this);
+        UiUtil.setRightPanelTextFieldListeners(this);
 
-        JPanel rightContainerPanel = GuiCreator.createRightContainerPanel(this);
+        JPanel rightContainerPanel = UiUtil.createRightContainerPanel(this);
 
-        GuiCreator.setLeftPanelTextFieldListeners(this);
+        UiUtil.setLeftPanelTextFieldListeners(this);
 
-        JPanel leftContainerPanel = GuiCreator.createLeftContainerPanel(this);
+        JPanel leftContainerPanel = UiUtil.createLeftContainerPanel(this);
 
-        GuiCreator.createSplitPanes(this, rightContainerPanel, leftContainerPanel);
+        UiUtil.createSplitPanes(this, rightContainerPanel, leftContainerPanel);
 
-        GuiCreator.setAdaptersAndListeners(this);
+        UiUtil.setAdaptersAndListeners(this);
     }
 
 

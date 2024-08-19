@@ -9,7 +9,7 @@ import org.json.JSONObject;
 import eaf.manager.ColorManager;
 import eaf.manager.LogManager;
 import eaf.Main;
-import eaf.ui.RectPanel;
+import eaf.ui.panels.RectPanel;
 import eaf.rects.multi.ArrayRect;
 import eaf.rects.multi.ClassRect;
 

@@ -7,7 +7,7 @@ import org.json.JSONObject;
 import eaf.*;
 import eaf.models.DataField;
 import eaf.models.Pair;
-import eaf.ui.ErrorPane;
+import eaf.ui.panels.ErrorPane;
 
 import javax.swing.*;
 import javax.swing.border.Border;

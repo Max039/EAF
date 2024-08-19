@@ -1,9 +1,10 @@
-package eaf.ui;
+package eaf.ui.panels;
 
 import eaf.action.AddedDataAction;
 import eaf.action.RemovedDataAction;
 import eaf.models.ClassType;
 import eaf.compiler.SyntaxTree;
+import eaf.sound.SoundManager;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import eaf.models.DataField;

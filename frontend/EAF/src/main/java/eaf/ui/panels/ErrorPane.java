@@ -1,4 +1,4 @@
-package eaf.ui;
+package eaf.ui.panels;
 
 import eaf.manager.ColorManager;
 import eaf.manager.LogManager;

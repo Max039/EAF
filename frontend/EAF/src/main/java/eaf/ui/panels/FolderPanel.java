@@ -1,8 +1,9 @@
-package eaf.ui;
+package eaf.ui.panels;
 
 import eaf.models.ClassType;
 import eaf.input.InputHandler;
 import eaf.Main;
+import eaf.ui.WrapLayout;
 
 import javax.swing.*;
 import javax.swing.border.Border;
@@ -13,7 +14,7 @@ import java.util.*;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static eaf.ui.GuiCreator.customizeScrollBar;
+import static eaf.ui.UiUtil.customizeScrollBar;
 
 public class FolderPanel extends JPanel {
     private Stack<String> pathStack;

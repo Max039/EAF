@@ -1,4 +1,4 @@
-package eaf.ui;
+package eaf.ui.panels;
 
 import eaf.models.Constant;
 import eaf.compiler.SyntaxTree;
