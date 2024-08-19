@@ -251,7 +251,7 @@ public class ClassType implements Comparable {
     public static void displayClassInfo(ClassType classType, Point p) {
         JFrame frame = new JFrame("Class Information Viewer");
         int width = 400;
-        int height = 680;
+        int height = 730;
 
 
         // Create the initial content
@@ -273,8 +273,14 @@ public class ClassType implements Comparable {
         // Adding 15px spacing between components
         panel.setBorder(BorderFactory.createEmptyBorder(15, 15, 15, 15));
 
+        String back = "← Back";
+        if (!historyStack.isEmpty()) {
+            back += " to " + historyStack.peek().name;
+        }
+
+
         // Add a back button if there is history
-        JButton backButton = new JButton("← Back");
+        JButton backButton = new JButton(back);
         backButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -291,6 +297,21 @@ public class ClassType implements Comparable {
         // Add the class name
         JLabel nameLabel = new JLabel("Class Name: " + classType.getName());
         panel.add(nameLabel);
+        panel.add(Box.createRigidArea(new Dimension(0, 15))); // Add vertical space
+
+
+        var root = classType.getRoot();
+        // Add a back button if there is history
+        JButton rootButton = new JButton("Root: " + root.name);
+        rootButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                historyStack.push(root);
+                updateClassInfo(container, root, frame);
+            }
+        });
+        panel.add(rootButton);
+
         panel.add(Box.createRigidArea(new Dimension(0, 15))); // Add vertical space
 
         // Add the package name
@@ -449,6 +470,15 @@ public class ClassType implements Comparable {
         }
 
         return result.toString();
+    }
+
+    public ClassType getRoot() {
+        if (parent == null) {
+            return this;
+        }
+        else {
+            return parent.getRoot();
+        }
     }
 
 }
