@@ -64,7 +64,7 @@ public class DataFieldListPane extends JScrollPane {
         nameLabel.setBackground(fieldColor);
         nameLabel.setPreferredSize(new Dimension(100, ROW_HEIGHT)); // Fixed size for the name column
         nameLabel.setForeground(headColor); // White text color
-        nameLabel.setBorder(new MatteBorder(0, 1, 1, 0, borderColor)); // White border (none, left, bottom, none)
+        nameLabel.setBorder(new MatteBorder(1, 1, 1, 0, borderColor)); // White border (none, left, bottom, none)
         gbc.gridx = 0;
         gbc.weightx = 0.4;
         panel.add(nameLabel, gbc);
@@ -75,7 +75,7 @@ public class DataFieldListPane extends JScrollPane {
         typeLabel.setBackground(fieldColor);
         typeLabel.setPreferredSize(new Dimension(100, ROW_HEIGHT)); // Fixed size for the type column
         typeLabel.setForeground(typeColor); // White text color
-        typeLabel.setBorder(new MatteBorder(0, 0, 1, 0, borderColor)); // White border (none, none, bottom, none)
+        typeLabel.setBorder(new MatteBorder(1, 0, 1, 0, borderColor)); // White border (none, none, bottom, none)
         gbc.gridx = 1;
         gbc.weightx = 0.4;
         panel.add(typeLabel, gbc);
@@ -86,7 +86,7 @@ public class DataFieldListPane extends JScrollPane {
         gbc.gridx = 2;
         gbc.weightx = 0.2;
         gbc.anchor = GridBagConstraints.EAST;
-        addButton.setBorder(new MatteBorder(0, 0, 1, 1, borderColor)); // White border (none, none, bottom, right)
+        addButton.setBorder(new MatteBorder(1, 0, 1, 1, borderColor)); // White border (none, none, bottom, right)
         panel.add(addButton, gbc);
 
         addButton.setBackground(fieldColor);

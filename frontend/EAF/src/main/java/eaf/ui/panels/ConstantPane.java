@@ -75,7 +75,7 @@ public class ConstantPane extends JScrollPane {
         name.setForeground(DataFieldListPane.headColor);
         name.setBackground(DataFieldListPane.fieldColor);
         name.setOpaque(true);
-        name.setBorder(new MatteBorder(0, 0, 1, 1, DataFieldListPane.borderColor)); // White border (none, none, bottom, right)
+        name.setBorder(new MatteBorder(1, 1, 1, 0, DataFieldListPane.borderColor)); // White border (none, none, bottom, right)
         name.setPreferredSize(new Dimension(30, ROW_HEIGHT));
         contentPanel.add(name, gbc);
 
@@ -84,7 +84,7 @@ public class ConstantPane extends JScrollPane {
         type.setForeground(DataFieldListPane.typeColor);
         type.setBackground(DataFieldListPane.fieldColor);
         type.setOpaque(true);
-        type.setBorder(new MatteBorder(0, 0, 1, 1, DataFieldListPane.borderColor)); // White border (none, none, bottom, right)
+        type.setBorder(new MatteBorder(1, 0, 1, 0, DataFieldListPane.borderColor)); // White border (none, none, bottom, right)
         type.setPreferredSize(new Dimension(30, ROW_HEIGHT));
         contentPanel.add(type, gbc);
 
@@ -93,7 +93,7 @@ public class ConstantPane extends JScrollPane {
         value.setForeground(DataFieldListPane.typeColor);
         value.setBackground(DataFieldListPane.fieldColor);
         value.setOpaque(true);
-        value.setBorder(new MatteBorder(0, 0, 1, 1, DataFieldListPane.borderColor)); // White border (none, none, bottom, right)
+        value.setBorder(new MatteBorder(1, 0, 1, 0, DataFieldListPane.borderColor)); // White border (none, none, bottom, right)
         value.setPreferredSize(new Dimension(80, ROW_HEIGHT));
         contentPanel.add(value, gbc);
 
@@ -102,7 +102,7 @@ public class ConstantPane extends JScrollPane {
         pack.setForeground(DataFieldListPane.typeColor);
         pack.setBackground(DataFieldListPane.fieldColor);
         pack.setOpaque(true);
-        pack.setBorder(new MatteBorder(0, 0, 1, 1, DataFieldListPane.borderColor)); // White border (none, none, bottom, right)
+        pack.setBorder(new MatteBorder(1, 0, 1, 0, DataFieldListPane.borderColor)); // White border (none, none, bottom, right)
         pack.setPreferredSize(new Dimension(80, ROW_HEIGHT));
         contentPanel.add(pack, gbc);
 
@@ -112,7 +112,7 @@ public class ConstantPane extends JScrollPane {
         addButton.setForeground(Main.searchBarText);
         addButton.setBackground(DataFieldListPane.fieldColor);
         addButton.setOpaque(true);
-        addButton.setBorder(new MatteBorder(0, 0, 1, 1, DataFieldListPane.borderColor)); // White border (none, none, bottom, right)
+        addButton.setBorder(new MatteBorder(1, 0, 1, 1, DataFieldListPane.borderColor)); // White border (none, none, bottom, right)
         addButton.addActionListener(e -> openAddConstantWindow());
         addButton.setPreferredSize(new Dimension(80, ROW_HEIGHT));
         gbc.weightx = 0.2;
@@ -157,7 +157,7 @@ public class ConstantPane extends JScrollPane {
             name.setForeground(Main.searchBarText);
             name.setBackground(DataFieldListPane.fieldColor);
             name.setOpaque(true);
-            name.setBorder(new MatteBorder(0, 0, 1, 1, DataFieldListPane.borderColor)); // White border (none, none, bottom, right)
+            name.setBorder(new MatteBorder(0, 1, 1, 0, DataFieldListPane.borderColor)); // White border (none, none, bottom, right)
             name.setPreferredSize(new Dimension(30, ROW_HEIGHT));
             contentPanel.add(name, gbc);
 
@@ -166,7 +166,7 @@ public class ConstantPane extends JScrollPane {
             type.setForeground(Main.searchBarText);
             type.setBackground(DataFieldListPane.fieldColor);
             type.setOpaque(true);
-            type.setBorder(new MatteBorder(0, 0, 1, 1, DataFieldListPane.borderColor)); // White border (none, none, bottom, right)
+            type.setBorder(new MatteBorder(0, 0, 1, 0, DataFieldListPane.borderColor)); // White border (none, none, bottom, right)
             type.setPreferredSize(new Dimension(30, ROW_HEIGHT));
             contentPanel.add(type, gbc);
 
@@ -175,7 +175,7 @@ public class ConstantPane extends JScrollPane {
             value.setForeground(Main.searchBarText);
             value.setBackground(DataFieldListPane.fieldColor);
             value.setOpaque(true);
-            value.setBorder(new MatteBorder(0, 0, 1, 1, DataFieldListPane.borderColor)); // White border (none, none, bottom, right)
+            value.setBorder(new MatteBorder(0, 0, 1, 0, DataFieldListPane.borderColor)); // White border (none, none, bottom, right)
             value.setPreferredSize(new Dimension(80, ROW_HEIGHT));
             contentPanel.add(value, gbc);
 
@@ -184,7 +184,7 @@ public class ConstantPane extends JScrollPane {
             pack.setForeground(Main.searchBarText);
             pack.setBackground(DataFieldListPane.fieldColor);
             pack.setOpaque(true);
-            pack.setBorder(new MatteBorder(0, 0, 1, 1, DataFieldListPane.borderColor)); // White border (none, none, bottom, right)
+            pack.setBorder(new MatteBorder(0, 0, 1, 0, DataFieldListPane.borderColor)); // White border (none, none, bottom, right)
             pack.setPreferredSize(new Dimension(80, ROW_HEIGHT));
             contentPanel.add(pack, gbc);
 
