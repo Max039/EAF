@@ -39,7 +39,7 @@ public class ErrorPane extends JScrollPane {
 
         contentPanel = new JPanel();
         contentPanel.setLayout(new GridBagLayout());
-        contentPanel.setBackground(bg);
+        contentPanel.setBackground(DataFieldListPane.fieldColor);
         contentPanel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));  // Slight padding to keep content from touching the edges
 
         GridBagConstraints gbc = new GridBagConstraints();
@@ -50,7 +50,7 @@ public class ErrorPane extends JScrollPane {
 
         // Create labels for errors and warnings
         JLabel errorLabel = new JLabel("Errors:");
-        errorLabel.setForeground(header);
+        errorLabel.setForeground(DataFieldListPane.headColor);
         JLabel warningLabel = new JLabel("Warnings:");
         warningLabel.setForeground(header);
 
