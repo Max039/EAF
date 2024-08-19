@@ -3,28 +3,28 @@ import "definitions" from de.evoal.generator.optimisation;
 import "definitions" from de.evoal.optimisation.core;
 import "definitions" from de.evoal.optimisation.ea.mdo;
 import "definitions" from de.evoal.optimisation.ea.optimisation;
-import "definitions" from de.evoal.routenoptimierung.comparators.generationPrintComparator;
 import "definitions" from de.evoal.routenoptimierung.initials.emptyStringInitial;
 import "definitions" from de.evoal.core.math
 
 import "data" from 'config';
 
 module 'config' {
+
+  const real Test := 5;
+
   specify problem 'evolutionary-algorithm' {
     'initialisation' := 'empty-string-initial' {};
     'offspring-fraction' := 0.6;
-    'comparator' := 'generation-print-comparator' {
-      'child-comparator' := 'numeric-comparator' {};
-    };
-    'size-of-population' := 0;
-    'maximum-age' := 0;
+    'comparator' := 'numeric-comparator' {};
+    'size-of-population' := 55;
+    'maximum-age' := 5;
     'handlers' := [
       'constraint-handler' {
         'calculation' := 'normal-calculation' {};
         'constraint-handling' := 'kill-at-birth' {
           'repair-strategy' := 'repair-with-random' {};
         };
-        'category' := Enter string here!;
+        'category' := Test;
       }
     ];
     'optimisation-function' := 'fitness-distance' {
@@ -36,41 +36,44 @@ module 'config' {
               'c' := 2*PI;
 };
             'reads' := [
-              data 'eaf'
+              data 'var'
             ];
             'writes' := [
-              data 'eaf'
+              data 'var2'
             ];
           }
         ];
       };
       'target' := [
         'variable' {
-          'val' := Enter literal here!;
-          'name' := data 'eaf';
+          'val' := Test;
+          'name' := data 'var';
         }
       ];
     };
     'alterers' := 'alterers' {
       'crossover' := [
         'correlation-line-crossover' {
-          'probability' := 0;
-          'position' := 0;
+          'probability' := 5;
+          'position' := 6;
         }
       ];
       'mutator' := [
-        'array-reorder-mutator' {
-          'probability' := 0;
+        'array-size-mutator' {
+          'probability' := 5;
         }
       ];
     };
-    'number-of-generations' := 0;
+    'number-of-generations' := 60;
     'selectors' := 'selectors' {
-      'offspring' := 'linear-rank-selector' {
-        'nminus' := 0;
+      'offspring' := 'boltzmann-selector' {
+        'beta' := 5;
       };
-      'survivor' := 'boltzmann-selector' {
-        'beta' := 0;
+      'survivor' := 'elite-selector' {
+        'size-factor' := 05;
+        'non-elite-selector' := 'boltzmann-selector' {
+          'beta' := 5;
+        };
       };
     };
     'genotype' := 'vector-genotype' {
@@ -78,10 +81,10 @@ module 'config' {
         'bit-chromosome' {
           'genes' := [
             'gene' {
-              'content' := data 'eaf';
+              'content' := data 'var2';
             }
           ];
-          'scale' := 0;
+          'scale' := 5;
         }
       ];
     };

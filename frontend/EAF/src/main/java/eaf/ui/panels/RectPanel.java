@@ -244,17 +244,28 @@ public class RectPanel extends JScrollPane {
             getAllRects(classesNeededForScript, r);
         }
 
+        String constants = "";
         var imports = getUniqueImports(classesNeededForScript);
         for (var r : ConstantPane.getUsedConstants()) {
-            if (!imports.contains(r.pack)) {
-                imports += "import \"definitions\" from " + r.pack + "\n";
+            System.out.println(r);
+            if (!r.pack.isEmpty()) {
+                if (!imports.contains(r.pack)) {
+                    imports += "import \"definitions\" from " + r.pack + "\n";
+                }
             }
-        }
+            else {
+                constants += Rect.stringPadding + "const " + r.type + " " + r.name + " := " + r.value + ";\n";
+            }
 
+        }
+        if (!constants.isEmpty()) {
+            constants = "\n" + constants + "\n";
+        }
 
         res += imports + "\n";
         res += "import \"data\" from 'config';\n\n";
         res += "module 'config' {\n";
+        res += constants;
         res += Rect.stringPadding + "specify problem '" + problemName + "' ";
         res += problemContent;
         res += "\n\n\n";

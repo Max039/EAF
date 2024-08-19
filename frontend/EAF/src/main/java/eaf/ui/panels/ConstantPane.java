@@ -291,7 +291,13 @@ public class ConstantPane extends JScrollPane {
         for (var r : Main.mainPanel.leftPanel.getRects()) {
             arr.addAll(getUsedConstants(r));
         }
-        return arr;
+        var uniques = new ArrayList<Constant>();
+
+        for (var e : arr) {
+            if(!uniques.contains(e))
+                uniques.add(e);
+        }
+        return uniques;
     }
 
     public static ArrayList<Constant> getUsedConstants(Rect r) {
