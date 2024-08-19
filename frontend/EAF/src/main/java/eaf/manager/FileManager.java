@@ -17,6 +17,8 @@ public class FileManager {
         Main.dataPanel.fromJson(a2);
         JSONArray a = o.getJSONArray("rects");
         Main.mainPanel.leftPanel.fromJson(a);
+        JSONArray a3 = o.getJSONArray("constants");
+        Main.constantManager.fromJson(a3);
         InputHandler.actionHandler.reset();
         ErrorPane.checkForErrors();
     }
@@ -32,6 +34,7 @@ public class FileManager {
         JSONObject o = new JSONObject();
         o.put("rects", Main.mainPanel.leftPanel.toJson());
         o.put("data", Main.dataPanel.toJson());
+        o.put("constants", Main.constantManager.toJson());
         return o;
     }
 

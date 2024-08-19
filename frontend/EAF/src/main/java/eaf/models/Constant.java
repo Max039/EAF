@@ -1,5 +1,7 @@
 package eaf.models;
 
+import org.json.JSONObject;
+
 import java.util.Objects;
 
 public class Constant implements Comparable {
@@ -63,5 +65,13 @@ public class Constant implements Comparable {
     @Override
     public int compareTo(Object o) {
         return name.compareTo(((Constant)o).getName());
+    }
+
+    public JSONObject toJson() {
+        var o = new JSONObject();
+        o.put("name", name);
+        o.put("type", type);
+        o.put("value", value);
+        return o;
     }
 }

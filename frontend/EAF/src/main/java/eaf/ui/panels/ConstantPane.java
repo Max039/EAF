@@ -1,5 +1,9 @@
 package eaf.ui.panels;
 
+import eaf.action.ActionHandler;
+import eaf.action.AddedConstantAction;
+import eaf.action.RemovedConstantAction;
+import eaf.input.InputHandler;
 import eaf.models.Constant;
 import eaf.compiler.SyntaxTree;
 import eaf.Main;
@@ -9,6 +13,8 @@ import eaf.rects.Rect;
 import eaf.rects.TextFieldRect;
 import eaf.rects.multi.RectWithRects;
 import eaf.ui.UiUtil;
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 import javax.swing.*;
 import javax.swing.border.MatteBorder;
@@ -22,6 +28,7 @@ public class ConstantPane extends JScrollPane {
 
     public static HashMap<String, Constant> additionalConstants = new HashMap<>();
     public static HashMap<String, Constant> constants;
+    public HashMap<String, ArrayList<Component>> componentMap = new HashMap<>();
 
     private static final int ROW_HEIGHT = 30; // Fixed height for each row
     private JPanel contentPanel;
@@ -56,6 +63,7 @@ public class ConstantPane extends JScrollPane {
 
     public void refreshUI() {
         refreshConstants();
+        componentMap = new HashMap<>();
         contentPanel.removeAll();
         addHeaderRow();
         addConstantRows();
@@ -149,6 +157,7 @@ public class ConstantPane extends JScrollPane {
         });
 
         for (var entry : sorted.toList()) {
+            ArrayList<Component> comps = new ArrayList<>();
             gbc.gridx = 0;
             String n = entry.getKey();
             Constant constant = entry.getValue();
@@ -160,6 +169,7 @@ public class ConstantPane extends JScrollPane {
             name.setBorder(new MatteBorder(0, 1, 1, 0, DataFieldListPane.borderColor)); // White border (none, none, bottom, right)
             name.setPreferredSize(new Dimension(30, ROW_HEIGHT));
             contentPanel.add(name, gbc);
+            comps.add(name);
 
             gbc.gridx++;
             var type = new JLabel(constant.getType());
@@ -169,6 +179,7 @@ public class ConstantPane extends JScrollPane {
             type.setBorder(new MatteBorder(0, 0, 1, 0, DataFieldListPane.borderColor)); // White border (none, none, bottom, right)
             type.setPreferredSize(new Dimension(30, ROW_HEIGHT));
             contentPanel.add(type, gbc);
+            comps.add(type);
 
             gbc.gridx++;
             var value = new JLabel(constant.getValue());
@@ -178,6 +189,7 @@ public class ConstantPane extends JScrollPane {
             value.setBorder(new MatteBorder(0, 0, 1, 0, DataFieldListPane.borderColor)); // White border (none, none, bottom, right)
             value.setPreferredSize(new Dimension(80, ROW_HEIGHT));
             contentPanel.add(value, gbc);
+            comps.add(value);
 
             gbc.gridx++;
             var pack = new JLabel(constant.pack);
@@ -187,7 +199,7 @@ public class ConstantPane extends JScrollPane {
             pack.setBorder(new MatteBorder(0, 0, 1, 0, DataFieldListPane.borderColor)); // White border (none, none, bottom, right)
             pack.setPreferredSize(new Dimension(80, ROW_HEIGHT));
             contentPanel.add(pack, gbc);
-
+            comps.add(pack);
 
 
             gbc.gridx++;
@@ -206,10 +218,12 @@ public class ConstantPane extends JScrollPane {
             removeButton.setBorder(new MatteBorder(0, 0, 1, 1, DataFieldListPane.borderColor)); // White border (none, none, bottom, right)
             removeButton.setPreferredSize(new Dimension(80, ROW_HEIGHT));
             removeButton.addActionListener(e -> confirmAndRemoveConstant(n));
+            comps.add(removeButton);
             gbc.weightx = 0.2;
             gbc.anchor = GridBagConstraints.EAST;
             contentPanel.add(removeButton, gbc);
 
+            componentMap.put(n, comps);
             gbc.gridy++;  // Move to the next row
             gbc.weightx = 1.0;  // Reset for the next row
         }
@@ -249,9 +263,11 @@ public class ConstantPane extends JScrollPane {
                     JOptionPane.showMessageDialog(null, "The name is already used. Please choose a different name.", "Input Error", JOptionPane.ERROR_MESSAGE);
                     continue;
                 }
+                var con = new Constant(name, value, type, "");
 
                 // If all checks pass, add the constant
-                additionalConstants.put(name, new Constant(name, value, type, ""));
+                additionalConstants.put(name, con);
+                InputHandler.actionHandler.action(new AddedConstantAction(con));
                 refreshUI();
                 break;
             }
@@ -263,7 +279,9 @@ public class ConstantPane extends JScrollPane {
                 "Are you sure you want to remove the constant '" + name + "'?",
                 "Confirm Removal", JOptionPane.YES_NO_OPTION);
         if (result == JOptionPane.YES_OPTION) {
+            InputHandler.actionHandler.action(new RemovedConstantAction(additionalConstants.get(name)));
             additionalConstants.remove(name);
+            componentMap.remove(name);
             refreshUI();
         }
     }
@@ -293,5 +311,39 @@ public class ConstantPane extends JScrollPane {
             }
         }
         return arr;
+    }
+
+
+    public JSONArray toJson() {
+        var a = new JSONArray();
+        for (var r : additionalConstants.values()) {
+            a.put(r.toJson());
+        }
+        return a;
+    }
+
+    public void fromJson(JSONArray a) {
+        additionalConstants = new HashMap<>();
+        for (var r : a) {
+            var r2 = (JSONObject) r;
+            var c = new Constant(r2.getString("name"), r2.getString("value"), r2.getString("type"), "");
+            additionalConstants.put(c.name, c);
+        }
+        refreshUI();
+    }
+
+    public void removeConstant(String name) {
+        additionalConstants.remove(name);
+        var r = componentMap.get(name);
+        for (var c : r) {
+            contentPanel.remove(c);
+        }
+        componentMap.remove(name);
+        refreshUI();
+    }
+
+    public void addConstant(Constant c) {
+        additionalConstants.put(c.name, c);
+        refreshUI();
     }
 }
