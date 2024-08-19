@@ -724,9 +724,10 @@ public abstract class RectWithRects extends Rect {
     public void setValidity() {
         color = RectPanel.instanceColor;
        if (this instanceof ArrayRect && subRects.length < 1) {
+           String filed = parent.names[parentIndex];
            color = warningColor;
            warning = false;
-           ErrorManager.warningRects.put(this, new Pair(getY(),"Empty Array!"));
+           ErrorManager.warningRects.put(this, new Pair(getY(), filed + ": Empty Array!"));
        }
        else {
            ErrorManager.warningRects.remove(this);
