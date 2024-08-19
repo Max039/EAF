@@ -36,10 +36,10 @@ module 'config' {
               'c' := 2*PI;
 };
             'reads' := [
-              data 'test'
+              data 'eaf'
             ];
             'writes' := [
-              data 'test'
+              data 'eaf'
             ];
           }
         ];
@@ -47,7 +47,7 @@ module 'config' {
       'target' := [
         'variable' {
           'val' := Enter literal here!;
-          'name' := data 'test';
+          'name' := data 'eaf';
         }
       ];
     };
@@ -78,7 +78,7 @@ module 'config' {
         'bit-chromosome' {
           'genes' := [
             'gene' {
-              'content' := data 'test';
+              'content' := data 'eaf';
             }
           ];
           'scale' := 0;

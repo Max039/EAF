@@ -1,4 +1,4 @@
 
 module 'config' {
-	quotient real data 'test';
+	quotient real data 'eaf';
 }
