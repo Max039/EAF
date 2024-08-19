@@ -275,7 +275,8 @@ public class OptionsFieldRect extends Rect {
         if (clazz.name.equals("data")) {
             boolean res = Main.dataPanel.getDataFieldList().stream().anyMatch(t -> ((DataField) t).getName().equals(comboBox.getSelectedItem()));
             if (!res) {
-                String err = "Data with name \"" + comboBox.getSelectedItem() + "\" was not found!";
+                String field = parent.names[parentIndex];
+                String err = field + ": Data with name \"" + comboBox.getSelectedItem() + "\" was not found!";
                 ErrorManager.erroRects.put(this, new Pair<>(getY(), err));
             }
             valid = res;
