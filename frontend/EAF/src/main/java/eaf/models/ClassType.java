@@ -306,7 +306,7 @@ public class ClassType implements Comparable {
         rootButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                historyStack.push(root);
+                historyStack.push(classType);
                 updateClassInfo(container, root, frame);
             }
         });
