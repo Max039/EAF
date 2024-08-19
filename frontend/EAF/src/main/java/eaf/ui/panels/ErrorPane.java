@@ -12,6 +12,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.Comparator;
 import java.util.HashMap;
 
 public class ErrorPane extends JScrollPane {
@@ -157,7 +158,7 @@ public class ErrorPane extends JScrollPane {
         warningListPanel.removeAll();
 
         // Add warning buttons
-        for (var entry : warningRects.entrySet()) {
+        for (var entry : warningRects.entrySet().stream().sorted(Comparator.comparing(t -> t.getValue().getFirst())).toList()) {
             Pair<Integer, String> pair = entry.getValue();
             JButton warningButton = new JButton(pair.getSecond());
             warningButton.addActionListener(new ActionListener() {
@@ -174,7 +175,7 @@ public class ErrorPane extends JScrollPane {
         }
 
         // Add error buttons
-        for (var entry : erroRects.entrySet()) {
+        for (var entry : erroRects.entrySet().stream().sorted(Comparator.comparing(t -> t.getValue().getFirst())).toList()) {
             Pair<Integer, String> pair = entry.getValue();
             JButton errorButton = new JButton(pair.getSecond());
             errorButton.addActionListener(new ActionListener() {
