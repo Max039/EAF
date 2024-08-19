@@ -130,15 +130,32 @@ public class ConstantPane extends JScrollPane {
         panel.add(new JLabel("Value:"));
         panel.add(valueField);
 
-        int result = JOptionPane.showConfirmDialog(null, panel, "Add New Constant",
-                JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
-        if (result == JOptionPane.OK_OPTION) {
-            String name = nameField.getText();
-            String type = (String) typeDropdown.getSelectedItem();
-            String value = valueField.getText();
-            additionalConstants.put(name, new Constant(name, value, type, ""));
-            refreshUI();
-        }
+        int result;
+        do {
+            result = JOptionPane.showConfirmDialog(null, panel, "Add New Constant",
+                    JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
+            if (result == JOptionPane.OK_OPTION) {
+                String name = nameField.getText().trim();
+                String type = (String) typeDropdown.getSelectedItem();
+                String value = valueField.getText().trim();
+
+                // Validation: Check if all fields are filled
+                if (name.isEmpty() || value.isEmpty()) {
+                    JOptionPane.showMessageDialog(null, "All fields must be filled out.", "Input Error", JOptionPane.ERROR_MESSAGE);
+                    continue;
+                }
+
+                // Validation: Check if the name is unique
+                if (constants.containsKey(name) || additionalConstants.containsKey(name)) {
+                    JOptionPane.showMessageDialog(null, "The name is already used. Please choose a different name.", "Input Error", JOptionPane.ERROR_MESSAGE);
+                    continue;
+                }
+
+                // If all checks pass, add the constant
+                additionalConstants.put(name, new Constant(name, value, type, ""));
+                refreshUI();
+            }
+        } while (result == JOptionPane.OK_OPTION && (nameField.getText().trim().isEmpty() || valueField.getText().trim().isEmpty() || constants.containsKey(nameField.getText().trim()) || additionalConstants.containsKey(nameField.getText().trim())));
     }
 
     private void confirmAndRemoveConstant(String name) {
