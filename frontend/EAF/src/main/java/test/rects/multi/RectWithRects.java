@@ -749,7 +749,7 @@ public abstract class RectWithRects extends Rect {
             }
             if (this instanceof ArrayRect) {
                 String filed = parent.names[parentIndex];
-                ErrorManager.erroRects.put(this, new Pair(getYOfIndex(fields.get(0).getSecond()), filed + ": Not all fields set for Array!"));
+                ErrorManager.erroRects.put(this, new Pair(parent.getYOfIndex(parentIndex), filed + ": Not all fields set for Array!"));
             } else {
                 ErrorManager.erroRects.put(this, new Pair(getYOfIndex(fields.get(0).getSecond()), clazz.name + ": Not all fields set! [" + r + "]"));
             }
