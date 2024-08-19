@@ -44,7 +44,7 @@ public class ErrorPane extends JScrollPane {
         contentPanel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));  // Slight padding to keep content from touching the edges
 
         GridBagConstraints gbc = new GridBagConstraints();
-        gbc.insets = new Insets(5, 0, 0, 0);  // Removed padding around components
+        gbc.insets = new Insets(0, 0, 0, 0);  // Removed padding around components
         gbc.anchor = GridBagConstraints.WEST;
         gbc.fill = GridBagConstraints.HORIZONTAL;  // Ensure components fill horizontally
         gbc.gridx = 0;
@@ -80,15 +80,19 @@ public class ErrorPane extends JScrollPane {
         gbc.gridy = 0;
         contentPanel.add(errorLabel, gbc);
 
+        gbc.insets = new Insets(5, 0, 0, 0);  // Removed padding around components
+
         gbc.gridy = 1;
         contentPanel.add(separator1, gbc);
 
         gbc.gridy = 2;
         contentPanel.add(errorListPanel, gbc);
 
+        gbc.insets = new Insets(10, 0, 5, 0);  // Removed padding around components
         gbc.gridy = 3;
         contentPanel.add(separator2, gbc);  // Add separator between error list and warning label
 
+        gbc.insets = new Insets(5, 0, 0, 0);  // Removed padding around components
         gbc.gridy = 4;
         contentPanel.add(warningLabel, gbc);
 
@@ -98,6 +102,7 @@ public class ErrorPane extends JScrollPane {
         gbc.gridy = 6;
         contentPanel.add(warningListPanel, gbc);
 
+        gbc.insets = new Insets(10, 0, 5, 0);  // Removed padding around components
         gbc.gridy = 7;
         contentPanel.add(separator4, gbc);  // Optional: Add another separator if needed
 
