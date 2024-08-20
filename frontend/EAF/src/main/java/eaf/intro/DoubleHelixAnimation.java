@@ -221,7 +221,7 @@ public class DoubleHelixAnimation extends JPanel implements ActionListener {
     }
 
     public static DoubleHelixAnimation create() {
-        JFrame frame = new JFrame("Double Helix Animation");
+        JFrame frame = new JFrame("EAF: Loading");
         DoubleHelixAnimation helixAnimation = new DoubleHelixAnimation(frame);
 
         frame.add(helixAnimation);

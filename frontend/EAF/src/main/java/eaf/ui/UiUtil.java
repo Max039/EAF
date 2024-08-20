@@ -252,7 +252,7 @@ public class UiUtil {
                 Main.mainPanel.leftPanel.requestFocus();
             }
         });
-        
+
 
         JScrollBar verticalScrollBar = scrollPane.getVerticalScrollBar();
         JScrollBar horizontalScrollBar = scrollPane.getHorizontalScrollBar();
