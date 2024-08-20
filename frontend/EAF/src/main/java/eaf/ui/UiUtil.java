@@ -13,10 +13,7 @@ import eaf.ui.panels.*;
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.border.Border;
-import javax.swing.event.DocumentEvent;
-import javax.swing.event.DocumentListener;
-import javax.swing.event.MenuEvent;
-import javax.swing.event.MenuListener;
+import javax.swing.event.*;
 import javax.swing.plaf.basic.BasicScrollBarUI;
 import javax.swing.plaf.basic.BasicSplitPaneDivider;
 import javax.swing.plaf.basic.BasicSplitPaneUI;
@@ -249,6 +246,14 @@ public class UiUtil {
 
 
     public static void customizeScrollBar(JScrollPane scrollPane) {
+        scrollPane.getViewport().addChangeListener(new ChangeListener() {
+            @Override
+            public void stateChanged(ChangeEvent e){
+                Main.mainPanel.leftPanel.requestFocus();
+            }
+        });
+        
+
         JScrollBar verticalScrollBar = scrollPane.getVerticalScrollBar();
         JScrollBar horizontalScrollBar = scrollPane.getHorizontalScrollBar();
 
@@ -399,7 +404,7 @@ public class UiUtil {
                 Rect matchingRect = main.leftPanel.getRect(leftPanelPos);
                 if (matchingRect instanceof RectWithRects) {
                     matchingRect = ((RectWithRects) matchingRect).getSubRect(leftPanelPos);
-                    if (matchingRect != null && main.leftPanel.hasFocus()) {
+                    if (matchingRect != null && (main.leftPanel.hasFocus() || main.rightPanel.hasFocus())) {
                         matchingRect.onMouseClicked(e.getButton() == 1, leftPanelPos, panelRelativePos, e);
                         if (InputHandler.isControlPressed && matchingRect instanceof ClassRect && prevSelected != matchingRect) {
                             InputHandler.setSelected((ClassRect)matchingRect);

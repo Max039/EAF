@@ -145,6 +145,8 @@ public class Main extends JPanel {
         UiUtil.setAdaptersAndListeners(this);
 
         constantManager.refreshUI();
+
+        leftPanel.requestFocusInWindow();
     }
 
 
