@@ -44,6 +44,11 @@ public class SyntaxTree {
 
     private static Deque<File> fileQueue = new ArrayDeque<>();
 
+    public static List<ClassType> getBasedClasses() {
+        Collection<ClassType> ar = new ArrayList<>(baseClassRegister.values());
+        ar.addAll(ExtraRectManager.baseClassRegister.values());
+        return ar.stream().sorted().toList();
+    }
 
     public static ArrayList<ClassType> getNonAbstractClasses() {
         var arr = new ArrayList<>(List.of(SyntaxTree.classRegister.values().stream().filter(t -> !t.isAbstract).toArray(ClassType[]::new)));
@@ -153,11 +158,7 @@ public class SyntaxTree {
 
     }
 
-    public static List<ClassType> getBasedClasses() {
-        Collection<ClassType> ar = new ArrayList<>(baseClassRegister.values());
-        ar.addAll(ExtraRectManager.baseClassRegister.values());
-        return ar.stream().sorted().toList();
-    }
+
 
     public static String makeModuleName(String s) {
         String definitionName = s.replace(File.separator, ".").replace("/", ".").replace(".dl", "").replace(".ddl", "");
