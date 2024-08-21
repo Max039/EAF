@@ -249,7 +249,9 @@ public class UiUtil {
         scrollPane.getViewport().addChangeListener(new ChangeListener() {
             @Override
             public void stateChanged(ChangeEvent e){
-                Main.mainPanel.leftPanel.requestFocus();
+                if (!Main.mainPanel.leftPanelTextField.hasFocus() && !Main.mainPanel.rightPanelTextField.hasFocus()) {
+                    Main.mainPanel.leftPanel.requestFocus();
+                }
             }
         });
 

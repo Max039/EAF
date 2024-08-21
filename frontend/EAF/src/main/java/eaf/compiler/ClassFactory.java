@@ -73,7 +73,7 @@ public class ClassFactory {
             o2.put("array-count", type.arrayCount);
             o2.put("type-name", type.typeName);
             if (type.primitive && value != null) {
-                o2.put("value", value);
+                o2.put("value", value.value);
             }
             else {
                 o2.put("value", "");

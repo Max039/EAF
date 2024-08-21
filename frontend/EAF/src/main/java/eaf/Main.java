@@ -150,6 +150,7 @@ public class Main extends JPanel {
 
         leftPanel.requestFocusInWindow();
 
+        ExtraRectManager.saveRect(SyntaxTree.get("evolutionary-algorithm"));
     }
 
 
