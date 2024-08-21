@@ -85,13 +85,15 @@ public class ClassType implements Comparable {
         fields.put(name, new Pair<>(type, null));
     }
 
-    public void setField(String name, FieldValue v) {
+    public void setField(String name, FieldValue v, boolean printMsg) {
         var currVal = fields.get(name);
         if (currVal == null) {
             fields.put(name, new Pair<>(v.type, v));
         }
         else {
-            System.out.println(LogManager.field() + "Trying to set field \"" + name + "\" of type \"" + currVal.getFirst() + "\" with current value \"" + currVal.getSecond() + "\" to \"" + v + "\"" );
+            if (printMsg) {
+                System.out.println(LogManager.field() + "Trying to set field \"" + name + "\" of type \"" + currVal.getFirst() + "\" with current value \"" + currVal.getSecond() + "\" to \"" + v + "\"" );
+            }
             boolean typesMatch;
             if (currVal.getFirst().primitive) {
                 typesMatch = currVal.getFirst().equals(v.type);

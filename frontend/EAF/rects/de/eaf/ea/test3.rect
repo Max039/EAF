@@ -1,0 +1,6 @@
+{
+    "parent": "test",
+    "name": "test3",
+    "abstract": true,
+    "fields": []
+}

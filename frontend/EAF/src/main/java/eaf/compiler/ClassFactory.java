@@ -11,12 +11,12 @@ import java.util.ArrayList;
 
 public class ClassFactory {
 
-    public static ClassType createClass(String name, String pack, String parent, boolean abst, ArrayList<Pair<String, Pair<FieldType, String>>> fields) {
+    public static Pair<Boolean, ClassType> createClass(String name, String pack, String parent, boolean abst, ArrayList<Pair<String, Pair<FieldType, String>>> fields) {
         ClassType parentClass = null;
         if (!parent.isEmpty()) {
-            parentClass = SyntaxTree.classRegister.get(parent);
+            parentClass = SyntaxTree.get(parent);
             if (parentClass == null) {
-                System.out.println("Warning parent \"" + parent + "\" for rect \"" + name + "\" not found!");
+                return new Pair<>(false, null);
             }
         }
 
@@ -28,14 +28,14 @@ public class ClassFactory {
             var value = f.getSecond().getSecond();
             c.addField(fname, type);
             if (type.primitive && !value.isEmpty()) {
-                c.setField(fname, new FieldValue(type.typeName, value));
+                c.setField(fname, new FieldValue(type.typeName, value), false);
             }
         }
 
-        return c;
+        return new Pair<>(true, c);
     }
 
-    public static ClassType fromRectFile(JSONObject o, String pack) {
+    public static Pair<Boolean, ClassType> fromRectFile(JSONObject o, String pack) {
         var name = o.getString("name");
         var abst = o.getBoolean("abstract");
         var parent = o.getString("parent");

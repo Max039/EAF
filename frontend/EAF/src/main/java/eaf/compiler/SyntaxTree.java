@@ -28,8 +28,8 @@ public class SyntaxTree {
 
     public static HashMap<String, eaf.models.Module> moduleRegister = new HashMap<>();
 
-    protected static HashMap<String, ClassType> classRegister = new HashMap<>();
-    protected static HashMap<String, ClassType> baseClassRegister = new HashMap<>();
+    private static HashMap<String, ClassType> classRegister = new HashMap<>();
+    private static HashMap<String, ClassType> baseClassRegister = new HashMap<>();
 
     public static HashMap<String, Constant> constantRegister = new HashMap<>();
 
@@ -329,7 +329,7 @@ public class SyntaxTree {
     static void PrimitiveFieldSetter(ClassType context, String field, String typename, String rawValue) {
         typename = getFieldTypeIfNull(context, field, typename);
         System.out.println(LogManager.field() + " FieldSetterPrimitive called with field: " + field + ", typename: " + typename + ", value: " + rawValue);
-        context.setField(field, primitiveStringToFieldValue(typename, rawValue));
+        context.setField(field, primitiveStringToFieldValue(typename, rawValue), true);
     }
 
     static void InstanceFieldSetter(ClassType context, String field, String typename, String rawValue) {
@@ -337,7 +337,7 @@ public class SyntaxTree {
         System.out.println(LogManager.field() + " FieldSetterInstance called with field: " + field + ", typename: " + typename + ", value: " + rawValue);
         ClassType instanceContext = getInstanceOfClass(typename);
         FieldValue value = processContentOfType(instanceContext, rawValue);
-        context.setField(field, value);
+        context.setField(field, value, true);
     }
 
     static void ArrayFieldSetter(ClassType context, String field, String typename, String rawValue, boolean defineAndSet) {
@@ -355,10 +355,10 @@ public class SyntaxTree {
                 instance = !context.fields.get(field).getFirst().primitive;
             }
             FieldValue value = processArrayField(new FieldType(typename, !instance, arrayDepth), rawValue);
-            context.setField(field, value);
+            context.setField(field, value, true);
         }
         else {
-            context.setField(field, null);
+            context.setField(field, null, true);
         }
     }
 
