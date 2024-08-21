@@ -1,6 +1,6 @@
 {
     "parent": "",
-    "name": "handler",
+    "name": "test",
     "abstract": true,
     "fields": []
 }

@@ -342,7 +342,7 @@ public class ClassType implements Comparable {
                 @Override
                 public void actionPerformed(ActionEvent e) {
                     if (!type.primitive) {
-                        var c = SyntaxTree.classRegister.get(type.typeName);
+                        var c = SyntaxTree.get(type.typeName);
                         historyStack.push(classType);
                         updateClassInfo(container, c, frame);
                     }
@@ -415,10 +415,10 @@ public class ClassType implements Comparable {
         JPanel usesPanel = new JPanel();
         usesPanel.setLayout(new BoxLayout(usesPanel, BoxLayout.Y_AXIS));
 
-        for (var c : SyntaxTree.classRegister.values()) {
+        for (var c : SyntaxTree.getClasses()) {
             for (var f : c.fields.entrySet()) {
                 var type = f.getValue().getFirst();
-                var class2 = SyntaxTree.classRegister.get(type.typeName);
+                var class2 = SyntaxTree.get(type.typeName);
                 if (!type.primitive && class2.matchesType(classType)) {
                     JButton childButton = new JButton(c.name + " - " + f.getKey() + " : " + repeatString("array ", type.arrayCount)  + type.typeName);
                     childButton.setMaximumSize(new Dimension(Integer.MAX_VALUE, 30)); // Set button to full width

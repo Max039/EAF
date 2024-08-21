@@ -59,8 +59,8 @@ public class FieldValue {
     }
 
     public static boolean doesTypesMatch(FieldType t1, FieldType t2) {
-        var c1 = SyntaxTree.classRegister.get(t1.typeName);
-        var c2 = SyntaxTree.classRegister.get(t2.typeName);
+        var c1 = SyntaxTree.get(t1.typeName);
+        var c2 = SyntaxTree.get(t2.typeName);
         if (c1 == null) {
             throw new SyntaxTree.UnknownTypeException("Could not find type \"" + t1.typeName + "\"");
         }
@@ -72,7 +72,7 @@ public class FieldValue {
     }
 
     public static boolean doesTypesMatch(FieldType t, ClassType c) {
-        var tc = SyntaxTree.classRegister.get(t.typeName);
+        var tc = SyntaxTree.get(t.typeName);
 
         if (tc == null) {
             throw new SyntaxTree.UnknownTypeException("Could not find type \"" + t.typeName + "\"");

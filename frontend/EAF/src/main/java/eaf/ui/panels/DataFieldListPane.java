@@ -543,7 +543,7 @@ public class DataFieldListPane extends JScrollPane {
         for (var d : dataFieldList) {
             var c = ((DataField)d);
             if (c.isInstance()) {
-                classesNeededForScript.add(SyntaxTree.classRegister.get(c.getType()));
+                classesNeededForScript.add(SyntaxTree.get(c.getType()));
             }
             data += "\t" + c.toFormat() + "\n";
         }

@@ -408,6 +408,12 @@
                     "value": "2*PI"
                 }
             ]
+        },
+        {
+            "package": "de.eaf.ea.test",
+            "type": "instance",
+            "sub-type": "test",
+            "value": []
         }
     ],
     "constants": [

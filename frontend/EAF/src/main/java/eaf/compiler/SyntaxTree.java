@@ -28,7 +28,7 @@ public class SyntaxTree {
 
     public static HashMap<String, eaf.models.Module> moduleRegister = new HashMap<>();
 
-    public static HashMap<String, ClassType> classRegister = new HashMap<>();
+    protected static HashMap<String, ClassType> classRegister = new HashMap<>();
     public static HashMap<String, ClassType> baseClassRegister = new HashMap<>();
 
     public static HashMap<String, Constant> constantRegister = new HashMap<>();
@@ -48,6 +48,12 @@ public class SyntaxTree {
     public static ArrayList<ClassType> getNonAbstractClasses() {
         var arr = new ArrayList<>(List.of(SyntaxTree.classRegister.values().stream().filter(t -> !t.isAbstract).toArray(ClassType[]::new)));
         arr.addAll(List.of(ExtraRectManager.classRegister.values().stream().filter(t -> !t.isAbstract).toArray(ClassType[]::new)));
+        return arr;
+    }
+
+    public static ArrayList<ClassType> getClasses() {
+        var arr = new ArrayList<>(List.of(SyntaxTree.classRegister.values().stream().toArray(ClassType[]::new)));
+        arr.addAll(List.of(ExtraRectManager.classRegister.values().stream().toArray(ClassType[]::new)));
         return arr;
     }
 
@@ -637,5 +643,15 @@ public class SyntaxTree {
 
     public static FieldValue primitiveStringToFieldValue(String type, String value) {
         return new FieldValue(type, value);
+    }
+
+
+    public static ClassType get(String s) {
+        var res1 = SyntaxTree.classRegister.get(s);
+        if (res1 == null) {
+            return ExtraRectManager.classRegister.get(s);
+        }
+        return res1;
+
     }
 }

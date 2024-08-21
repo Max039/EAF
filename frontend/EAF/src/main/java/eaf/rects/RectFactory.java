@@ -94,7 +94,7 @@ public class RectFactory {
                 ctype.arrayCount -= 1;
                 boolean fill = type.primitive;
                 if (!fill) {
-                    var check = SyntaxTree.classRegister.get(type.typeName).findSingleNonAbstractClass();
+                    var check = SyntaxTree.get(type.typeName).findSingleNonAbstractClass();
                     if (check != null) {
                         System.out.println(LogManager.reactFactory() + LogManager.info() + " Only " + ColorManager.colorText("1", ColorManager.warningColor) + " non abstract type available for \"" + ColorManager.colorText(type.typeName, ColorManager.infoColor) + "\" " + ColorManager.colorText("converting", ColorManager.warningColor) + " array to \"" + ColorManager.colorText(check.name, ColorManager.infoColor) + "\"");
                         fill = true;
@@ -132,7 +132,7 @@ public class RectFactory {
                     return (T) new TextFieldRect(content, RectPanel.textBoxWidth, RectPanel.textBoxHeight, RectPanel.primitiveColor, c, true);
                 }
                 else {
-                    var check = SyntaxTree.classRegister.get(type.typeName).findSingleNonAbstractClass();
+                    var check = SyntaxTree.get(type.typeName).findSingleNonAbstractClass();
                     if (check != null) {
                         System.out.println(LogManager.reactFactory() + LogManager.info() + " Only " + ColorManager.colorText("1", ColorManager.warningColor) + " non abstract type available for \"" + ColorManager.colorText(type.typeName, ColorManager.infoColor) + "\" "  + ColorManager.colorText("creating and setting instance", ColorManager.warningColor) +  " of \"" + ColorManager.colorText(check.name, ColorManager.infoColor) + "\" for field.");
                         var newR = (ClassRect) getRectFromClassType(check);
@@ -173,7 +173,7 @@ public class RectFactory {
                 var c2 = new ClassType(clazz, null, "Primitive");
                 return new TextFieldRect(value2, RectPanel.textBoxWidth, RectPanel.textBoxHeight, RectPanel.primitiveColor, c2, b2);
             case "instance" :
-                var reg = SyntaxTree.classRegister.get(clazz);
+                var reg = SyntaxTree.get(clazz);
                 String pack = (String) arr.get("package");
                 if (!reg.pack.equals(pack)) {
                     System.out.println(LogManager.reactFactory() + LogManager.warning() + ": Unequal pack \"" + pack + "\" != \"" + reg.pack + "\" for class \"" + clazz + "\" you can ignore this if you changed the class domain.");
@@ -196,7 +196,7 @@ public class RectFactory {
                                     ((TextFieldRect)fr).setTextColor(TextFieldRect.uneditableColor);
                                 }
                             }
-                            if (fr instanceof ClassRect && SyntaxTree.classRegister.get(field.getValue().getFirst().typeName).findSingleNonAbstractClass() != null) {
+                            if (fr instanceof ClassRect && SyntaxTree.get(field.getValue().getFirst().typeName).findSingleNonAbstractClass() != null) {
                                 ((ClassRect)fr).setLocked(true);
                             }
 
@@ -235,7 +235,7 @@ public class RectFactory {
 
                 boolean fill = ft.primitive;
                 if (!fill) {
-                    var check = SyntaxTree.classRegister.get(ft.typeName).findSingleNonAbstractClass();
+                    var check = SyntaxTree.get(ft.typeName).findSingleNonAbstractClass();
                     if (check != null) {
                         System.out.println(LogManager.reactFactory() + LogManager.info() + " Only " + ColorManager.colorText("1", ColorManager.warningColor) + " non abstract type available for \"" + ColorManager.colorText(ft.typeName, ColorManager.infoColor) + "\" " + ColorManager.colorText("converting", ColorManager.warningColor) +  " array to " + ColorManager.colorText(check.name, ColorManager.infoColor) + "\"");
                         fill = true;
@@ -262,7 +262,7 @@ public class RectFactory {
                 for (var jsonField : arrarr) {
                     var resRect = rectFromJson((JSONObject)jsonField);
                     arrRect.setIndex(i2, resRect);
-                    if (resRect instanceof ClassRect && SyntaxTree.classRegister.get(ft.typeName).findSingleNonAbstractClass() != null) {
+                    if (resRect instanceof ClassRect && SyntaxTree.get(ft.typeName).findSingleNonAbstractClass() != null) {
                         ((ClassRect)resRect).setLocked(true);
                     }
                     i2++;

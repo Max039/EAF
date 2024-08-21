@@ -1,6 +1,7 @@
 package eaf.manager;
 
 import eaf.compiler.ClassFactory;
+import eaf.compiler.SyntaxTree;
 import eaf.models.ClassType;
 
 import java.io.File;
@@ -65,6 +66,10 @@ public class ExtraRectManager {
                 classRegister.put(c.name, c);
                 if (c.parent == null) {
                     baseClassRegister.put(c.name, c);
+                }
+
+                if (c.parent != null) {
+                    c.parent.addChild(c);
                 }
             }
         }

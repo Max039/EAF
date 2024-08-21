@@ -537,7 +537,7 @@ public abstract class RectWithRects extends Rect {
         if (res.getFirst() && !left) {
             var index = types[res.getSecond()];
             if (!index.primitive) {
-                var clazz = SyntaxTree.classRegister.get(index.typeName);
+                var clazz = SyntaxTree.get(index.typeName);
                 var valid = clazz.getAllClassTypes();
 
 

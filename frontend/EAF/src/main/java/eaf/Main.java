@@ -149,6 +149,7 @@ public class Main extends JPanel {
         constantManager.refreshUI();
 
         leftPanel.requestFocusInWindow();
+
     }
 
 
