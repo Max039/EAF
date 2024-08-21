@@ -27,7 +27,7 @@ public class ClassType implements Comparable {
 
     private boolean extending;
 
-    ClassType parent;
+    public ClassType parent;
 
     ArrayList<ClassType> children = new ArrayList<>();
 

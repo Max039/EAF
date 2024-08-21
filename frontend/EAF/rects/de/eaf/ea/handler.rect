@@ -1,0 +1,6 @@
+{
+    "parent": "",
+    "name": "handler",
+    "abstract": true,
+    "fields": []
+}

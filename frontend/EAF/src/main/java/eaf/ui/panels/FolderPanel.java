@@ -1,5 +1,7 @@
 package eaf.ui.panels;
 
+import eaf.compiler.SyntaxTree;
+import eaf.manager.ExtraRectManager;
 import eaf.models.ClassType;
 import eaf.input.InputHandler;
 import eaf.Main;
@@ -119,7 +121,12 @@ public class FolderPanel extends JPanel {
 
             String add = "";
             if (currentFolders2.isEmpty()) {
-                add = ".dl";
+                if (ExtraRectManager.classRegister.get(folder) != null) {
+                    add = ".rect";
+                }
+                else {
+                    add = ".dl";
+                }
             }
             JButton folderButton = new JButton(folder + add);
             folderButton.addActionListener(new ActionListener() {

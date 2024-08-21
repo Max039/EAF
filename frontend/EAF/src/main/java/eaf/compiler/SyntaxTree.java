@@ -2,6 +2,7 @@ package eaf.compiler;
 
 import eaf.executor.ScriptWriter;
 import eaf.manager.ColorManager;
+import eaf.manager.ExtraRectManager;
 import eaf.manager.LogManager;
 import eaf.models.Pair;
 import eaf.models.*;
@@ -45,7 +46,9 @@ public class SyntaxTree {
 
 
     public static ArrayList<ClassType> getNonAbstractClasses() {
-        return new ArrayList<>(List.of(SyntaxTree.classRegister.values().stream().filter(t -> !t.isAbstract).toArray(ClassType[]::new)));
+        var arr = new ArrayList<>(List.of(SyntaxTree.classRegister.values().stream().filter(t -> !t.isAbstract).toArray(ClassType[]::new)));
+        arr.addAll(List.of(ExtraRectManager.classRegister.values().stream().filter(t -> !t.isAbstract).toArray(ClassType[]::new)));
+        return arr;
     }
 
     public static void main(String[] args) throws IOException {
@@ -129,7 +132,12 @@ public class SyntaxTree {
             System.out.println(im);
         }
         System.out.println("============================");
-        for (var im : baseClassRegister.values().stream().sorted().toList()) {
+        System.out.println("Adding extra rects ...");
+        ExtraRectManager.start();
+        System.out.println("============================");
+        Collection<ClassType> ar = new ArrayList<>(baseClassRegister.values());
+        ar.addAll(ExtraRectManager.baseClassRegister.values());
+        for (var im : ar.stream().sorted().toList()) {
             System.out.print(getClassHierarchy(im, "", true, true));
         }
         System.out.println("============================");
@@ -137,6 +145,8 @@ public class SyntaxTree {
             System.out.println(im.toString());
         }
         System.out.println("============================");
+
+
     }
 
 

@@ -3,6 +3,8 @@ package eaf;
 import eaf.compiler.SyntaxTree;
 import eaf.intro.DoubleHelixAnimation;
 import eaf.manager.CacheManager;
+import eaf.manager.ExtraRectManager;
+import eaf.models.ClassType;
 import eaf.ui.*;
 import eaf.manager.FileManager;
 import eaf.ui.panels.*;
