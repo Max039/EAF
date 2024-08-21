@@ -29,7 +29,7 @@ public class SyntaxTree {
     public static HashMap<String, eaf.models.Module> moduleRegister = new HashMap<>();
 
     protected static HashMap<String, ClassType> classRegister = new HashMap<>();
-    public static HashMap<String, ClassType> baseClassRegister = new HashMap<>();
+    protected static HashMap<String, ClassType> baseClassRegister = new HashMap<>();
 
     public static HashMap<String, Constant> constantRegister = new HashMap<>();
 
@@ -141,9 +141,7 @@ public class SyntaxTree {
         System.out.println("Adding extra rects ...");
         ExtraRectManager.start();
         System.out.println("============================");
-        Collection<ClassType> ar = new ArrayList<>(baseClassRegister.values());
-        ar.addAll(ExtraRectManager.baseClassRegister.values());
-        for (var im : ar.stream().sorted().toList()) {
+        for (var im :getBasedClasses()) {
             System.out.print(getClassHierarchy(im, "", true, true));
         }
         System.out.println("============================");
@@ -155,6 +153,11 @@ public class SyntaxTree {
 
     }
 
+    public static List<ClassType> getBasedClasses() {
+        Collection<ClassType> ar = new ArrayList<>(baseClassRegister.values());
+        ar.addAll(ExtraRectManager.baseClassRegister.values());
+        return ar.stream().sorted().toList();
+    }
 
     public static String makeModuleName(String s) {
         String definitionName = s.replace(File.separator, ".").replace("/", ".").replace(".dl", "").replace(".ddl", "");
