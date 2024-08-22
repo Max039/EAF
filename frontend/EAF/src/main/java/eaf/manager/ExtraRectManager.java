@@ -142,164 +142,141 @@ public class ExtraRectManager {
     public static void openClassEditor(ClassType classType, boolean newChild) {
         // Frame setup
         JFrame frame = new JFrame("Class Editor");
-        frame.setLayout(new GridLayout(6, 1));
-        frame.setSize(500, 600);
+        frame.setLayout(new GridBagLayout());
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.insets = new Insets(10, 10, 10, 10); // Padding between components
+        gbc.anchor = GridBagConstraints.WEST;
+
+        frame.setSize(500, 500);
+        frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 
         // Name TextField
-        JTextField nameField = new JTextField();
-        String name = "";
-        if (classType != null ) {
-            name += classType.getName();
-            if (newChild) {
-                name += "-child";
-            }
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        JLabel nameLabel = new JLabel("Class Name:");
+        frame.add(nameLabel, gbc);
+
+        gbc.gridx = 1;
+        JTextField nameField = new JTextField(20);
+        String name = (classType != null) ? classType.getName() : "";
+        if (newChild) {
+            name += "-child";
         }
-
-
         nameField.setText(name);
-        frame.add(new JLabel("Class Name:"));
-        frame.add(nameField);
+        frame.add(nameField, gbc);
 
         // Package TextField
-        JTextField packageField = new JTextField();
+        gbc.gridx = 0;
+        gbc.gridy = 1;
+        JLabel packageLabel = new JLabel("Package:");
+        frame.add(packageLabel, gbc);
+
+        gbc.gridx = 1;
+        JTextField packageField = new JTextField(20);
         packageField.setText(classType != null ? classType.pack : "");
-        frame.add(new JLabel("Package:"));
-        frame.add(packageField);
+        frame.add(packageField, gbc);
 
         // Abstract CheckBox
-        JCheckBox isAbstractCheckBox = new JCheckBox("Is Abstract");
+        gbc.gridx = 0;
+        gbc.gridy = 2;
+        JLabel abstractLabel = new JLabel("Is Abstract:");
+        frame.add(abstractLabel, gbc);
+
+        gbc.gridx = 1;
+        JCheckBox isAbstractCheckBox = new JCheckBox();
         isAbstractCheckBox.setSelected(classType != null && classType.isAbstract);
-        frame.add(isAbstractCheckBox);
+        frame.add(isAbstractCheckBox, gbc);
 
         // Parent Class ComboBox
-        List<ClassType> availableClasses = SyntaxTree.getClasses();
+        gbc.gridx = 0;
+        gbc.gridy = 3;
+        JLabel parentLabel = new JLabel("Parent Class:");
+        frame.add(parentLabel, gbc);
 
-        frame.add(new JLabel("Parent Class:"));
-        String parent = "";
-        if (classType != null) {
-            if (!newChild && classType.parent != null) {
-                parent = classType.parent.name;
-            }
-            else {
-                parent = classType.name;
-            }
-
-        }
-
-        JButton parentButton = new JButton(parent);
+        gbc.gridx = 1;
+        JButton parentButton = new JButton();
+        String parent = (classType != null) ? (newChild ? classType.name : (classType.parent != null ? classType.parent.name : "")) : "";
+        parentButton.setText(parent);
         parentButton.addActionListener(e -> {
             var newP = chooseInstance(null, false);
             if (newP != null) {
                 parentButton.setText(newP.name);
             }
-
         });
-        frame.add(parentButton);
+        frame.add(parentButton, gbc);
 
+        gbc.gridx = 2;
         JButton xParent = new JButton("X");
-        xParent.addActionListener(ae -> {
-            parentButton.setText("");
-                });
-        frame.add(xParent);
+        xParent.addActionListener(ae -> parentButton.setText(""));
+        frame.add(xParent, gbc);
 
-        // Fields ScrollPane
         JPanel fieldsPanel = new JPanel();
-        fieldsPanel.setLayout(new BoxLayout(fieldsPanel, BoxLayout.Y_AXIS));
-        JScrollPane fieldsScrollPane = new JScrollPane(fieldsPanel);
-        frame.add(fieldsScrollPane);
 
-        if (classType != null) {
-            for (var entry : classType.fields.entrySet()) {
-                String fieldName = entry.getKey();
-                FieldType fieldType = entry.getValue().getFirst();
-                FieldValue fieldValue = entry.getValue().getSecond();
-
-                JPanel fieldPanel = new JPanel(new FlowLayout());
-                JTextField fieldNameField = new JTextField(fieldName, 10);
-                fieldNameField.setEnabled(false);
-                fieldNameField.setDisabledTextColor(Color.BLACK);
-                JTextField fieldTypeField = new JTextField(UiUtil.repeatString("array ", fieldType.arrayCount) + fieldType.typeName, 10);
-                fieldTypeField.setEnabled(false);
-                fieldTypeField.setDisabledTextColor(Color.BLACK);
-                JCheckBox isPrimitiveCheckBox = new JCheckBox("Primitive", fieldType.primitive);
-                isPrimitiveCheckBox.setEnabled(false);
-                JTextField fieldValueField = new JTextField(fieldValue != null ? fieldValue.value : "", 10);
-                fieldValueField.setEnabled(false);
-                fieldValueField.setDisabledTextColor(Color.BLACK);
-                JButton removeFieldButton = new JButton("-");
-
-                fieldPanel.add(new JLabel("Field:"));
-                fieldPanel.add(fieldNameField);
-                fieldPanel.add(fieldTypeField);
-                fieldPanel.add(isPrimitiveCheckBox);
-                fieldPanel.add(fieldValueField);
-                fieldPanel.add(removeFieldButton);
-
-                removeFieldButton.addActionListener(e -> fieldsPanel.remove(fieldPanel));
-
-                fieldsPanel.add(fieldPanel);
-            }
-        }
-
+        // Add Primitive Button
+        gbc.gridx = 1;
+        gbc.gridy = 4;
+        gbc.gridwidth = 1;
         JButton addPrimitiveButton = new JButton("Add Primitive Field");
         addPrimitiveButton.addActionListener(e -> {
             JFrame primitiveFrame = new JFrame("Add Primitive Field");
             primitiveFrame.setLayout(new GridBagLayout());
-            GridBagConstraints gbc = new GridBagConstraints();
-            gbc.insets = new Insets(5, 5, 5, 5); // Padding between components
-            gbc.anchor = GridBagConstraints.WEST;
+            GridBagConstraints gbcPrimitive = new GridBagConstraints();
+            gbcPrimitive.insets = new Insets(5, 5, 5, 5); // Padding between components
+            gbcPrimitive.anchor = GridBagConstraints.WEST;
+            gbcPrimitive.fill = GridBagConstraints.HORIZONTAL;
 
             primitiveFrame.setSize(300, 200);
             primitiveFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 
             // Field Name
-            gbc.gridx = 0;
-            gbc.gridy = 0;
+            gbcPrimitive.gridx = 0;
+            gbcPrimitive.gridy = 0;
             JLabel fieldNameLabel = new JLabel("Field Name:");
-            primitiveFrame.add(fieldNameLabel, gbc);
+            primitiveFrame.add(fieldNameLabel, gbcPrimitive);
 
-            gbc.gridx = 1;
+            gbcPrimitive.gridx = 1;
             JTextField fieldNameField = new JTextField(15);
-            primitiveFrame.add(fieldNameField, gbc);
+            primitiveFrame.add(fieldNameField, gbcPrimitive);
 
             // Field Type
-            gbc.gridx = 0;
-            gbc.gridy = 1;
+            gbcPrimitive.gridx = 0;
+            gbcPrimitive.gridy = 1;
             JLabel fieldTypeLabel = new JLabel("Field Type:");
-            primitiveFrame.add(fieldTypeLabel, gbc);
+            primitiveFrame.add(fieldTypeLabel, gbcPrimitive);
 
-            gbc.gridx = 1;
+            gbcPrimitive.gridx = 1;
             String[] types = {"quotient real", "int", "string"};
             JComboBox<String> typeComboBox = new JComboBox<>(types);
-            primitiveFrame.add(typeComboBox, gbc);
+            primitiveFrame.add(typeComboBox, gbcPrimitive);
 
             // Array Count
-            gbc.gridx = 0;
-            gbc.gridy = 2;
+            gbcPrimitive.gridx = 0;
+            gbcPrimitive.gridy = 2;
             JLabel arrayCountLabel = new JLabel("Array Count:");
-            primitiveFrame.add(arrayCountLabel, gbc);
+            primitiveFrame.add(arrayCountLabel, gbcPrimitive);
 
-            gbc.gridx = 1;
+            gbcPrimitive.gridx = 1;
             JTextField arrayField = new JTextField(15);
-            primitiveFrame.add(arrayField, gbc);
+            primitiveFrame.add(arrayField, gbcPrimitive);
 
             // Value
-            gbc.gridx = 0;
-            gbc.gridy = 3;
+            gbcPrimitive.gridx = 0;
+            gbcPrimitive.gridy = 3;
             JLabel valueLabel = new JLabel("Value:");
-            primitiveFrame.add(valueLabel, gbc);
+            primitiveFrame.add(valueLabel, gbcPrimitive);
 
-            gbc.gridx = 1;
+            gbcPrimitive.gridx = 1;
             JTextField fieldValueField = new JTextField(15);
-            primitiveFrame.add(fieldValueField, gbc);
+            primitiveFrame.add(fieldValueField, gbcPrimitive);
+
 
             // OK Button
-            gbc.gridx = 0;
-            gbc.gridy = 4;
-            gbc.gridwidth = 2;
-            gbc.fill = GridBagConstraints.HORIZONTAL;
+            gbcPrimitive.gridx = 0;
+            gbcPrimitive.gridy = 4;
+            gbcPrimitive.gridwidth = 2;
+            gbcPrimitive.fill = GridBagConstraints.HORIZONTAL;
             JButton okButton = new JButton("OK");
-            primitiveFrame.add(okButton, gbc);
+            primitiveFrame.add(okButton, gbcPrimitive);
 
             okButton.addActionListener(ae -> {
                 // Get the input values
@@ -326,10 +303,10 @@ public class ExtraRectManager {
 
                 // If validation passes, proceed to add the field
                 JPanel fieldPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
-                JTextField fieldNameFieldDisplay = new JTextField(fieldName, 10);
-                JTextField fieldTypeField = new JTextField((!arrayCountText.isEmpty() ? "array " + arrayCountText + " " : "") + typeComboBox.getSelectedItem(), 10);
+                JTextField fieldNameFieldDisplay = new JTextField(fieldName, 15);
+                JTextField fieldTypeField = new JTextField((!arrayCountText.isEmpty() ? "array " + arrayCountText + " " : "") + typeComboBox.getSelectedItem(), 15);
                 JCheckBox isPrimitive = new JCheckBox("Primitive", true);
-                JTextField fieldValueFieldDisplay = new JTextField(fieldValue, 10);
+                JTextField fieldValueFieldDisplay = new JTextField(fieldValue, 15);
                 JButton removeFieldButton = new JButton("-");
 
                 fieldPanel.add(new JLabel("Field:"));
@@ -348,17 +325,71 @@ public class ExtraRectManager {
 
             primitiveFrame.setVisible(true);
         });
-
-        frame.add(addPrimitiveButton);
+        frame.add(addPrimitiveButton, gbc);
 
         // Add Instance Button
+        gbc.gridx = 2;
+        gbc.gridy = 4;
         JButton addInstanceButton = new JButton("Add Instance Field");
         addInstanceButton.addActionListener(e -> {
             chooseInstance(fieldsPanel, true);
         });
-        frame.add(addInstanceButton);
+        frame.add(addInstanceButton, gbc);
+
+
+        // Fields ScrollPane
+        gbc.gridx = 0;
+        gbc.gridy = 5;
+        gbc.gridwidth = 3;
+        gbc.fill = GridBagConstraints.BOTH;
+        gbc.weightx = 1.0;
+        gbc.weighty = 1.0;
+        fieldsPanel.setLayout(new BoxLayout(fieldsPanel, BoxLayout.Y_AXIS));
+        JScrollPane fieldsScrollPane = new JScrollPane(fieldsPanel);
+        frame.add(fieldsScrollPane, gbc);
+
+        // Adding existing fields
+        if (classType != null) {
+            for (var entry : classType.fields.entrySet()) {
+                String fieldName = entry.getKey();
+                FieldType fieldType = entry.getValue().getFirst();
+                FieldValue fieldValue = entry.getValue().getSecond();
+
+                JPanel fieldPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+                JTextField fieldNameField = new JTextField(fieldName, 15);
+                fieldNameField.setEnabled(false);
+                fieldNameField.setDisabledTextColor(Color.BLACK);
+                JTextField fieldTypeField = new JTextField(UiUtil.repeatString("array ", fieldType.arrayCount) + fieldType.typeName, 15);
+                fieldTypeField.setEnabled(false);
+                fieldTypeField.setDisabledTextColor(Color.BLACK);
+                JCheckBox isPrimitiveCheckBox = new JCheckBox("Primitive", fieldType.primitive);
+                isPrimitiveCheckBox.setEnabled(false);
+                JTextField fieldValueField = new JTextField(fieldValue != null ? fieldValue.value : "", 15);
+                fieldValueField.setEnabled(false);
+                fieldValueField.setDisabledTextColor(Color.BLACK);
+                JButton removeFieldButton = new JButton("-");
+
+                fieldPanel.add(new JLabel("Field:"));
+                fieldPanel.add(fieldNameField);
+                fieldPanel.add(fieldTypeField);
+                fieldPanel.add(isPrimitiveCheckBox);
+                fieldPanel.add(fieldValueField);
+                fieldPanel.add(removeFieldButton);
+
+                removeFieldButton.addActionListener(e -> fieldsPanel.remove(fieldPanel));
+
+                fieldsPanel.add(fieldPanel);
+            }
+        }
+
+
 
         // Confirm Button
+        gbc.gridx = 0;
+        gbc.gridy = 6;
+        gbc.gridwidth = 3;
+        gbc.weighty = 1.0;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
         JButton confirmButton = new JButton("Confirm");
         confirmButton.addActionListener(e -> {
             ClassType p = null;
@@ -380,7 +411,6 @@ public class ExtraRectManager {
                     FieldType fieldType = new FieldType(typeParts[typeParts.length - 1], isPrimitiveCheckBox.isSelected(), typeParts.length - 1);
                     newClassType.addField(fieldNameField.getText(), fieldType);
                     if (isPrimitiveCheckBox.isSelected()) {
-
                         if (!fieldValueField.getText().isEmpty()) {
                             newClassType.setField(fieldNameField.getText(), new FieldValue(fieldType.typeName, fieldValueField.getText()), false);
                         }
@@ -391,7 +421,7 @@ public class ExtraRectManager {
             SyntaxTree.reload();
             frame.dispose();
         });
-        frame.add(confirmButton);
+        frame.add(confirmButton, gbc);
 
         frame.setVisible(true);
     }
