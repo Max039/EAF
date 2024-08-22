@@ -6,6 +6,7 @@ import eaf.models.ClassType;
 import eaf.models.FieldType;
 import eaf.models.FieldValue;
 import eaf.models.Pair;
+import eaf.ui.UiUtil;
 
 import javax.swing.*;
 import java.awt.*;
@@ -138,7 +139,7 @@ public class ExtraRectManager {
         loadRects();
     }
 
-    public static void openClassEditor(ClassType classType) {
+    public static void openClassEditor(ClassType classType, boolean newChild) {
         // Frame setup
         JFrame frame = new JFrame("Class Editor");
         frame.setLayout(new GridLayout(6, 1));
@@ -146,7 +147,16 @@ public class ExtraRectManager {
 
         // Name TextField
         JTextField nameField = new JTextField();
-        nameField.setText(classType != null ? classType.getName() : "");
+        String name = "";
+        if (classType != null ) {
+            name += classType.getName();
+            if (newChild) {
+                name += "-child";
+            }
+        }
+
+
+        nameField.setText(name);
         frame.add(new JLabel("Class Name:"));
         frame.add(nameField);
 
@@ -166,8 +176,14 @@ public class ExtraRectManager {
 
         frame.add(new JLabel("Parent Class:"));
         String parent = "";
-        if (classType != null && classType.parent != null) {
-            parent = classType.parent.name;
+        if (classType != null) {
+            if (!newChild && classType.parent != null) {
+                parent = classType.parent.name;
+            }
+            else {
+                parent = classType.name;
+            }
+
         }
 
         JButton parentButton = new JButton(parent);
@@ -179,6 +195,12 @@ public class ExtraRectManager {
 
         });
         frame.add(parentButton);
+
+        JButton xParent = new JButton("X");
+        xParent.addActionListener(ae -> {
+            parentButton.setText("");
+                });
+        frame.add(xParent);
 
         // Fields ScrollPane
         JPanel fieldsPanel = new JPanel();
@@ -196,7 +218,7 @@ public class ExtraRectManager {
                 JTextField fieldNameField = new JTextField(fieldName, 10);
                 fieldNameField.setEnabled(false);
                 fieldNameField.setDisabledTextColor(Color.BLACK);
-                JTextField fieldTypeField = new JTextField(fieldType.typeName, 10);
+                JTextField fieldTypeField = new JTextField(UiUtil.repeatString("array ", fieldType.arrayCount) + fieldType.typeName, 10);
                 fieldTypeField.setEnabled(false);
                 fieldTypeField.setDisabledTextColor(Color.BLACK);
                 JCheckBox isPrimitiveCheckBox = new JCheckBox("Primitive", fieldType.primitive);
@@ -223,11 +245,12 @@ public class ExtraRectManager {
         JButton addPrimitiveButton = new JButton("Add Primitive Field");
         addPrimitiveButton.addActionListener(e -> {
             JFrame primitiveFrame = new JFrame("Add Primitive Field");
-            primitiveFrame.setLayout(new GridLayout(3, 2));
+            primitiveFrame.setLayout(new GridLayout(4, 2)); // Adjusted layout to 4 rows to fit all components
             primitiveFrame.setSize(300, 200);
 
             JTextField fieldNameField = new JTextField();
             JTextField fieldValueField = new JTextField();
+            JTextField arrayField = new JTextField();
             String[] types = {"quotient real", "int", "string"};
             JComboBox<String> typeComboBox = new JComboBox<>(types);
 
@@ -235,23 +258,48 @@ public class ExtraRectManager {
             primitiveFrame.add(fieldNameField);
             primitiveFrame.add(new JLabel("Field Type:"));
             primitiveFrame.add(typeComboBox);
+            primitiveFrame.add(new JLabel("Array Count:"));
+            primitiveFrame.add(arrayField);
             primitiveFrame.add(new JLabel("Value:"));
             primitiveFrame.add(fieldValueField);
 
             JButton okButton = new JButton("OK");
             okButton.addActionListener(ae -> {
+                // Get the input values
+                String fieldName = fieldNameField.getText().trim();
+                String fieldValue = fieldValueField.getText().trim();
+                String arrayCountText = arrayField.getText().trim();
+
+                // Validate the inputs
+                if (fieldName.isEmpty()) {
+                    JOptionPane.showMessageDialog(primitiveFrame, "Field Name cannot be empty.", "Input Error", JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
+
+                try {
+                    int arrayCount = Integer.parseInt(arrayCountText);
+                    if (arrayCount > 0 && !fieldValue.isEmpty()) {
+                        JOptionPane.showMessageDialog(primitiveFrame, "Value field must be empty if Array Count is greater than 0.", "Input Error", JOptionPane.ERROR_MESSAGE);
+                        return;
+                    }
+                } catch (NumberFormatException ex) {
+                    JOptionPane.showMessageDialog(primitiveFrame, "Array Count must be a valid integer.", "Input Error", JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
+
+                // If validation passes, proceed to add the field
                 JPanel fieldPanel = new JPanel(new FlowLayout());
-                JTextField fieldName = new JTextField(fieldNameField.getText(), 10);
-                JTextField fieldType = new JTextField((String) typeComboBox.getSelectedItem(), 10);
+                JTextField fieldNameFieldDisplay = new JTextField(fieldName, 10);
+                JTextField fieldTypeField = new JTextField((!arrayCountText.isEmpty() ? "array " + arrayCountText + " " : "") + typeComboBox.getSelectedItem(), 10);
                 JCheckBox isPrimitive = new JCheckBox("Primitive", true);
-                JTextField fieldValue = new JTextField(fieldValueField.getText(), 10);
+                JTextField fieldValueFieldDisplay = new JTextField(fieldValue, 10);
                 JButton removeFieldButton = new JButton("-");
 
                 fieldPanel.add(new JLabel("Field:"));
-                fieldPanel.add(fieldName);
-                fieldPanel.add(fieldType);
+                fieldPanel.add(fieldNameFieldDisplay);
+                fieldPanel.add(fieldTypeField);
                 fieldPanel.add(isPrimitive);
-                fieldPanel.add(fieldValue);
+                fieldPanel.add(fieldValueFieldDisplay);
                 fieldPanel.add(removeFieldButton);
 
                 removeFieldButton.addActionListener(e1 -> fieldsPanel.remove(fieldPanel));
@@ -264,6 +312,7 @@ public class ExtraRectManager {
             primitiveFrame.add(okButton);
             primitiveFrame.setVisible(true);
         });
+
         frame.add(addPrimitiveButton);
 
         // Add Instance Button
@@ -276,7 +325,12 @@ public class ExtraRectManager {
         // Confirm Button
         JButton confirmButton = new JButton("Confirm");
         confirmButton.addActionListener(e -> {
-            ClassType newClassType = new ClassType(nameField.getText(), SyntaxTree.get((String) parentButton.getText()), packageField.getText());
+            ClassType p = null;
+            if (!parentButton.getText().isEmpty()) {
+                p = SyntaxTree.get((String) parentButton.getText());
+            }
+
+            ClassType newClassType = new ClassType(nameField.getText(), p, packageField.getText());
             newClassType.setAbstract(isAbstractCheckBox.isSelected());
 
             for (Component comp : fieldsPanel.getComponents()) {
@@ -286,7 +340,8 @@ public class ExtraRectManager {
                     JCheckBox isPrimitiveCheckBox = (JCheckBox) fieldPanel.getComponent(3);
                     JTextField fieldValueField = (JTextField) fieldPanel.getComponent(4);
 
-                    FieldType fieldType = new FieldType(fieldTypeField.getText(), isPrimitiveCheckBox.isSelected(), 0);
+                    var typeParts = fieldTypeField.getText().split("array ");
+                    FieldType fieldType = new FieldType(typeParts[typeParts.length - 1], isPrimitiveCheckBox.isSelected(), typeParts.length - 1);
                     newClassType.addField(fieldNameField.getText(), fieldType);
                     if (isPrimitiveCheckBox.isSelected()) {
 
@@ -316,13 +371,14 @@ public class ExtraRectManager {
 
         JTextField searchField = new JTextField();
         JTextField nameField = new JTextField();
+        JTextField arrayField = new JTextField();
         JPanel instanceListPanel = new JPanel();
         instanceListPanel.setLayout(new BoxLayout(instanceListPanel, BoxLayout.Y_AXIS));
 
         for (ClassType availableClass : availableClasses) {
             JButton classButton = new JButton(availableClass.getName());
             if (addListener) {
-                classButton.addActionListener(addListener(nameField, availableClass, instanceDialog, fieldsPanel));
+                classButton.addActionListener(addListener(nameField, availableClass, arrayField, instanceDialog, fieldsPanel));
             } else {
                 classButton.addActionListener(terminator(instanceDialog, availableClass));
             }
@@ -331,6 +387,10 @@ public class ExtraRectManager {
 
         JScrollPane instanceScrollPane = new JScrollPane(instanceListPanel);
         instanceDialog.add(nameField, BorderLayout.NORTH);
+        if (addListener) {
+            instanceDialog.add(arrayField, BorderLayout.EAST);
+            arrayField.setText("0");
+        }
         instanceDialog.add(searchField, BorderLayout.SOUTH);
         instanceDialog.add(instanceScrollPane, BorderLayout.CENTER);
 
@@ -344,15 +404,22 @@ public class ExtraRectManager {
 
 
 
-    public static ActionListener addListener(JTextField nameField, ClassType c, JDialog instanceFrame, JPanel fieldsPanel) {
+    public static ActionListener addListener(JTextField nameField, ClassType c, JTextField arrayCnt, JDialog instanceFrame, JPanel fieldsPanel) {
         return new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 JPanel fieldPanel = new JPanel(new FlowLayout());
                 JTextField fieldName = new JTextField(nameField.getText(), 10);
-                JTextField fieldType = new JTextField(c.name, 10);
+                fieldName.setEnabled(false);
+                fieldName.setDisabledTextColor(Color.BLACK);
+                JTextField fieldType = new JTextField(UiUtil.repeatString("array ", Integer.parseInt(arrayCnt.getText())) + c.name, 10);
+                fieldType.setEnabled(false);
+                fieldType.setDisabledTextColor(Color.BLACK);
                 JCheckBox isPrimitive = new JCheckBox("Primitive", false);
+                isPrimitive.setEnabled(false);
                 JTextField fieldValue = new JTextField("", 10);
+                fieldValue.setEnabled(false);
+                fieldValue.setDisabledTextColor(Color.BLACK);
                 JButton removeFieldButton = new JButton("-");
 
                 fieldPanel.add(new JLabel("Field:"));

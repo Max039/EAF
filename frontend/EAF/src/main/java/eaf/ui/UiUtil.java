@@ -200,25 +200,38 @@ public class UiUtil {
         newRect.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                ExtraRectManager.openClassEditor(null);
+                ExtraRectManager.openClassEditor(null, false);
             }
         });
 
 
         fileMenu.add(newRect);
 
+
+        JMenuItem newChild = new JMenuItem("new child");
+
+        newChild.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                ExtraRectManager.openClassEditor(SyntaxTree.get("evolutionary-algorithm"), true);
+            }
+        });
+
+        fileMenu.add(newChild);
+
         // Create menu items
-        JMenuItem edit = new JMenuItem("edit");
+        JMenuItem edit = new JMenuItem("new from existing / edit");
 
         edit.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                ExtraRectManager.openClassEditor(SyntaxTree.get("evolutionary-algorithm"));
+                ExtraRectManager.openClassEditor(SyntaxTree.get("evolutionary-algorithm"), false);
             }
         });
 
-
         fileMenu.add(edit);
+
+
 
 
         JMenuItem reload = new JMenuItem("reload");
