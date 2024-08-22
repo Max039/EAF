@@ -63,6 +63,10 @@ public class SyntaxTree {
         return arr;
     }
 
+    public static Boolean inModule(String name) {
+        return classRegister.get(name) != null;
+    }
+
     public static void main(String[] args) throws IOException {
         start();
 

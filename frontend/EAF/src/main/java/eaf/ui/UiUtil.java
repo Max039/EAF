@@ -217,7 +217,7 @@ public class UiUtil {
         newChild.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                openClassEditor(SyntaxTree.get("evolutionary-algorithm"), true);
+                openClassEditor(SyntaxTree.get("empty-string-initial"), true);
             }
         });
 

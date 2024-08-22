@@ -728,6 +728,10 @@ public abstract class RectWithRects extends Rect {
 
     @Override
     public void setValidity() {
+        ErrorPane.warningRects.remove(this);
+        ErrorPane.erroRects.remove(this);
+        warning = false;
+        valid = true;
         color = RectPanel.instanceColor;
        if (this instanceof ArrayRect && subRects.length < 1) {
            String filed = parent.names[parentIndex];
@@ -735,10 +739,12 @@ public abstract class RectWithRects extends Rect {
            warning = false;
            ErrorPane.warningRects.put(this, new Pair(getY(), filed + ": Empty Array!"));
        }
-       else {
-           ErrorPane.warningRects.remove(this);
-           warning = false;
-       }
+        if (this instanceof ClassRect && parent != null && !SyntaxTree.inModule(clazz.name)) {
+            valid = false;
+            ErrorPane.erroRects.put(this, new Pair(getY(), clazz.name + ": Not implemented rect!"));
+            color = errorColor;
+            return;
+        }
 
         valid = Arrays.stream(getSubRects()).noneMatch(Objects::isNull);
         if (!valid) {
@@ -763,7 +769,7 @@ public abstract class RectWithRects extends Rect {
             color = errorColor;
             return;
         }
-        ErrorPane.erroRects.remove(this);
+
     };
 
     @Override
