@@ -241,29 +241,66 @@ public class ExtraRectManager {
             }
         }
 
-        // Add Primitive Button
         JButton addPrimitiveButton = new JButton("Add Primitive Field");
         addPrimitiveButton.addActionListener(e -> {
             JFrame primitiveFrame = new JFrame("Add Primitive Field");
-            primitiveFrame.setLayout(new GridLayout(4, 2)); // Adjusted layout to 4 rows to fit all components
-            primitiveFrame.setSize(300, 200);
+            primitiveFrame.setLayout(new GridBagLayout());
+            GridBagConstraints gbc = new GridBagConstraints();
+            gbc.insets = new Insets(5, 5, 5, 5); // Padding between components
+            gbc.anchor = GridBagConstraints.WEST;
 
-            JTextField fieldNameField = new JTextField();
-            JTextField fieldValueField = new JTextField();
-            JTextField arrayField = new JTextField();
+            primitiveFrame.setSize(300, 200);
+            primitiveFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+
+            // Field Name
+            gbc.gridx = 0;
+            gbc.gridy = 0;
+            JLabel fieldNameLabel = new JLabel("Field Name:");
+            primitiveFrame.add(fieldNameLabel, gbc);
+
+            gbc.gridx = 1;
+            JTextField fieldNameField = new JTextField(15);
+            primitiveFrame.add(fieldNameField, gbc);
+
+            // Field Type
+            gbc.gridx = 0;
+            gbc.gridy = 1;
+            JLabel fieldTypeLabel = new JLabel("Field Type:");
+            primitiveFrame.add(fieldTypeLabel, gbc);
+
+            gbc.gridx = 1;
             String[] types = {"quotient real", "int", "string"};
             JComboBox<String> typeComboBox = new JComboBox<>(types);
+            primitiveFrame.add(typeComboBox, gbc);
 
-            primitiveFrame.add(new JLabel("Field Name:"));
-            primitiveFrame.add(fieldNameField);
-            primitiveFrame.add(new JLabel("Field Type:"));
-            primitiveFrame.add(typeComboBox);
-            primitiveFrame.add(new JLabel("Array Count:"));
-            primitiveFrame.add(arrayField);
-            primitiveFrame.add(new JLabel("Value:"));
-            primitiveFrame.add(fieldValueField);
+            // Array Count
+            gbc.gridx = 0;
+            gbc.gridy = 2;
+            JLabel arrayCountLabel = new JLabel("Array Count:");
+            primitiveFrame.add(arrayCountLabel, gbc);
 
+            gbc.gridx = 1;
+            JTextField arrayField = new JTextField(15);
+            primitiveFrame.add(arrayField, gbc);
+
+            // Value
+            gbc.gridx = 0;
+            gbc.gridy = 3;
+            JLabel valueLabel = new JLabel("Value:");
+            primitiveFrame.add(valueLabel, gbc);
+
+            gbc.gridx = 1;
+            JTextField fieldValueField = new JTextField(15);
+            primitiveFrame.add(fieldValueField, gbc);
+
+            // OK Button
+            gbc.gridx = 0;
+            gbc.gridy = 4;
+            gbc.gridwidth = 2;
+            gbc.fill = GridBagConstraints.HORIZONTAL;
             JButton okButton = new JButton("OK");
+            primitiveFrame.add(okButton, gbc);
+
             okButton.addActionListener(ae -> {
                 // Get the input values
                 String fieldName = fieldNameField.getText().trim();
@@ -288,7 +325,7 @@ public class ExtraRectManager {
                 }
 
                 // If validation passes, proceed to add the field
-                JPanel fieldPanel = new JPanel(new FlowLayout());
+                JPanel fieldPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
                 JTextField fieldNameFieldDisplay = new JTextField(fieldName, 10);
                 JTextField fieldTypeField = new JTextField((!arrayCountText.isEmpty() ? "array " + arrayCountText + " " : "") + typeComboBox.getSelectedItem(), 10);
                 JCheckBox isPrimitive = new JCheckBox("Primitive", true);
@@ -309,7 +346,6 @@ public class ExtraRectManager {
                 primitiveFrame.dispose();
             });
 
-            primitiveFrame.add(okButton);
             primitiveFrame.setVisible(true);
         });
 
@@ -361,17 +397,66 @@ public class ExtraRectManager {
     }
 
 
+
     public static ClassType chooseInstance(JPanel fieldsPanel, boolean addListener) {
         List<ClassType> availableClasses = SyntaxTree.getClasses();
 
         // Use a modal dialog to block until selection is made
         JDialog instanceDialog = new JDialog((Frame) null, "Add Instance Field", true);
-        instanceDialog.setLayout(new BorderLayout());
-        instanceDialog.setSize(300, 400);
+        instanceDialog.setLayout(new GridBagLayout());
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.insets = new Insets(5, 5, 5, 5); // Padding between components
+        gbc.anchor = GridBagConstraints.WEST;
+        gbc.fill = GridBagConstraints.HORIZONTAL; // Ensure text fields stretch horizontally
 
-        JTextField searchField = new JTextField();
-        JTextField nameField = new JTextField();
-        JTextField arrayField = new JTextField();
+        // Set size and default close operation
+        instanceDialog.setSize(300, 400);
+        instanceDialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+
+        // Name Field
+        gbc.gridwidth = 1;
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        JLabel nameLabel = new JLabel("Name:");
+        instanceDialog.add(nameLabel, gbc);
+
+        gbc.gridx = 1;
+        JTextField nameField = new JTextField(15);
+        nameField.setPreferredSize(new Dimension(150, nameField.getPreferredSize().height));
+        instanceDialog.add(nameField, gbc);
+
+        // Array Count Field
+        JTextField arrayField = new JTextField(15);
+        if (addListener) {
+            gbc.gridx = 0;
+            gbc.gridy = 1;
+            JLabel arrayCountLabel = new JLabel("Array Count:");
+            instanceDialog.add(arrayCountLabel, gbc);
+
+            gbc.gridx = 1;
+            arrayField.setText("0");
+            arrayField.setPreferredSize(new Dimension(150, arrayField.getPreferredSize().height));
+            instanceDialog.add(arrayField, gbc);
+        }
+
+        // Search Field with Label
+        gbc.gridx = 0;
+        gbc.gridy = 2;
+        JLabel searchLabel = new JLabel("Search:");
+        instanceDialog.add(searchLabel, gbc);
+
+        gbc.gridx = 1;
+        JTextField searchField = new JTextField(15);
+        searchField.setPreferredSize(new Dimension(150, searchField.getPreferredSize().height));
+        instanceDialog.add(searchField, gbc);
+
+        // Instance List Panel
+        gbc.gridx = 0;
+        gbc.gridy = 3;
+        gbc.gridwidth = 2;
+        gbc.fill = GridBagConstraints.BOTH;
+        gbc.weightx = 1.0;
+        gbc.weighty = 1.0;
         JPanel instanceListPanel = new JPanel();
         instanceListPanel.setLayout(new BoxLayout(instanceListPanel, BoxLayout.Y_AXIS));
 
@@ -385,14 +470,10 @@ public class ExtraRectManager {
             instanceListPanel.add(classButton);
         }
 
+
         JScrollPane instanceScrollPane = new JScrollPane(instanceListPanel);
-        instanceDialog.add(nameField, BorderLayout.NORTH);
-        if (addListener) {
-            instanceDialog.add(arrayField, BorderLayout.EAST);
-            arrayField.setText("0");
-        }
-        instanceDialog.add(searchField, BorderLayout.SOUTH);
-        instanceDialog.add(instanceScrollPane, BorderLayout.CENTER);
+        instanceDialog.add(instanceScrollPane, gbc);
+
 
         instanceDialog.pack();
         instanceDialog.setLocationRelativeTo(null);  // Center the dialog
@@ -400,6 +481,7 @@ public class ExtraRectManager {
 
         return selectedType;  // Return the selected class after the dialog is closed
     }
+
 
 
 
