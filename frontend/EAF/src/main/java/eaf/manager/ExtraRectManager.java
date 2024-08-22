@@ -208,7 +208,7 @@ public class ExtraRectManager {
         String parent = (classType != null) ? (newChild ? classType.name : (classType.parent != null ? classType.parent.name : "")) : "";
         parentButton.setText(parent);
         parentButton.addActionListener(e -> {
-            var newP = chooseInstance(null, false);
+            var newP = chooseInstance(frame, null, false);
             if (newP != null) {
                 parentButton.setText(newP.name);
             }
@@ -344,7 +344,7 @@ public class ExtraRectManager {
         gbc.gridy = 4;
         JButton addInstanceButton = new JButton("Add Instance Field");
         addInstanceButton.addActionListener(e -> {
-            chooseInstance(fieldsPanel, true);
+            chooseInstance(frame, fieldsPanel, true);
         });
         frame.add(addInstanceButton, gbc);
 
@@ -436,11 +436,12 @@ public class ExtraRectManager {
     }
 
 
-    public static ClassType chooseInstance(JPanel fieldsPanel, boolean addListener) {
+    public static ClassType chooseInstance(JFrame owner, JPanel fieldsPanel, boolean addListener) {
         List<ClassType> availableClasses = SyntaxTree.getClasses();
 
         // Use a modal dialog to block until selection is made
-        JDialog instanceDialog = new JDialog((Frame) null, "Add Instance Field", true);
+        JDialog instanceDialog = new JDialog(owner, "Add Instance Field", true);
+        instanceDialog.setPreferredSize(new Dimension(300, 500)); // Set preferred size for scroll pane
         instanceDialog.setLayout(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.insets = new Insets(5, 5, 5, 5); // Padding between components
