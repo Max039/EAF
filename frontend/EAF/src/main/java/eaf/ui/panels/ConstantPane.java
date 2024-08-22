@@ -69,6 +69,11 @@ public class ConstantPane extends JScrollPane {
         contentPanel.repaint();
     }
 
+    public void reload() {
+        refreshConstants();
+        refreshUI();
+    }
+
     private void addHeaderRow() {
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.gridx = 0;

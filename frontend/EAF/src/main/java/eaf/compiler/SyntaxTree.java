@@ -1,5 +1,6 @@
 package eaf.compiler;
 
+import eaf.Main;
 import eaf.executor.ScriptWriter;
 import eaf.manager.ColorManager;
 import eaf.manager.ExtraRectManager;
@@ -26,12 +27,12 @@ public class SyntaxTree {
 
 
 
-    public static HashMap<String, eaf.models.Module> moduleRegister = new HashMap<>();
+    public static HashMap<String, eaf.models.Module> moduleRegister;
 
-    private static HashMap<String, ClassType> classRegister = new HashMap<>();
-    private static HashMap<String, ClassType> baseClassRegister = new HashMap<>();
+    private static HashMap<String, ClassType> classRegister;
+    private static HashMap<String, ClassType> baseClassRegister;
 
-    public static HashMap<String, Constant> constantRegister = new HashMap<>();
+    public static HashMap<String, Constant> constantRegister;
 
     public static String buildPath = "\\EvoAlBuilds\\" + evoalBuild + "\\evoal\\definitions\\de";
 
@@ -67,7 +68,23 @@ public class SyntaxTree {
 
     }
 
+    public static void reload() {
+        try {
+            start();
+            Main.mainPanel.folderPanel.reload(getNonAbstractClasses());
+            Main.constantManager.reload();
+        }
+        catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     public static void start() throws IOException {
+
+        moduleRegister = new HashMap<>();
+        classRegister = new HashMap<>();
+        baseClassRegister = new HashMap<>();
+        constantRegister = new HashMap<>();
 
         String currentPath = System.getProperty("user.dir");
 

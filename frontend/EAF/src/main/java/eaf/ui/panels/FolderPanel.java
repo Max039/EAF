@@ -1,6 +1,5 @@
 package eaf.ui.panels;
 
-import eaf.compiler.SyntaxTree;
 import eaf.manager.ExtraRectManager;
 import eaf.models.ClassType;
 import eaf.input.InputHandler;
@@ -42,6 +41,15 @@ public class FolderPanel extends JPanel {
 
     int borderSize = 3;
 
+    public void reload(List<ClassType> classTypes) {
+        this.folderStructure = parsePaths(classTypes);
+        this.classTypeMap = mapClassTypesToPackages(classTypes);
+        String currentPath = String.join(".", pathStack);
+        updateFolderDisplay();
+        updatePathLabel();
+        displayRectsBelow(currentPath);
+    }
+
     public FolderPanel(List<ClassType> classTypes) {
         this.folderStructure = parsePaths(classTypes);
         this.classTypeMap = mapClassTypesToPackages(classTypes);
@@ -67,7 +75,7 @@ public class FolderPanel extends JPanel {
                 updateFolderDisplay();
                 String currentPath = String.join(".", pathStack);
                 updatePathLabel();
-                printClassTypesBelow(currentPath);
+                displayRectsBelow(currentPath);
                 Main.mainPanel.rightPanel.getVerticalScrollBar().setValue(0);
                 Main.mainPanel.rightPanel.forceAdjustRects();
                 Main.mainPanel.rightPanel.revalidate();
@@ -104,7 +112,7 @@ public class FolderPanel extends JPanel {
         String currentPath = String.join(".", pathStack);
         updateFolderDisplay();
         updatePathLabel();
-        printClassTypesBelow(currentPath);
+        displayRectsBelow(currentPath);
     }
 
     void updateFolderDisplay() {
@@ -134,7 +142,7 @@ public class FolderPanel extends JPanel {
                 public void actionPerformed(ActionEvent e) {
                     pathStack.push(folder);
                     updateFolderDisplay();
-                    printClassTypesBelow(String.join(".", pathStack));
+                    displayRectsBelow(String.join(".", pathStack));
                     updatePathLabel();
                     Main.mainPanel.rightPanel.getVerticalScrollBar().setValue(0);
                     Main.mainPanel.rightPanel.forceAdjustRects();
@@ -156,7 +164,7 @@ public class FolderPanel extends JPanel {
         repaint();
     }
 
-    private void printClassTypesBelow(String currentPath) {
+    private void displayRectsBelow(String currentPath) {
         List<ClassType> classTypes = getClassTypesInSubtree(currentPath);
         // Assuming classTypes is a List of objects with a name property
         List<ClassType> sortedClassTypes = classTypes.stream()

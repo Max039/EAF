@@ -6,6 +6,7 @@ import eaf.input.InputHandler;
 import eaf.models.ClassType;
 import eaf.models.FieldType;
 import eaf.compiler.SyntaxTree;
+import eaf.ui.UiUtil;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import eaf.*;
@@ -685,7 +686,7 @@ public abstract class RectWithRects extends Rect {
                     @Override
                     public void actionPerformed(ActionEvent e) {
 
-                        ClassType.displayClassInfo(clazz, p3);
+                        UiUtil.displayClassInfo(clazz, p3);
                     }
                 });
                 popupMenu.add(info);
