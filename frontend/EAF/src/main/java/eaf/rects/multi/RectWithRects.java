@@ -736,7 +736,7 @@ public abstract class RectWithRects extends Rect {
        if (this instanceof ArrayRect && subRects.length < 1) {
            String filed = parent.names[parentIndex];
            color = warningColor;
-           warning = false;
+           warning = true;
            ErrorPane.warningRects.put(this, new Pair(getY(), filed + ": Empty Array!"));
        }
         if (this instanceof ClassRect && parent != null && !SyntaxTree.inModule(clazz.name)) {
