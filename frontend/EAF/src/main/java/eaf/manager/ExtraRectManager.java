@@ -140,24 +140,30 @@ public class ExtraRectManager {
     }
 
     public static void openClassEditor(ClassType classType, boolean newChild) {
+
         // Frame setup
         JFrame frame = new JFrame("Class Editor");
         frame.setLayout(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.insets = new Insets(10, 10, 10, 10); // Padding between components
         gbc.anchor = GridBagConstraints.WEST;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
 
-        frame.setSize(500, 500);
+        frame.setSize(600, 600); // Adjust frame size if necessary
         frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 
         // Name TextField
         gbc.gridx = 0;
         gbc.gridy = 0;
+        gbc.weightx = 0.33; // 1/3 of the width
+        gbc.gridwidth = 1;
         JLabel nameLabel = new JLabel("Class Name:");
         frame.add(nameLabel, gbc);
 
         gbc.gridx = 1;
-        JTextField nameField = new JTextField(20);
+        gbc.weightx = 0.67; // 2/3 of the width
+        gbc.gridwidth = GridBagConstraints.REMAINDER; // Take up the remaining space
+        JTextField nameField = new JTextField(40); // Adjusted size
         String name = (classType != null) ? classType.getName() : "";
         if (newChild) {
             name += "-child";
@@ -168,11 +174,15 @@ public class ExtraRectManager {
         // Package TextField
         gbc.gridx = 0;
         gbc.gridy = 1;
+        gbc.weightx = 0.33; // 1/3 of the width
+        gbc.gridwidth = 1;
         JLabel packageLabel = new JLabel("Package:");
         frame.add(packageLabel, gbc);
 
         gbc.gridx = 1;
-        JTextField packageField = new JTextField(20);
+        gbc.weightx = 0.67; // 2/3 of the width
+        gbc.gridwidth = GridBagConstraints.REMAINDER; // Take up the remaining space
+        JTextField packageField = new JTextField(40); // Adjusted size
         packageField.setText(classType != null ? classType.pack : "");
         frame.add(packageField, gbc);
 
@@ -211,6 +221,9 @@ public class ExtraRectManager {
         frame.add(xParent, gbc);
 
         JPanel fieldsPanel = new JPanel();
+        fieldsPanel.setLayout(new BoxLayout(fieldsPanel, BoxLayout.Y_AXIS));
+        fieldsPanel.setPreferredSize(new Dimension(800, 300)); // Adjust preferred size if necessary
+
 
         // Add Primitive Button
         gbc.gridx = 1;
@@ -268,7 +281,6 @@ public class ExtraRectManager {
             gbcPrimitive.gridx = 1;
             JTextField fieldValueField = new JTextField(15);
             primitiveFrame.add(fieldValueField, gbcPrimitive);
-
 
             // OK Button
             gbcPrimitive.gridx = 0;
@@ -336,7 +348,6 @@ public class ExtraRectManager {
         });
         frame.add(addInstanceButton, gbc);
 
-
         // Fields ScrollPane
         gbc.gridx = 0;
         gbc.gridy = 5;
@@ -344,8 +355,8 @@ public class ExtraRectManager {
         gbc.fill = GridBagConstraints.BOTH;
         gbc.weightx = 1.0;
         gbc.weighty = 1.0;
-        fieldsPanel.setLayout(new BoxLayout(fieldsPanel, BoxLayout.Y_AXIS));
         JScrollPane fieldsScrollPane = new JScrollPane(fieldsPanel);
+        fieldsScrollPane.setPreferredSize(new Dimension(500, 450)); // Set preferred size for scroll pane
         frame.add(fieldsScrollPane, gbc);
 
         // Adding existing fields
@@ -381,8 +392,6 @@ public class ExtraRectManager {
                 fieldsPanel.add(fieldPanel);
             }
         }
-
-
 
         // Confirm Button
         gbc.gridx = 0;
@@ -425,7 +434,6 @@ public class ExtraRectManager {
 
         frame.setVisible(true);
     }
-
 
 
     public static ClassType chooseInstance(JPanel fieldsPanel, boolean addListener) {
