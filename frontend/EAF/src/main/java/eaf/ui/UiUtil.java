@@ -1210,6 +1210,7 @@ public class UiUtil {
 
             gbcPrimitive.gridx = 1;
             JTextField arrayField = new JTextField(15);
+            arrayField.setText("0");
             primitiveFrame.add(arrayField, gbcPrimitive);
 
             // Value
@@ -1464,34 +1465,40 @@ public class UiUtil {
         return new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                JPanel fieldPanel = new JPanel(new FlowLayout());
-                JTextField fieldName = new JTextField(nameField.getText(), 10);
-                fieldName.setEnabled(false);
-                fieldName.setDisabledTextColor(Color.BLACK);
-                JTextField fieldType = new JTextField(repeatString("array ", Integer.parseInt(arrayCnt.getText())) + c.name, 10);
-                fieldType.setEnabled(false);
-                fieldType.setDisabledTextColor(Color.BLACK);
-                JCheckBox isPrimitive = new JCheckBox("Primitive", false);
-                isPrimitive.setEnabled(false);
-                JTextField fieldValue = new JTextField("", 10);
-                fieldValue.setEnabled(false);
-                fieldValue.setDisabledTextColor(Color.BLACK);
-                JButton removeFieldButton = new JButton("-");
+                if (!nameField.getText().isEmpty()) {
+                    JPanel fieldPanel = new JPanel(new FlowLayout());
+                    JTextField fieldName = new JTextField(nameField.getText(), 10);
+                    fieldName.setEnabled(false);
+                    fieldName.setDisabledTextColor(Color.BLACK);
+                    JTextField fieldType = new JTextField(repeatString("array ", Integer.parseInt(arrayCnt.getText())) + c.name, 10);
+                    fieldType.setEnabled(false);
+                    fieldType.setDisabledTextColor(Color.BLACK);
+                    JCheckBox isPrimitive = new JCheckBox("Primitive", false);
+                    isPrimitive.setEnabled(false);
+                    JTextField fieldValue = new JTextField("", 10);
+                    fieldValue.setEnabled(false);
+                    fieldValue.setDisabledTextColor(Color.BLACK);
+                    JButton removeFieldButton = new JButton("-");
 
-                fieldPanel.add(new JLabel("Field:"));
-                fieldPanel.add(fieldName);
-                fieldPanel.add(fieldType);
-                fieldPanel.add(isPrimitive);
-                fieldPanel.add(fieldValue);
-                fieldPanel.add(removeFieldButton);
+                    fieldPanel.add(new JLabel("Field:"));
+                    fieldPanel.add(fieldName);
+                    fieldPanel.add(fieldType);
+                    fieldPanel.add(isPrimitive);
+                    fieldPanel.add(fieldValue);
+                    fieldPanel.add(removeFieldButton);
 
-                removeFieldButton.addActionListener(e1 -> fieldsPanel.remove(fieldPanel));
+                    removeFieldButton.addActionListener(e1 -> fieldsPanel.remove(fieldPanel));
 
-                selectedType = c;
+                    selectedType = c;
 
-                fieldsPanel.add(fieldPanel);
-                fieldsPanel.revalidate();
-                instanceFrame.dispose();
+                    fieldsPanel.add(fieldPanel);
+                    fieldsPanel.revalidate();
+                    instanceFrame.dispose();
+                }
+                else {
+                    JOptionPane.showMessageDialog(instanceFrame, "Field Name cannot be empty.", "Input Error", JOptionPane.ERROR_MESSAGE);
+                }
+
             }
         };
     }
