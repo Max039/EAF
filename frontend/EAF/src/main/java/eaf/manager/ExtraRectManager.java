@@ -172,7 +172,11 @@ public class ExtraRectManager {
 
         JButton parentButton = new JButton(parent);
         parentButton.addActionListener(e -> {
-            parentButton.setText(chooseInstance(null, false).name);
+            var newP = chooseInstance(null, false);
+            if (newP != null) {
+                parentButton.setText(newP.name);
+            }
+
         });
         frame.add(parentButton);
 

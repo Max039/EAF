@@ -193,6 +193,20 @@ public class UiUtil {
         // Create the File menu
         JMenu fileMenu = new JMenu("Rects");
 
+
+        // Create menu items
+        JMenuItem newRect = new JMenuItem("new");
+
+        newRect.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                ExtraRectManager.openClassEditor(null);
+            }
+        });
+
+
+        fileMenu.add(newRect);
+
         // Create menu items
         JMenuItem edit = new JMenuItem("edit");
 
@@ -225,7 +239,7 @@ public class UiUtil {
 
     static void addScriptMenu(JMenuBar menuBar) {
         // Create the File menu
-        JMenu scriptMenu = new JMenu("File");
+        JMenu scriptMenu = new JMenu("Script");
 
         // Create menu items
         JMenuItem run = new JMenuItem("run");
