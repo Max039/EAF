@@ -1,7 +1,6 @@
 package eaf.compiler;
 
 import eaf.Main;
-import eaf.executor.ScriptWriter;
 import eaf.manager.ColorManager;
 import eaf.manager.ExtraRectManager;
 import eaf.manager.LogManager;
@@ -22,7 +21,7 @@ import static eaf.models.ClassType.getClassHierarchy;
 
 public class SyntaxTree {
     public static ArrayList<String> pathToSyntax = new ArrayList<>();
-    public static String evoalBuild = ScriptWriter.evoalVersion;
+    public static String evoalBuild = Main.evoalVersion;
     public static TreeNode root = new TreeNode("Root", "");
 
 

@@ -1,5 +1,7 @@
 package eaf.executor;
 
+import eaf.Main;
+
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -12,11 +14,6 @@ public class ScriptWriter {
     public enum ScriptType {
         SEARCH
     }
-
-    public static String evoalVersion = "20240708-152016";
-    public static String projectName = "test";
-
-    public static String projectsFolder = "EvoAlScripts";
 
 
     public static ScriptType projectType = ScriptType.SEARCH;
@@ -35,7 +32,7 @@ public class ScriptWriter {
     }
 
     public static String getPathToProject() {
-        return projectsFolder + "/" + projectName;
+        return Main.projectsFolder + "/" + Main.projectName;
     }
 
     private static String getReplacementLines(String build, ScriptType type) {
@@ -68,7 +65,7 @@ public class ScriptWriter {
         String currentPath = System.getProperty("user.dir");
 
 
-        createScript(currentPath + "/" +  getPathToProject() + "/run.sh", evoalVersion, projectType);
+        createScript(currentPath + "/" +  getPathToProject() + "/run.sh", Main.evoalVersion, projectType);
         try {
 
             String scriptPath = currentPath + "/" + getPathToProject() + "/run.sh";
