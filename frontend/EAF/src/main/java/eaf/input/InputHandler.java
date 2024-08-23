@@ -5,6 +5,7 @@ import eaf.action.ActionHandler;
 import eaf.action.AddedRectAction;
 import eaf.action.DeletedRectAction;
 import eaf.action.MovedRectAction;
+import eaf.executor.ScriptWriter;
 import eaf.manager.FileManager;
 import eaf.rects.Rect;
 import eaf.rects.multi.ClassRect;
@@ -156,10 +157,16 @@ public class InputHandler {
         }
         else {
             System.out.println("Writing Data ...");
-            FileManager.write(Main.dataPanel.toString(), "config.ddl");
+            FileManager.write(Main.dataPanel.toString(), ScriptWriter.getPathToProject() + "/config.ddl");
             System.out.println("Writing Script ...");
-            FileManager.write(Main.mainPanel.leftPanel.toString(), "config.ol");
+            FileManager.write(Main.mainPanel.leftPanel.toString(), ScriptWriter.getPathToProject()+ "/config.ol");
             System.out.println("Running ...");
+            try {
+                ScriptWriter.fire();
+            }
+            catch (Exception e) {
+                System.out.println("Script crashed: " + e);
+            }
         }
     }
 

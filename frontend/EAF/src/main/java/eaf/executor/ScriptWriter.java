@@ -14,7 +14,10 @@ public class ScriptWriter {
     }
 
     public static String evoalVersion = "20240708-152016";
-    public static String projectName = "genetic-programming";
+    public static String projectName = "test";
+
+    public static String projectsFolder = "EvoAlScripts";
+
 
     public static ScriptType projectType = ScriptType.SEARCH;
 
@@ -29,6 +32,10 @@ public class ScriptWriter {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    public static String getPathToProject() {
+        return projectsFolder + "/" + projectName;
     }
 
     private static String getReplacementLines(String build, ScriptType type) {
@@ -57,17 +64,17 @@ public class ScriptWriter {
         }
     }
 
-    public static void main(String[] args) throws IOException, InterruptedException {
+    public static void fire() throws IOException, InterruptedException {
         String currentPath = System.getProperty("user.dir");
 
 
-        createScript(currentPath + "\\EvoAlScripts\\" + projectName + "\\run.sh", evoalVersion, projectType);
+        createScript(currentPath + "/" +  getPathToProject() + "/run.sh", evoalVersion, projectType);
         try {
 
-            String scriptPath = currentPath + "\\EvoAlScripts\\genetic-programming\\run.sh";
+            String scriptPath = currentPath + "/" + getPathToProject() + "/run.sh";
             System.out.println("Current Path: " + currentPath);
             System.out.println("Script Path: " + currentPath + scriptPath);
-            String[] command = new String[]{"C:\\Program Files\\Git\\bin\\bash.exe",  scriptPath};
+            String[] command = new String[]{"C:/Program Files/Git/bin/bash.exe",  scriptPath};
 
 
             ProcessBuilder pb = new ProcessBuilder(command);

@@ -550,6 +550,7 @@ public class DataFieldListPane extends JScrollPane {
 
         res += getUniqueImports(classesNeededForScript) + "\n";
         res += "module 'config' {\n";
+        res += " data:\n";
         res += data;
         res += "}";
 

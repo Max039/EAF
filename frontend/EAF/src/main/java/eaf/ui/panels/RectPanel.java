@@ -250,7 +250,7 @@ public class RectPanel extends JScrollPane {
         for (var r : ConstantPane.getUsedConstants()) {
             if (!r.pack.isEmpty()) {
                 if (!imports.contains(r.pack)) {
-                    imports += "import \"definitions\" from " + r.pack + "\n";
+                    imports += "import \"definitions\" from " + r.pack + ";\n";
                 }
             }
             else {
@@ -269,7 +269,7 @@ public class RectPanel extends JScrollPane {
         res += Rect.stringPadding + "specify problem '" + problemName + "' ";
         res += problemContent;
         res += "\n\n\n";
-        res += Rect.stringPadding + "configure problem '" + algorithmName + "' for '" + problemName + "' ";
+        res += Rect.stringPadding + "configure '" + algorithmName + "' for '" + problemName + "' ";
         res += algorithmContent;
 
         res += "}";

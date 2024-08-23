@@ -307,7 +307,19 @@ public class TextFieldRect extends Rect {
 
     @Override
     public String toString(int level) {
-        return textBox.getText();
+        if (clazz.name.contains("string")) {
+            return "\"" + textBox.getText() + "\"";
+        }
+        else  {
+            var res = textBox.getText();
+            for (var c : ConstantPane.getConstantsByType(clazz.name)) {
+                res = res.replace(c.getSecond().name,  "'" + c.getSecond().name + "'");
+            };
+
+
+            return res;
+        }
+
     }
 
 }
