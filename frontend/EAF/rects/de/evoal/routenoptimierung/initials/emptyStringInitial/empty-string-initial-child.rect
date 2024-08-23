@@ -1,6 +1,0 @@
-{
-    "parent": "empty-string-initial",
-    "name": "empty-string-initial-child",
-    "abstract": false,
-    "fields": []
-}

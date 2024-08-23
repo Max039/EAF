@@ -607,6 +607,7 @@ public class SyntaxTree {
         return c;
     };
 
+
     public static class TypeNameAlreadyUsedException extends RuntimeException {
         public TypeNameAlreadyUsedException(String s) {
             super(s);

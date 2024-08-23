@@ -240,6 +240,8 @@ public class RectPanel extends JScrollPane {
         String problemContent = rects.get(0).toString(1).split(" ", 2)[1];
         String algorithmName = rects.get(1).clazz.name;
         String algorithmContent = rects.get(1).toString(1).split(" ", 2)[1];
+        String documentors = rects.get(2).toString(1).split("\\{", 2)[1];
+        documentors = documentors.substring(0, documentors.length() - 2).replace("'documentors'", "documenting");
         ArrayList<ClassType> classesNeededForScript = new ArrayList<>();
         for (var r : rects) {
             getAllRects(classesNeededForScript, r);
@@ -271,7 +273,9 @@ public class RectPanel extends JScrollPane {
         res += "\n\n\n";
         res += Rect.stringPadding + "configure '" + algorithmName + "' for '" + problemName + "' ";
         res += algorithmContent;
-
+        StringBuilder sb = new StringBuilder(res);
+        sb.insert(res.length() - 2, documentors);
+        res = sb.toString();
         res += "}";
 
         return res;

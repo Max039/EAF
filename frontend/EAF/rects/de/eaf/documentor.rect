@@ -1,0 +1,12 @@
+{
+    "parent": "",
+    "name": "documentor",
+    "abstract": false,
+    "fields": [{
+        "field-name": "documentors",
+        "array-count": 1,
+        "primitive": false,
+        "value": "",
+        "type-name": "statistics-writer"
+    }]
+}

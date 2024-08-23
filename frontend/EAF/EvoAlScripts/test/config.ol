@@ -105,4 +105,12 @@ module 'config' {
         }
       ];
     };
+ 
+    documenting := [
+      'best-candidate-per-generation' {
+        'store-optimisation-space' := true;
+        'prefix-data' := false;
+        'store-search-space' := true;
+      }
+    ];
   }}
