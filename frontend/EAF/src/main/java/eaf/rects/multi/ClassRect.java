@@ -5,6 +5,8 @@ import eaf.models.FieldType;
 import eaf.rects.Rect;
 
 import java.awt.*;
+import java.util.Arrays;
+import java.util.Objects;
 
 
 public class ClassRect extends RectWithRects {
@@ -52,7 +54,7 @@ public class ClassRect extends RectWithRects {
     @Override
     public String toString(int level) {
         String res = "'" + clazz.name + "' {";
-        boolean test = clazz.fields.values().stream().anyMatch(t -> t.getSecond() == null);
+        boolean test = subRects.length > 0;
         if (test) {
             res += "\n";
         }

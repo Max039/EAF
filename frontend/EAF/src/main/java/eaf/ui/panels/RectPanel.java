@@ -1,5 +1,6 @@
 package eaf.ui.panels;
 
+import eaf.compiler.SyntaxTree;
 import eaf.input.InputHandler;
 import eaf.Main;
 import eaf.models.ClassType;
@@ -220,7 +221,7 @@ public class RectPanel extends JScrollPane {
 
     public ArrayList<ClassType> getAllRects(ArrayList<ClassType> t, Rect r) {
         var c = r.clazz;
-        if (!c.pack.equals("Array") && !c.pack.equals("Primitive")) {
+        if (!c.pack.equals("Array") && !c.pack.equals("Primitive") && SyntaxTree.inModule(c.name)) {
             t.add(c);
         }
 
@@ -247,7 +248,6 @@ public class RectPanel extends JScrollPane {
         String constants = "";
         var imports = getUniqueImports(classesNeededForScript);
         for (var r : ConstantPane.getUsedConstants()) {
-            System.out.println(r);
             if (!r.pack.isEmpty()) {
                 if (!imports.contains(r.pack)) {
                     imports += "import \"definitions\" from " + r.pack + "\n";
