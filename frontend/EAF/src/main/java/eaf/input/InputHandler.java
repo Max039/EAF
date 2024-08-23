@@ -5,12 +5,11 @@ import eaf.action.ActionHandler;
 import eaf.action.AddedRectAction;
 import eaf.action.DeletedRectAction;
 import eaf.action.MovedRectAction;
-import eaf.executor.ScriptWriter;
+import eaf.executor.Executor;
 import eaf.manager.FileManager;
 import eaf.rects.Rect;
 import eaf.rects.multi.ClassRect;
 import eaf.rects.multi.RectWithRects;
-import eaf.ui.panels.ErrorPane;
 import eaf.sound.SoundManager;
 
 import javax.swing.*;
@@ -122,7 +121,7 @@ public class InputHandler {
                     FileManager.save();
                 }
                 else if (e.getKeyCode() == KeyEvent.VK_R && isControlPressed) {
-                    run();
+                    Executor.run();
                 }
             }
 
@@ -147,27 +146,6 @@ public class InputHandler {
                 Main.mainPanel.repaint();
             }
         });
-    }
-
-    public static void run() {
-        ErrorPane.checkForErrors();
-        if (ErrorPane.errors > 0) {
-            SoundManager.playExclamationSound();
-            Main.mainPanel.leftPanel.getVerticalScrollBar().setValue(ErrorPane.first);
-        }
-        else {
-            System.out.println("Writing Data ...");
-            FileManager.write(Main.dataPanel.toString(), ScriptWriter.getPathToProject() + "/config.ddl");
-            System.out.println("Writing Script ...");
-            FileManager.write(Main.mainPanel.leftPanel.toString(), ScriptWriter.getPathToProject()+ "/config.ol");
-            System.out.println("Running ...");
-            try {
-                ScriptWriter.fire();
-            }
-            catch (Exception e) {
-                System.out.println("Script crashed: " + e);
-            }
-        }
     }
 
     public static void setPosOfDraggingRect(MouseEvent e) {

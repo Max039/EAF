@@ -179,7 +179,7 @@ public class FileManager {
         }
         // Construct the full path to the file
         String currentDirectory = System.getProperty("user.dir");
-        File file = new File(currentDirectory + Main.savesPath, saveName + "." + Main.saveFormat);
+        File file = new File(currentDirectory + Main.savesPath + "/" + saveName, saveName + "." + Main.saveFormat);
 
         // Check if a file with the given name already exists
         if (file.exists()) {

@@ -62,6 +62,30 @@ public class ColorManager {
 
     public static Color rectFactoryColor = new Color(190,230, 240);
 
+    //==========================================
+    //               Script-Writer
+    //==========================================
+
+    public static Color scriptWriter = new Color(60,230, 240);
+
+    public static Color script = new Color(140,70, 70);
+
+    public static Color shell = new Color(160,90, 60);
+
+    public static Color data = new Color(160,60, 90);
+
+    public static Color ol = new Color(90,160, 60);
+
+    //==========================================
+    //               Executor
+    //==========================================
+
+    public static Color executor = new Color(90,120, 240);
+    public static Color process = new Color(70,200, 70);
+
+    public static Color log = new Color(200,200, 200);
+
+    public static Color status = new Color(255,255, 255);
 
     //==========================================
     //==========================================

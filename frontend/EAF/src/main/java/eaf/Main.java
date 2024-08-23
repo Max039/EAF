@@ -41,8 +41,7 @@ public class Main extends JPanel {
 
     private static final int RECT_SPACING = 5;
     public static String evoalVersion = "20240708-152016";
-    public static String projectName = "test";
-    public static String projectsFolder = "EvoAlScripts";
+
     public final RectPanel leftPanel = new RectPanel();
     public final RectPanel rightPanel = new RectPanel();
 
@@ -64,7 +63,7 @@ public class Main extends JPanel {
 
     public static String saveFormat = "eaf";
 
-    public static String savesPath = "/saves";
+    public static String savesPath = "/projects";
 
     public static CacheManager cacheManager = new CacheManager();
 

@@ -32,7 +32,7 @@ import java.util.Stack;
 
 import static eaf.manager.FileManager.loadSave;
 import static eaf.manager.FileManager.readJSONFileToJSON;
-import static eaf.input.InputHandler.run;
+import static eaf.executor.Executor.run;
 
 
 public class UiUtil {
@@ -50,18 +50,18 @@ public class UiUtil {
     static {
         try {
             // Load the image from the root directory
-            cross = ImageIO.read(new File("cross.png"));
+            cross = ImageIO.read(new File("imgs/cross.png"));
 
             // Load the image from the root directory
-            checkmark = ImageIO.read(new File("checkmark.png"));
+            checkmark = ImageIO.read(new File("imgs/checkmark.png"));
 
             // Load the image from the root directory
-            runable = ImageIO.read(new File("runable.png"));
+            runable = ImageIO.read(new File("imgs/runable.png"));
 
             // Load the image from the root directory
-            unrunable = ImageIO.read(new File("unrunable.png"));
+            unrunable = ImageIO.read(new File("imgs/unrunable.png"));
 
-            warning = ImageIO.read(new File("warning.png"));
+            warning = ImageIO.read(new File("imgs/warning.png"));
 
 
         } catch (IOException e) {

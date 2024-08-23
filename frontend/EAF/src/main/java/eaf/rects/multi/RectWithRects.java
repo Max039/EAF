@@ -59,7 +59,7 @@ public abstract class RectWithRects extends Rect {
     static {
         try {
             // Load the image from the root directory
-            lock = ImageIO.read(new File("lock.png"));
+            lock = ImageIO.read(new File("imgs/lock.png"));
 
             if (lock == null) {
                 throw new IOException("Image not found!");

@@ -73,5 +73,42 @@ public class LogManager {
         return encased(ColorManager.colorText("Rect-Factory", ColorManager.rectFactoryColor));
     }
 
+    public static String scriptWriter() {
+        return encased(ColorManager.colorText("Script-Writer", ColorManager.scriptWriter));
+    }
+
+    public static String executor() {
+        return encased(ColorManager.colorText("Executor", ColorManager.executor));
+    }
+
+    public static String process() {
+        return encased(ColorManager.colorText("Process", ColorManager.process));
+    }
+
+    public static String status() {
+        return encased(ColorManager.colorText("Status", ColorManager.status));
+    }
+
+    public static String log() {
+        return encased(ColorManager.colorText("Log", ColorManager.log));
+    }
+
+    public static String script() {
+        return encased(ColorManager.colorText("Script", ColorManager.log));
+    }
+
+    public static String data() {
+        return encased(ColorManager.colorText("Data-File", ColorManager.data));
+    }
+
+
+    public static String ol() {
+        return encased(ColorManager.colorText("Ol-File", ColorManager.ol));
+    }
+
+    public static String shell() {
+        return encased(ColorManager.colorText("Shell", ColorManager.shell));
+    }
+
 }
 

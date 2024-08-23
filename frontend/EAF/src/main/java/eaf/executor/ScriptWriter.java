@@ -1,15 +1,27 @@
 package eaf.executor;
 
 import eaf.Main;
+import eaf.manager.FileManager;
+import eaf.manager.LogManager;
 
 import java.io.*;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
 import java.util.List;
 
 public class ScriptWriter {
+
+    static void saveAndWriteEvoAlFiles() {
+        System.out.println(LogManager.scriptWriter() + LogManager.write() + " Saving project ...");
+        FileManager.save();
+        System.out.println(LogManager.scriptWriter() + LogManager.write() + LogManager.data() + " Writing EvoAl Data ...");
+        FileManager.write(Main.dataPanel.toString(), getPathToProject() + "/config.ddl");
+        System.out.println(LogManager.scriptWriter() + LogManager.write() + LogManager.ol()  + " Writing EvoAl Script ...");
+        FileManager.write(Main.mainPanel.leftPanel.toString(), getPathToProject()+ "/config.ol");
+    }
 
     public enum ScriptType {
         SEARCH
@@ -18,21 +30,24 @@ public class ScriptWriter {
 
     public static ScriptType projectType = ScriptType.SEARCH;
 
-    public static void createScript(String path2, String build, ScriptType type) {
-        String outputFilePath = path2;
+    public static void createScript(String path, String build, ScriptType type) {
 
+        System.out.println(LogManager.scriptWriter() + LogManager.script() + LogManager.shell() + " Trying to writing Shell-Script script at " + path);
         try {
             List<String> lines = new ArrayList<>();
             lines.add(getReplacementLines(build, type));
 
-            Files.write(Paths.get(outputFilePath), lines, StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING);
+            Files.write(Paths.get(path), lines, StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING);
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
     public static String getPathToProject() {
-        return Main.projectsFolder + "/" + Main.projectName;
+        var r = Main.cacheManager.getFirstElement(String.class, "filesOpened");
+        Path fileFullPath = Paths.get(r);
+        return Main.savesPath.substring(1) + "/" + fileFullPath.getParent().getFileName();
+
     }
 
     private static String getReplacementLines(String build, ScriptType type) {
@@ -61,54 +76,4 @@ public class ScriptWriter {
         }
     }
 
-    public static void fire() throws IOException, InterruptedException {
-        String currentPath = System.getProperty("user.dir");
-
-
-        createScript(currentPath + "/" +  getPathToProject() + "/run.sh", Main.evoalVersion, projectType);
-        try {
-
-            String scriptPath = currentPath + "/" + getPathToProject() + "/run.sh";
-            System.out.println("Current Path: " + currentPath);
-            System.out.println("Script Path: " + currentPath + scriptPath);
-            String[] command = new String[]{"C:/Program Files/Git/bin/bash.exe",  scriptPath};
-
-
-            ProcessBuilder pb = new ProcessBuilder(command);
-            pb.redirectErrorStream(true); // Redirect error stream to the input stream
-
-            Process process = pb.start();
-
-            // Get input stream of the process (combined output and error stream)
-            InputStream inputStream = process.getInputStream();
-            InputStreamReader inputStreamReader = new InputStreamReader(inputStream);
-            BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
-
-            // Read the output of the process
-            String line;
-            while (true) {
-                // Read standard output and error lines if available
-                while ((line = bufferedReader.readLine()) != null) {
-                    System.out.println(line);
-                }
-
-                // Check if the process is terminated
-                try {
-                    int exitCode = process.exitValue();
-                    // Process has terminated, break out of the loop
-                    if (exitCode == 0) {
-                        System.out.println("Process executed successfully");
-                    } else {
-                        System.out.println("Process failed with error code: " + exitCode);
-                    }
-                    break;
-                } catch (IllegalThreadStateException e) {
-                    // Process is still running, wait and continue reading
-                    Thread.sleep(50); // 50 milliseconds pause
-                }
-            }
-        } catch (IOException | InterruptedException e) {
-            e.printStackTrace();
-        }
-    }
 }
