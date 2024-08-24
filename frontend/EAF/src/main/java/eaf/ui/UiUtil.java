@@ -560,9 +560,9 @@ public class UiUtil {
 
     private static void createConsole() {
         // Create the console panel
-        console = new JScrollPane();
+        console = new ConsolePane();
         customizeScrollBar(console);
-        console.setBorder(BorderFactory.createEmptyBorder());
+        console.setBorder(BorderFactory.createLineBorder(RectPanel.instanceColor, 10));
     }
 
     private static JSplitPane createSplitPane(JSplitPane VERTICAL_SPLIT, int dividerLocation, double resize) {

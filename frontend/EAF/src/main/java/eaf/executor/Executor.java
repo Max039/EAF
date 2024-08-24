@@ -1,12 +1,14 @@
 package eaf.executor;
 
 import eaf.Main;
+import eaf.input.InputHandler;
 import eaf.manager.ColorManager;
 import eaf.manager.LogManager;
 import eaf.sound.SoundManager;
 import eaf.ui.panels.ErrorPane;
 import org.apache.commons.logging.Log;
 
+import java.awt.*;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -14,7 +16,7 @@ import java.io.InputStreamReader;
 
 public class Executor {
     public static void execute() throws IOException, InterruptedException {
-
+        InputHandler.processStarted();
 
         String currentPath = System.getProperty("user.dir");
         var scriptTarget = currentPath + "/" +  ScriptWriter.getPathToProject() + "/run.sh";
@@ -49,6 +51,7 @@ public class Executor {
                 // Read standard output and error lines if available
                 while ((line = bufferedReader.readLine()) != null) {
                     System.out.println(LogManager.executor() + LogManager.process() + LogManager.log() + " " + line);
+                    Main.console.println(line);
                 }
 
                 // Check if the process is terminated
@@ -57,9 +60,16 @@ public class Executor {
                     // Process has terminated, break out of the loop
                     if (exitCode == 0) {
                         System.out.println(LogManager.executor() + LogManager.process() + LogManager.status() + " Process " + ColorManager.colorText("finished successfully", ColorManager.sucessColor) + "!");
+                        Main.console.print("Process finished ");
+                        Main.console.printColored("successfully", ColorManager.sucessColor);
+                        Main.console.println("!");
                     } else {
                         System.out.println(LogManager.executor() + LogManager.process() + LogManager.status() + LogManager.error() + " Process " + ColorManager.colorText("failed", ColorManager.errorColor) + " with error code: " + exitCode);
+                        Main.console.print("Process ");
+                        Main.console.printColored("failed", ColorManager.errorColor);
+                        Main.console.println(" with error code: " + exitCode);
                     }
+                    InputHandler.processTerminated();
                     break;
                 } catch (IllegalThreadStateException e) {
                     // Process is still running, wait and continue reading
@@ -72,21 +82,22 @@ public class Executor {
     }
 
     public static void run() {
-
         ErrorPane.checkForErrors();
         if (ErrorPane.errors > 0) {
             SoundManager.playExclamationSound();
             Main.mainPanel.leftPanel.getVerticalScrollBar().setValue(ErrorPane.first);
-        }
-        else {
+        } else {
             ScriptWriter.saveAndWriteEvoAlFiles();
             System.out.println(LogManager.executor() + LogManager.process() + LogManager.status() + " Preparing to execute ...");
-            try {
-                execute();
-            }
-            catch (Exception e) {
-                System.out.println(LogManager.scriptWriter() + LogManager.process() + LogManager.status() + LogManager.error() + " Script crashed: " + e);
-            }
+            // Create and start a new thread to run execute()
+            Thread executionThread = new Thread(() -> {
+                try {
+                    execute();
+                } catch (Exception e) {
+                    System.out.println(LogManager.scriptWriter() + LogManager.process() + LogManager.status() + LogManager.error() + " Script crashed: " + e);
+                }
+            });
+            executionThread.start();
         }
     }
 

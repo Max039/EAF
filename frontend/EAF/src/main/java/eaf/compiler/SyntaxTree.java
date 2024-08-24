@@ -66,6 +66,13 @@ public class SyntaxTree {
         return classRegister.get(name) != null;
     }
 
+
+    static  {
+        String currentPath = System.getProperty("user.dir");
+        pathToSyntax.add(currentPath + buildPath);
+        pathToSyntax.add(currentPath + "\\de");
+    }
+
     public static void main(String[] args) throws IOException {
         start();
 
@@ -88,11 +95,8 @@ public class SyntaxTree {
         classRegister = new HashMap<>();
         baseClassRegister = new HashMap<>();
         constantRegister = new HashMap<>();
-
         String currentPath = System.getProperty("user.dir");
 
-        pathToSyntax.add(currentPath + buildPath);
-        pathToSyntax.add(currentPath + "\\de");
         for (String path : pathToSyntax) {
             File rootDir = new File(path);
             if (rootDir.exists() && rootDir.isDirectory()) {

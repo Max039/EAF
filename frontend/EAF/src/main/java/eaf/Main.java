@@ -18,7 +18,7 @@ import static eaf.ui.UiUtil.createMenuBar;
 
 public class Main extends JPanel {
 
-
+    public static String version = "0.1.0";
 
     public static Color bgColor = new Color(49, 51, 53);
 
@@ -47,6 +47,8 @@ public class Main extends JPanel {
     public final RectPanel leftPanel = new RectPanel();
     public final RectPanel rightPanel = new RectPanel();
 
+    public static boolean processRunning = false;
+
     public static int arrayDefaultCount = 1;
 
     public JSplitPane mainSplitPane = null;
@@ -55,7 +57,7 @@ public class Main extends JPanel {
 
     public static JPanel tabsPanel = null;
 
-    public static JScrollPane console = null;
+    public static ConsolePane console = null;
 
     public static JComponent tab = null;
 

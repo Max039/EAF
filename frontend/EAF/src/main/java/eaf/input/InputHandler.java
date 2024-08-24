@@ -309,4 +309,14 @@ public class InputHandler {
             System.exit(0);
         }
     }
+
+    public static void processStarted() {
+        Main.console.flush();
+        Main.processRunning = true;
+    }
+
+    public static void processTerminated() {
+        Main.processRunning = false;
+    }
+
 }
