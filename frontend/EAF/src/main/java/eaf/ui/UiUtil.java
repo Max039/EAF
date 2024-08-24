@@ -1553,21 +1553,40 @@ public class UiUtil {
         buttonPanel.setOpaque(false); // Make the button panel transparent
         buttonPanel.setLayout(new FlowLayout(FlowLayout.RIGHT, 0, 0)); // Align buttons to the right with no gap
 
+        // Load the images for the buttons
+        ImageIcon minimizeIcon = new ImageIcon("imgs/minimize.png");
+        ImageIcon fullscreenIcon = new ImageIcon("imgs/fullscreen.png");
+        ImageIcon closeIcon = new ImageIcon("imgs/close.png");
+
+        // Create a method to add hover effect
+        MouseListener hoverEffect = new MouseAdapter() {
+            @Override
+            public void mouseEntered(MouseEvent e) {
+                JButton button = (JButton) e.getSource();
+                button.setContentAreaFilled(true);
+                button.setBackground(scrollBarButton);
+            }
+
+            @Override
+            public void mouseExited(MouseEvent e) {
+                JButton button = (JButton) e.getSource();
+                button.setContentAreaFilled(false);
+                button.setBackground(Main.bgColor);
+            }
+        };
+
         // Add the minimize button
-        JButton minimizeButton = new JButton("_");
-        minimizeButton.setForeground(Color.WHITE);
+        JButton minimizeButton = new JButton(minimizeIcon);
         minimizeButton.setBackground(Main.bgColor);
         minimizeButton.setFocusPainted(false);
         minimizeButton.setBorderPainted(false);
         minimizeButton.setContentAreaFilled(false);
-        minimizeButton.addActionListener(e -> {
-            Main.mainFrame.setState(JFrame.ICONIFIED);
-        });
+        minimizeButton.addActionListener(e -> Main.mainFrame.setState(JFrame.ICONIFIED));
+        minimizeButton.addMouseListener(hoverEffect);
         buttonPanel.add(minimizeButton);
 
         // Add the fullscreen button
-        JButton fullscreenButton = new JButton("[]");
-        fullscreenButton.setForeground(Color.WHITE);
+        JButton fullscreenButton = new JButton(fullscreenIcon);
         fullscreenButton.setBackground(Main.bgColor);
         fullscreenButton.setFocusPainted(false);
         fullscreenButton.setBorderPainted(false);
@@ -1579,18 +1598,17 @@ public class UiUtil {
                 Main.mainFrame.setExtendedState(JFrame.NORMAL);
             }
         });
+        fullscreenButton.addMouseListener(hoverEffect);
         buttonPanel.add(fullscreenButton);
 
         // Add the close button
-        JButton closeButton = new JButton("X");
-        closeButton.setForeground(Color.WHITE);
+        JButton closeButton = new JButton(closeIcon);
         closeButton.setBackground(Main.bgColor);
         closeButton.setFocusPainted(false);
         closeButton.setBorderPainted(false);
         closeButton.setContentAreaFilled(false);
-        closeButton.addActionListener(e -> {
-            InputHandler.tryClose();
-        });
+        closeButton.addActionListener(e -> InputHandler.tryClose());
+        closeButton.addMouseListener(hoverEffect);
         buttonPanel.add(closeButton);
 
         // Add the button panel to the title bar
@@ -1612,6 +1630,8 @@ public class UiUtil {
 
         return titleBar;
     }
+
+
 
     public static void setResizer() {
         ComponentResizer cr = new ComponentResizer();
