@@ -8,11 +8,14 @@ import eaf.manager.FileManager;
 import eaf.ui.panels.*;
 
 import javax.swing.*;
+import javax.swing.border.LineBorder;
 import java.awt.*;
 
 import static eaf.ui.UiUtil.createMenuBar;
 
 public class Main extends JPanel {
+
+
 
     public static Color bgColor = new Color(49, 51, 53);
 
@@ -44,6 +47,8 @@ public class Main extends JPanel {
     public static int arrayDefaultCount = 1;
 
     public JSplitPane mainSplitPane = null;
+
+    public static JPanel borderPanel = null;
 
     public static Main mainPanel = null;
 
@@ -85,6 +90,7 @@ public class Main extends JPanel {
     static void createAndShowGUI() {
         // Create the main frame
         mainFrame = new JFrame("EAF");
+
         mainFrame.setUndecorated(true);
         Image icon = Toolkit.getDefaultToolkit().getImage("imgs/evoal.png");
 
@@ -93,6 +99,11 @@ public class Main extends JPanel {
 
         // Create and add content to the frame
 
+        borderPanel = new JPanel();
+
+        borderPanel.setLayout(new BorderLayout());
+
+
         new Main(); // Initialize main panel
         createMenuBar();
 
@@ -100,8 +111,12 @@ public class Main extends JPanel {
 
         // Layout the frame with BorderLayout
         mainFrame.setLayout(new BorderLayout());
-        mainFrame.add(UiUtil.getHeader(), BorderLayout.NORTH);
-        mainFrame.add(mainPanel, BorderLayout.CENTER);
+        borderPanel.add(UiUtil.getHeader(), BorderLayout.NORTH);
+        borderPanel.add(mainPanel, BorderLayout.CENTER);
+
+        borderPanel.setBorder(new LineBorder(Main.bgColor, 3));
+        mainFrame.add(borderPanel);
+
 
         // Set frame size and location
         mainFrame.setSize(new Dimension(800, 600));
@@ -144,12 +159,11 @@ public class Main extends JPanel {
 
         constantManager.refreshUI();
 
+        UiUtil.setResizer();
+
         leftPanel.requestFocusInWindow();
         
     }
-
-
-
 
 
 }

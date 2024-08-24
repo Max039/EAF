@@ -31,12 +31,19 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Stack;
 
+import static eaf.Main.*;
 import static eaf.manager.FileManager.loadSave;
 import static eaf.manager.FileManager.readJSONFileToJSON;
 import static eaf.executor.Executor.run;
 
 
 public class UiUtil {
+
+    public static final int RESIZE_MARGIN = 10; // Margin size to trigger resize
+    private static Point initialClick;
+    private static Dimension initialSize;
+    private static Point initialLocation;
+
 
     public static BufferedImage cross = null;
     public static BufferedImage checkmark = null;
@@ -876,8 +883,11 @@ public class UiUtil {
         addRectMenu(menuBar);
 
         // Set the menu bar to the frame
-        Main.mainPanel.add(menuBar, BorderLayout.NORTH);
+        borderPanel.add(menuBar, BorderLayout.NORTH);
+
     }
+
+
 
     // Method to create and show the main GUI window
     public static void displayClassInfo(ClassType classType, Point p) {
@@ -1533,7 +1543,7 @@ public class UiUtil {
         titleBar.setBackground(RectPanel.instanceColor);
 
         // Add a label for the title on the left with padding
-        JLabel titleLabel = new JLabel("Custom Header");
+        JLabel titleLabel = new JLabel("EAF");
         titleLabel.setForeground(Color.WHITE);
         titleLabel.setBorder(new EmptyBorder(5, 5, 5, 0)); // Top, left, bottom, right padding
         titleBar.add(titleLabel, BorderLayout.WEST);
@@ -1547,7 +1557,7 @@ public class UiUtil {
         JButton minimizeButton = new JButton("_");
         minimizeButton.setForeground(Color.WHITE);
         minimizeButton.setBackground(Main.bgColor);
-        minimizeButton.setFocusPainted(true);
+        minimizeButton.setFocusPainted(false);
         minimizeButton.setBorderPainted(false);
         minimizeButton.setContentAreaFilled(false);
         minimizeButton.addActionListener(e -> {
@@ -1559,7 +1569,7 @@ public class UiUtil {
         JButton fullscreenButton = new JButton("[]");
         fullscreenButton.setForeground(Color.WHITE);
         fullscreenButton.setBackground(Main.bgColor);
-        fullscreenButton.setFocusPainted(true);
+        fullscreenButton.setFocusPainted(false);
         fullscreenButton.setBorderPainted(false);
         fullscreenButton.setContentAreaFilled(false);
         fullscreenButton.addActionListener(e -> {
@@ -1575,7 +1585,7 @@ public class UiUtil {
         JButton closeButton = new JButton("X");
         closeButton.setForeground(Color.WHITE);
         closeButton.setBackground(Main.bgColor);
-        closeButton.setFocusPainted(true);
+        closeButton.setFocusPainted(false);
         closeButton.setBorderPainted(false);
         closeButton.setContentAreaFilled(false);
         closeButton.addActionListener(e -> {
@@ -1603,6 +1613,14 @@ public class UiUtil {
         return titleBar;
     }
 
+    public static void setResizer() {
+        ComponentResizer cr = new ComponentResizer();
+        cr.setMinimumSize(new Dimension(300, 300));
+        cr.setMaximumSize(new Dimension(Integer.MAX_VALUE, Integer.MAX_VALUE));
+        cr.registerComponent(mainFrame);
+        cr.setSnapSize(new Dimension(10, 10));
+    }
+
     // Custom SplitPaneUI
     static class CustomSplitPaneUI extends BasicSplitPaneUI {
         @Override
@@ -1626,6 +1644,8 @@ public class UiUtil {
             g.fillRect(0, 0, getWidth(), getHeight());
         }
     }
+
+
 
 
 }
