@@ -37,9 +37,9 @@ public class DoubleHelixAnimation extends JPanel implements ActionListener {
 
     public String objective = "";
 
-    private static double decayTime = 1000;
+    private static double decayTime = 1200;
 
-    private static double extraTime = 500;
+    private static double extraTime = 850;
 
     private JFrame frame;
 
