@@ -66,6 +66,8 @@ public class Main extends JPanel {
 
     public static String savesPath = "/projects";
 
+    public static String programName = "EAF";
+
     public static CacheManager cacheManager = new CacheManager();
 
     public static DoubleHelixAnimation animation = null;
@@ -90,7 +92,7 @@ public class Main extends JPanel {
 
     static void createAndShowGUI() {
         // Create the main frame
-        mainFrame = new JFrame("EAF");
+        mainFrame = new JFrame(programName);
 
         mainFrame.setUndecorated(true);
         Image icon = Toolkit.getDefaultToolkit().getImage("imgs/evoal.png");

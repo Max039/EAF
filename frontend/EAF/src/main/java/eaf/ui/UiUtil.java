@@ -1543,7 +1543,7 @@ public class UiUtil {
         titleBar.setBackground(RectPanel.instanceColor);
 
         // Add a label for the title on the left with padding
-        JLabel titleLabel = new JLabel("EAF");
+        JLabel titleLabel = new JLabel(programName);
         titleLabel.setForeground(Color.WHITE);
         titleLabel.setBorder(new EmptyBorder(5, 5, 5, 0)); // Top, left, bottom, right padding
         titleBar.add(titleLabel, BorderLayout.WEST);
