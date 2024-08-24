@@ -222,6 +222,12 @@ public class DoubleHelixAnimation extends JPanel implements ActionListener {
 
     public static DoubleHelixAnimation create() {
         JFrame frame = new JFrame("EAF: Loading");
+        // Load an image from file or resource
+        Image icon = Toolkit.getDefaultToolkit().getImage("imgs/evoal.png");
+
+        // Set the icon image for the frame
+        frame.setIconImage(icon);
+        frame.setUndecorated(true);
         DoubleHelixAnimation helixAnimation = new DoubleHelixAnimation(frame);
 
         frame.add(helixAnimation);

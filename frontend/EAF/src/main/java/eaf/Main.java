@@ -3,18 +3,14 @@ package eaf;
 import eaf.compiler.SyntaxTree;
 import eaf.intro.DoubleHelixAnimation;
 import eaf.manager.CacheManager;
-import eaf.manager.ExtraRectManager;
-import eaf.models.ClassType;
 import eaf.ui.*;
 import eaf.manager.FileManager;
 import eaf.ui.panels.*;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
 
-import static eaf.ui.UiUtil.showUnsaveDialog;
+import static eaf.ui.UiUtil.createMenuBar;
 
 public class Main extends JPanel {
 
@@ -89,25 +85,23 @@ public class Main extends JPanel {
     static void createAndShowGUI() {
         // Create the main frame
         mainFrame = new JFrame("EAF");
-        mainFrame.addWindowListener(new WindowAdapter() {
-            @Override
-            public void windowClosing(WindowEvent e) {
-                var cancle = showUnsaveDialog();
-                if (!cancle) {
-                    mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-                } else {
-                    mainFrame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
-                }
-            }
+        mainFrame.setUndecorated(true);
+        Image icon = Toolkit.getDefaultToolkit().getImage("imgs/evoal.png");
 
-        });
-
-
-        UiUtil.createMenuBar();
+        // Set the icon image for the frame
+        mainFrame.setIconImage(icon);
 
         // Create and add content to the frame
-        new Main();
-        mainFrame.add(mainPanel);
+
+        new Main(); // Initialize main panel
+        createMenuBar();
+
+        mainPanel.setBackground(Color.LIGHT_GRAY); // Set background color or any layout you need
+
+        // Layout the frame with BorderLayout
+        mainFrame.setLayout(new BorderLayout());
+        mainFrame.add(UiUtil.getHeader(), BorderLayout.NORTH);
+        mainFrame.add(mainPanel, BorderLayout.CENTER);
 
         // Set frame size and location
         mainFrame.setSize(new Dimension(800, 600));

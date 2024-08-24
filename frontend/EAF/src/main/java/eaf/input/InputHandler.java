@@ -20,6 +20,8 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
+import static eaf.ui.UiUtil.showUnsaveDialog;
+
 public class InputHandler {
     public static boolean isControlPressed = false;
     public static boolean showButtons = false;
@@ -299,5 +301,12 @@ public class InputHandler {
         }
         Main.mainPanel.revalidate();
         Main.mainPanel.repaint();
+    }
+
+    public static void tryClose() {
+        boolean cancle = showUnsaveDialog();
+        if (!cancle) {
+            System.exit(0);
+        }
     }
 }

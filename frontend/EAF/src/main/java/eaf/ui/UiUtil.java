@@ -17,6 +17,7 @@ import eaf.ui.panels.*;
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.border.Border;
+import javax.swing.border.EmptyBorder;
 import javax.swing.event.*;
 import javax.swing.plaf.basic.BasicScrollBarUI;
 import javax.swing.plaf.basic.BasicSplitPaneDivider;
@@ -39,6 +40,8 @@ public class UiUtil {
 
     public static BufferedImage cross = null;
     public static BufferedImage checkmark = null;
+
+    public static int pX, pY;
 
     public static BufferedImage runable = null;
     public static BufferedImage unrunable = null;
@@ -190,6 +193,8 @@ public class UiUtil {
         fileMenu.add(openFileDotDotDot);
         fileMenu.add(saveFileDotDotDot);
         fileMenu.add(save);
+        fileMenu.setBackground(Main.bgColor);
+        fileMenu.setForeground(Color.WHITE);
         menuBar.add(fileMenu);
     }
 
@@ -249,7 +254,8 @@ public class UiUtil {
 
 
         fileMenu.add(reload);
-
+        fileMenu.setBackground(Main.bgColor);
+        fileMenu.setForeground(Color.WHITE);
         menuBar.add(fileMenu);
     }
 
@@ -270,6 +276,8 @@ public class UiUtil {
 
 
         scriptMenu.add(run);
+        scriptMenu.setBackground(Main.bgColor);
+        scriptMenu.setForeground(Color.WHITE);
         menuBar.add(scriptMenu);
     }
 
@@ -857,6 +865,9 @@ public class UiUtil {
     public static void createMenuBar() {
         // Create and set up the menu bar
         JMenuBar menuBar = new JMenuBar();
+        menuBar.setBackground(Main.dividerColor);
+        menuBar.setBorderPainted(false);
+        menuBar.setForeground(Color.WHITE);
 
 
         addFileMenu(menuBar);
@@ -865,7 +876,7 @@ public class UiUtil {
         addRectMenu(menuBar);
 
         // Set the menu bar to the frame
-        Main.mainFrame.setJMenuBar(menuBar);
+        Main.mainPanel.add(menuBar, BorderLayout.NORTH);
     }
 
     // Method to create and show the main GUI window
@@ -1511,6 +1522,85 @@ public class UiUtil {
                 instanceFrame.dispose();
             }
         };
+    }
+
+
+
+    public static JPanel getHeader() {
+        // Create the main title bar panel
+        JPanel titleBar = new JPanel(new BorderLayout());
+        titleBar.setPreferredSize(new Dimension(Main.mainFrame.getWidth(), 30));
+        titleBar.setBackground(RectPanel.instanceColor);
+
+        // Add a label for the title on the left with padding
+        JLabel titleLabel = new JLabel("Custom Header");
+        titleLabel.setForeground(Color.WHITE);
+        titleLabel.setBorder(new EmptyBorder(5, 5, 5, 0)); // Top, left, bottom, right padding
+        titleBar.add(titleLabel, BorderLayout.WEST);
+
+        // Create a panel for the buttons
+        JPanel buttonPanel = new JPanel();
+        buttonPanel.setOpaque(false); // Make the button panel transparent
+        buttonPanel.setLayout(new FlowLayout(FlowLayout.RIGHT, 0, 0)); // Align buttons to the right with no gap
+
+        // Add the minimize button
+        JButton minimizeButton = new JButton("_");
+        minimizeButton.setForeground(Color.WHITE);
+        minimizeButton.setBackground(Main.bgColor);
+        minimizeButton.setFocusPainted(true);
+        minimizeButton.setBorderPainted(false);
+        minimizeButton.setContentAreaFilled(false);
+        minimizeButton.addActionListener(e -> {
+            Main.mainFrame.setState(JFrame.ICONIFIED);
+        });
+        buttonPanel.add(minimizeButton);
+
+        // Add the fullscreen button
+        JButton fullscreenButton = new JButton("[]");
+        fullscreenButton.setForeground(Color.WHITE);
+        fullscreenButton.setBackground(Main.bgColor);
+        fullscreenButton.setFocusPainted(true);
+        fullscreenButton.setBorderPainted(false);
+        fullscreenButton.setContentAreaFilled(false);
+        fullscreenButton.addActionListener(e -> {
+            if (Main.mainFrame.getExtendedState() != JFrame.MAXIMIZED_BOTH) {
+                Main.mainFrame.setExtendedState(JFrame.MAXIMIZED_BOTH);
+            } else {
+                Main.mainFrame.setExtendedState(JFrame.NORMAL);
+            }
+        });
+        buttonPanel.add(fullscreenButton);
+
+        // Add the close button
+        JButton closeButton = new JButton("X");
+        closeButton.setForeground(Color.WHITE);
+        closeButton.setBackground(Main.bgColor);
+        closeButton.setFocusPainted(true);
+        closeButton.setBorderPainted(false);
+        closeButton.setContentAreaFilled(false);
+        closeButton.addActionListener(e -> {
+            InputHandler.tryClose();
+        });
+        buttonPanel.add(closeButton);
+
+        // Add the button panel to the title bar
+        titleBar.add(buttonPanel, BorderLayout.EAST);
+
+        // Add dragging functionality to the custom title bar
+        titleBar.addMouseListener(new MouseAdapter() {
+            public void mousePressed(MouseEvent me) {
+                pX = me.getX();
+                pY = me.getY();
+            }
+        });
+        titleBar.addMouseMotionListener(new MouseAdapter() {
+            public void mouseDragged(MouseEvent me) {
+                Main.mainFrame.setLocation(Main.mainFrame.getLocation().x + me.getX() - pX,
+                        Main.mainFrame.getLocation().y + me.getY() - pY);
+            }
+        });
+
+        return titleBar;
     }
 
     // Custom SplitPaneUI
