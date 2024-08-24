@@ -21,6 +21,8 @@ public class ScriptWriter {
         FileManager.write(Main.dataPanel.toString(), getPathToProject() + "/config.ddl");
         System.out.println(LogManager.scriptWriter() + LogManager.write() + LogManager.ol()  + " Writing EvoAl Script ...");
         FileManager.write(Main.mainPanel.leftPanel.toString(), getPathToProject()+ "/config.ol");
+        Main.mainPanel.revalidate();
+        Main.mainFrame.repaint();
     }
 
     public enum ScriptType {
