@@ -68,14 +68,15 @@ public class Main extends JPanel {
 
     public static CacheManager cacheManager = new CacheManager();
 
+    public static DoubleHelixAnimation animation = null;
     
     public static void main(String[] args) throws Exception {
         try {
-            var s = DoubleHelixAnimation.create();
-            s.objective = "Constructing Syntax-Tree";
+            animation = DoubleHelixAnimation.create();
+            animation.objective = "Constructing Syntax-Tree";
             SyntaxTree.start();
-            s.stop();
-            while (s.isUnfinished()) {
+            animation.stop();
+            while (animation.isUnfinished()) {
                 Thread.sleep(100);
             }
         }

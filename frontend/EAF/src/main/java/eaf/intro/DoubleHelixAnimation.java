@@ -7,6 +7,8 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.geom.Line2D;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Random;
 
 public class DoubleHelixAnimation extends JPanel implements ActionListener {
@@ -30,6 +32,8 @@ public class DoubleHelixAnimation extends JPanel implements ActionListener {
 
     public static Color c2 = new Color(203, 116, 47, 255);
     public static Color c1 = new Color(255, 255, 255, 255);
+
+    public static Color c3 = new Color(120, 120, 120, 255);
 
     public String objective = "";
 
@@ -81,7 +85,7 @@ public class DoubleHelixAnimation extends JPanel implements ActionListener {
 
         // Draw the two helices, alternating which one is on top
         drawHelix(g2d, centerX, centerY, waveLength, time);
-
+        g2d.setStroke(new BasicStroke(4));
         if (!timer.isRunning()) {
             int fontsize = 70;
             g2d.setFont(new Font("Arial", Font.PLAIN, fontsize));
@@ -149,6 +153,10 @@ public class DoubleHelixAnimation extends JPanel implements ActionListener {
         double prevX2 = centerX + RADIUS * Math.sin(time + Math.PI);
         double prevY2 = centerY - waveLength;
 
+        HashMap<Integer, Integer> helix1 = new HashMap<>();
+        HashMap<Integer, Integer> helix2 = new HashMap<>();
+        ArrayList<InnerLine> lines = new ArrayList<>();
+
         // Draw the two helices as sine waves in segments
         for (double y = -waveLength; y <= waveLength; y += 1) {
             double angle1 = angleIncrement * y + time;
@@ -183,6 +191,25 @@ public class DoubleHelixAnimation extends JPanel implements ActionListener {
 
 
 
+
+            if ((Math.max(prevX1, drawX1) >= Math.min(prevX2, drawX2)) && (Math.min(prevX1, drawX1) <= Math.max(prevX2, drawX2))) {
+                lines.add(new InnerLine(g2d, c3, (int) (drawY - waveLength / 10), lowerY, upperY, a));
+                lines.add(new InnerLine(g2d, c3, (int) (drawY - waveLength / 10 * 2), lowerY, upperY, a));
+                lines.add(new InnerLine(g2d, c3, (int) (drawY - waveLength / 10 * 3), lowerY, upperY, a));
+                lines.add(new InnerLine(g2d, c3, (int) (drawY - waveLength / 10 * 4), lowerY, upperY, a));
+
+                lines.add(new InnerLine(g2d, c3, (int) (drawY + waveLength / 10), lowerY, upperY, a));
+                lines.add(new InnerLine(g2d, c3, (int) (drawY + waveLength / 10 * 2), lowerY, upperY, a));
+                lines.add(new InnerLine(g2d, c3, (int) (drawY + waveLength / 10 * 3), lowerY, upperY, a));
+                lines.add(new InnerLine(g2d, c3, (int) (drawY + waveLength / 10 * 4), lowerY, upperY, a));
+
+                lines.add(new InnerLine(g2d, c3, (int) (drawY + waveLength / 10 * 6), lowerY, upperY, a));
+                lines.add(new InnerLine(g2d, c3, (int) (drawY + waveLength / 10 * 7), lowerY, upperY, a));
+                lines.add(new InnerLine(g2d, c3, (int) (drawY + waveLength / 10 * 8), lowerY, upperY, a));
+                lines.add(new InnerLine(g2d, c3, (int) (drawY + waveLength / 10 * 9), lowerY, upperY, a));
+            }
+
+
             // Draw the segment from the previous point to the current point
             if (redOnTop) {
                 // Red on top
@@ -194,11 +221,20 @@ public class DoubleHelixAnimation extends JPanel implements ActionListener {
                 drawLineInRange(g2d, c1, (int) prevX1, (int) prevY1, (int) drawX1, (int) drawY, lowerY, upperY, a);
             }
 
+            helix1.put((int) drawY, (int) drawX1);
+            helix2.put((int) drawY, (int) drawX2);
+
             // Update previous points
             prevX1 = drawX1;
             prevY1 = drawY;
             prevX2 = drawX2;
             prevY2 = drawY;
+        }
+        g2d.setStroke(new BasicStroke(2));
+        for (var a : lines) {
+            if (helix1.get(a.y) != null && helix2.get(a.y) != null) {
+                a.draw(helix1.get(a.y), helix2.get(a.y));
+            }
         }
     }
 
@@ -207,7 +243,7 @@ public class DoubleHelixAnimation extends JPanel implements ActionListener {
         g2d.setColor(new Color(c.getRed(), c.getGreen(), c.getBlue(), a));
         g2d.draw(new Line2D.Double(x1, y1, x2, y2));
 
-        
+
         g2d.setColor(c);
         // Check if both points are within the Y range
         boolean y1InRange = y1 >= upperY && y1 <= lowerY;
