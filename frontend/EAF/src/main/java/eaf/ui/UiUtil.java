@@ -56,6 +56,11 @@ public class UiUtil {
 
     public static BufferedImage warning = null;
     public static ClassType selectedType = null;
+
+
+
+
+
     private static Stack<ClassType> historyStack = new Stack<>();
 
     static {
@@ -73,6 +78,7 @@ public class UiUtil {
             unrunable = ImageIO.read(new File("imgs/unrunable.png"));
 
             warning = ImageIO.read(new File("imgs/warning.png"));
+
 
 
         } catch (IOException e) {
@@ -474,12 +480,12 @@ public class UiUtil {
         tabAndTabs.setBorder(BorderFactory.createEmptyBorder());
     }
 
+
+
     private static void createTabs(Dimension screenSize) {
         // Initialize tabsPanel
-        tabsPanel = new JPanel();
-        tabsPanel.setBackground(RectPanel.instanceColor);
-        tabsPanel.setPreferredSize(new Dimension(screenSize.width, 20));
-        tabsPanel.setBorder(BorderFactory.createEmptyBorder());
+        tabsPanel = new TabsPane(new Dimension(screenSize.width, 20));
+
 
         // Set layout to null to manually control component positioning
         tabsPanel.setLayout(null);

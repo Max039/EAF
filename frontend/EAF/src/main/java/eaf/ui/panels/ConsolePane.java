@@ -63,7 +63,7 @@ public class ConsolePane extends JScrollPane {
         println("Constants Loaded " + SyntaxTree.constantRegister.size() + "!");
         var r = Main.cacheManager.getFirstElement(String.class, "filesOpened");
         if (r != null) {
-            println("Current Project Path " + r + "!");
+            println("Current Project Path: " + r + "!");
         }
     }
 
