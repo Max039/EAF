@@ -6,12 +6,13 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.geom.Line2D;
 import java.util.Random;
 
 public class DoubleHelixAnimation extends JPanel implements ActionListener {
-    private static final int WIDTH = 800;
-    private static final int HEIGHT = 600;
-    private static final int RADIUS = 20;
+    private static int WIDTH = 0;
+    private static int HEIGHT = 0;
+    private static final int RADIUS = 40;
     private static final int PERIOD = 1500; // milliseconds for one full wave
     private static final int FPS = 60;
 
@@ -39,6 +40,7 @@ public class DoubleHelixAnimation extends JPanel implements ActionListener {
     private JFrame frame;
 
     public DoubleHelixAnimation(JFrame frame) {
+        setOpaque(false);
         setDoubleBuffered(true);
         Random random = new Random();
         double randomSeconds = random.nextDouble() * 5; // Random time between 5 and 10 seconds
@@ -89,28 +91,29 @@ public class DoubleHelixAnimation extends JPanel implements ActionListener {
             String text1 = "E  o";
             String text2 = "Al";
 
-            int x1 = 332;
+            int sizeOfV = 32;
+
+            int x1 = WIDTH/2 - 68;
             int x2 = x1 + metrics.stringWidth(text1);
 
             int x3 = x1 + metrics.stringWidth("E  oAl");
 
 
+            //g2d.setColor(new Color(bg.getRed(), bg.getGreen(), bg.getBlue(), (int)(255 * progressAfterTimer())));
 
-            g2d.setColor(new Color(bg.getRed(), bg.getGreen(), bg.getBlue(), (int)(255 * progressAfterTimer())));
-            int sizeOfV = 32;
-            g2d.fillRect(x1, 300-fontsize, x3-x1, fontsize - sizeOfV);
+            //g2d.fillRect(x1, HEIGHT/2-fontsize, x3-x1, fontsize - sizeOfV);
 
             // Draw the first part of the text with color c1
             g2d.setColor(new Color(c1.getRed(), c1.getGreen(), c1.getBlue(), (int)(255 * progressAfterTimer())));
-            g2d.drawString(text1, x1, 300);
+            g2d.drawString(text1, x1, HEIGHT/2);
 
             // Draw the second part of the text with color c2
             g2d.setColor(new Color(c2.getRed(), c2.getGreen(), c2.getBlue(), (int)(255 * progressAfterTimer())));
-            g2d.drawString(text2, x2, 300);
+            g2d.drawString(text2, x2, HEIGHT/2);
 
-            g2d.setColor(new Color(bg.getRed(), bg.getGreen(), bg.getBlue(), (int)(255 * progressAfterTimer())));
-            g2d.fillRect(0, 0, 800, 300 - fontsize);
-            g2d.fillRect(0, 301, 800, 299);
+            //g2d.setColor(new Color(bg.getRed(), bg.getGreen(), bg.getBlue(), (int)(255 * progressAfterTimer())));
+            //g2d.fillRect(0, 0, WIDTH, HEIGHT/2 - fontsize);
+            //g2d.fillRect(0, HEIGHT/2 + 1, WIDTH, HEIGHT/2-1);
 
 
         }
@@ -196,6 +199,52 @@ public class DoubleHelixAnimation extends JPanel implements ActionListener {
         }
     }
 
+
+    public static void drawLineInRange(Graphics2D g2d, int x1, int y1, int x2, int y2, int upperY, int lowerY) {
+        // Check if both points are within the Y range
+        boolean y1InRange = y1 >= upperY && y1 <= lowerY;
+        boolean y2InRange = y2 >= upperY && y2 <= lowerY;
+
+        if (y1InRange && y2InRange) {
+            // Both points are in the range, draw the entire line
+            g2d.draw(new Line2D.Double(x1, y1, x2, y2));
+        } else if (y1InRange || y2InRange) {
+            // Only one point is in the range, calculate the intersection
+            double xIntersect1 = x1;
+            double yIntersect1 = y1;
+            double xIntersect2 = x2;
+            double yIntersect2 = y2;
+
+            if (!y1InRange) {
+                // y1 is out of range, calculate intersection with upper or lower Y
+                if (y1 < upperY) {
+                    xIntersect1 = x1 + (upperY - y1) * (x2 - x1) / (y2 - y1);
+                    yIntersect1 = upperY;
+                } else if (y1 > lowerY) {
+                    xIntersect1 = x1 + (lowerY - y1) * (x2 - x1) / (y2 - y1);
+                    yIntersect1 = lowerY;
+                }
+            }
+
+            if (!y2InRange) {
+                // y2 is out of range, calculate intersection with upper or lower Y
+                if (y2 < upperY) {
+                    xIntersect2 = x2 + (upperY - y2) * (x1 - x2) / (y1 - y2);
+                    yIntersect2 = upperY;
+                } else if (y2 > lowerY) {
+                    xIntersect2 = x2 + (lowerY - y2) * (x1 - x2) / (y1 - y2);
+                    yIntersect2 = lowerY;
+                }
+            }
+
+            // Draw the line segment between the calculated intersection points
+            g2d.draw(new Line2D.Double(xIntersect1, yIntersect1, xIntersect2, yIntersect2));
+        }
+        // If neither point is in range, do nothing
+    }
+
+
+
     @Override
     public void actionPerformed(ActionEvent e) {
         time += 2 * Math.PI / (FPS * PERIOD / 1000.0);
@@ -228,16 +277,30 @@ public class DoubleHelixAnimation extends JPanel implements ActionListener {
         // Set the icon image for the frame
         frame.setIconImage(icon);
         frame.setUndecorated(true);
+
         DoubleHelixAnimation helixAnimation = new DoubleHelixAnimation(frame);
 
         frame.add(helixAnimation);
-        frame.setSize(WIDTH, HEIGHT);
+        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+        HEIGHT = Toolkit.getDefaultToolkit().getScreenSize().height;
+        WIDTH = Toolkit.getDefaultToolkit().getScreenSize().width;
+
+        frame.setSize(WIDTH, HEIGHT); // Assuming WIDTH and HEIGHT are 800 and 600, respectively
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setLocationRelativeTo(null);
+
+        // Set frame background to transparent
+        frame.setBackground(new Color(0, 0, 0, 0));
+
+        // Set panel background color with transparency (alpha < 255 for partial transparency)
+        Color bg = new Color(255, 255, 255, 0); // Fully transparent white
+        helixAnimation.setBackground(bg);
+
+        // Set frame opacity (optional, for whole frame transparency)
+        frame.setOpacity(0.9f); // Range 0.0f to 1.0f, 1.0f is fully opaque
+
         frame.setVisible(true);
 
-        Color bg = Main.bgColor;
-        helixAnimation.setBackground(new Color(bg.getRed(), bg.getGreen(), bg.getBlue(), 255));
         return helixAnimation;
     }
 }
