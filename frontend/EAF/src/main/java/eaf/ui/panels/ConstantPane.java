@@ -82,12 +82,12 @@ public class ConstantPane extends JScrollPane {
         gbc.fill = GridBagConstraints.HORIZONTAL;
 
         gbc.weightx = 1.0;  // Ensure the columns resize horizontally
-        var name = new JLabel("Name");
+        var name = new JLabel("Constant Name");
         name.setForeground(DataFieldListPane.headColor);
         name.setBackground(DataFieldListPane.fieldColor);
         name.setOpaque(true);
         name.setBorder(new MatteBorder(1, 1, 1, 0, DataFieldListPane.borderColor)); // White border (none, none, bottom, right)
-        name.setPreferredSize(new Dimension(30, ROW_HEIGHT));
+        name.setPreferredSize(new Dimension(70, ROW_HEIGHT));
         contentPanel.add(name, gbc);
 
         gbc.gridx++;
@@ -96,7 +96,7 @@ public class ConstantPane extends JScrollPane {
         type.setBackground(DataFieldListPane.fieldColor);
         type.setOpaque(true);
         type.setBorder(new MatteBorder(1, 0, 1, 0, DataFieldListPane.borderColor)); // White border (none, none, bottom, right)
-        type.setPreferredSize(new Dimension(30, ROW_HEIGHT));
+        type.setPreferredSize(new Dimension(40, ROW_HEIGHT));
         contentPanel.add(type, gbc);
 
         gbc.gridx++;
@@ -105,7 +105,7 @@ public class ConstantPane extends JScrollPane {
         value.setBackground(DataFieldListPane.fieldColor);
         value.setOpaque(true);
         value.setBorder(new MatteBorder(1, 0, 1, 0, DataFieldListPane.borderColor)); // White border (none, none, bottom, right)
-        value.setPreferredSize(new Dimension(80, ROW_HEIGHT));
+        value.setPreferredSize(new Dimension(50, ROW_HEIGHT));
         contentPanel.add(value, gbc);
 
         gbc.gridx++;
@@ -114,7 +114,7 @@ public class ConstantPane extends JScrollPane {
         pack.setBackground(DataFieldListPane.fieldColor);
         pack.setOpaque(true);
         pack.setBorder(new MatteBorder(1, 0, 1, 0, DataFieldListPane.borderColor)); // White border (none, none, bottom, right)
-        pack.setPreferredSize(new Dimension(80, ROW_HEIGHT));
+        pack.setPreferredSize(new Dimension(60, ROW_HEIGHT));
         contentPanel.add(pack, gbc);
 
         gbc.gridx++;
@@ -125,7 +125,7 @@ public class ConstantPane extends JScrollPane {
         addButton.setOpaque(true);
         addButton.setBorder(new MatteBorder(1, 0, 1, 1, DataFieldListPane.borderColor)); // White border (none, none, bottom, right)
         addButton.addActionListener(e -> openAddConstantWindow());
-        addButton.setPreferredSize(new Dimension(80, ROW_HEIGHT));
+        addButton.setPreferredSize(new Dimension(30, ROW_HEIGHT));
         gbc.weightx = 0.2;
         gbc.anchor = GridBagConstraints.EAST;
         contentPanel.add(addButton, gbc);
@@ -169,7 +169,7 @@ public class ConstantPane extends JScrollPane {
             name.setBackground(DataFieldListPane.fieldColor);
             name.setOpaque(true);
             name.setBorder(new MatteBorder(0, 1, 1, 0, DataFieldListPane.borderColor)); // White border (none, none, bottom, right)
-            name.setPreferredSize(new Dimension(30, ROW_HEIGHT));
+            name.setPreferredSize(new Dimension(70, ROW_HEIGHT));
             contentPanel.add(name, gbc);
 
             gbc.gridx++;
@@ -178,7 +178,7 @@ public class ConstantPane extends JScrollPane {
             type.setBackground(DataFieldListPane.fieldColor);
             type.setOpaque(true);
             type.setBorder(new MatteBorder(0, 0, 1, 0, DataFieldListPane.borderColor)); // White border (none, none, bottom, right)
-            type.setPreferredSize(new Dimension(30, ROW_HEIGHT));
+            type.setPreferredSize(new Dimension(40, ROW_HEIGHT));
             contentPanel.add(type, gbc);
 
             gbc.gridx++;
@@ -187,7 +187,7 @@ public class ConstantPane extends JScrollPane {
             value.setBackground(DataFieldListPane.fieldColor);
             value.setOpaque(true);
             value.setBorder(new MatteBorder(0, 0, 1, 0, DataFieldListPane.borderColor)); // White border (none, none, bottom, right)
-            value.setPreferredSize(new Dimension(80, ROW_HEIGHT));
+            value.setPreferredSize(new Dimension(50 , ROW_HEIGHT));
             contentPanel.add(value, gbc);
 
             gbc.gridx++;
@@ -196,7 +196,7 @@ public class ConstantPane extends JScrollPane {
             pack.setBackground(DataFieldListPane.fieldColor);
             pack.setOpaque(true);
             pack.setBorder(new MatteBorder(0, 0, 1, 0, DataFieldListPane.borderColor)); // White border (none, none, bottom, right)
-            pack.setPreferredSize(new Dimension(80, ROW_HEIGHT));
+            pack.setPreferredSize(new Dimension(60, ROW_HEIGHT));
             contentPanel.add(pack, gbc);
 
             gbc.gridx++;
@@ -213,7 +213,7 @@ public class ConstantPane extends JScrollPane {
             removeButton.setBackground(DataFieldListPane.fieldColor);
             removeButton.setOpaque(true);
             removeButton.setBorder(new MatteBorder(0, 0, 1, 1, DataFieldListPane.borderColor)); // White border (none, none, bottom, right)
-            removeButton.setPreferredSize(new Dimension(80, ROW_HEIGHT));
+            removeButton.setPreferredSize(new Dimension(30, ROW_HEIGHT));
             removeButton.addActionListener(e -> confirmAndRemoveConstant(n));
             gbc.weightx = 0.2;
             gbc.anchor = GridBagConstraints.EAST;
