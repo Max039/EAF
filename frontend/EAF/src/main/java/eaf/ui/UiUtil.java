@@ -873,7 +873,7 @@ public class UiUtil {
         // Create and set up the menu bar
         JMenuBar menuBar = new JMenuBar();
         menuBar.setBackground(Main.dividerColor);
-        menuBar.setBorderPainted(false);
+        menuBar.setBorder(BorderFactory.createEmptyBorder(2, 20, 2, 0));
         menuBar.setForeground(Color.WHITE);
 
 
