@@ -883,7 +883,7 @@ public class UiUtil {
         addRectMenu(menuBar);
 
         // Set the menu bar to the frame
-        borderPanel.add(menuBar, BorderLayout.NORTH);
+        mainPanel.add(menuBar, BorderLayout.NORTH);
 
     }
 
