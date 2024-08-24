@@ -3,6 +3,7 @@ package eaf;
 import eaf.compiler.SyntaxTree;
 import eaf.intro.DoubleHelixAnimation;
 import eaf.manager.CacheManager;
+import eaf.models.Pair;
 import eaf.ui.*;
 import eaf.manager.FileManager;
 import eaf.ui.panels.*;
@@ -10,7 +11,9 @@ import eaf.ui.panels.*;
 import javax.swing.*;
 import javax.swing.border.LineBorder;
 import java.awt.*;
+import java.util.ArrayList;
 
+import static eaf.ui.UiUtil.createMainTab;
 import static eaf.ui.UiUtil.createMenuBar;
 
 public class Main extends JPanel {
@@ -50,6 +53,17 @@ public class Main extends JPanel {
 
     public static JPanel borderPanel = null;
 
+    public static JPanel tabsPanel = null;
+
+    public static JScrollPane console = null;
+
+    public static JComponent tab = null;
+
+    public static JPanel tabAndTabs = null;
+
+    public static JSplitPane consoleSplitpane = null;
+
+
     public static Main mainPanel = null;
 
     public static DataFieldListPane dataPanel = null;
@@ -71,7 +85,11 @@ public class Main extends JPanel {
     public static CacheManager cacheManager = new CacheManager();
 
     public static DoubleHelixAnimation animation = null;
-    
+
+    public static ArrayList<Pair<String, JComponent>> tabsList;
+
+    public static ArrayList<JButton> tabButtons;
+
     public static void main(String[] args) throws Exception {
         try {
             animation = DoubleHelixAnimation.create();
@@ -106,8 +124,9 @@ public class Main extends JPanel {
 
         borderPanel.setLayout(new BorderLayout());
 
-
         new Main(); // Initialize main panel
+
+
         createMenuBar();
 
         mainPanel.setBackground(Color.LIGHT_GRAY); // Set background color or any layout you need

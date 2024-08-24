@@ -8,6 +8,7 @@ import eaf.manager.FileManager;
 import eaf.models.ClassType;
 import eaf.models.FieldType;
 import eaf.models.FieldValue;
+import eaf.models.Pair;
 import eaf.rects.Rect;
 import eaf.rects.multi.ClassRect;
 import eaf.rects.multi.RectWithRects;
@@ -437,7 +438,131 @@ public class UiUtil {
         Border border3 = BorderFactory.createLineBorder(Main.dividerColor, 1);
         main.mainSplitPane.setBorder(border3);
 
-        main.add(main.mainSplitPane, BorderLayout.CENTER);
+        createConsoleAndTabs(main);
+    }
+
+    private static void createConsoleAndTabs(Main main) {
+        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+
+        // Create a list of pairs (tab name, tab component)
+        tabsList = new ArrayList<>();
+
+        // Add some example tabs
+        tabsList.add(new Pair<>("Editor", createMainTab(Main.mainPanel)));  // Pass 'main' to createMainTab
+        tabsList.add(new Pair<>("Analysis", new JPanel()));
+
+        createTabs(screenSize);
+        mergeTabAndTabs();
+        createConsole();
+        createConsoleSplitpane(screenSize);
+
+        main.add(consoleSplitpane, BorderLayout.CENTER);
+    }
+
+    private static void mergeTabAndTabs() {
+        // Create a new panel to hold both tabsPanel and tab
+        tabAndTabs = new JPanel(new BorderLayout());
+
+        // Ensure that tabsPanel and tab are not null
+        if (tabsPanel != null) {
+            tabAndTabs.add(tabsPanel, BorderLayout.NORTH);
+        }
+        if (tab != null) {
+            tabAndTabs.add(tab, BorderLayout.CENTER);
+        }
+
+        tabAndTabs.setBorder(BorderFactory.createEmptyBorder());
+    }
+
+    private static void createTabs(Dimension screenSize) {
+        // Initialize tabsPanel
+        tabsPanel = new JPanel();
+        tabsPanel.setBackground(RectPanel.instanceColor);
+        tabsPanel.setPreferredSize(new Dimension(screenSize.width, 20));
+        tabsPanel.setBorder(BorderFactory.createEmptyBorder());
+
+        // Set layout to null to manually control component positioning
+        tabsPanel.setLayout(null);
+
+        Color selected = RectPanel.primitiveColor;
+        Color unselected = RectPanel.instanceColor;
+
+        tab = tabsList.get(0).getSecond();
+        tabButtons = new ArrayList<>();
+        int startX = 50;
+        int startY = 2;
+        int buttonWidth = 60;
+        int buttonHeight = 16;
+        int buttonSpacing = 4;
+
+        int xAcc = startX;
+
+        for (int i = 0; i < tabsList.size(); i++) {
+            Pair<String, JComponent> tabPair = tabsList.get(i);
+            String tabName = tabPair.getFirst();
+            JComponent tabComponent = tabPair.getSecond();
+
+            JButton tabButton = new JButton(tabName);
+            tabButton.setForeground(Color.WHITE);
+            tabButton.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    for (var button : tabButtons) {
+                        button.setBackground(unselected);
+                    }
+                    tabButton.setBackground(selected);
+
+                    tabAndTabs.remove(tab);
+                    tab = tabComponent;
+                    tabAndTabs.add(tab, BorderLayout.CENTER);
+                    tabAndTabs.revalidate();
+                    tabAndTabs.repaint();
+                }
+            });
+
+            if (i == 0) {
+                tabButton.setBackground(selected);
+            }
+            else {
+                tabButton.setBackground(unselected);
+            }
+            tabButtons.add(tabButton);
+
+            // Set the location and size manually
+            tabButton.setLocation(xAcc, startY);
+            tabButton.setSize(buttonWidth, buttonHeight);
+            tabButton.setFocusPainted(false);
+            tabButton.setBorder(BorderFactory.createEmptyBorder());
+            xAcc += buttonWidth + buttonSpacing;
+            tabsPanel.add(tabButton);
+        }
+    }
+
+
+
+    public static JPanel createMainTab(Main main) {
+        // Create the tab panel
+        var tab = new JPanel(new BorderLayout());
+        tab.add(main.mainSplitPane, BorderLayout.CENTER);  // Center allows it to expand
+        tab.setBorder(BorderFactory.createEmptyBorder());
+        return tab;
+    }
+
+    private static void createConsoleSplitpane(Dimension screenSize) {
+        // Create the split pane and add tabAndTabs and console
+        consoleSplitpane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, tabAndTabs, console);
+        consoleSplitpane.setBorder(BorderFactory.createEmptyBorder());
+        consoleSplitpane.setPreferredSize(screenSize);  // Ensure it fills the available space
+        consoleSplitpane.setDividerLocation(450); // Initial divider location
+        consoleSplitpane.setResizeWeight(0.9); // Evenly split the panels
+        consoleSplitpane.setUI(new CustomSplitPaneUI());
+    }
+
+    private static void createConsole() {
+        // Create the console panel
+        console = new JScrollPane();
+        customizeScrollBar(console);
+        console.setBorder(BorderFactory.createEmptyBorder());
     }
 
     private static JSplitPane createSplitPane(JSplitPane VERTICAL_SPLIT, int dividerLocation, double resize) {
