@@ -166,29 +166,32 @@ public class DoubleHelixAnimation extends JPanel implements ActionListener {
             if (distance > RADIUS) {
                 redOnTop = !redOnTop; // Alternate the color when they are furthest apart
             }
-
+            int lowerY = 0;
+            int upperY = Integer.MAX_VALUE;
 
             Color cc2 = new Color(c2.getRed(), c2.getGreen(), c2.getBlue());
+            int a = 255;
             if (!timer.isRunning()) {
+                lowerY = HEIGHT/2 - 32;
+                upperY = HEIGHT/2;
                 var rDiff = c1.getRed() - c2.getRed();
                 var gDiff = c1.getGreen() - c2.getGreen();
                 var bDiff = c1.getBlue() - c2.getBlue();
+                a = 255-(int)(255 * progressAfterTimer());
                 cc2 = new Color(c2.getRed() + (int)(rDiff * progressAfterTimer()), c2.getGreen() + (int)(gDiff * progressAfterTimer()), c2.getBlue() + (int)(bDiff * progressAfterTimer()));
             }
+
+
 
             // Draw the segment from the previous point to the current point
             if (redOnTop) {
                 // Red on top
-                g2d.setColor(c1);
-                g2d.drawLine((int) prevX1, (int) prevY1, (int) drawX1, (int) drawY);
-                g2d.setColor(cc2);
-                g2d.drawLine((int) prevX2, (int) prevY2, (int) drawX2, (int) drawY);
+                drawLineInRange(g2d, c1, (int) prevX1, (int) prevY1, (int) drawX1, (int) drawY, lowerY, upperY, a);
+                drawLineInRange(g2d, cc2, (int) prevX2, (int) prevY2, (int) drawX2, (int) drawY, lowerY, upperY, a);
             } else {
                 // Blue on top
-                g2d.setColor(cc2);
-                g2d.drawLine((int) prevX2, (int) prevY2, (int) drawX2, (int) drawY);
-                g2d.setColor(c1);
-                g2d.drawLine((int) prevX1, (int) prevY1, (int) drawX1, (int) drawY);
+                drawLineInRange(g2d, cc2, (int) prevX2, (int) prevY2, (int) drawX2, (int) drawY, lowerY, upperY, a);
+                drawLineInRange(g2d, c1, (int) prevX1, (int) prevY1, (int) drawX1, (int) drawY, lowerY, upperY, a);
             }
 
             // Update previous points
@@ -200,7 +203,12 @@ public class DoubleHelixAnimation extends JPanel implements ActionListener {
     }
 
 
-    public static void drawLineInRange(Graphics2D g2d, int x1, int y1, int x2, int y2, int upperY, int lowerY) {
+    public static void drawLineInRange(Graphics2D g2d, Color c, int x1, int y1, int x2, int y2, int upperY, int lowerY, int a) {
+        g2d.setColor(new Color(c.getRed(), c.getGreen(), c.getBlue(), a));
+        g2d.draw(new Line2D.Double(x1, y1, x2, y2));
+
+        
+        g2d.setColor(c);
         // Check if both points are within the Y range
         boolean y1InRange = y1 >= upperY && y1 <= lowerY;
         boolean y2InRange = y2 >= upperY && y2 <= lowerY;
