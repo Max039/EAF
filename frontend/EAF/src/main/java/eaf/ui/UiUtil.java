@@ -484,15 +484,15 @@ public class UiUtil {
         // Set layout to null to manually control component positioning
         tabsPanel.setLayout(null);
 
-        Color selected = RectPanel.primitiveColor;
+        Color selected = new Color(37, 37, 37);
         Color unselected = RectPanel.instanceColor;
 
         tab = tabsList.get(0).getSecond();
         tabButtons = new ArrayList<>();
-        int startX = 50;
-        int startY = 2;
+        int startX = 40;
+        int startY = 0;
         int buttonWidth = 60;
-        int buttonHeight = 16;
+        int buttonHeight = 20;
         int buttonSpacing = 4;
 
         int xAcc = startX;
