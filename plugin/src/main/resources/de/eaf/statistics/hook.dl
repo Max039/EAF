@@ -2,7 +2,7 @@ import "definitions" from de.evoal.optimisation.core;
 
 
 
-module de.evoal.eaf.statistics.hook {
+module de.eaf.statistics.hook {
 	
 	type 'eaf-hook' extends 'statistics-writer'  {
 

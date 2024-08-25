@@ -18,7 +18,7 @@ public class ScriptWriter {
 
     static {
         openAndExports  = new ArrayList<>();
-        openAndExports.add("de.evoal.optimisation.api/de.evoal.optimisation.api.statistics=de.evoal.eaf");
+        openAndExports.add("de.evoal.optimisation.api/de.evoal.optimisation.api.statistics=de.eaf");
     }
 
     static void saveAndWriteEvoAlFiles() {

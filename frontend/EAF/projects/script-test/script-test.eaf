@@ -561,7 +561,7 @@
                     },
                     {
                         "field-name": "",
-                        "package": "de.evoal.eaf.statistics.hook",
+                        "package": "de.eaf.statistics.hook",
                         "type": "instance",
                         "sub-type": "eaf-hook",
                         "value": []

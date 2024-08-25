@@ -1,4 +1,4 @@
-module de.evoal.eaf {
+module de.eaf {
     // declare dependencies to evoal
     requires de.evoal.core.main;
     requires de.evoal.optimisation.api;
@@ -22,8 +22,8 @@ module de.evoal.eaf {
 
 // open the package to CDI allowing CDI to create instances using reflection.
     // additionally, we have to open the folder to allow EvoAl to access the .dl file
-    exports de.evoal.eaf.statistics;
-    opens de.evoal.eaf.statistics;
+    exports de.eaf.statistics;
+    opens de.eaf.statistics;
 
 
 

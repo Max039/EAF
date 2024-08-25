@@ -1,4 +1,4 @@
-package de.evoal.eaf.statistics;
+package de.eaf.statistics;
 
 import de.evoal.languages.model.base.Instance;
 import de.evoal.optimisation.api.statistics.IterationResult;
@@ -14,7 +14,7 @@ import javax.inject.Named;
  */
 @Slf4j
 @Dependent
-@Named("de.evoal.eaf.statistics.hook.eaf-hook")
+@Named("de.eaf.statistics.hook.eaf-hook")
 public class Hook implements StatisticsWriter  {
 
     @Override
