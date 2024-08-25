@@ -51,19 +51,19 @@ public class ConsolePane extends JScrollPane {
     }
 
     public void printInfo() {
-        println("Running with " + Main.programName + " version " + Main.version + "!");
-        println("Using EvoAl Version " + Main.evoalVersion + "!");
+        println("Running with " + Main.programName + " version " + Main.version);
+        println("Using EvoAl Version " + Main.evoalVersion);
         println("Definition Paths:");
         for (var p : SyntaxTree.pathToSyntax) {
             println(p);
         }
-        println("Modules loaded " + SyntaxTree.moduleRegister.size() + "!");
-        println("Classes Loaded " + SyntaxTree.getClasses().size() + "!");
-        println("Extra Rects Loaded " + ExtraRectManager.classRegister.size() + "!");
-        println("Constants Loaded " + SyntaxTree.constantRegister.size() + "!");
+        println("Modules loaded " + SyntaxTree.moduleRegister.size());
+        println("Classes Loaded " + SyntaxTree.getClasses().size());
+        println("Extra Rects Loaded " + ExtraRectManager.classRegister.size());
+        println("Constants Loaded " + SyntaxTree.constantRegister.size());
         var r = Main.cacheManager.getFirstElement(String.class, "filesOpened");
         if (r != null) {
-            println("Current Project Path: " + r + "!");
+            println("Current Project Path: " + r);
         }
     }
 
