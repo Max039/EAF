@@ -14,6 +14,13 @@ import java.util.List;
 
 public class ScriptWriter {
 
+    public static ArrayList<String> openAndExports;
+
+    static {
+        openAndExports  = new ArrayList<>();
+        openAndExports.add("de.evoal.optimisation.api/de.evoal.optimisation.api.statistics=de.eaf");
+    }
+
     static void saveAndWriteEvoAlFiles() {
         System.out.println(LogManager.scriptWriter() + LogManager.write() + " Saving project ...");
         FileManager.save();
@@ -53,12 +60,26 @@ public class ScriptWriter {
     }
 
     private static String getReplacementLines(String build, ScriptType type) {
+        String s = "";
+        for (String i : openAndExports) {
+            String export = "--add-exports=" + i;
+            String opens = "--add-opens=" + i;
+            if (!s.isEmpty()) {
+                s += " " + opens + " " + export;
+            }
+            else {
+                s = opens + " " + export;
+            }
+        }
+
+
         return "#!/bin/sh\n" +
                 "export DISPLAY=localhost:0.0\n" +
                 "export EVOAL_HOME=$( cd -- \"$(dirname $0)/../../EvoAlBuilds/" + build + "/evoal\" >/dev/null 2>&1 ; pwd -P )\n" +
                 "# Print the current working directory for debugging\n" +
                 "echo \"Current working directory in second script: $(pwd)\"\n" +
                 "echo \"EVOAL_HOME in second script: $EVOAL_HOME\"\n" +
+                "export EVOAL_JVM_ARGUMENTS=\"" + s + "\"\n" +
                 "# Get the directory of the currently executed script\n" +
                 "SCRIPT_DIR=$(dirname \"$(readlink -f \"$0\")\")\n" +
                 "# Change the working directory to the script's directory\n" +

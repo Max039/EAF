@@ -34,13 +34,13 @@ public class Downloader extends JFrame {
 
     private static final String GITLAB_URL = "https://gitlab.informatik.uni-bremen.de/api/v4";
     private static final String PROJECT_ID = "evoal%2Fsource%2Fevoal-core"; // URL-encoded project ID
-    private static final String PRIVATE_TOKEN = "oMAm4zMJVy9xc35PxQZg"; // Replace with your personal access token
+    private static final String PRIVATE_TOKEN = "oWVzZS_JquJwxFhqnx4y"; // Read api only - never expires
 
     private static final String PATH = "EvoAlBuilds";
 
     private static final String DOWNLOAD_PATH = PATH + "/";
 
-    private static final String defaultBranch = "develop";
+    private static final String defaultBranch = "release";
 
     private static final String artifactName = "all:package";
 

@@ -71,6 +71,7 @@ public class SyntaxTree {
         String currentPath = System.getProperty("user.dir");
         pathToSyntax.add(currentPath + buildPath);
         pathToSyntax.add(currentPath + "\\de");
+        pathToSyntax.add("C:\\Users\\mpies\\Documents\\GitHub\\EAF\\plugin\\src\\main\\resources\\de");
     }
 
     public static void main(String[] args) throws IOException {

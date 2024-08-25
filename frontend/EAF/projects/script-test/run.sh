@@ -4,6 +4,7 @@ export EVOAL_HOME=$( cd -- "$(dirname $0)/../../EvoAlBuilds/20240708-152016/evoa
 # Print the current working directory for debugging
 echo "Current working directory in second script: $(pwd)"
 echo "EVOAL_HOME in second script: $EVOAL_HOME"
+export EVOAL_JVM_ARGUMENTS="--add-opens=de.evoal.optimisation.api/de.evoal.optimisation.api.statistics=de.eaf --add-exports=de.evoal.optimisation.api/de.evoal.optimisation.api.statistics=de.eaf"
 # Get the directory of the currently executed script
 SCRIPT_DIR=$(dirname "$(readlink -f "$0")")
 # Change the working directory to the script's directory

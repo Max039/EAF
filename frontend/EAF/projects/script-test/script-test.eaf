@@ -529,35 +529,44 @@
                 "count": 0,
                 "type": "array",
                 "sub-type": "statistics-writer",
-                "value": [{
-                    "field-name": "",
-                    "package": "de.evoal.optimisation.core",
-                    "type": "instance",
-                    "sub-type": "best-candidate-per-generation",
-                    "value": [
-                        {
-                            "field-name": "store-optimisation-space",
-                            "editable": true,
-                            "type": "option-field",
-                            "sub-type": "boolean",
-                            "value": "true"
-                        },
-                        {
-                            "field-name": "prefix-data",
-                            "editable": true,
-                            "type": "option-field",
-                            "sub-type": "boolean",
-                            "value": "false"
-                        },
-                        {
-                            "field-name": "store-search-space",
-                            "editable": true,
-                            "type": "option-field",
-                            "sub-type": "boolean",
-                            "value": "true"
-                        }
-                    ]
-                }]
+                "value": [
+                    {
+                        "field-name": "",
+                        "package": "de.evoal.optimisation.core",
+                        "type": "instance",
+                        "sub-type": "best-candidate-per-generation",
+                        "value": [
+                            {
+                                "field-name": "store-optimisation-space",
+                                "editable": true,
+                                "type": "option-field",
+                                "sub-type": "boolean",
+                                "value": "true"
+                            },
+                            {
+                                "field-name": "prefix-data",
+                                "editable": true,
+                                "type": "option-field",
+                                "sub-type": "boolean",
+                                "value": "false"
+                            },
+                            {
+                                "field-name": "store-search-space",
+                                "editable": true,
+                                "type": "option-field",
+                                "sub-type": "boolean",
+                                "value": "true"
+                            }
+                        ]
+                    },
+                    {
+                        "field-name": "",
+                        "package": "de.eaf.statistics.hook",
+                        "type": "instance",
+                        "sub-type": "eaf-hook",
+                        "value": []
+                    }
+                ]
             }]
         }
     ],
