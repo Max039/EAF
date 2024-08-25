@@ -2,9 +2,12 @@ package eaf.executor;
 
 import eaf.Main;
 import eaf.plugin.PluginManager;
+import eaf.ui.panels.ConsolePane;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -32,10 +35,29 @@ public class MavenProjectHandler {
             ProcessBuilder processBuilder = new ProcessBuilder();
             processBuilder.directory(new File(projectPath));
             processBuilder.command("mvn.cmd", command);
-            processBuilder.inheritIO();  // Optional: to inherit I/O to see the Maven output
             Process process = processBuilder.start();
+
+            // Capture the combined output (stdout and stderr)
+            BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
+            String line;
+
+            while (process.isAlive() || reader.ready()) {
+                while ((reader.ready() && (line = reader.readLine()) != null)) {
+                    System.out.println(line);
+                    Main.console.println(line);
+
+                }
+                try {
+                    Thread.sleep(50);
+                }
+                catch (Exception e) {
+
+                }
+            }
+
             int exitCode = process.waitFor();
             if (exitCode != 0) {
+                Main.console.println("Maven command failed with exit code " + exitCode);
                 throw new RuntimeException("Maven command failed with exit code " + exitCode);
             }
         }
@@ -71,8 +93,16 @@ public class MavenProjectHandler {
         for (var plugin : PluginManager.plugins) {
             ArrayList<String> ignore = new ArrayList<>();
             ignore.add(plugin.path + "/target");
-            if (FileChangesChecker.updateFileJson(plugin.path, ignore)) {
+
+            File f = new File(currentPath + "/EvoAlBuilds/" + Main.evoalVersion + "/evoal/plugins/"+ plugin.name + ".jar");
+            System.out.println(f.getPath());
+            if (FileChangesChecker.updateFileJson(plugin.path, ignore) || !f.exists()) {
+                if (f.exists()) {
+                    f.delete();
+                }
+                Main.console.println("Recompiling and Copying Plugin " + plugin.name + " ...");
                 handleMavenProject(plugin.path, currentPath + "/EvoAlBuilds/" + Main.evoalVersion + "/evoal/plugins", plugin.name + ".jar");
+                Main.console.flush();
             }
         }
     }

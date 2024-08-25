@@ -121,7 +121,8 @@ public class Executor {
                 try {
                     execute();
                 } catch (Exception e) {
-                    System.out.println(LogManager.scriptWriter() + LogManager.process() + LogManager.status() + LogManager.error() + " Script crashed: " + e);
+                    System.out.println(LogManager.executor() + LogManager.process() + LogManager.status() + LogManager.error() + " Script crashed: " + e);
+                    InputHandler.processTerminated();
                 }
             });
             executionThread.start();
