@@ -1,9 +1,8 @@
-import "definitions" from de.evoal.optimisation.ea.optimisation;
 import "definitions" from de.evoal.optimisation.core;
 
 
 
-module de.eaf.statistics.hook {
+module de.evoal.eaf.statistics.hook {
 	
 	type 'eaf-hook' extends 'statistics-writer'  {
 

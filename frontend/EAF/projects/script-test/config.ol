@@ -1,4 +1,4 @@
-import "definitions" from de.eaf.statistics.hook;
+import "definitions" from de.evoal.eaf.statistics.hook;
 import "definitions" from de.evoal.optimisation.core;
 import "definitions" from de.evoal.optimisation.ea.'genetic-programming';
 import "definitions" from de.evoal.optimisation.ea.optimisation;

@@ -1,8 +1,9 @@
-package de.eaf.statistics;
+package de.evoal.eaf.statistics;
 
 import de.evoal.languages.model.base.Instance;
 import de.evoal.optimisation.api.statistics.IterationResult;
 import de.evoal.optimisation.api.statistics.writer.StatisticsWriter;
+import lombok.extern.slf4j.Slf4j;
 
 import javax.enterprise.context.Dependent;
 import javax.inject.Named;
@@ -11,11 +12,10 @@ import javax.inject.Named;
 /**
  * A class that extends the shell version to execute extra code. In this case its use to process each generation.
  */
+@Slf4j
 @Dependent
-@Named("eaf-hook")
-public class hook implements StatisticsWriter  {
-
-
+@Named("de.evoal.eaf.statistics.hook.eaf-hook")
+public class Hook implements StatisticsWriter  {
 
     @Override
     public StatisticsWriter init(final Instance config) {
