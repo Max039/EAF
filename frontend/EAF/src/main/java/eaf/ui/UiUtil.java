@@ -307,6 +307,7 @@ public class UiUtil {
             @Override
             public void actionPerformed(ActionEvent e) {
                 pluginManager.discoverPlugins();
+                SyntaxTree.reload();
             }
         });
 
