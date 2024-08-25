@@ -7,6 +7,7 @@ import eaf.manager.LogManager;
 import eaf.models.Pair;
 import eaf.models.*;
 import eaf.models.Module;
+import eaf.plugin.PluginManager;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -71,7 +72,9 @@ public class SyntaxTree {
         String currentPath = System.getProperty("user.dir");
         pathToSyntax.add(currentPath + buildPath);
         pathToSyntax.add(currentPath + "\\de");
-        pathToSyntax.add("C:\\Users\\mpies\\Documents\\GitHub\\EAF\\plugin\\src\\main\\resources\\de");
+        for (var plugin : PluginManager.plugins) {
+            pathToSyntax.add(PluginManager.getDefinitionsPath(plugin));
+        }
     }
 
     public static void main(String[] args) throws IOException {

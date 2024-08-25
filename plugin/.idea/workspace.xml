@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ArtifactsWorkspaceSettings">
+    <artifacts-to-build>
+      <artifact name="eaf" />
+    </artifacts-to-build>
+  </component>
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="ed207dfd-09b0-44c4-ba02-e18034717760" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/../frontend/EAF/src/main/java/eaf/executor/MavenProjectHandler.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../frontend/EAF/src/main/java/eaf/plugin/Plugin.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../frontend/EAF/src/main/java/eaf/plugin/PluginManager.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../frontend/EAF/projects/script-test/output/config/best-candidate-statistics.csv" beforeDir="false" afterPath="$PROJECT_DIR$/../frontend/EAF/projects/script-test/output/config/best-candidate-statistics.csv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../frontend/EAF/src/main/java/eaf/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/../frontend/EAF/src/main/java/eaf/Main.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../frontend/EAF/src/main/java/eaf/compiler/SyntaxTree.java" beforeDir="false" afterPath="$PROJECT_DIR$/../frontend/EAF/src/main/java/eaf/compiler/SyntaxTree.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../frontend/EAF/src/main/java/eaf/executor/Executor.java" beforeDir="false" afterPath="$PROJECT_DIR$/../frontend/EAF/src/main/java/eaf/executor/Executor.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/.gitignore" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/artifacts/eaf.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/encodings.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/uiDesigner.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/vcs.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/de/eaf/statistics/Hook.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/module-info.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/META-INF/MANIFEST.MF" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/META-INF/beans.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/META-INF/maven/archetype.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/de/eaf/statistics/hook.dl" beforeDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="module-info" />
+        <option value="Class" />
+      </list>
+    </option>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
+  </component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 1
+}</component>
+  <component name="ProjectId" id="2l8BGuJaSfA3cmKUqClpw7eMQl8" />
+  <component name="ProjectViewState">
+    <option name="flattenPackages" value="true" />
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "Maven. [org.apache.maven.plugins:maven-archetype-plugin:RELEASE:generate].executor": "Run",
+    "Maven.evoal [clean].executor": "Run",
+    "Maven.evoal [install].executor": "Run",
+    "Maven.plugin [clean,install,package].executor": "Run",
+    "Maven.plugin [clean,install].executor": "Run",
+    "Maven.plugin [clean].executor": "Run",
+    "Maven.plugin [install].executor": "Run",
+    "Maven.plugin [package].executor": "Run",
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
+    "kotlin-language-version-configured": "true",
+    "last_opened_file_path": "C:/Users/mpies/Documents/GitHub/EAF/frontend/EAF/plugins/eaf",
+    "project.structure.last.edited": "Artifacts",
+    "project.structure.proportion": "0.14968815",
+    "project.structure.side.proportion": "0.2",
+    "settings.editor.selected.configurable": "reference.projectsettings.compiler.javacompiler"
+  }
+}]]></component>
+  <component name="RecentsManager">
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\mpies\Documents\GitHub\EAF\plugin\src\main\resources\META-INF\maven" />
+      <recent name="C:\Users\mpies\Documents\GitHub\EAF\plugin\src\main\resources\META-INF" />
+      <recent name="C:\Users\mpies\Documents\GitHub\EAF\plugin\src\main\resources" />
+    </key>
+  </component>
+  <component name="RunManager">
+    <configuration name="plugin [clean,install,package]" type="MavenRunConfiguration" factoryName="Maven" nameIsGenerated="true">
+      <MavenSettings>
+        <option name="myGeneralSettings" />
+        <option name="myRunnerSettings" />
+        <option name="myRunnerParameters">
+          <MavenRunnerParameters>
+            <option name="cmdOptions" />
+            <option name="profiles">
+              <set />
+            </option>
+            <option name="goals">
+              <list>
+                <option value="clean" />
+                <option value="install" />
+                <option value="package" />
+              </list>
+            </option>
+            <option name="multimoduleDir" />
+            <option name="pomFileName" />
+            <option name="profilesMap">
+              <map />
+            </option>
+            <option name="projectsCmdOptionValues">
+              <list />
+            </option>
+            <option name="resolveToWorkspace" value="false" />
+            <option name="workingDirPath" value="$PROJECT_DIR$" />
+          </MavenRunnerParameters>
+        </option>
+      </MavenSettings>
+      <method v="2">
+        <option name="BuildArtifacts" enabled="true">
+          <artifact name="eaf" />
+        </option>
+      </method>
+    </configuration>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="ed207dfd-09b0-44c4-ba02-e18034717760" name="Changes" comment="" />
+      <created>1724551730936</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1724551730936</updated>
+    </task>
+    <servers />
+  </component>
+</project>

@@ -4,6 +4,7 @@ import eaf.compiler.SyntaxTree;
 import eaf.intro.DoubleHelixAnimation;
 import eaf.manager.CacheManager;
 import eaf.models.Pair;
+import eaf.plugin.PluginManager;
 import eaf.ui.*;
 import eaf.manager.FileManager;
 import eaf.ui.panels.*;
@@ -91,6 +92,8 @@ public class Main extends JPanel {
     public static ArrayList<Pair<String, JComponent>> tabsList;
 
     public static ArrayList<JButton> tabButtons;
+
+    public static PluginManager pluginManager = new PluginManager();
 
     public static void main(String[] args) throws Exception {
         try {

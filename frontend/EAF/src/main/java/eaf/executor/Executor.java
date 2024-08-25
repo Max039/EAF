@@ -4,6 +4,7 @@ import eaf.Main;
 import eaf.input.InputHandler;
 import eaf.manager.ColorManager;
 import eaf.manager.LogManager;
+import eaf.plugin.PluginManager;
 import eaf.process.GenerationTracker;
 import eaf.sound.SoundManager;
 import eaf.ui.panels.ErrorPane;
@@ -12,10 +13,14 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
 
 public class Executor {
+
     public static void execute() throws IOException, InterruptedException {
         InputHandler.processStarted();
+
+        MavenProjectHandler.copyPlugins();
 
         String currentPath = System.getProperty("user.dir");
         var scriptTarget = currentPath + "/" +  ScriptWriter.getPathToProject() + "/run.sh";
@@ -89,7 +94,7 @@ public class Executor {
                         Main.console.printColored("failed", ColorManager.errorColor);
                         Main.console.println(" with error code: " + exitCode);
                     }
-                   
+
                     InputHandler.processTerminated();
                     break;
                 } catch (IllegalThreadStateException e) {
@@ -101,6 +106,7 @@ public class Executor {
             e.printStackTrace();
         }
     }
+
 
     public static void run() {
         ErrorPane.checkForErrors();
