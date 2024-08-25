@@ -10,27 +10,10 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="ed207dfd-09b0-44c4-ba02-e18034717760" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/../frontend/EAF/src/main/java/eaf/executor/MavenProjectHandler.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../frontend/EAF/src/main/java/eaf/plugin/Plugin.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../frontend/EAF/src/main/java/eaf/plugin/PluginManager.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../frontend/EAF/src/main/java/eaf/executor/FileChangesChecker.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../frontend/EAF/projects/script-test/output/config/best-candidate-statistics.csv" beforeDir="false" afterPath="$PROJECT_DIR$/../frontend/EAF/projects/script-test/output/config/best-candidate-statistics.csv" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../frontend/EAF/src/main/java/eaf/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/../frontend/EAF/src/main/java/eaf/Main.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../frontend/EAF/src/main/java/eaf/compiler/SyntaxTree.java" beforeDir="false" afterPath="$PROJECT_DIR$/../frontend/EAF/src/main/java/eaf/compiler/SyntaxTree.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../frontend/EAF/src/main/java/eaf/executor/Executor.java" beforeDir="false" afterPath="$PROJECT_DIR$/../frontend/EAF/src/main/java/eaf/executor/Executor.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/.gitignore" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/artifacts/eaf.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/encodings.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/uiDesigner.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/vcs.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/de/eaf/statistics/Hook.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/module-info.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/META-INF/MANIFEST.MF" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/META-INF/beans.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/META-INF/maven/archetype.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/de/eaf/statistics/hook.dl" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../frontend/EAF/src/main/java/eaf/executor/MavenProjectHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/../frontend/EAF/src/main/java/eaf/executor/MavenProjectHandler.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />

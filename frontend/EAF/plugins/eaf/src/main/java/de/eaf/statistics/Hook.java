@@ -27,6 +27,7 @@ public class Hook implements StatisticsWriter  {
     public static Socket eafClientSocket = null;
 
     public static ServerSocket eafServerSocket = null;
+
     @Override
     public StatisticsWriter init(final Instance config) {
         try {

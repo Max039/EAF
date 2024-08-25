@@ -1,7 +1,6 @@
 package eaf.executor;
 
 import eaf.Main;
-import eaf.plugin.Plugin;
 import eaf.plugin.PluginManager;
 
 import java.io.File;
@@ -10,6 +9,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.util.ArrayList;
 import java.util.List;
 
 public class MavenProjectHandler {
@@ -69,7 +69,11 @@ public class MavenProjectHandler {
     public static void copyPlugins() {
         String currentPath = System.getProperty("user.dir");
         for (var plugin : PluginManager.plugins) {
-            handleMavenProject(plugin.path, currentPath + "/EvoAlBuilds/" + Main.evoalVersion + "/evoal/plugins", plugin.name + ".jar");
+            ArrayList<String> ignore = new ArrayList<>();
+            ignore.add(plugin.path + "/target");
+            if (FileChangesChecker.updateFileJson(plugin.path, ignore)) {
+                handleMavenProject(plugin.path, currentPath + "/EvoAlBuilds/" + Main.evoalVersion + "/evoal/plugins", plugin.name + ".jar");
+            }
         }
     }
 
