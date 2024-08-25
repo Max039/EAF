@@ -4,11 +4,10 @@ import eaf.Main;
 import eaf.input.InputHandler;
 import eaf.manager.ColorManager;
 import eaf.manager.LogManager;
+import eaf.process.GenerationTracker;
 import eaf.sound.SoundManager;
 import eaf.ui.panels.ErrorPane;
-import org.apache.commons.logging.Log;
 
-import java.awt.*;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -44,19 +43,40 @@ public class Executor {
             InputStreamReader inputStreamReader = new InputStreamReader(inputStream);
             BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
 
+            boolean connected = false;
+
             System.out.println(LogManager.executor() + LogManager.process() + LogManager.status() + " Now mirroring console of process!");
             // Read the output of the process
             String line;
             while (true) {
                 // Read standard output and error lines if available
-                while ((line = bufferedReader.readLine()) != null) {
+                while (bufferedReader.ready() && (line = bufferedReader.readLine()) != null) {
                     System.out.println(LogManager.executor() + LogManager.process() + LogManager.log() + " " + line);
                     Main.console.println(line);
+                }
+
+                if (!connected) {
+                    try {
+                        GenerationTracker.connect();
+                        System.out.println(LogManager.executor() + LogManager.process() + LogManager.status() + " Connected to EvoAl!");
+                        connected = true;
+                    } catch (Exception ignored) {
+                        // Handle exception as necessary
+                    }
                 }
 
                 // Check if the process is terminated
                 try {
                     int exitCode = process.exitValue();
+
+                    System.out.println(LogManager.executor() + LogManager.process() + LogManager.status() + " Eaf closing port!");
+                    try {
+                        GenerationTracker.disconnect();
+                    }
+                    catch (Exception e) {
+                        throw new RuntimeException(e);
+                    }
+
                     // Process has terminated, break out of the loop
                     if (exitCode == 0) {
                         System.out.println(LogManager.executor() + LogManager.process() + LogManager.status() + " Process " + ColorManager.colorText("finished successfully", ColorManager.sucessColor) + "!");
@@ -69,6 +89,7 @@ public class Executor {
                         Main.console.printColored("failed", ColorManager.errorColor);
                         Main.console.println(" with error code: " + exitCode);
                     }
+                   
                     InputHandler.processTerminated();
                     break;
                 } catch (IllegalThreadStateException e) {
