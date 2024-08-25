@@ -9,6 +9,7 @@ import eaf.models.ClassType;
 import eaf.models.FieldType;
 import eaf.models.FieldValue;
 import eaf.models.Pair;
+import eaf.plugin.PluginManager;
 import eaf.rects.Rect;
 import eaf.rects.multi.ClassRect;
 import eaf.rects.multi.RectWithRects;
@@ -285,6 +286,27 @@ public class UiUtil {
             @Override
             public void actionPerformed(ActionEvent e) {
                 run();
+            }
+        });
+
+
+        scriptMenu.add(run);
+        scriptMenu.setBackground(Main.bgColor);
+        scriptMenu.setForeground(Color.WHITE);
+        menuBar.add(scriptMenu);
+    }
+
+    static void addPluginMenu(JMenuBar menuBar) {
+        // Create the File menu
+        JMenu scriptMenu = new JMenu("Plugins");
+
+        // Create menu items
+        JMenuItem run = new JMenuItem("reload");
+
+        run.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                pluginManager.discoverPlugins();
             }
         });
 
@@ -1012,6 +1034,8 @@ public class UiUtil {
 
         addScriptMenu(menuBar);
         addRectMenu(menuBar);
+        addPluginMenu(menuBar);
+
 
         // Set the menu bar to the frame
         mainPanel.add(menuBar, BorderLayout.NORTH);

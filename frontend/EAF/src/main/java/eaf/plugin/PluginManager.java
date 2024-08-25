@@ -10,13 +10,13 @@ public class PluginManager {
     public static String pathToPlugins = "/plugins";
 
     public PluginManager() {
-        String currentPath = System.getProperty("user.dir");
-        discoverPlugins(currentPath + pathToPlugins);
+        discoverPlugins();
     }
 
-    public void discoverPlugins(String directoryPath) {
+    public void discoverPlugins() {
+        String currentPath = System.getProperty("user.dir");
         plugins = new ArrayList<>();
-        File directory = new File(directoryPath);
+        File directory = new File(currentPath + pathToPlugins);
 
         if (directory.exists() && directory.isDirectory()) {
             File[] files = directory.listFiles();
