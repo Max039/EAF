@@ -74,6 +74,11 @@ public class ConsolePane extends JScrollPane {
 
     // Helper method to append styled text
     private void appendStyledText(String text, Color color) {
+        JScrollBar verticalScrollBar = getVerticalScrollBar();
+
+        // Check if the scrollbar is at the bottom before inserting text
+        boolean scrollToBottom = isScrollAtBottom();
+
         SimpleAttributeSet style = new SimpleAttributeSet();
         StyleConstants.setForeground(style, color);
         try {
@@ -81,7 +86,22 @@ public class ConsolePane extends JScrollPane {
         } catch (BadLocationException e) {
             e.printStackTrace();
         }
-        textPane.setCaretPosition(doc.getLength());
-        textPane.repaint();  // Repaint the text area to update the display
+
+        if (scrollToBottom) {
+            // Ensure we scroll to the bottom after the text is added
+            SwingUtilities.invokeLater(() -> {
+                textPane.setCaretPosition(doc.getLength());
+                verticalScrollBar.setValue(verticalScrollBar.getMaximum());
+            });
+        }
+    }
+
+    // Helper method to check if the scroll pane is scrolled to the bottom
+    private boolean isScrollAtBottom() {
+        JScrollBar verticalScrollBar = getVerticalScrollBar();
+        int currentPosition = verticalScrollBar.getValue() + verticalScrollBar.getVisibleAmount();
+        int bottomPosition = verticalScrollBar.getMaximum();
+        // Allow a small buffer to account for potential timing issues
+        return currentPosition >= bottomPosition - verticalScrollBar.getUnitIncrement(1);
     }
 }
