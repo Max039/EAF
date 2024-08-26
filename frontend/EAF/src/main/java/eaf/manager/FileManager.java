@@ -1,5 +1,6 @@
 package eaf.manager;
 
+import eaf.models.Pair;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import eaf.input.InputHandler;
@@ -9,6 +10,8 @@ import eaf.ui.panels.ErrorPane;
 import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import java.io.*;
+import java.nio.file.*;
+import java.util.ArrayList;
 
 public class FileManager {
 
@@ -223,4 +226,61 @@ public class FileManager {
         Main.mainPanel.revalidate();
         Main.mainPanel.repaint();
     }
+
+
+    public static void copyFolder(String source, String destination) throws IOException {
+        Path sourceFolder = Path.of(source);
+        Path destinationFolder = Path.of(destination);
+
+        System.out.println(LogManager.fileManager() + LogManager.write() + " Copying folder \"" + sourceFolder + "\" to \"" + destinationFolder + "\"");
+        // Check if the source folder exists
+        if (!Files.exists(sourceFolder) || !Files.isDirectory(sourceFolder)) {
+            throw new IllegalArgumentException("Source folder doesn't exist or is not a directory.");
+        }
+
+        // Create the destination folder if it doesn't exist
+        if (!Files.exists(destinationFolder)) {
+            Files.createDirectories(destinationFolder);
+        }
+
+        // Iterate over the contents of the source folder
+        Files.walk(sourceFolder).forEach(sourcePath -> {
+            try {
+                Path targetPath = destinationFolder.resolve(sourceFolder.relativize(sourcePath));
+
+                if (Files.isDirectory(sourcePath)) {
+                    // Create the directory in the target location
+                    if (!Files.exists(targetPath)) {
+                        Files.createDirectory(targetPath);
+                    }
+                } else {
+                    // Copy the file to the target location
+                    Files.copy(sourcePath, targetPath, StandardCopyOption.REPLACE_EXISTING);
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        });
+    }
+
+    public static void replaceContentOfFile(String path, ArrayList<Pair<String, String>> replacements) {
+        System.out.println(LogManager.fileManager() + LogManager.write() + " Replacing part in File \"" + path + "\"");
+        try {
+            // Read the file content
+            String content = new String(Files.readAllBytes(Paths.get(path)));
+
+            // Perform the replacements
+            for (Pair<String, String> pair : replacements) {
+                System.out.println(LogManager.fileManager() + LogManager.write() + " Replacing \"" + pair.getFirst() + "\" with \"" + pair.getSecond() + "\"");
+                content = content.replace(pair.getFirst(), pair.getSecond());
+            }
+
+            // Write the modified content back to the file
+            Files.write(Paths.get(path), content.getBytes());
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
 }

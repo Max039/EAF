@@ -16,10 +16,10 @@
 
 
   <!-- Replace settings to your needs -->
-  <groupId>de.eaf</groupId>
+  <groupId>de.test</groupId>
   <artifactId>plugin</artifactId>
   <version>1.0-SNAPSHOT</version>
-  <name>EAF - Plugin</name>
+  <name>test - Plugin</name>
 
   <build>
     <extensions>
@@ -42,11 +42,9 @@
 
 
           <compilerArgs>
-            <arg>--add-exports=de.evoal.optimisation.api/de.evoal.optimisation.api.statistics=de.evoal.eaf</arg>
 
-
-            <arg>--add-opens=de.evoal.optimisation.api/de.evoal.optimisation.api.statistics=de.evoal.eaf</arg>
-
+			<arg>--add-exports=de.evoal.optimisation.api/de.evoal.optimisation.api.statistics=de.test</arg>
+			<arg>--add-opens=de.evoal.optimisation.api/de.evoal.optimisation.api.statistics=de.test</arg>
 
             <!-- Add other JVM arguments as needed -->
           </compilerArgs>
