@@ -68,12 +68,26 @@ public class SyntaxTree {
     }
 
 
-    static  {
+
+
+    public static void reload() {
+        try {
+            start();
+            Main.mainPanel.folderPanel.reload(getNonAbstractClasses());
+            Main.constantManager.reload();
+        }
+        catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public static void start() throws IOException {
+
         String currentPath = System.getProperty("user.dir");
+        pathToSyntax = new ArrayList<>();
         pathToSyntax.add(currentPath + buildPath);
         //pathToSyntax.add(currentPath + "\\de");
         for (var plugin : PluginManager.plugins) {
-
 
             // Create a File object
             File folder = new File(PluginManager.getDefinitionsPath(plugin));
@@ -99,31 +113,11 @@ public class SyntaxTree {
                 System.out.println(LogManager.syntax() + LogManager.error() + " " + plugin.name + " has no definitions folder!");
             }
         }
-    }
-
-    public static void main(String[] args) throws IOException {
-        start();
-
-    }
-
-    public static void reload() {
-        try {
-            start();
-            Main.mainPanel.folderPanel.reload(getNonAbstractClasses());
-            Main.constantManager.reload();
-        }
-        catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    public static void start() throws IOException {
 
         moduleRegister = new HashMap<>();
         classRegister = new HashMap<>();
         baseClassRegister = new HashMap<>();
         constantRegister = new HashMap<>();
-        String currentPath = System.getProperty("user.dir");
 
         for (String path : pathToSyntax) {
             File rootDir = new File(path);
