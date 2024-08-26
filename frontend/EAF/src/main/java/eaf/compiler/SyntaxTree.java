@@ -71,9 +71,33 @@ public class SyntaxTree {
     static  {
         String currentPath = System.getProperty("user.dir");
         pathToSyntax.add(currentPath + buildPath);
-        pathToSyntax.add(currentPath + "\\de");
+        //pathToSyntax.add(currentPath + "\\de");
         for (var plugin : PluginManager.plugins) {
-            pathToSyntax.add(PluginManager.getDefinitionsPath(plugin));
+
+
+            // Create a File object
+            File folder = new File(PluginManager.getDefinitionsPath(plugin));
+
+            // Check if the provided path is a directory
+            if (folder.isDirectory()) {
+                // List all files and directories inside the folder
+                File[] files = folder.listFiles();
+
+                // Check if the list is not null and not empty
+                if (files != null) {
+                    // Iterate over the files
+                    for (File file : files) {
+                        // Check if it is a directory
+                        if (file.isDirectory() && !file.getName().contains("META-INF")) {
+                            pathToSyntax.add(file.getPath());
+                        }
+                    }
+                } else {
+                    System.out.println(LogManager.syntax() + LogManager.warning() + " " + plugin.name + " has no definitions!");
+                }
+            } else {
+                System.out.println(LogManager.syntax() + LogManager.error() + " " + plugin.name + " has no definitions folder!");
+            }
         }
     }
 

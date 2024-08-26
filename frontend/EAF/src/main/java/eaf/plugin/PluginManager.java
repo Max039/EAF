@@ -5,7 +5,7 @@ import java.util.ArrayList;
 
 public class PluginManager {
 
-    public static String definitions = "/src/main/resources/de";
+    public static String definitions = "/src/main/resources";
     public static ArrayList<Plugin> plugins = null;
     public static String pathToPlugins = "/plugins";
 
