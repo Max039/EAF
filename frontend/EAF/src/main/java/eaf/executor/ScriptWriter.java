@@ -3,6 +3,7 @@ package eaf.executor;
 import eaf.Main;
 import eaf.manager.FileManager;
 import eaf.manager.LogManager;
+import eaf.plugin.PluginManager;
 
 import java.io.*;
 import java.nio.file.Files;
@@ -16,9 +17,11 @@ public class ScriptWriter {
 
     public static ArrayList<String> openAndExports;
 
+    public static ArrayList<String> evoAlModules;
+
     static {
-        openAndExports  = new ArrayList<>();
-        openAndExports.add("de.evoal.optimisation.api/de.evoal.optimisation.api.statistics=de.eaf");
+        evoAlModules = new ArrayList<>();
+        evoAlModules.add("de.evoal.optimisation.api/de.evoal.optimisation.api.statistics");
     }
 
     static void saveAndWriteEvoAlFiles() {
@@ -59,7 +62,25 @@ public class ScriptWriter {
 
     }
 
+    public static void setOpenAndExports() {
+        openAndExports = new ArrayList<>();
+        System.out.println(LogManager.scriptWriter() + LogManager.script() + LogManager.shell() + " Searching for Modules in plugins ...");
+        for (var plugin : PluginManager.plugins) {
+            ArrayList<String> modules = ModuleFinder.getModules(plugin.path);
+            System.out.println(LogManager.scriptWriter() + LogManager.script() + LogManager.shell() + " Modules found in " + plugin.name + " :");
+            for (String moduleName : modules) {
+                System.out.println(LogManager.scriptWriter() + LogManager.script() + LogManager.shell() + " " + moduleName);
+                for (var module : evoAlModules) {
+                    openAndExports.add(module + "=" + moduleName);
+                }
+            }
+        }
+
+
+    }
+
     private static String getReplacementLines(String build, ScriptType type) {
+        setOpenAndExports();
         String s = "";
         for (String i : openAndExports) {
             String export = "--add-exports=" + i;
