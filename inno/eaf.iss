@@ -7,6 +7,7 @@ DefaultGroupName=Eaf
 OutputBaseFilename=setup
 Compression=lzma
 SolidCompression=yes
+UninstallDisplayIcon={app}\icon.ico
 
 #define HideConsole True
 
@@ -29,6 +30,10 @@ Name: "desktopicon"; Description: "Create a &desktop icon"; GroupDescription: "A
 [Registry]
 ; Register the .eaf file extension with your application
 Root: HKCR; Subkey: ".eaf"; ValueType: string; ValueName: ""; ValueData: "Eaf-File"; Flags: uninsdeletevalue
+Root: HKCR; Subkey: "Eaf-File"; ValueType: string; ValueName: ""; ValueData: "Eaf-File"; Flags: uninsdeletekey
+Root: HKCR; Subkey: "Eaf-File\DefaultIcon"; ValueType: string; ValueName: ""; ValueData: "{app}\icon.ico"; Flags: uninsdeletekey
+Root: HKCR; Subkey: "Eaf-File\shell\open\command"; ValueType: string; ValueName: ""; ValueData: """{app}\run_eaf.vbs"" ""%1"""; Flags: uninsdeletekey
+
 
 [Run]
 ; Create a VBS script to run the batch file
