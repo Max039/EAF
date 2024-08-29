@@ -9,6 +9,8 @@ import eaf.models.ClassType;
 import eaf.models.FieldType;
 import eaf.models.FieldValue;
 import eaf.models.Pair;
+import eaf.plugin.PluginCreator;
+import eaf.plugin.PluginManager;
 import eaf.rects.Rect;
 import eaf.rects.multi.ClassRect;
 import eaf.rects.multi.RectWithRects;
@@ -318,6 +320,25 @@ public class UiUtil {
 
 
         scriptMenu.add(run);
+
+
+        // Create menu items
+        JMenuItem updatePom = new JMenuItem("update pom");
+
+        updatePom.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                try {
+                    PluginCreator.updateCompilerArgs();
+                } catch (Exception ex) {
+                    throw new RuntimeException(ex);
+                }
+            }
+        });
+
+
+        scriptMenu.add(updatePom);
+
         scriptMenu.setBackground(Main.bgColor);
         scriptMenu.setForeground(Color.WHITE);
         menuBar.add(scriptMenu);
