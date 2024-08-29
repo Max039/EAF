@@ -3,6 +3,7 @@ package eaf.plugin;
 import eaf.Main;
 import eaf.compiler.SyntaxTree;
 import eaf.executor.ClassLocator;
+import eaf.executor.OpenIntelliJProject;
 import eaf.manager.FileManager;
 import eaf.manager.LogManager;
 import eaf.models.ClassType;
@@ -228,6 +229,8 @@ public class PluginCreator {
     public static void addClass(String pluginFolder, String name, ClassType type) {
         String pack = type.pack;
         //String module = type.toModule();
+
+        OpenIntelliJProject.openProject(pluginFolder);
     }
 
 

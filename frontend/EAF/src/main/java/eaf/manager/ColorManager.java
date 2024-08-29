@@ -107,6 +107,12 @@ public class ColorManager {
 
     public static Color classLocator = new Color(140,160, 170);
 
+    //==========================================
+    //               IntelliJ
+    //==========================================
+
+    public static Color intelliJ = new Color(255,160, 170);
+
 
     //==========================================
     //==========================================

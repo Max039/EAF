@@ -121,6 +121,9 @@ public class LogManager {
     public static String classLocator() {
         return encased(ColorManager.colorText("Class-Locator", ColorManager.classLocator));
     }
+    public static String intellij() {
+        return encased(ColorManager.colorText("IntelliJ IDEA", ColorManager.intelliJ));
+    }
 
 }
 
