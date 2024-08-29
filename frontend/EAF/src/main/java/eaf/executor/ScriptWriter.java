@@ -64,6 +64,7 @@ public class ScriptWriter {
         System.out.println(LogManager.scriptWriter() + LogManager.script() + LogManager.shell() + " Searching for Modules in plugins ...");
         for (var plugin : PluginManager.plugins.values()) {
             ArrayList<String> modules = ModuleFinder.getModules(plugin.path);
+            System.out.println(LogManager.scriptWriter() + LogManager.script() + LogManager.shell() + " =============");
             System.out.println(LogManager.scriptWriter() + LogManager.script() + LogManager.shell() + " " + plugin.name + " modules :");
             for (String moduleName : modules) {
                 System.out.println(LogManager.scriptWriter() + LogManager.script() + LogManager.shell() + " " + moduleName);
