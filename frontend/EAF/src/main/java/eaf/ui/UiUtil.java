@@ -2,6 +2,7 @@ package eaf.ui;
 
 import eaf.compiler.SyntaxTree;
 import eaf.*;
+import eaf.executor.OpenIntelliJProject;
 import eaf.input.InputHandler;
 import eaf.manager.ExtraRectManager;
 import eaf.manager.FileManager;
@@ -344,7 +345,18 @@ public class UiUtil {
 
         scriptMenu.add(newClass);
 
+        // Create menu items
+        JMenuItem openInIntellij = new JMenuItem("open in intellij");
 
+        openInIntellij.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                OpenIntelliJProject.openProject(PluginCreator.currentPlugin.path);
+            }
+        });
+
+
+        scriptMenu.add(openInIntellij);
 
         // Create menu items
         JMenuItem updatePom = new JMenuItem("update pom");
