@@ -12,12 +12,11 @@ import java.util.*;
 
 public class OpenIntelliJProject {
 
+    public static String ideaPath;
 
-    static {
+    public OpenIntelliJProject() {
         findNewestIdea64();
     }
-
-    public static String ideaPath;
 
 
     public static void findNewestIdea64() {

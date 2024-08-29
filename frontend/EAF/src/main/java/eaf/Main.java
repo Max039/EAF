@@ -1,6 +1,7 @@
 package eaf;
 
 import eaf.compiler.SyntaxTree;
+import eaf.executor.OpenIntelliJProject;
 import eaf.intro.DoubleHelixAnimation;
 import eaf.manager.CacheManager;
 import eaf.models.Pair;
@@ -87,6 +88,8 @@ public class Main extends JPanel {
     public static String programName = "EAF";
 
     public static CacheManager cacheManager = new CacheManager();
+
+    public static OpenIntelliJProject openIntelliJProject = new OpenIntelliJProject();
 
     public static PluginCreator pluginCreator = null;
 
