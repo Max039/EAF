@@ -37,14 +37,9 @@ public class PluginCreator {
     public static Plugin currentPlugin = null;
 
 
-    static {
+    public PluginCreator() {
         loadExamples();
         currentPlugin = createBaseForPlugin("test", "de.test");
-    }
-
-    public static void main(String[] args) {
-
-        createNewFromExample();
     }
 
     public static void createNewFromExample() {

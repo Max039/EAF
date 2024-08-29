@@ -5,6 +5,7 @@ import eaf.*;
 import eaf.input.InputHandler;
 import eaf.manager.ExtraRectManager;
 import eaf.manager.FileManager;
+import eaf.manager.LogManager;
 import eaf.models.ClassType;
 import eaf.models.FieldType;
 import eaf.models.FieldValue;
@@ -40,6 +41,7 @@ import static eaf.Main.*;
 import static eaf.manager.FileManager.loadSave;
 import static eaf.manager.FileManager.readJSONFileToJSON;
 import static eaf.executor.Executor.run;
+import static eaf.plugin.PluginCreator.createNewFromExample;
 
 
 public class UiUtil {
@@ -320,6 +322,28 @@ public class UiUtil {
 
 
         scriptMenu.add(run);
+
+
+        // Create menu items
+        JMenuItem newClass = new JMenuItem("new implementation");
+
+        newClass.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                Thread executionThread = new Thread(() -> {
+                    try {
+                        createNewFromExample();
+                    } catch (Exception ex) {
+                        throw new RuntimeException(ex);
+                    }
+                });
+                executionThread.start();
+            }
+        });
+
+
+        scriptMenu.add(newClass);
+
 
 
         // Create menu items

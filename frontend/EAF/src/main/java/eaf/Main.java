@@ -4,6 +4,7 @@ import eaf.compiler.SyntaxTree;
 import eaf.intro.DoubleHelixAnimation;
 import eaf.manager.CacheManager;
 import eaf.models.Pair;
+import eaf.plugin.PluginCreator;
 import eaf.plugin.PluginManager;
 import eaf.ui.*;
 import eaf.manager.FileManager;
@@ -87,6 +88,8 @@ public class Main extends JPanel {
 
     public static CacheManager cacheManager = new CacheManager();
 
+    public static PluginCreator pluginCreator = null;
+
     public static DoubleHelixAnimation animation = null;
 
     public static ArrayList<Pair<String, JComponent>> tabsList;
@@ -131,6 +134,7 @@ public class Main extends JPanel {
 
         new Main(); // Initialize main panel
 
+        pluginCreator = new PluginCreator();
 
         createMenuBar();
 

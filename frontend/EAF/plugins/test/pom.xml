@@ -1,243 +1,145 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-      
-    <modelVersion>4.0.0</modelVersion>
-      
-    <properties>
-            
-        <maven.compiler.source>17</maven.compiler.source>
-          
-    </properties>
-      
-    <!-- Plugin dependency for configuring maven properly -->
-      
-    <parent>
-            
-        <groupId>de.evoal</groupId>
-            
-        <artifactId>core.plugin</artifactId>
-            
-        <version>0.9.0-SNAPSHOT</version>
-          
-    </parent>
-      
-    <!-- Replace settings to your needs -->
-      
-    <groupId>de.test</groupId>
-      
-    <artifactId>plugin</artifactId>
-      
-    <version>1.0-SNAPSHOT</version>
-      
-    <name>test - Plugin</name>
-      
-    <build>
-            
-        <extensions>
-                  
-            <extension>
-                        
-                <groupId>kr.motd.maven</groupId>
-                        
-                <artifactId>os-maven-plugin</artifactId>
-                        
-                <version>1.6.2</version>
-                      
-            </extension>
-                
-        </extensions>
-            
-        <plugins>
-                  
-            <plugin>
-                        
-                <groupId>org.apache.maven.plugins</groupId>
-                        
-                <artifactId>maven-compiler-plugin</artifactId>
-                        
-                <version>3.12.1</version>
-                 
-                <!-- Adjust version as needed -->
-                        
-                <configuration>
-                              
-                    <source>17</source>
-                              
-                    <target>17</target>
-                              
-                    <!-- Add other compiler configurations here -->
-                              
-                    <compilerArgs>
-                        			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
 
-            
-                        <!-- Add other JVM arguments as needed -->
-                                  
-                        <arg>--add-opens=de.evoal.optimisation.ea/de.evoal.optimisation.ea.main.search=de.test</arg>
-                        <arg>--add-exports=de.evoal.optimisation.ea/de.evoal.optimisation.ea.main.search=de.test</arg>
-                        <arg>--add-opens=de.evoal.optimisation.ea/de.evoal.optimisation.ea.api.operators=de.test</arg>
-                        <arg>--add-exports=de.evoal.optimisation.ea/de.evoal.optimisation.ea.api.operators=de.test</arg>
-                        <arg>--add-opens=de.evoal.core.main/de.evoal.core.api.properties=de.test</arg>
-                        <arg>--add-exports=de.evoal.core.main/de.evoal.core.api.properties=de.test</arg>
-                        <arg>--add-opens=de.evoal.optimisation.api/de.evoal.optimisation.api.statistics.writer=de.test</arg>
-                        <arg>--add-exports=de.evoal.optimisation.api/de.evoal.optimisation.api.statistics.writer=de.test</arg>
-                        <arg>--add-opens=de.evoal.optimisation.ea/de.evoal.optimisation.ea.main.codec.vector.chromosome=de.test</arg>
-                        <arg>--add-exports=de.evoal.optimisation.ea/de.evoal.optimisation.ea.main.codec.vector.chromosome=de.test</arg>
-                        <arg>--add-opens=de.evoal.optimisation.api/de.evoal.optimisation.api.model=de.test</arg>
-                        <arg>--add-exports=de.evoal.optimisation.api/de.evoal.optimisation.api.model=de.test</arg>
-                        <arg>--add-opens=de.evoal.generator.main/de.evoal.generator.api=de.test</arg>
-                        <arg>--add-exports=de.evoal.generator.main/de.evoal.generator.api=de.test</arg>
-                        <arg>--add-opens=de.evoal.optimisation.api/de.evoal.optimisation.api.statistics=de.test</arg>
-                        <arg>--add-exports=de.evoal.optimisation.api/de.evoal.optimisation.api.statistics=de.test</arg>
-                    </compilerArgs>
-                            
-                </configuration>
-                      
-            </plugin>
-                
-        </plugins>
-          
-    </build>
-      
-    <dependencies>
-            
-        <dependency>
-                  
-            <groupId>de.evoal</groupId>
-                  
-            <artifactId>generator.main</artifactId>
-                  
-            <version>${project.parent.version}</version>
-                  
-            <!-- Make the dependency provided to avoid packaging of other plugins. -->
-                  
-            <scope>provided</scope>
-                
-        </dependency>
-            
-        <!-- https://mvnrepository.com/artifact/org.apache.maven.plugins/maven-compiler-plugin -->
-            
-        <dependency>
-                  
-            <groupId>org.apache.maven.plugins</groupId>
-                  
-            <artifactId>maven-compiler-plugin</artifactId>
-                  
-            <version>3.12.1</version>
-                
-        </dependency>
-            
-        <dependency>
-             
-            <!-- necessary for Java 9+ -->
-                  
-            <groupId>org.apache.tomcat</groupId>
-                  
-            <artifactId>annotations-api</artifactId>
-                  
-            <version>6.0.53</version>
-                  
-            <scope>provided</scope>
-                
-        </dependency>
-            
-        <!-- https://mvnrepository.com/artifact/io.jenetics/jenetics -->
-            
-        <dependency>
-                  
-            <groupId>io.jenetics</groupId>
-                  
-            <artifactId>jenetics</artifactId>
-                  
-            <version>7.1.0</version>
-                
-        </dependency>
-            
-        <dependency>
-                  
-            <groupId>org.junit.jupiter</groupId>
-                  
-            <artifactId>junit-jupiter</artifactId>
-                
-        </dependency>
-            
-        <dependency>
-                  
-            <groupId>de.evoal</groupId>
-                  
-            <artifactId>core.ea</artifactId>
-                  
-            <version>0.9.0-SNAPSHOT</version>
-                
-        </dependency>
-            
-        <dependency>
-                  
-            <groupId>de.evoal</groupId>
-                  
-            <artifactId>optimisation.api</artifactId>
-                  
-            <version>0.9.0-SNAPSHOT</version>
-                
-        </dependency>
-            
-        <dependency>
-                  
-            <groupId>de.evoal</groupId>
-                  
-            <artifactId>core.junit</artifactId>
-                  
-            <version>0.9.0-SNAPSHOT</version>
-                  
-            <scope>test</scope>
-                
-        </dependency>
-          
-    </dependencies>
-      
-    <!-- Load EvoAl dependencies from EvoAl's package registry -->
-      
-    <repositories>
-            
-        <repository>
-                  
-            <id>evoal-artifacts</id>
-                  
-            <name>EvoAl - Artifacts</name>
-                  
-            <!-- This build uses the current develop branch for dependency resolution -->
-                  
-            <url>https://gitlab.informatik.uni-bremen.de/api/v4/projects/30380/packages/maven/develop/</url>
-                  
-            <releases>
-                        
-                <enabled>true</enabled>
-                      
-            </releases>
-                  
-            <snapshots>
-                        
-                <enabled>true</enabled>
-                      
-            </snapshots>
-                
-        </repository>
-          
-    </repositories>
-    
+  <properties>
+    <maven.compiler.source>17</maven.compiler.source>
+  </properties>
+
+  <!-- Plugin dependency for configuring maven properly -->
+  <parent>
+    <groupId>de.evoal</groupId>
+    <artifactId>core.plugin</artifactId>
+    <version>0.9.0-SNAPSHOT</version>
+  </parent>
+
+
+  <!-- Replace settings to your needs -->
+  <groupId>de.test</groupId>
+  <artifactId>plugin</artifactId>
+  <version>1.0-SNAPSHOT</version>
+  <name>test - Plugin</name>
+
+  <build>
+    <extensions>
+      <extension>
+        <groupId>kr.motd.maven</groupId>
+        <artifactId>os-maven-plugin</artifactId>
+        <version>1.6.2</version>
+      </extension>
+    </extensions>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <version>3.12.1</version> <!-- Adjust version as needed -->
+
+        <configuration>
+          <source>17</source>
+          <target>17</target>
+          <!-- Add other compiler configurations here -->
+
+
+          <compilerArgs>
+
+			<arg>--add-exports=de.evoal.optimisation.ea/de.evoal.optimisation.ea.api.operators=de.test</arg>
+			<arg>--add-opens=de.evoal.optimisation.ea/de.evoal.optimisation.ea.api.operators=de.test</arg>
+			<arg>--add-exports=de.evoal.optimisation.api/de.evoal.optimisation.api.model=de.test</arg>
+			<arg>--add-opens=de.evoal.optimisation.api/de.evoal.optimisation.api.model=de.test</arg>
+			<arg>--add-exports=de.evoal.optimisation.api/de.evoal.optimisation.api.statistics=de.test</arg>
+			<arg>--add-opens=de.evoal.optimisation.api/de.evoal.optimisation.api.statistics=de.test</arg>
+			<arg>--add-exports=de.evoal.generator.main/de.evoal.generator.api=de.test</arg>
+			<arg>--add-opens=de.evoal.generator.main/de.evoal.generator.api=de.test</arg>
+			<arg>--add-exports=de.evoal.optimisation.ea/de.evoal.optimisation.ea.main.search=de.test</arg>
+			<arg>--add-opens=de.evoal.optimisation.ea/de.evoal.optimisation.ea.main.search=de.test</arg>
+			<arg>--add-exports=de.evoal.optimisation.ea/de.evoal.optimisation.ea.main.codec.vector.chromosome=de.test</arg>
+			<arg>--add-opens=de.evoal.optimisation.ea/de.evoal.optimisation.ea.main.codec.vector.chromosome=de.test</arg>
+			<arg>--add-exports=de.evoal.core.main/de.evoal.core.api.properties=de.test</arg>
+			<arg>--add-opens=de.evoal.core.main/de.evoal.core.api.properties=de.test</arg>
+
+            <!-- Add other JVM arguments as needed -->
+          </compilerArgs>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+
+
+
+  <dependencies>
+    <dependency>
+      <groupId>de.evoal</groupId>
+      <artifactId>generator.main</artifactId>
+      <version>${project.parent.version}</version>
+      <!-- Make the dependency provided to avoid packaging of other plugins. -->
+      <scope>provided</scope>
+    </dependency>
+
+
+    <!-- https://mvnrepository.com/artifact/org.apache.maven.plugins/maven-compiler-plugin -->
+    <dependency>
+      <groupId>org.apache.maven.plugins</groupId>
+      <artifactId>maven-compiler-plugin</artifactId>
+      <version>3.12.1</version>
+    </dependency>
+
+    <dependency> <!-- necessary for Java 9+ -->
+      <groupId>org.apache.tomcat</groupId>
+      <artifactId>annotations-api</artifactId>
+      <version>6.0.53</version>
+      <scope>provided</scope>
+    </dependency>
+
+
+
+    <!-- https://mvnrepository.com/artifact/io.jenetics/jenetics -->
+    <dependency>
+      <groupId>io.jenetics</groupId>
+      <artifactId>jenetics</artifactId>
+      <version>7.1.0</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>de.evoal</groupId>
+      <artifactId>core.ea</artifactId>
+      <version>0.9.0-SNAPSHOT</version>
+    </dependency>
+
+    <dependency>
+      <groupId>de.evoal</groupId>
+      <artifactId>optimisation.api</artifactId>
+      <version>0.9.0-SNAPSHOT</version>
+    </dependency>
+
+    <dependency>
+      <groupId>de.evoal</groupId>
+      <artifactId>core.junit</artifactId>
+      <version>0.9.0-SNAPSHOT</version>
+      <scope>test</scope>
+    </dependency>
+
+
+  </dependencies>
+
+  <!-- Load EvoAl dependencies from EvoAl's package registry -->
+  <repositories>
+    <repository>
+      <id>evoal-artifacts</id>
+      <name>EvoAl - Artifacts</name>
+      <!-- This build uses the current develop branch for dependency resolution -->
+      <url>https://gitlab.informatik.uni-bremen.de/api/v4/projects/30380/packages/maven/develop/</url>
+      <releases>
+        <enabled>true</enabled>
+      </releases>
+      <snapshots>
+        <enabled>true</enabled>
+      </snapshots>
+    </repository>
+  </repositories>
 </project>
