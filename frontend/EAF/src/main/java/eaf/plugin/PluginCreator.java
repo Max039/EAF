@@ -2,8 +2,7 @@ package eaf.plugin;
 
 import eaf.Main;
 import eaf.compiler.SyntaxTree;
-import eaf.executor.ScriptWriter;
-import eaf.manager.ExtraRectManager;
+import eaf.executor.ClassLocator;
 import eaf.manager.FileManager;
 import eaf.manager.LogManager;
 import eaf.models.ClassType;

@@ -3,7 +3,6 @@ package eaf.executor;
 import eaf.Main;
 import eaf.manager.FileManager;
 import eaf.manager.LogManager;
-import eaf.plugin.ClassLocator;
 import eaf.plugin.PluginManager;
 
 import java.io.*;

@@ -4,8 +4,6 @@ import eaf.Main;
 import eaf.input.InputHandler;
 import eaf.manager.ColorManager;
 import eaf.manager.LogManager;
-import eaf.plugin.ClassLocator;
-import eaf.plugin.PluginManager;
 import eaf.process.GenerationTracker;
 import eaf.sound.SoundManager;
 import eaf.ui.panels.ErrorPane;
@@ -14,7 +12,6 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.util.ArrayList;
 
 public class Executor {
 

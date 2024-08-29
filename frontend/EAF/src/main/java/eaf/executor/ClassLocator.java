@@ -1,4 +1,4 @@
-package eaf.plugin;
+package eaf.executor;
 
 import eaf.Main;
 import eaf.manager.LogManager;
