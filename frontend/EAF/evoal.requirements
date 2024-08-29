@@ -1,2 +1,10 @@
 StatisticsWriter
 IterationResult
+SelectorComponent
+InitialCandidatesProvider
+Properties
+AbstractGeneratorFunction
+OptimisationValueComparator
+DynamicChromosome
+AltererComponent
+EvolutionaryAlgorithmOptimisation

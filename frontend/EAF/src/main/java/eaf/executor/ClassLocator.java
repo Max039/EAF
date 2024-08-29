@@ -1,6 +1,7 @@
 package eaf.executor;
 
 import eaf.Main;
+import eaf.manager.ColorManager;
 import eaf.manager.LogManager;
 import eaf.models.Pair;
 import org.objectweb.asm.ClassReader;
@@ -93,19 +94,23 @@ public class ClassLocator {
             majorPackages.add(pkg);
         }
 
-        // Step 2: Filter out nested packages
-        Set<Map.Entry<String, Pair<Class<?>, String>>> result = new HashSet<>(majorPackages);
+        Map<String, Pair<Class<?>, String>> uniquePackages = new HashMap<>();
         for (var i : majorPackages) {
             String pkg = i.getValue().getFirst().getPackageName();
-            // Remove any package names that are nested within the current package
-            for (var v : majorPackages) {
-                String otherPkg = v.getValue().getFirst().getPackageName();
-                if (!pkg.equals(otherPkg) && otherPkg.startsWith(pkg + ".")) {
-                    result.remove(v);
+            // Check if the package is already in the map
+            boolean isNested = false;
+            for (String existingPkg : uniquePackages.keySet()) {
+                if (pkg.startsWith(existingPkg + ".") && !pkg.equals(existingPkg)) {
+                    // The current package is nested within an existing one
+                    isNested = true;
+                    break;
                 }
             }
+            if (!isNested) {
+                uniquePackages.put(pkg, i.getValue());
+            }
         }
-        return result;
+        return new HashSet<>(uniquePackages.entrySet());
     }
 
     public static HashMap<String, Pair<Class<?>, String>> loadClassesFromJars(ArrayList<String> folderPaths, ArrayList<String> classNames)
@@ -129,6 +134,12 @@ public class ClassLocator {
         for (URL jarUrl : jarUrls) {
             File jarFile = new File(jarUrl.getFile());
             processJarFile(jarFile, classNames, classMap, classLoader);
+        }
+
+        for (var a : classNames) {
+            if (classMap.get(a) == null) {
+                System.out.println(LogManager.classLocator() + LogManager.error() + " Found " + ColorManager.colorText("NO", ColorManager.errorColor) + " Class for: " + a);
+            }
         }
 
         return classMap;
@@ -171,7 +182,7 @@ public class ClassLocator {
                     String simpleClassName = className.substring(className.lastIndexOf('.') + 1);
 
                     // Check if the class name matches any of the specified names
-                    if (classNames.contains(simpleClassName)) {
+                    if (classNames.contains(simpleClassName) && className.contains("evoal")) {
                         System.out.println(LogManager.classLocator() + " =============");
                         System.out.println(LogManager.classLocator() + " Class found: " + simpleClassName);
                         System.out.println(LogManager.classLocator() + " In jar: " + jarFile.getName() + " at " + jarFile.getAbsolutePath());
