@@ -4,16 +4,17 @@ AppName=Eaf
 AppVersion=1.0
 DefaultDirName={pf}\Eaf\
 DefaultGroupName=Eaf
-OutputBaseFilename=setup
+OutputBaseFilename=eaf-setup
 Compression=lzma
 SolidCompression=yes
 UninstallDisplayIcon={app}\icon.ico
+SetupIconFile={#SourcePath}\icon.ico
 
 #define HideConsole True
 
 [Files]
 ; Copy the entire folder to the selected directory
-Source: "{#SourcePath}\..\frontend\EAF\*"; DestDir: "{app}"; Flags: recursesubdirs createallsubdirs; Excludes: "EvoAlBuilds\*";
+Source: "{#SourcePath}\..\frontend\EAF\*"; DestDir: "{app}"; Flags: recursesubdirs createallsubdirs; Excludes: "EvoAlBuilds";
 Source: "{#SourcePath}\icon.ico"; DestDir: "{app}"; Flags: ignoreversion
 
 [Icons]
