@@ -283,4 +283,27 @@ public class FileManager {
         }
     }
 
+    public static void copyJarFile(String projectPath, String destinationPath, String newFileName) throws IOException {
+        Path targetDir = Paths.get(projectPath, "target/plugin");
+        if (!Files.exists(targetDir)) {
+            throw new RuntimeException("Target directory does not exist.");
+        }
+
+        // Find the JAR file in the target directory
+        File[] jarFiles = targetDir.toFile().listFiles((dir, name) -> name.startsWith("plugin"));
+        if (jarFiles == null || jarFiles.length == 0) {
+            throw new RuntimeException("No JAR file found in the target directory.");
+        }
+
+        // Assume the first JAR file is the one we want to copy (this can be customized)
+        File jarFile = jarFiles[0];
+
+        // Determine the destination file path, using the new file name
+        Path destination = Paths.get(destinationPath, newFileName);
+
+        // Copy the JAR file to the destination path, replacing it if it already exists
+        Files.copy(jarFile.toPath(), destination, StandardCopyOption.REPLACE_EXISTING);
+
+        System.out.println(LogManager.fileManager() + LogManager.write() + " Copied " + jarFile.getName() + " to " + destinationPath + " as " + newFileName);
+    }
 }

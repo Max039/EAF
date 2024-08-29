@@ -101,7 +101,7 @@ public class PluginCreator {
     }
 
     public static Plugin createBaseForPlugin(String pluginName, String moduleName) {
-        ScriptWriter.getEvoAlModules();
+        ClassLocator.refreshEvoAlModules();
         String currentDirectory = System.getProperty("user.dir");
         try {
             FileManager.copyFolder(currentDirectory + "/plugin_base", currentDirectory + "/plugins/" + pluginName);
@@ -110,7 +110,7 @@ public class PluginCreator {
             pomReplacements.add(new Pair<>("#module#", moduleName));
 
             var exportsAndOpens = "";
-            for (var i : ScriptWriter.evoAlModules) {
+            for (var i : ClassLocator.evoalModules) {
                 if (exportsAndOpens.isEmpty()) {
                     exportsAndOpens += "\n";
                 }
@@ -152,5 +152,7 @@ public class PluginCreator {
         String pack = type.pack;
         //String module = type.toModule();
     }
+
+
 
 }

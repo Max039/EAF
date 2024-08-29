@@ -114,5 +114,13 @@ public class LogManager {
         return encased(ColorManager.colorText("Plugin", ColorManager.plugin));
     }
 
+    public static String maven() {
+        return encased(ColorManager.colorText("Maven", ColorManager.maven));
+    }
+
+    public static String classLocator() {
+        return encased(ColorManager.colorText("Class-Locator", ColorManager.classLocator));
+    }
+
 }
 

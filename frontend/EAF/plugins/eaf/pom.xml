@@ -42,10 +42,10 @@
 
 
           <compilerArgs>
-            <arg>--add-exports=de.evoal.optimisation.api/de.evoal.optimisation.api.statistics=de.evoal.eaf</arg>
+            <arg>--add-exports=de.evoal.optimisation.api/de.evoal.optimisation.api.statistics.writer=de.evoal.eaf</arg>
 
 
-            <arg>--add-opens=de.evoal.optimisation.api/de.evoal.optimisation.api.statistics=de.evoal.eaf</arg>
+            <arg>--add-opens=de.evoal.optimisation.api/de.evoal.optimisation.api.statistics.writer=de.evoal.eaf</arg>
 
 
             <!-- Add other JVM arguments as needed -->

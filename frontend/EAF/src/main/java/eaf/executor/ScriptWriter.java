@@ -3,6 +3,7 @@ package eaf.executor;
 import eaf.Main;
 import eaf.manager.FileManager;
 import eaf.manager.LogManager;
+import eaf.plugin.ClassLocator;
 import eaf.plugin.PluginManager;
 
 import java.io.*;
@@ -17,9 +18,7 @@ public class ScriptWriter {
 
     public static ArrayList<String> openAndExports;
 
-    public static ArrayList<String> evoAlModules;
 
-    public static String pathToModuleFile = "/evoal.modules";
 
 
     static void saveAndWriteEvoAlFiles() {
@@ -37,25 +36,6 @@ public class ScriptWriter {
         SEARCH
     }
 
-    public static void getEvoAlModules() {
-        String currentPath = System.getProperty("user.dir");
-        evoAlModules = new ArrayList<>();
-        try {
-            // Read all lines from the file
-            for (String line : Files.readAllLines(Paths.get(currentPath + pathToModuleFile))) {
-                // Trim the line to remove leading and trailing whitespace
-                String trimmedLine = line.trim();
-
-                // Add to the list if it's not empty
-                if (!trimmedLine.isEmpty()) {
-                    evoAlModules.add(trimmedLine);
-                }
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-    }
 
     public static ScriptType projectType = ScriptType.SEARCH;
 
@@ -87,7 +67,7 @@ public class ScriptWriter {
             System.out.println(LogManager.scriptWriter() + LogManager.script() + LogManager.shell() + " " + plugin.name + " modules :");
             for (String moduleName : modules) {
                 System.out.println(LogManager.scriptWriter() + LogManager.script() + LogManager.shell() + " " + moduleName);
-                for (var module : evoAlModules) {
+                for (var module : ClassLocator.evoalModules) {
                     openAndExports.add(module + "=" + moduleName);
                 }
             }
@@ -99,7 +79,7 @@ public class ScriptWriter {
     private static String getReplacementLines(String build, ScriptType type) {
         System.out.println(LogManager.scriptWriter() + LogManager.script() + LogManager.shell() + " Creating Opens And Exports of EvoAl Module for Plugin Modules ...");
         System.out.println(LogManager.scriptWriter() + LogManager.script() + LogManager.shell() + " EvoAl modules :");
-        for (var module : evoAlModules) {
+        for (var module : ClassLocator.evoalModules) {
             System.out.println(LogManager.scriptWriter() + LogManager.script() + LogManager.shell() + " " + module);
         }
         setOpenAndExports();

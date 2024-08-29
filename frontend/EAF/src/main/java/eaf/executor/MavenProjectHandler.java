@@ -1,17 +1,14 @@
 package eaf.executor;
 
 import eaf.Main;
+import eaf.manager.FileManager;
+import eaf.manager.LogManager;
 import eaf.plugin.PluginManager;
-import eaf.ui.panels.ConsolePane;
 
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,7 +20,7 @@ public class MavenProjectHandler {
             runMavenCommand(projectPath, List.of("clean", "install", "package"));
 
             // Step 2: Copy the JAR file to the given destination path
-            copyJarFile(projectPath, destinationPath, name);
+            FileManager.copyJarFile(projectPath, destinationPath, name);
 
         } catch (IOException | InterruptedException e) {
             e.printStackTrace();
@@ -43,7 +40,7 @@ public class MavenProjectHandler {
 
             while (process.isAlive() || reader.ready()) {
                 while ((reader.ready() && (line = reader.readLine()) != null)) {
-                    System.out.println(line);
+                    System.out.println(LogManager.maven() + " " + line);
                     Main.console.println(line);
 
                 }
@@ -57,35 +54,10 @@ public class MavenProjectHandler {
 
             int exitCode = process.waitFor();
             if (exitCode != 0) {
-                Main.console.println("Maven command failed with exit code " + exitCode);
+                Main.console.println(LogManager.maven() + LogManager.error() + " Maven command failed with exit code " + exitCode);
                 throw new RuntimeException("Maven command failed with exit code " + exitCode);
             }
         }
-    }
-
-    public static void copyJarFile(String projectPath, String destinationPath, String newFileName) throws IOException {
-        Path targetDir = Paths.get(projectPath, "target/plugin");
-        if (!Files.exists(targetDir)) {
-            throw new RuntimeException("Target directory does not exist.");
-        }
-
-        // Find the JAR file in the target directory
-        File[] jarFiles = targetDir.toFile().listFiles((dir, name) -> name.startsWith("plugin"));
-        if (jarFiles == null || jarFiles.length == 0) {
-            throw new RuntimeException("No JAR file found in the target directory.");
-        }
-
-        System.out.println(jarFiles[0].getPath());
-        // Assume the first JAR file is the one we want to copy (this can be customized)
-        File jarFile = jarFiles[0];
-
-        // Determine the destination file path, using the new file name
-        Path destination = Paths.get(destinationPath, newFileName);
-
-        // Copy the JAR file to the destination path, replacing it if it already exists
-        Files.copy(jarFile.toPath(), destination, StandardCopyOption.REPLACE_EXISTING);
-
-        System.out.println("Copied " + jarFile.getName() + " to " + destinationPath + " as " + newFileName);
     }
 
     public static void copyPlugins() {
@@ -95,7 +67,7 @@ public class MavenProjectHandler {
             ignore.add(plugin.path + "/target");
             ignore.add(plugin.path + "/.idea");
             File f = new File(currentPath + "/EvoAlBuilds/" + Main.evoalVersion + "/evoal/plugins/"+ plugin.name + ".jar");
-            System.out.println(f.getPath());
+            System.out.println(LogManager.maven() + " Preparing Plugin " + plugin.name + " at " + f.getPath());
             if (FileChangesChecker.updateFileJson(plugin.path, ignore) || !f.exists()) {
                 if (f.exists()) {
                     f.delete();

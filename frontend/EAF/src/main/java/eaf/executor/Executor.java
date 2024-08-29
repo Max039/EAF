@@ -4,6 +4,7 @@ import eaf.Main;
 import eaf.input.InputHandler;
 import eaf.manager.ColorManager;
 import eaf.manager.LogManager;
+import eaf.plugin.ClassLocator;
 import eaf.plugin.PluginManager;
 import eaf.process.GenerationTracker;
 import eaf.sound.SoundManager;
@@ -22,7 +23,7 @@ public class Executor {
 
         MavenProjectHandler.copyPlugins();
 
-        ScriptWriter.getEvoAlModules();
+        ClassLocator.refreshEvoAlModules();
 
         String currentPath = System.getProperty("user.dir");
         var scriptTarget = currentPath + "/" +  ScriptWriter.getPathToProject() + "/run.sh";
