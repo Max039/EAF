@@ -9,7 +9,6 @@ import eaf.models.ClassType;
 import eaf.models.FieldType;
 import eaf.models.FieldValue;
 import eaf.models.Pair;
-import eaf.plugin.PluginManager;
 import eaf.rects.Rect;
 import eaf.rects.multi.ClassRect;
 import eaf.rects.multi.RectWithRects;
@@ -32,6 +31,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Stack;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicReference;
 
 import static eaf.Main.*;
 import static eaf.manager.FileManager.loadSave;
@@ -59,8 +60,12 @@ public class UiUtil {
     public static ClassType selectedType = null;
 
 
+    public static AtomicReference<ClassType> result;
 
+    public static AtomicBoolean terminates;
+    public static Object selectedObject;
 
+    public static boolean obectSelected;
 
     private static Stack<ClassType> historyStack = new Stack<>();
 
@@ -224,7 +229,7 @@ public class UiUtil {
         newRect.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                openClassEditor(null, false);
+                openClassEditor(null, false, true, true, false);
             }
         });
 
@@ -237,7 +242,7 @@ public class UiUtil {
         newChild.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                openClassEditor(SyntaxTree.get("empty-string-initial"), true);
+                openClassEditor(SyntaxTree.get("empty-string-initial"), true, true, true, false);
             }
         });
 
@@ -249,7 +254,7 @@ public class UiUtil {
         edit.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                openClassEditor(SyntaxTree.get("evolutionary-algorithm"), false);
+                openClassEditor(SyntaxTree.get("evolutionary-algorithm"), false, true, true, false);
             }
         });
 
@@ -1256,7 +1261,7 @@ public class UiUtil {
         return result.toString();
     }
 
-    public static void openClassEditor(ClassType classType, boolean newChild) {
+    public static void openClassEditor(ClassType classType, boolean newChild, boolean saveAsRect, boolean parentChangeable, boolean forceNonAbstract) {
 
         // Frame setup
         JFrame frame = new JFrame("Class Editor");
@@ -1311,7 +1316,12 @@ public class UiUtil {
 
         gbc.gridx = 1;
         JCheckBox isAbstractCheckBox = new JCheckBox();
-        isAbstractCheckBox.setSelected(classType != null && classType.isAbstract);
+        if (forceNonAbstract) {
+            isAbstractCheckBox.setEnabled(true);
+        }
+        else {
+            isAbstractCheckBox.setSelected(classType != null && classType.isAbstract);
+        }
         frame.add(isAbstractCheckBox, gbc);
 
         // Parent Class ComboBox
@@ -1321,6 +1331,7 @@ public class UiUtil {
         frame.add(parentLabel, gbc);
 
         gbc.gridx = 1;
+        gbc.gridwidth = 1;
         JButton parentButton = new JButton();
         String parent = (classType != null) ? (newChild ? classType.name : (classType.parent != null ? classType.parent.name : "")) : "";
         parentButton.setText(parent);
@@ -1332,10 +1343,16 @@ public class UiUtil {
         });
         frame.add(parentButton, gbc);
 
-        gbc.gridx = 2;
-        JButton xParent = new JButton("X");
-        xParent.addActionListener(ae -> parentButton.setText(""));
-        frame.add(xParent, gbc);
+        if (parentChangeable) {
+            gbc.gridx = 2;
+            JButton xParent = new JButton("X");
+            xParent.addActionListener(ae -> parentButton.setText(""));
+            frame.add(xParent, gbc);
+        }
+        else {
+            parentButton.setEnabled(false);
+        }
+
 
         JPanel fieldsPanel = new JPanel();
         fieldsPanel.setLayout(new BoxLayout(fieldsPanel, BoxLayout.Y_AXIS));
@@ -1518,6 +1535,10 @@ public class UiUtil {
         gbc.weighty = 1.0;
         gbc.fill = GridBagConstraints.HORIZONTAL;
         JButton confirmButton = new JButton("Confirm");
+
+        result = new AtomicReference<>(null);
+        terminates = new AtomicBoolean(false);
+
         confirmButton.addActionListener(e -> {
             ClassType p = null;
             if (!parentButton.getText().isEmpty()) {
@@ -1544,13 +1565,33 @@ public class UiUtil {
                     }
                 }
             }
-            ExtraRectManager.saveRect(newClassType);
-            SyntaxTree.reload();
+            if (saveAsRect) {
+                ExtraRectManager.saveRect(newClassType);
+                SyntaxTree.reload();
+            }
+            result.set(newClassType);
             frame.dispose();
+            terminates.set(true);
         });
         frame.add(confirmButton, gbc);
 
         frame.setVisible(true);
+
+
+    }
+
+    public static ClassType openClassEditorAndReturn(ClassType classType, boolean newChild, boolean saveAsRect) {
+        openClassEditor(classType, newChild, saveAsRect, false, true);
+
+        while (!terminates.get()) {
+            try {
+                Thread.sleep(50);
+            }
+            catch (Exception e) {
+
+            }
+        }
+        return result.get();
     }
 
     public static ClassType chooseInstance(JFrame owner, JPanel fieldsPanel, boolean addListener) {
@@ -1822,6 +1863,59 @@ public class UiUtil {
     }
 
 
+    public static void createSelectClassTypeWindow(List<ClassType> objects) {
+        // Create a JFrame to hold the window
+        JFrame frame = new JFrame("Select an Object");
+        frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        frame.setSize(300, 400);
+
+        // Create a JPanel to hold the buttons
+        JPanel panel = new JPanel();
+        panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+
+        // Create a JScrollPane to allow scrolling
+        JScrollPane scrollPane = new JScrollPane(panel);
+
+        // A holder for the selected object
+        selectedObject = null;
+        obectSelected = false;
+
+        // Add a button for each object in the ArrayList
+        for (ClassType obj : objects.stream().sorted().toList()) {
+            JButton button = new JButton(obj.name);
+            panel.add(button);  // Add the button to the panel, not the scrollPane
+
+            // Add an ActionListener to return the selected object
+            button.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    selectedObject = obj;
+                    obectSelected = true;
+                    frame.dispose(); // Close the window
+                }
+            });
+        }
+
+        // Add the scrollPane to the frame
+        frame.getContentPane().add(scrollPane);
+        frame.setVisible(true);
+    }
+
+
+    public static Object selectClassType(List<ClassType> objects) {
+        createSelectClassTypeWindow(objects);
+
+        // Block until the frame is closed
+        while (!obectSelected) {
+            try {
+                Thread.sleep(100);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+        // Return the selected object
+        return selectedObject;
+    }
 
 
 }

@@ -110,5 +110,9 @@ public class LogManager {
         return encased(ColorManager.colorText("Shell", ColorManager.shell));
     }
 
+    public static String plugin() {
+        return encased(ColorManager.colorText("Plugin", ColorManager.plugin));
+    }
+
 }
 

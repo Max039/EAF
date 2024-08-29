@@ -90,7 +90,7 @@ public class MavenProjectHandler {
 
     public static void copyPlugins() {
         String currentPath = System.getProperty("user.dir");
-        for (var plugin : PluginManager.plugins) {
+        for (var plugin : PluginManager.plugins.values()) {
             ArrayList<String> ignore = new ArrayList<>();
             ignore.add(plugin.path + "/target");
             ignore.add(plugin.path + "/.idea");

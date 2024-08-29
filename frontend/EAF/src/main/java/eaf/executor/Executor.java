@@ -22,6 +22,8 @@ public class Executor {
 
         MavenProjectHandler.copyPlugins();
 
+        ScriptWriter.getEvoAlModules();
+
         String currentPath = System.getProperty("user.dir");
         var scriptTarget = currentPath + "/" +  ScriptWriter.getPathToProject() + "/run.sh";
 

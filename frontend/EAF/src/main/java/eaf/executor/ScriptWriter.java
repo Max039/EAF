@@ -19,10 +19,8 @@ public class ScriptWriter {
 
     public static ArrayList<String> evoAlModules;
 
-    static {
-        evoAlModules = new ArrayList<>();
-        evoAlModules.add("de.evoal.optimisation.api/de.evoal.optimisation.api.statistics");
-    }
+    public static String pathToModuleFile = "/evoal.modules";
+
 
     static void saveAndWriteEvoAlFiles() {
         System.out.println(LogManager.scriptWriter() + LogManager.write() + " Saving project ...");
@@ -39,6 +37,25 @@ public class ScriptWriter {
         SEARCH
     }
 
+    public static void getEvoAlModules() {
+        String currentPath = System.getProperty("user.dir");
+        evoAlModules = new ArrayList<>();
+        try {
+            // Read all lines from the file
+            for (String line : Files.readAllLines(Paths.get(currentPath + pathToModuleFile))) {
+                // Trim the line to remove leading and trailing whitespace
+                String trimmedLine = line.trim();
+
+                // Add to the list if it's not empty
+                if (!trimmedLine.isEmpty()) {
+                    evoAlModules.add(trimmedLine);
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+    }
 
     public static ScriptType projectType = ScriptType.SEARCH;
 
@@ -65,7 +82,7 @@ public class ScriptWriter {
     public static void setOpenAndExports() {
         openAndExports = new ArrayList<>();
         System.out.println(LogManager.scriptWriter() + LogManager.script() + LogManager.shell() + " Searching for Modules in plugins ...");
-        for (var plugin : PluginManager.plugins) {
+        for (var plugin : PluginManager.plugins.values()) {
             ArrayList<String> modules = ModuleFinder.getModules(plugin.path);
             System.out.println(LogManager.scriptWriter() + LogManager.script() + LogManager.shell() + " " + plugin.name + " modules :");
             for (String moduleName : modules) {

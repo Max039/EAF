@@ -87,7 +87,7 @@ public class SyntaxTree {
         pathToSyntax = new ArrayList<>();
         pathToSyntax.add(currentPath + buildPath);
         //pathToSyntax.add(currentPath + "\\de");
-        for (var plugin : PluginManager.plugins) {
+        for (var plugin : PluginManager.plugins.values()) {
 
             // Create a File object
             File folder = new File(PluginManager.getDefinitionsPath(plugin));

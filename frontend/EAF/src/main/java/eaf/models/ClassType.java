@@ -266,4 +266,17 @@ public class ClassType implements Comparable {
         }
     }
 
+    public List<ClassType> getAllDescendants() {
+        List<ClassType> descendants = new ArrayList<>();
+        collectDescendants(this, descendants);
+        return descendants;
+    }
+
+    private void collectDescendants(ClassType node, List<ClassType> descendants) {
+        for (ClassType child : node.children) {
+            descendants.add(child);
+            collectDescendants(child, descendants); // Recursively collect the descendants of the child
+        }
+    }
+
 }

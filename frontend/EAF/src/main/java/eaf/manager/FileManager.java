@@ -264,7 +264,7 @@ public class FileManager {
     }
 
     public static void replaceContentOfFile(String path, ArrayList<Pair<String, String>> replacements) {
-        System.out.println(LogManager.fileManager() + LogManager.write() + " Replacing part in File \"" + path + "\"");
+        System.out.println(LogManager.fileManager() + LogManager.write() + " Replacing parts in File \"" + path + "\"");
         try {
             // Read the file content
             String content = new String(Files.readAllBytes(Paths.get(path)));

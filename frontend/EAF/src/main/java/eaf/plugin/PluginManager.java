@@ -2,11 +2,12 @@ package eaf.plugin;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class PluginManager {
 
     public static String definitions = "/src/main/resources";
-    public static ArrayList<Plugin> plugins = null;
+    public static HashMap<String, Plugin> plugins = null;
     public static String pathToPlugins = "/plugins";
 
     public PluginManager() {
@@ -15,7 +16,7 @@ public class PluginManager {
 
     public void discoverPlugins() {
         String currentPath = System.getProperty("user.dir");
-        plugins = new ArrayList<>();
+        plugins = new HashMap<>();
         File directory = new File(currentPath + pathToPlugins);
 
         if (directory.exists() && directory.isDirectory()) {
@@ -23,7 +24,8 @@ public class PluginManager {
             if (files != null) {
                 for (File file : files) {
                     if (file.isDirectory()) {
-                        plugins.add(new Plugin(file.getPath()));
+                        var plugin = new Plugin(file.getPath());
+                        plugins.put(plugin.name, plugin);
                     }
                 }
             }
