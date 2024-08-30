@@ -1,0 +1,29 @@
+import "definitions" from de.evoal.optimisation.ea.optimisation;
+import "definitions" from de.evoal.optimisation.core;
+import "definitions" from de.evoal.routenoptimierung.definitions;
+
+module de.evoal.routenoptimierung.initials.fixedValueInitial {
+	
+	
+	abstract type 'inital-value' {
+		'class' : string;
+	}
+	
+	type 'set-value' extends 'inital-value'{
+		'value' : string;
+	}
+	type 'random-value' extends 'inital-value'{
+		'values' : array string;
+	}
+	type 'methode-value' extends 'inital-value'{
+		'methode-class' : string;
+		'methode-name' : string;
+		'input-value' : string;
+	}
+	
+	type 'fixed-value-initial' extends 'initial-population'  {
+		'values' : array instance 'inital-value';
+	}
+	
+}
+

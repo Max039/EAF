@@ -1,0 +1,10 @@
+import "definitions" from de.evoal.optimisation.ea.optimisation;
+
+
+module de.evoal.routenoptimierung.alterers.pathCrossover {
+	type 'path-crossover' extends crossover  {
+		'crossoverCrossoverChance' : string;
+		'jenetics-crossover' : string;
+	}
+}
+

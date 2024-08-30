@@ -1,0 +1,8 @@
+import "definitions" from de.evoal.optimisation.ea.optimisation;
+import "definitions" from de.evoal.optimisation.core;
+
+module de.evoal.routenoptimierung.initials.emptyStringInitial {
+	type 'empty-string-initial' extends 'initial-population'  {
+	}
+}
+

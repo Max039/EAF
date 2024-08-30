@@ -1,0 +1,96 @@
+import "definitions" from de.evoal.optimisation.ea.optimisation;
+import "definitions" from de.evoal.optimisation.core;
+
+module de.evoal.routenoptimierung.algorithms.evolutionaryAlgorithmOptimisation {
+
+	type 'run-instruction' {
+		enabled : boolean;
+		stop : boolean;
+		generations : int;
+		pause : int;
+	}
+	
+	type 'no-loop-control' extends 'run-instruction' {
+		enabled : boolean := false;
+		stop : boolean := false;
+		generations : int := 0;
+		pause : int := 0;
+	}
+	
+
+	type 'run-fully' extends 'run-instruction' {
+		enabled : boolean := true;
+		stop : boolean := false;
+		generations : int := 0;
+		pause : int := 0;
+	}
+	
+	type 'stop-on-start' extends 'run-instruction' {
+		enabled : boolean := true;
+		stop : boolean := true;
+		generations : int := 0;
+		pause : int := 0;
+	}
+	
+	type 'custom-instruction' extends 'run-instruction' {
+		enabled : boolean;
+		stop : boolean;
+		generations : int;
+		pause : int;
+	}
+	
+	type 'parent-tree-diagram' {
+		enabled : boolean;
+		collapse : boolean;
+		reduce : boolean;
+	}
+	
+	type 'no-parent-tree-diagram' extends 'parent-tree-diagram' {
+		enabled : boolean := false;
+		collapse : boolean := false;
+		reduce : boolean := false;
+	}
+	
+	type 'minimal-parent-tree-diagram' extends 'parent-tree-diagram' {
+		enabled : boolean := true;
+		collapse : boolean := true;
+		reduce : boolean := true;
+	}
+	
+	type 'reduced-parent-tree-diagram' extends 'parent-tree-diagram' {
+		enabled : boolean := true;
+		collapse : boolean := false;
+		reduce : boolean := true;
+	}
+	
+	
+	type 'collapse-parent-tree-diagram' extends 'parent-tree-diagram' {
+		enabled : boolean := true;
+		collapse : boolean := true;
+		reduce : boolean := false;
+	}
+	
+	type 'full-parent-tree-diagram' extends 'parent-tree-diagram' {
+		enabled : boolean := true;
+		collapse : boolean := false;
+		reduce : boolean := false;
+	}
+	
+	type 'custom-parent-tree-diagram' extends 'parent-tree-diagram' {
+		enabled : boolean;
+		collapse : boolean;
+		reduce : boolean;
+	}
+	
+	
+	type 'evolutionary-algorithm-override' extends 'evolutionary-algorithm' {
+		'writer' : instance 'statistics-writer';
+		'lengthPenaltyFactor' : real;
+		'proximityRewardFactor' : real;
+		'serverMode' : boolean;
+		'printBest' : boolean;
+		'run-instruction' : instance 'run-instruction';
+		'parent-tree-diagram' :  instance 'parent-tree-diagram';
+	}
+}
+

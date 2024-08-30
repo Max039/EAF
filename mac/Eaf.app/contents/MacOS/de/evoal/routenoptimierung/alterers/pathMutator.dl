@@ -1,0 +1,12 @@
+import "definitions" from de.evoal.optimisation.ea.optimisation;
+
+
+module de.evoal.routenoptimierung.alterers.pathMutator {
+	type 'path-mutator' extends mutator  {
+		'jenetics-mutator' : string;
+		'mutatorMutationChance' : real;
+		'mutatorDeletionChance' : real;
+		'mutatorDistanceWeightFactor' : real;
+	}
+}
+
