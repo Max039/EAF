@@ -1903,7 +1903,15 @@ public class UiUtil {
                 "Enter sudo password:", passwordField
         };
 
+        // Show the dialog
         int option = JOptionPane.showConfirmDialog(null, message, "Password Input", JOptionPane.OK_CANCEL_OPTION);
+
+        // Request focus on the password field after the dialog is shown
+        SwingUtilities.invokeLater(() -> {
+            passwordField.requestFocusInWindow();
+        });
+
+        // Check if the user pressed OK
         if (option == JOptionPane.OK_OPTION) {
             char[] password = passwordField.getPassword();
             return new String(password);
@@ -1911,6 +1919,7 @@ public class UiUtil {
             return null;
         }
     }
+
 
     // Custom SplitPaneUI
     static class CustomSplitPaneUI extends BasicSplitPaneUI {
