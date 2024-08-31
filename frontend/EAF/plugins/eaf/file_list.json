@@ -1,34 +1,34 @@
 {"files": [
     {
-        "path": "C:\\Users\\mpies\\Documents\\GitHub\\EAF\\frontend\\EAF\\plugins\\eaf\\src\\main\\resources\\de\\eaf\\statistics\\hook.dl",
-        "lastModified": 1724561629935
+        "path": "/Users/max039/Documents/GitHub/EAF/frontend/EAF/plugins/eaf/.gitignore",
+        "lastModified": 1725051111704
     },
     {
-        "path": "C:\\Users\\mpies\\Documents\\GitHub\\EAF\\frontend\\EAF\\plugins\\eaf\\src\\main\\resources\\META-INF\\maven\\archetype.xml",
-        "lastModified": 1724551737339
+        "path": "/Users/max039/Documents/GitHub/EAF/frontend/EAF/plugins/eaf/src/main/java/de/eaf/statistics/Hook.java",
+        "lastModified": 1725051111708
     },
     {
-        "path": "C:\\Users\\mpies\\Documents\\GitHub\\EAF\\frontend\\EAF\\plugins\\eaf\\.gitignore",
-        "lastModified": 1724551730808
+        "path": "/Users/max039/Documents/GitHub/EAF/frontend/EAF/plugins/eaf/src/main/java/module-info.java",
+        "lastModified": 1725051111709
     },
     {
-        "path": "C:\\Users\\mpies\\Documents\\GitHub\\EAF\\frontend\\EAF\\plugins\\eaf\\src\\main\\resources\\META-INF\\beans.xml",
-        "lastModified": 1724561391038
+        "path": "/Users/max039/Documents/GitHub/EAF/frontend/EAF/plugins/eaf/pom.xml",
+        "lastModified": 1725051111708
     },
     {
-        "path": "C:\\Users\\mpies\\Documents\\GitHub\\EAF\\frontend\\EAF\\plugins\\eaf\\src\\main\\java\\de\\eaf\\statistics\\Hook.java",
-        "lastModified": 1724629904965
+        "path": "/Users/max039/Documents/GitHub/EAF/frontend/EAF/plugins/eaf/src/main/resources/META-INF/beans.xml",
+        "lastModified": 1725051111709
     },
     {
-        "path": "C:\\Users\\mpies\\Documents\\GitHub\\EAF\\frontend\\EAF\\plugins\\eaf\\pom.xml",
-        "lastModified": 1724909554977
+        "path": "/Users/max039/Documents/GitHub/EAF/frontend/EAF/plugins/eaf/src/main/resources/META-INF/MANIFEST.MF",
+        "lastModified": 1725051111709
     },
     {
-        "path": "C:\\Users\\mpies\\Documents\\GitHub\\EAF\\frontend\\EAF\\plugins\\eaf\\src\\main\\java\\module-info.java",
-        "lastModified": 1724561644097
+        "path": "/Users/max039/Documents/GitHub/EAF/frontend/EAF/plugins/eaf/src/main/resources/de/eaf/statistics/hook.dl",
+        "lastModified": 1725051111710
     },
     {
-        "path": "C:\\Users\\mpies\\Documents\\GitHub\\EAF\\frontend\\EAF\\plugins\\eaf\\src\\main\\resources\\META-INF\\MANIFEST.MF",
-        "lastModified": 1724561405915
+        "path": "/Users/max039/Documents/GitHub/EAF/frontend/EAF/plugins/eaf/src/main/resources/META-INF/maven/archetype.xml",
+        "lastModified": 1725051111710
     }
 ]}

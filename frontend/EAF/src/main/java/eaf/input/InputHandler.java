@@ -54,7 +54,7 @@ public class InputHandler {
             @Override
             public void keyPressed(KeyEvent e) {
                 var leftPanel = Main.mainPanel.leftPanel;
-                if (e.getKeyCode() == KeyEvent.VK_CONTROL) {
+                if (e.getKeyCode() == KeyEvent.VK_CONTROL || e.getKeyCode() == KeyEvent.VK_META) {
                     isControlPressed = true;
                 }
                 else if (e.getKeyCode() == KeyEvent.VK_SHIFT) {
@@ -129,7 +129,7 @@ public class InputHandler {
 
             @Override
             public void keyReleased(KeyEvent e) {
-                if (e.getKeyCode() == KeyEvent.VK_CONTROL) {
+                if (e.getKeyCode() == KeyEvent.VK_CONTROL || e.getKeyCode() == KeyEvent.VK_META) {
                     isControlPressed = false;
                 }
                 else if (e.getKeyCode() == KeyEvent.VK_SHIFT) {
