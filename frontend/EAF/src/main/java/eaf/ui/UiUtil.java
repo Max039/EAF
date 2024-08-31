@@ -1899,25 +1899,47 @@ public class UiUtil {
         // Create a text field for password input
         JPasswordField passwordField = new JPasswordField();
         passwordField.setEchoChar('*');
-        Object[] message = {
-                "Enter sudo password:", passwordField
-        };
 
-        // Show the dialog
-        int option = JOptionPane.showConfirmDialog(null, message, "Password Input", JOptionPane.OK_CANCEL_OPTION);
+        // Create the dialog with a custom panel
+        JPanel panel = new JPanel(new GridLayout(2, 1));
+        panel.add(new JLabel("Enter sudo password:"));
+        panel.add(passwordField);
 
-        // Request focus on the password field after the dialog is shown
+        // Create and configure the dialog
+        JDialog dialog = new JDialog((Frame) null, "Password Input", true);
+        dialog.setLayout(new BorderLayout());
+        dialog.add(panel, BorderLayout.CENTER);
+
+        JButton okButton = new JButton("OK");
+        okButton.addActionListener(e -> dialog.dispose());
+        JButton cancelButton = new JButton("Cancel");
+        cancelButton.addActionListener(e -> {
+            passwordField.setText(null);
+            dialog.dispose();
+        });
+
+        JPanel buttonPanel = new JPanel();
+        buttonPanel.add(okButton);
+        buttonPanel.add(cancelButton);
+        dialog.add(buttonPanel, BorderLayout.SOUTH);
+
+        dialog.pack();
+        dialog.setLocationRelativeTo(null);
+
+        // Show the dialog and request focus for the password field
         SwingUtilities.invokeLater(() -> {
+            dialog.setVisible(true);
             passwordField.requestFocusInWindow();
         });
 
-        // Check if the user pressed OK
-        if (option == JOptionPane.OK_OPTION) {
-            char[] password = passwordField.getPassword();
-            return new String(password);
-        } else {
-            return null;
+        // Retrieve the password from the field
+        String password = null;
+        if (okButton.isFocusOwner()) {
+            char[] passwordArray = passwordField.getPassword();
+            password = new String(passwordArray);
         }
+
+        return password;
     }
 
 
