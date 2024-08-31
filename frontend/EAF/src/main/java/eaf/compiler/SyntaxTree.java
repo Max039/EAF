@@ -34,7 +34,7 @@ public class SyntaxTree {
 
     public static HashMap<String, Constant> constantRegister;
 
-    public static String buildPath = "\\EvoAlBuilds\\" + evoalBuild + "\\evoal\\definitions\\de";
+    public static String buildPath = "/EvoAlBuilds/" + evoalBuild + "/evoal/definitions/de";
 
     //=======================================================================
     //                  class name      fieldname     FieldType   Value
