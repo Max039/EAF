@@ -3,6 +3,7 @@ package eaf.sound;
 import eaf.Main;
 
 import java.awt.*;
+import java.io.IOException;
 
 public class SoundManager {
 
@@ -12,10 +13,9 @@ public class SoundManager {
 
         switch (Main.os) {
             case MAC -> {
-                // macOS specific implementation
                 try {
-                    Runtime.getRuntime().exec(new String[]{"osascript", "-e", "beep 2"});
-                } catch (Exception e) {
+                    Runtime.getRuntime().exec(new String[]{"osascript", "-e", "set volume output volume 100", "-e", "do shell script \"afplay /System/Library/Sounds/Funk.aiff\""});
+                } catch (IOException e) {
                     e.printStackTrace();
                 }
             }
