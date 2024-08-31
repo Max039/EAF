@@ -30,15 +30,13 @@ public class MavenProjectHandler {
     private static void runMavenCommand(String projectPath, List<String> commands) throws IOException, InterruptedException {
         for (var command : commands) {
             ProcessBuilder processBuilder = new ProcessBuilder();
-
+            //processBuilder.directory(new File(projectPath));
             switch (Main.os) {
                 case MAC -> {
-                    // Use a shell to execute `cd` and then the Maven command
-                    processBuilder.command("sh", "-c", "cd " + projectPath + " && mvn " + command);
+                    processBuilder.command("cd", projectPath, "&&", "mvn", command);
                 }
                 case WINDOWS -> {
-                    // Use cmd.exe to execute `cd` and then the Maven command
-                    processBuilder.command("cmd.exe", "/c", "cd /d " + projectPath + " && mvn.cmd " + command);
+                    processBuilder.command("mvn.cmd", command);
                 }
             }
 
@@ -52,11 +50,13 @@ public class MavenProjectHandler {
                 while ((reader.ready() && (line = reader.readLine()) != null)) {
                     System.out.println(LogManager.maven() + " " + line);
                     Main.console.println(line);
+
                 }
                 try {
                     Thread.sleep(50);
-                } catch (Exception e) {
-                    // Handle exception
+                }
+                catch (Exception e) {
+
                 }
             }
 
