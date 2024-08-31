@@ -1895,6 +1895,24 @@ public class UiUtil {
         cr.setSnapSize(new Dimension(10, 10));
     }
 
+    public static String getPasswordFromUser() {
+        // Create a text field for password input
+        JPasswordField passwordField = new JPasswordField();
+        passwordField.setEchoChar('*');
+        Object[] message = {
+                "Enter sudo password:", passwordField
+        };
+
+        int option = JOptionPane.showConfirmDialog(null, message, "Password Input", JOptionPane.OK_CANCEL_OPTION);
+        if (option == JOptionPane.OK_OPTION) {
+            char[] password = passwordField.getPassword();
+            return new String(password);
+        } else {
+            System.out.println("Password input cancelled.");
+            return null;
+        }
+    }
+
     // Custom SplitPaneUI
     static class CustomSplitPaneUI extends BasicSplitPaneUI {
         @Override

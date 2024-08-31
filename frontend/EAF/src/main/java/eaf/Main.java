@@ -26,7 +26,7 @@ public class Main extends JPanel {
         WINDOWS
     }
 
-    public static OS os = OS.MAC;
+    public static OS os = null;
 
     public static String version = "0.1.0";
 
@@ -109,6 +109,16 @@ public class Main extends JPanel {
     public static ArrayList<JButton> tabButtons;
 
     public static PluginManager pluginManager = new PluginManager();
+
+    static {
+        String osName = System.getProperty("os.name").toLowerCase();
+        if (osName.contains("win")) {
+            os = OS.WINDOWS;
+        }
+        if (osName.contains("mac")) {
+            os = OS.MAC;
+        }
+    }
 
     public static void main(String[] args) throws Exception {
         try {
