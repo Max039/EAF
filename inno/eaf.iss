@@ -1,9 +1,9 @@
 [Setup]
 ; General settings
-AppName=Eaf
+AppName=EvoAl Frontend
 AppVersion=1.0
-DefaultDirName={pf}\Eaf\
-DefaultGroupName=Eaf
+DefaultDirName={pf}\EvoAl Frontend\
+DefaultGroupName=EvoAl Frontend
 OutputBaseFilename=eaf-setup
 Compression=lzma
 SolidCompression=yes
@@ -14,15 +14,15 @@ SetupIconFile={#SourcePath}\icon.ico
 
 [Files]
 ; Copy the entire folder to the selected directory
-Source: "{#SourcePath}\..\frontend\EAF\*"; DestDir: "{app}"; Flags: recursesubdirs createallsubdirs; Excludes: "EvoAlBuilds";
+Source: "{#SourcePath}\..\frontend\EAF\*"; DestDir: "{app}"; Flags: recursesubdirs createallsubdirs; Excludes: "builds";
 Source: "{#SourcePath}\icon.ico"; DestDir: "{app}"; Flags: ignoreversion
 
 [Icons]
 ; Create a shortcut for the executable in the start menu with the icon
-Name: "{group}\Eaf"; Filename: "{app}\run_eaf.vbs"; IconFilename: "{app}\icon.ico"
+Name: "{group}\EvoAl Frontend"; Filename: "{app}\run_eaf.vbs"; IconFilename: "{app}\icon.ico"
 ; Optionally, create a shortcut on the desktop with the icon
-Name: "{userdesktop}\Eaf"; Filename: "{app}\run_eaf.vbs"; IconFilename: "{app}\icon.ico"; Tasks: desktopicon
-Name: "{app}\Eaf"; Filename: "{app}\run_eaf.vbs"; IconFilename: "{app}\icon.ico"; WorkingDir: "{app}"
+Name: "{userdesktop}\EvoAl Frontend"; Filename: "{app}\run_eaf.vbs"; IconFilename: "{app}\icon.ico"; Tasks: desktopicon
+Name: "{app}\EvoAl Frontend"; Filename: "{app}\run_eaf.vbs"; IconFilename: "{app}\icon.ico"; WorkingDir: "{app}"
 
 [Tasks]
 ; Option to create a desktop shortcut
@@ -30,15 +30,15 @@ Name: "desktopicon"; Description: "Create a &desktop icon"; GroupDescription: "A
 
 [Registry]
 ; Register the .eaf file extension with your application
-Root: HKCR; Subkey: ".eaf"; ValueType: string; ValueName: ""; ValueData: "Eaf-File"; Flags: uninsdeletevalue
-Root: HKCR; Subkey: "Eaf-File"; ValueType: string; ValueName: ""; ValueData: "Eaf-File"; Flags: uninsdeletekey
-Root: HKCR; Subkey: "Eaf-File\DefaultIcon"; ValueType: string; ValueName: ""; ValueData: "{app}\icon.ico"; Flags: uninsdeletekey
-Root: HKCR; Subkey: "Eaf-File\shell\open\command"; ValueType: string; ValueName: ""; ValueData: """{app}\run_eaf.vbs"" ""%1"""; Flags: uninsdeletekey
+Root: HKCR; Subkey: ".eaf"; ValueType: string; ValueName: ""; ValueData: "EvoAl-Frontend-File"; Flags: uninsdeletevalue
+Root: HKCR; Subkey: "EvoAl-Frontend-File"; ValueType: string; ValueName: ""; ValueData: "EvoAl-Frontend-File"; Flags: uninsdeletekey
+Root: HKCR; Subkey: "EvoAl-Frontend-File\DefaultIcon"; ValueType: string; ValueName: ""; ValueData: "{app}\icon.ico"; Flags: uninsdeletekey
+Root: HKCR; Subkey: "EvoAl-Frontend-File\shell\open\command"; ValueType: string; ValueName: ""; ValueData: """{app}\run_eaf.vbs"" ""%1"""; Flags: uninsdeletekey
 
 
 [Run]
 ; Create a VBS script to run the batch file
-Filename: "{app}\first_time.bat"; Description: "Run Eaf"; Flags: nowait postinstall skipifsilent
+Filename: "{app}\first_time.bat"; Description: "Run EvoAl Frontend"; Flags: nowait postinstall skipifsilent
 
 [Code]
 var

@@ -34,7 +34,7 @@ public class SyntaxTree {
 
     public static HashMap<String, Constant> constantRegister;
 
-    public static String buildPath = "/EvoAlBuilds/" + evoalBuild + "/evoal/definitions/de";
+    public static String buildPath = "/" + Main.evoalBuildFolder + "/" + evoalBuild + "/evoal/definitions/de";
 
     //=======================================================================
     //                  class name      fieldname     FieldType   Value
@@ -208,7 +208,7 @@ public class SyntaxTree {
 
     public static String makeModuleName(String s) {
         String definitionName = s.replace(File.separator, ".").replace("/", ".").replace(".dl", "").replace(".ddl", "");
-        definitionName =  definitionName.replace("EvoAlBuilds." + evoalBuild + ".evoal.definitions.", "");
+        definitionName =  definitionName.replace(Main.evoalBuildFolder + "." + evoalBuild + ".evoal.definitions.", "");
         return definitionName;
     }
 

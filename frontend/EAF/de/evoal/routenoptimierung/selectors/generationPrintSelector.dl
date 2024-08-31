@@ -1,9 +1,0 @@
-import "definitions" from de.evoal.optimisation.ea.optimisation;
-
-
-module de.evoal.routenoptimierung.selectors.generationPrintSelector {
-	type 'generation-print-selector' extends selector {
-		'child-selector' : instance selector;
-	}
-}
-

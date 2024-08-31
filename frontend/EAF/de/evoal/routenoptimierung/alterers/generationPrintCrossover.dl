@@ -1,9 +1,0 @@
-import "definitions" from de.evoal.optimisation.ea.optimisation;
-
-
-module de.evoal.routenoptimierung.alterers.generationPrintCrossover {
-	type 'generation-print-crossover' extends crossover  {
-		'child-alterer' : instance crossover;
-	}
-}
-

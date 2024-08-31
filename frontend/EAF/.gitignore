@@ -2,7 +2,7 @@ target/
 !.mvn/wrapper/maven-wrapper.jar
 !**/src/main/**/target/
 !**/src/test/**/target/
-/EvoAlBuilds/*
+/builds/*
 
 ### IntelliJ IDEA ###
 .idea/modules.xml
