@@ -14,8 +14,7 @@ public class SoundManager {
             case MAC -> {
                 // macOS specific implementation
                 try {
-                    // Play a sound or perform some action specific to macOS
-                    java.awt.Toolkit.getDefaultToolkit().beep(); // Beep sound
+                    Runtime.getRuntime().exec(new String[]{"osascript", "-e", "beep 2"});
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
