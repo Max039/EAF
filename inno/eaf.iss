@@ -14,7 +14,7 @@ SetupIconFile={#SourcePath}\icon.ico
 
 [Files]
 ; Copy the entire folder to the selected directory
-Source: "{#SourcePath}\..\frontend\EAF\*"; DestDir: "{app}"; Flags: recursesubdirs createallsubdirs; Excludes: "builds";
+Source: "{#SourcePath}\..\frontend\EAF\*"; DestDir: "{app}"; Flags: recursesubdirs createallsubdirs; Excludes: "builds,session.cache";
 Source: "{#SourcePath}\icon.ico"; DestDir: "{app}"; Flags: ignoreversion
 
 [Icons]
