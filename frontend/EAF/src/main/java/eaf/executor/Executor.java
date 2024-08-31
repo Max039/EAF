@@ -68,6 +68,8 @@ public class Executor {
                         System.out.println(LogManager.executor() + LogManager.process() + LogManager.status() + " PLease enter sudo pwd!");
                         sudoPwd = UiUtil.getPasswordFromUser();
                         if (sudoPwd == null) {
+                            System.out.println(LogManager.executor() + LogManager.process() + LogManager.status() + " Password input cancelled.");
+                            System.out.println(LogManager.executor() + LogManager.process() + LogManager.status() + " Terminating startup ...");
                             InputHandler.processTerminated();
                             return;
                         }

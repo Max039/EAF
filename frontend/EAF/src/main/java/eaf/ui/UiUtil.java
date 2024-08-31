@@ -1908,7 +1908,6 @@ public class UiUtil {
             char[] password = passwordField.getPassword();
             return new String(password);
         } else {
-            System.out.println("Password input cancelled.");
             return null;
         }
     }
