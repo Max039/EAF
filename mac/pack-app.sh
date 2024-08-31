@@ -20,7 +20,7 @@ mkdir -p "$MACOS_FOLDER"
 
 # Copy the new folder into the MacOS directory
 echo "Copying $SOURCE_FOLDER to $MACOS_FOLDER"
-cp -R "$SOURCE_FOLDER/"* "$MACOS_FOLDER"
+rsync -av --exclude 'builds' "$SOURCE_FOLDER/" "$MACOS_FOLDER/"
 
 # Copy the launcher.exec to the MacOS directory
 echo "Adding $LAUNCHER_FILE to $MACOS_FOLDER"
