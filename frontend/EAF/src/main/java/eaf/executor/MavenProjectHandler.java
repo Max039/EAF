@@ -31,7 +31,15 @@ public class MavenProjectHandler {
         for (var command : commands) {
             ProcessBuilder processBuilder = new ProcessBuilder();
             processBuilder.directory(new File(projectPath));
-            processBuilder.command("mvn.cmd", command);
+            switch (Main.os) {
+                case MAC -> {
+                    processBuilder.command("mvn", command);
+                }
+                case WINDOWS -> {
+                    processBuilder.command("mvn.cmd", command);
+                }
+            }
+
             Process process = processBuilder.start();
 
             // Capture the combined output (stdout and stderr)
