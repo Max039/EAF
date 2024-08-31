@@ -98,7 +98,7 @@ public class ScriptWriter {
 
         return "#!/bin/sh\n" +
                 "export DISPLAY=localhost:0.0\n" +
-                "export EVOAL_HOME=$( cd -- \"$(dirname $0)/../../EvoAlBuilds/" + build + "/evoal\" >/dev/null 2>&1 ; pwd -P )\n" +
+                "export EVOAL_HOME=$( cd -- \"$(dirname $0)/../../" + Main.evoalBuildFolder + "/" + build + "/evoal\" >/dev/null 2>&1 ; pwd -P )\n" +
                 "# Print the current working directory for debugging\n" +
                 "echo \"Current working directory in second script: $(pwd)\"\n" +
                 "echo \"EVOAL_HOME in second script: $EVOAL_HOME\"\n" +

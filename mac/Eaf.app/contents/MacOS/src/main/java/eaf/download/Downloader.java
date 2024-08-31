@@ -23,6 +23,7 @@ import java.util.stream.Stream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
+import eaf.Main;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import eaf.models.Pair;
@@ -36,7 +37,7 @@ public class Downloader extends JFrame {
     private static final String PROJECT_ID = "evoal%2Fsource%2Fevoal-core"; // URL-encoded project ID
     private static final String PRIVATE_TOKEN = "oWVzZS_JquJwxFhqnx4y"; // Read api only - never expires
 
-    private static final String PATH = "EvoAlBuilds";
+    private static final String PATH = Main.evoalBuildFolder;
 
     private static final String DOWNLOAD_PATH = PATH + "/";
 

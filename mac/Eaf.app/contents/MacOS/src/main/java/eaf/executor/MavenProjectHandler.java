@@ -66,14 +66,14 @@ public class MavenProjectHandler {
             ArrayList<String> ignore = new ArrayList<>();
             ignore.add(plugin.path + "/target");
             ignore.add(plugin.path + "/.idea");
-            File f = new File(currentPath + "/EvoAlBuilds/" + Main.evoalVersion + "/evoal/plugins/"+ plugin.name + ".jar");
+            File f = new File(currentPath + "/" + Main.evoalBuildFolder + "/" + Main.evoalVersion + "/evoal/plugins/"+ plugin.name + ".jar");
             System.out.println(LogManager.maven() + " Preparing Plugin " + plugin.name + " at " + f.getPath());
             if (FileChangesChecker.updateFileJson(plugin.path, ignore) || !f.exists()) {
                 if (f.exists()) {
                     f.delete();
                 }
                 Main.console.println("Recompiling and Copying Plugin " + plugin.name + " ...");
-                handleMavenProject(plugin.path, currentPath + "/EvoAlBuilds/" + Main.evoalVersion + "/evoal/plugins", plugin.name + ".jar");
+                handleMavenProject(plugin.path, currentPath + "/" + Main.evoalBuildFolder + "/" + Main.evoalVersion + "/evoal/plugins", plugin.name + ".jar");
                 Main.console.flush();
             }
         }

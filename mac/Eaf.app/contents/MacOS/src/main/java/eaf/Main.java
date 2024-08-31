@@ -85,7 +85,9 @@ public class Main extends JPanel {
 
     public static String savesPath = "/projects";
 
-    public static String programName = "EAF";
+    public static String programName = "EvoAl Frontend";
+
+    public static String evoalBuildFolder = "builds";
 
     public static CacheManager cacheManager = new CacheManager();
 

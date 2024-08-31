@@ -30,8 +30,8 @@ public class ClassLocator {
         String currentDirectory = System.getProperty("user.dir");
         // Example usage
         ArrayList<String> folderPaths = new ArrayList<>();
-        folderPaths.add(currentDirectory + "/EvoAlBuilds/" + Main.evoalVersion + "/evoal/modules");
-        folderPaths.add(currentDirectory + "/EvoAlBuilds/" + Main.evoalVersion + "/evoal/plugins");
+        folderPaths.add(currentDirectory + "/" + Main.evoalBuildFolder + "/" + Main.evoalVersion + "/evoal/modules");
+        folderPaths.add(currentDirectory + "/" + Main.evoalBuildFolder + "/" + Main.evoalVersion + "/evoal/plugins");
 
         refreshClassNames();
 
