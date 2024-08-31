@@ -21,6 +21,13 @@ import static eaf.ui.UiUtil.createMenuBar;
 
 public class Main extends JPanel {
 
+    public enum OS {
+        MAC,
+        WINDOWS
+    }
+
+    public static OS os = OS.MAC;
+
     public static String version = "0.1.0";
 
     public static Color bgColor = new Color(49, 51, 53);
