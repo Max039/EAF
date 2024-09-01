@@ -1,5 +1,6 @@
 package eaf.manager;
 
+import eaf.download.Downloader;
 import eaf.models.Pair;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -426,6 +427,8 @@ public class FileManager {
             throw new IOException("Directory does not exist: " + newDir);
         }
         System.setProperty("user.dir", newDir.toAbsolutePath().toString());
+        Downloader.PATH = System.getProperty("user.dir") + Main.evoalBuildFolder;
+        Downloader.DOWNLOAD_PATH = Downloader.PATH + "/";
         System.out.println("Working directory changed to: " + System.getProperty("user.dir"));
     }
 }
