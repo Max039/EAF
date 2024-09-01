@@ -1889,11 +1889,13 @@ public class UiUtil {
 
 
     public static void setResizer() {
-        ComponentResizer cr = new ComponentResizer();
-        cr.setMinimumSize(new Dimension(300, 300));
-        cr.setMaximumSize(new Dimension(Integer.MAX_VALUE, Integer.MAX_VALUE));
-        cr.registerComponent(mainFrame);
-        cr.setSnapSize(new Dimension(10, 10));
+        if (os == OS.WINDOWS) {
+            ComponentResizer cr = new ComponentResizer();
+            cr.setMinimumSize(new Dimension(300, 300));
+            cr.setMaximumSize(new Dimension(Integer.MAX_VALUE, Integer.MAX_VALUE));
+            cr.registerComponent(mainFrame);
+            cr.setSnapSize(new Dimension(10, 10));
+        }
     }
 
     public static void getPasswordFromUser() {
