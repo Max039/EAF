@@ -1,26 +1,30 @@
 {"files": [
     {
-        "path": "C:\\Users\\mpies\\Documents\\GitHub\\EAF\\frontend\\EAF\\plugins\\test\\pom.xml",
-        "lastModified": 1725169996613
+        "path": "/Users/max039/Documents/GitHub/EAF/frontend/EAF/plugins/test/src/main/resources/META-INF/beans.xml",
+        "lastModified": 1725174482657
     },
     {
-        "path": "C:\\Users\\mpies\\Documents\\GitHub\\EAF\\frontend\\EAF\\plugins\\test\\src\\main\\resources\\META-INF\\MANIFEST.MF",
-        "lastModified": 1724561405915
+        "path": "/Users/max039/Documents/GitHub/EAF/frontend/EAF/plugins/test/.gitignore",
+        "lastModified": 1725174482641
     },
     {
-        "path": "C:\\Users\\mpies\\Documents\\GitHub\\EAF\\frontend\\EAF\\plugins\\test\\src\\main\\java\\module-info.java",
-        "lastModified": 1725169996613
+        "path": "/Users/max039/Documents/GitHub/EAF/frontend/EAF/plugins/test/src/main/resources/META-INF/MANIFEST.MF",
+        "lastModified": 1725174482650
     },
     {
-        "path": "C:\\Users\\mpies\\Documents\\GitHub\\EAF\\frontend\\EAF\\plugins\\test\\src\\main\\resources\\META-INF\\maven\\archetype.xml",
-        "lastModified": 1724551737339
+        "path": "/Users/max039/Documents/GitHub/EAF/frontend/EAF/plugins/test/src/main/java/module-info.java",
+        "lastModified": 1725174482661
     },
     {
-        "path": "C:\\Users\\mpies\\Documents\\GitHub\\EAF\\frontend\\EAF\\plugins\\test\\.gitignore",
-        "lastModified": 1724551730808
+        "path": "/Users/max039/Documents/GitHub/EAF/frontend/EAF/plugins/test/pom.xml",
+        "lastModified": 1725174482661
     },
     {
-        "path": "C:\\Users\\mpies\\Documents\\GitHub\\EAF\\frontend\\EAF\\plugins\\test\\src\\main\\resources\\META-INF\\beans.xml",
-        "lastModified": 1724561391038
+        "path": "/Users/max039/Documents/GitHub/EAF/frontend/EAF/plugins/test/.DS_Store",
+        "lastModified": 1725157831640
+    },
+    {
+        "path": "/Users/max039/Documents/GitHub/EAF/frontend/EAF/plugins/test/src/main/resources/META-INF/maven/archetype.xml",
+        "lastModified": 1725174482656
     }
 ]}

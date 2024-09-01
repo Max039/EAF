@@ -11,7 +11,10 @@ import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import java.io.*;
 import java.nio.file.*;
+import java.nio.file.attribute.BasicFileAttributes;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Comparator;
 
 public class FileManager {
 
@@ -283,6 +286,62 @@ public class FileManager {
         }
     }
 
+    public static boolean isDirectoryEmpty(File directory) {
+        // Check if the File object represents a directory
+        if (directory.isDirectory()) {
+            // Get the contents of the directory
+            String[] contents = directory.list();
+            // Return true if the directory is empty, false otherwise
+            return contents == null || contents.length == 0;
+        }
+        // If the file is not a directory, return false
+        return false;
+    }
+
+    public static File findFirstFileInReverseOrder(String folderPath) {
+        File folder = new File(folderPath);
+
+        if (folder.isDirectory()) {
+            File[] files = folder.listFiles();
+
+            if (files != null && files.length > 0) {
+                // Sort files by their names in reverse order
+                Arrays.sort(files, new Comparator<File>() {
+                    @Override
+                    public int compare(File f1, File f2) {
+                        return f2.getName().compareTo(f1.getName());
+                    }
+                });
+
+                // Return the first file in the sorted list
+                return files[0];
+            }
+        }
+        return null;
+    }
+
+    public static boolean folderExists(String directoryPath, String folderName) {
+        Path dirPath = Paths.get(directoryPath);
+
+        // Check if the provided path is a directory
+        if (!Files.isDirectory(dirPath)) {
+            System.out.println("The provided path is not a directory.");
+            return false;
+        }
+
+        try (DirectoryStream<Path> stream = Files.newDirectoryStream(dirPath)) {
+            for (Path entry : stream) {
+                if (Files.isDirectory(entry) && entry.getFileName().toString().equals(folderName)) {
+                    return true;
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return false;
+    }
+
     public static void copyJarFile(String projectPath, String destinationPath, String newFileName) throws IOException {
         Path targetDir = Paths.get(projectPath, "target/plugin");
         if (!Files.exists(targetDir)) {
@@ -305,5 +364,60 @@ public class FileManager {
         Files.copy(jarFile.toPath(), destination, StandardCopyOption.REPLACE_EXISTING);
 
         System.out.println(LogManager.fileManager() + LogManager.write() + " Copied " + jarFile.getName() + " to " + destinationPath + " as " + newFileName);
+    }
+
+
+    public static void copyFilesExcludingJar(Path sourceDir, Path targetDir, String excludeFileName) throws IOException {
+        if (Files.exists(targetDir)) {
+            System.out.println("Target directory already exists. No files copied.");
+            return;
+        }
+
+        Files.createDirectories(targetDir);
+
+        Files.walkFileTree(sourceDir, new SimpleFileVisitor<Path>() {
+            @Override
+            public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
+                Path targetFile = targetDir.resolve(sourceDir.relativize(file));
+                if (!file.getFileName().toString().equals(excludeFileName)) {
+                    Files.createDirectories(targetFile.getParent());
+                    Files.copy(file, targetFile, StandardCopyOption.REPLACE_EXISTING);
+                }
+                return FileVisitResult.CONTINUE;
+            }
+
+            @Override
+            public FileVisitResult postVisitDirectory(Path dir, IOException exc) throws IOException {
+                if (exc == null) {
+                    Path targetDirPath = targetDir.resolve(sourceDir.relativize(dir));
+                    Files.createDirectories(targetDirPath);
+                    return FileVisitResult.CONTINUE;
+                } else {
+                    throw exc;
+                }
+            }
+        });
+    }
+
+    public static void copyToDocuments() {
+        Path sourceDir = Paths.get("Eaf.app/Contents/MacOS");
+        Path targetDir = Paths.get(System.getProperty("user.home"), "Documents", "EvoAl Frontend");
+        String excludeFileName = "eaf.jar";
+
+        try {
+            copyFilesExcludingJar(sourceDir, targetDir, excludeFileName);
+            changeWorkingDirectory(targetDir);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+
+    public static void changeWorkingDirectory(Path newDir) throws IOException {
+        if (!Files.exists(newDir)) {
+            throw new IOException("Directory does not exist: " + newDir);
+        }
+        System.setProperty("user.dir", newDir.toAbsolutePath().toString());
+        System.out.println("Working directory changed to: " + System.getProperty("user.dir"));
     }
 }

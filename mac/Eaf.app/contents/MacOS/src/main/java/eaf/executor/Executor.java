@@ -6,14 +6,38 @@ import eaf.manager.ColorManager;
 import eaf.manager.LogManager;
 import eaf.process.GenerationTracker;
 import eaf.sound.SoundManager;
+import eaf.ui.UiUtil;
 import eaf.ui.panels.ErrorPane;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import java.io.*;
 
 public class Executor {
+
+    public static boolean pwdSet = false;
+
+    public static String ramVersionOfSudo = null;
+    public static String ramTempVersionOfSudo = null;
+
+    public static boolean makeExecutable(String filePath) {
+        System.out.println(LogManager.executor() + LogManager.script() + LogManager.shell() + LogManager.status() + " Making script executable ...");
+        // Construct the chmod command
+        String command = "chmod +x " + filePath;
+
+        try {
+            // Execute the command
+            Process process = Runtime.getRuntime().exec(command);
+
+            // Wait for the command to complete
+            int exitCode = process.waitFor();
+
+            // Return true if the command was successful
+            return exitCode == 0;
+        } catch (IOException | InterruptedException e) {
+            // Print the exception if an error occurs
+            e.printStackTrace();
+            return false;
+        }
+    }
 
     public static void execute() throws IOException, InterruptedException {
         InputHandler.processStarted();
@@ -33,7 +57,44 @@ public class Executor {
             String scriptPath = currentPath + "/" + ScriptWriter.getPathToProject() + "/run.sh";
             System.out.println(LogManager.executor() + LogManager.script() + LogManager.shell() + LogManager.status() + " Current path: " + currentPath);
             System.out.println(LogManager.executor() + LogManager.script() + LogManager.shell() + LogManager.status() + " Script path: " + scriptPath);
-            String[] command = new String[]{"C:/Program Files/Git/bin/bash.exe",  scriptPath};
+
+
+
+            String[] command;
+            String sudoPwd = ramVersionOfSudo;
+
+            switch (Main.os) {
+                case MAC -> {
+                    makeExecutable(scriptPath);
+                    command = new String[]{"sudo","-S","/bin/bash", scriptPath};
+                    if (sudoPwd == null) {
+                        System.out.println(LogManager.executor() + LogManager.process() + LogManager.status() + " PLease enter sudo pwd!");
+                        pwdSet = false;
+                        ramTempVersionOfSudo = null;
+                        UiUtil.getPasswordFromUser();
+                        while (!pwdSet) {
+                            Thread.sleep(50);
+                        }
+                        sudoPwd = ramTempVersionOfSudo;
+
+                        if (sudoPwd == null) {
+                            System.out.println(LogManager.executor() + LogManager.process() + LogManager.status() + " Password input cancelled.");
+                            System.out.println(LogManager.executor() + LogManager.process() + LogManager.status() + " Terminating startup ...");
+                            InputHandler.processTerminated();
+                            return;
+                        }
+                    }
+                }
+                case WINDOWS -> {
+                    command = new String[]{"C:/Program Files/Git/bin/bash.exe",  scriptPath};
+                    sudoPwd = "";
+                }
+                default -> {
+                    InputHandler.processTerminated();
+                    throw new RuntimeException("Cannot execute script no valid OS found!");
+                }
+            }
+
 
             System.out.println(LogManager.executor() + LogManager.process() + LogManager.status() + " Building process ...");
             ProcessBuilder pb = new ProcessBuilder(command);
@@ -41,6 +102,15 @@ public class Executor {
             System.out.println(LogManager.executor() + LogManager.process() + LogManager.status() + " Starting process ...");
             Process process = pb.start();
             System.out.println(LogManager.executor() + LogManager.process() + LogManager.status() + " " + ColorManager.colorText("Successfully", ColorManager.sucessColor) + " started process!");
+
+            if(Main.os == Main.OS.MAC){
+                try (OutputStream ops = process.getOutputStream();
+                     BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(ops))) {
+                    writer.write(sudoPwd + "\n");
+                    writer.flush();
+                }
+            }
+
 
             System.out.println(LogManager.executor() + LogManager.process() + LogManager.status() + " Setting input stream reader ...");
             // Get input stream of the process (combined output and error stream)
@@ -84,6 +154,7 @@ public class Executor {
 
                     // Process has terminated, break out of the loop
                     if (exitCode == 0) {
+                        ramVersionOfSudo = sudoPwd;
                         System.out.println(LogManager.executor() + LogManager.process() + LogManager.status() + " Process " + ColorManager.colorText("finished successfully", ColorManager.sucessColor) + "!");
                         Main.console.print("Process finished ");
                         Main.console.printColored("successfully", ColorManager.sucessColor);

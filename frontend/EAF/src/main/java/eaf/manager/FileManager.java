@@ -400,8 +400,8 @@ public class FileManager {
     }
 
     public static void copyToDocuments() {
-        Path sourceDir = Paths.get("Eaf.app/Contents/MacOS");
-        Path targetDir = Paths.get(System.getProperty("user.home"), "Documents", "EvoAl Frontend");
+        Path sourceDir = Paths.get(System.getProperty("user.dir"));
+        Path targetDir = Paths.get(System.getProperty("user.home"), "Documents", "Eaf");
         String excludeFileName = "eaf.jar";
 
         try {

@@ -2,6 +2,7 @@ package eaf.ui;
 
 import eaf.compiler.SyntaxTree;
 import eaf.*;
+import eaf.executor.Executor;
 import eaf.executor.OpenIntelliJProject;
 import eaf.input.InputHandler;
 import eaf.manager.ExtraRectManager;
@@ -24,9 +25,7 @@ import javax.swing.*;
 import javax.swing.border.Border;
 import javax.swing.border.EmptyBorder;
 import javax.swing.event.*;
-import javax.swing.plaf.basic.BasicScrollBarUI;
-import javax.swing.plaf.basic.BasicSplitPaneDivider;
-import javax.swing.plaf.basic.BasicSplitPaneUI;
+import javax.swing.plaf.basic.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.awt.image.BufferedImage;
@@ -100,10 +99,11 @@ public class UiUtil {
     static void addFileMenu(JMenuBar menuBar) {
         // Create the File menu
         JMenu fileMenu = new JMenu("File");
-
+        fileMenu.setBackground(Color.WHITE);
+        fileMenu.setBackground(dividerColor);
         // Create menu items
         JMenuItem openFileDotDotDot = new JMenuItem("open ...");
-
+        openFileDotDotDot.setUI(new CustomMenuItemUI(bgColor)); // Set custom UI delegate
         openFileDotDotDot.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -126,6 +126,7 @@ public class UiUtil {
 
 
         JMenuItem saveFileDotDotDot = new JMenuItem("save as ...");
+        saveFileDotDotDot.setUI(new CustomMenuItemUI(bgColor)); // Set custom UI delegate
 
         saveFileDotDotDot.addActionListener(new ActionListener() {
             @Override
@@ -138,7 +139,8 @@ public class UiUtil {
 
         // Create a JMenuItem that will have a submenu
         JMenuItem open = new JMenu("open recent");
-
+        open.setBackground(Color.WHITE);
+        open.setBackground(dividerColor);
         // Add a MenuListener to update the submenu before it is shown
         ((JMenu) open).addMenuListener(new MenuListener() {
             @Override
@@ -152,6 +154,7 @@ public class UiUtil {
                 // Populate the submenu with the updated items
                 for (String item : items) {
                     JMenuItem menuItem = new JMenuItem(item);
+                    menuItem.setUI(new CustomMenuItemUI(bgColor)); // Set custom UI delegate
                     menuItem.addActionListener(new ActionListener() {
                         @Override
                         public void actionPerformed(ActionEvent e) {
@@ -190,7 +193,7 @@ public class UiUtil {
         });
 
         JMenuItem save = new JMenuItem("save");
-
+        save.setUI(new CustomMenuItemUI(bgColor)); // Set custom UI delegate
         save.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -201,7 +204,7 @@ public class UiUtil {
 
 
         JMenuItem newSave = new JMenuItem("new");
-
+        newSave.setUI(new CustomMenuItemUI(bgColor)); // Set custom UI delegate
         newSave.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -226,11 +229,12 @@ public class UiUtil {
     static void addRectMenu(JMenuBar menuBar) {
         // Create the File menu
         JMenu fileMenu = new JMenu("Rects");
-
+        fileMenu.setBackground(Color.WHITE);
+        fileMenu.setBackground(dividerColor);
 
         // Create menu items
         JMenuItem newRect = new JMenuItem("new");
-
+        newRect.setUI(new CustomMenuItemUI(bgColor)); // Set custom UI delegate
         newRect.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -243,7 +247,7 @@ public class UiUtil {
 
 
         JMenuItem newChild = new JMenuItem("new child");
-
+        newChild.setUI(new CustomMenuItemUI(bgColor)); // Set custom UI delegate
         newChild.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -255,7 +259,7 @@ public class UiUtil {
 
         // Create menu items
         JMenuItem edit = new JMenuItem("new from existing / edit");
-
+        edit.setUI(new CustomMenuItemUI(bgColor)); // Set custom UI delegate
         edit.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -269,7 +273,7 @@ public class UiUtil {
 
 
         JMenuItem reload = new JMenuItem("reload");
-
+        reload.setUI(new CustomMenuItemUI(bgColor)); // Set custom UI delegate
         reload.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -288,9 +292,11 @@ public class UiUtil {
     static void addScriptMenu(JMenuBar menuBar) {
         // Create the File menu
         JMenu scriptMenu = new JMenu("Script");
-
+        scriptMenu.setBackground(Color.WHITE);
+        scriptMenu.setBackground(dividerColor);
         // Create menu items
         JMenuItem run = new JMenuItem("run");
+        run.setUI(new CustomMenuItemUI(bgColor)); // Set custom UI delegate
 
         run.addActionListener(new ActionListener() {
             @Override
@@ -306,13 +312,39 @@ public class UiUtil {
         menuBar.add(scriptMenu);
     }
 
+    static void addEvoAlMenu(JMenuBar menuBar) {
+        // Create the File menu
+        JMenu scriptMenu = new JMenu("EvoAl");
+        scriptMenu.setBackground(Color.WHITE);
+        scriptMenu.setBackground(dividerColor);
+        // Create menu items
+        JMenuItem run = new JMenuItem("select versions");
+        run.setUI(new CustomMenuItemUI(bgColor)); // Set custom UI delegate
+
+        run.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+
+                String currentPath = System.getProperty("user.dir");
+                openFolderWindow(currentPath + "/" + evoalBuildFolder);
+            }
+        });
+
+
+        scriptMenu.add(run);
+        scriptMenu.setBackground(Main.bgColor);
+        scriptMenu.setForeground(Color.WHITE);
+        menuBar.add(scriptMenu);
+    }
+
     static void addPluginMenu(JMenuBar menuBar) {
         // Create the File menu
         JMenu scriptMenu = new JMenu("Plugins");
-
+        scriptMenu.setBackground(Color.WHITE);
+        scriptMenu.setBackground(dividerColor);
         // Create menu items
         JMenuItem run = new JMenuItem("reload");
-
+        run.setUI(new CustomMenuItemUI(bgColor)); // Set custom UI delegate
         run.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -327,7 +359,7 @@ public class UiUtil {
 
         // Create menu items
         JMenuItem newClass = new JMenuItem("new implementation");
-
+        newClass.setUI(new CustomMenuItemUI(bgColor)); // Set custom UI delegate
         newClass.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -347,7 +379,7 @@ public class UiUtil {
 
         // Create menu items
         JMenuItem openInIntellij = new JMenuItem("open in intellij");
-
+        openInIntellij.setUI(new CustomMenuItemUI(bgColor)); // Set custom UI delegate
         openInIntellij.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -360,7 +392,7 @@ public class UiUtil {
 
         // Create menu items
         JMenuItem updatePom = new JMenuItem("update pom");
-
+        updatePom.setUI(new CustomMenuItemUI(bgColor)); // Set custom UI delegate
         updatePom.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -1085,20 +1117,22 @@ public class UiUtil {
         customizeScrollBar(Main.dataPanel);
     }
 
+
+
     public static void createMenuBar() {
         // Create and set up the menu bar
         JMenuBar menuBar = new JMenuBar();
         menuBar.setBackground(Main.dividerColor);
         menuBar.setBorder(BorderFactory.createEmptyBorder(2, 20, 2, 0));
         menuBar.setForeground(Color.WHITE);
-
+        menuBar.setUI(new CustomMenuBarUI()); // Set the custom UI delegate
 
         addFileMenu(menuBar);
 
         addScriptMenu(menuBar);
         addRectMenu(menuBar);
         addPluginMenu(menuBar);
-
+        addEvoAlMenu(menuBar);
 
         // Set the menu bar to the frame
         mainPanel.add(menuBar, BorderLayout.NORTH);
@@ -1888,12 +1922,83 @@ public class UiUtil {
 
 
     public static void setResizer() {
-        ComponentResizer cr = new ComponentResizer();
-        cr.setMinimumSize(new Dimension(300, 300));
-        cr.setMaximumSize(new Dimension(Integer.MAX_VALUE, Integer.MAX_VALUE));
-        cr.registerComponent(mainFrame);
-        cr.setSnapSize(new Dimension(10, 10));
+        if (os == OS.WINDOWS) {
+            ComponentResizer cr = new ComponentResizer();
+            cr.setMinimumSize(new Dimension(300, 300));
+            cr.setMaximumSize(new Dimension(Integer.MAX_VALUE, Integer.MAX_VALUE));
+            cr.registerComponent(mainFrame);
+            cr.setSnapSize(new Dimension(10, 10));
+        }
     }
+
+    public static void getPasswordFromUser() {
+        // Create a text field for password input
+        JPasswordField passwordField = new JPasswordField();
+        passwordField.setEchoChar('*');
+
+
+        // Create the dialog with a custom panel
+        JPanel panel = new JPanel(new GridLayout(2, 1));
+        panel.add(new JLabel("Enter sudo password:"));
+        panel.add(passwordField);
+
+        // Create and configure the dialog
+        JDialog dialog = new JDialog((Frame) null, "Password Input", true);
+        dialog.setLayout(new BorderLayout());
+        dialog.add(panel, BorderLayout.CENTER);
+
+        JButton okButton = new JButton("OK");
+        okButton.addActionListener(e -> {
+            char[] passwordArray = passwordField.getPassword();
+            Executor.ramTempVersionOfSudo = new String(passwordArray);
+            Executor.pwdSet = true;
+            dialog.dispose();
+        });
+        JButton cancelButton = new JButton("Cancel");
+        cancelButton.addActionListener(e -> {
+            Executor.pwdSet = true;
+            dialog.dispose();
+        });
+
+        JPanel buttonPanel = new JPanel();
+        buttonPanel.add(okButton);
+        buttonPanel.add(cancelButton);
+        dialog.add(buttonPanel, BorderLayout.SOUTH);
+
+        dialog.pack();
+        dialog.setLocationRelativeTo(null);
+
+        // Show the dialog and request focus for the password field
+        SwingUtilities.invokeLater(() -> {
+            dialog.setVisible(true);
+            passwordField.requestFocusInWindow();
+        });
+
+        passwordField.addKeyListener(new KeyAdapter() {
+            @Override
+            public void keyPressed(KeyEvent e) {
+                super.keyTyped(e);
+                if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+                    char[] passwordArray = passwordField.getPassword();
+                    Executor.ramTempVersionOfSudo = new String(passwordArray);
+                    Executor.pwdSet = true;
+                    dialog.dispose();
+                }
+            }
+        });
+
+        // Add a window listener to handle the closing action (the "X" button)
+        dialog.addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                // Ensure pwdSet is true if the window is closed by the "X" button
+                Executor.pwdSet = true;
+                dialog.dispose();
+            }
+        });
+
+    }
+
 
     // Custom SplitPaneUI
     static class CustomSplitPaneUI extends BasicSplitPaneUI {
@@ -1974,5 +2079,42 @@ public class UiUtil {
         return selectedObject;
     }
 
+    public static void openFolderWindow(String folderPath) {
+        // Create a JFrame (the main window)
+        JFrame frame = new JFrame("Folder Button App");
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setSize(400, 400);
+
+        // Create a JScrollPane with a JPanel inside it
+        JPanel panel = new JPanel();
+        panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+        JScrollPane scrollPane = new JScrollPane(panel);
+
+        // Get the list of folders in the specified directory
+        File folder = new File(folderPath);
+        File[] listOfFiles = folder.listFiles(File::isDirectory);
+
+        if (listOfFiles != null) {
+            for (File file : listOfFiles) {
+                // Create a button for each folder
+                JButton button = new JButton(file.getName());
+                button.addActionListener(new ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        // Print the name of the folder and close the window
+                        InputHandler.setEvoAlVersion(file.getName());
+                        frame.dispose();
+                    }
+                });
+                panel.add(button);
+            }
+        } else {
+            JOptionPane.showMessageDialog(frame, "The folder path is invalid or there are no subfolders.");
+        }
+
+        // Add the scroll pane to the frame and make it visible
+        frame.add(scrollPane);
+        frame.setVisible(true);
+    }
 
 }

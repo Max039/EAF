@@ -1,8 +1,12 @@
 package eaf;
 
 import eaf.compiler.SyntaxTree;
+import eaf.download.Downloader;
 import eaf.executor.OpenIntelliJProject;
+import eaf.input.InputHandler;
 import eaf.intro.DoubleHelixAnimation;
+import eaf.intro.Intro;
+import eaf.intro.SimpleIntro;
 import eaf.manager.CacheManager;
 import eaf.models.Pair;
 import eaf.plugin.PluginCreator;
@@ -14,12 +18,21 @@ import eaf.ui.panels.*;
 import javax.swing.*;
 import javax.swing.border.LineBorder;
 import java.awt.*;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.io.File;
 import java.util.ArrayList;
 
-import static eaf.ui.UiUtil.createMainTab;
 import static eaf.ui.UiUtil.createMenuBar;
 
 public class Main extends JPanel {
+
+    public enum OS {
+        MAC,
+        WINDOWS
+    }
+
+    public static OS os = null;
 
     public static String version = "0.1.0";
 
@@ -45,7 +58,8 @@ public class Main extends JPanel {
     public static ErrorPane errorManager;
 
     private static final int RECT_SPACING = 5;
-    public static String evoalVersion = "20240708-152016";
+    //public static String evoalVersion = "20240708-152016";
+    public static String evoalVersion = null;
 
     public final RectPanel leftPanel = new RectPanel();
     public final RectPanel rightPanel = new RectPanel();
@@ -89,27 +103,71 @@ public class Main extends JPanel {
 
     public static String evoalBuildFolder = "builds";
 
-    public static CacheManager cacheManager = new CacheManager();
+    public static CacheManager cacheManager;
 
     public static OpenIntelliJProject openIntelliJProject = new OpenIntelliJProject();
 
     public static PluginCreator pluginCreator = null;
 
-    public static DoubleHelixAnimation animation = null;
+    public static Intro intro = null;
 
     public static ArrayList<Pair<String, JComponent>> tabsList;
 
     public static ArrayList<JButton> tabButtons;
 
-    public static PluginManager pluginManager = new PluginManager();
+    public static PluginManager pluginManager;
+
+    static {
+        String osName = System.getProperty("os.name").toLowerCase();
+        if (osName.contains("win")) {
+            os = OS.WINDOWS;
+        }
+        if (osName.contains("mac")) {
+            os = OS.MAC;
+        }
+    }
 
     public static void main(String[] args) throws Exception {
+
+        if (os == OS.MAC) {
+            FileManager.copyToDocuments();
+        }
+
+        cacheManager = new CacheManager();
+        pluginManager = new PluginManager();
         try {
-            animation = DoubleHelixAnimation.create();
-            animation.objective = "Constructing Syntax-Tree";
+            if (os == OS.WINDOWS) {
+                intro = new DoubleHelixAnimation();
+            }
+            else {
+                intro = new SimpleIntro();
+            }
+
+            String currentPath = System.getProperty("user.dir");
+            File builds = new File(currentPath + "/" + evoalBuildFolder);
+
+
+
+
+            if (!builds.exists() || FileManager.isDirectoryEmpty(builds)) {
+                intro.setObjective("Downloading EvoAl Build");
+                Downloader.downloadNewestVersionIfNeeded();
+                var build = FileManager.findFirstFileInReverseOrder(currentPath + "/" + evoalBuildFolder);
+                InputHandler.setEvoAlVersionNoReload(build.getName());
+            }
+
+            evoalVersion = cacheManager.getFirstElement(String.class, "build");
+
+
+            if (evoalVersion == null || !FileManager.folderExists(currentPath + "/" + evoalBuildFolder, evoalVersion)) {
+                var build = FileManager.findFirstFileInReverseOrder(currentPath + "/" + evoalBuildFolder);
+                InputHandler.setEvoAlVersionNoReload(build.getName());
+            }
+
+            intro.setObjective("Constructing Syntax-Tree");
             SyntaxTree.start();
-            animation.stop();
-            while (animation.isUnfinished()) {
+            intro.stop();
+            while (intro.isUnfinished()) {
                 Thread.sleep(100);
             }
         }
@@ -125,7 +183,21 @@ public class Main extends JPanel {
         // Create the main frame
         mainFrame = new JFrame(programName);
 
-        mainFrame.setUndecorated(true);
+        // Set the default close operation to do nothing
+        mainFrame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+
+        // Add a window listener to handle the window closing event
+        mainFrame.addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                InputHandler.tryClose();
+            }
+        });
+
+
+        if (os == OS.WINDOWS) {
+            mainFrame.setUndecorated(true);
+        }
         Image icon = Toolkit.getDefaultToolkit().getImage("imgs/evoal.png");
 
         // Set the icon image for the frame
@@ -147,10 +219,17 @@ public class Main extends JPanel {
 
         // Layout the frame with BorderLayout
         mainFrame.setLayout(new BorderLayout());
-        borderPanel.add(UiUtil.getHeader(), BorderLayout.NORTH);
+        if (os == OS.WINDOWS) {
+            borderPanel.add(UiUtil.getHeader(), BorderLayout.NORTH);
+        }
         borderPanel.add(mainPanel, BorderLayout.CENTER);
 
-        borderPanel.setBorder(new LineBorder(Main.bgColor, 3));
+        if (os == OS.WINDOWS) {
+            borderPanel.setBorder(new LineBorder(Main.bgColor, 3));
+        }else {
+            borderPanel.setBorder(BorderFactory.createEmptyBorder());
+        }
+
         mainFrame.add(borderPanel);
 
 
@@ -169,6 +248,13 @@ public class Main extends JPanel {
     }
 
     private void setupUi() {
+        try {
+            UIManager.setLookAndFeel(UIManager.getCrossPlatformLookAndFeelClassName());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+
         UiUtil.createConstantPanel();
         UiUtil.createErrorPanel();
 

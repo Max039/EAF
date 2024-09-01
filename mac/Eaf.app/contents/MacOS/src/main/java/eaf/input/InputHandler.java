@@ -5,12 +5,14 @@ import eaf.action.ActionHandler;
 import eaf.action.AddedRectAction;
 import eaf.action.DeletedRectAction;
 import eaf.action.MovedRectAction;
+import eaf.compiler.SyntaxTree;
 import eaf.executor.Executor;
 import eaf.manager.FileManager;
 import eaf.rects.Rect;
 import eaf.rects.multi.ClassRect;
 import eaf.rects.multi.RectWithRects;
 import eaf.sound.SoundManager;
+import org.json.JSONString;
 
 import javax.swing.*;
 import java.awt.*;
@@ -54,7 +56,7 @@ public class InputHandler {
             @Override
             public void keyPressed(KeyEvent e) {
                 var leftPanel = Main.mainPanel.leftPanel;
-                if (e.getKeyCode() == KeyEvent.VK_CONTROL) {
+                if (e.getKeyCode() == KeyEvent.VK_CONTROL || e.getKeyCode() == KeyEvent.VK_META) {
                     isControlPressed = true;
                 }
                 else if (e.getKeyCode() == KeyEvent.VK_SHIFT) {
@@ -129,7 +131,7 @@ public class InputHandler {
 
             @Override
             public void keyReleased(KeyEvent e) {
-                if (e.getKeyCode() == KeyEvent.VK_CONTROL) {
+                if (e.getKeyCode() == KeyEvent.VK_CONTROL || e.getKeyCode() == KeyEvent.VK_META) {
                     isControlPressed = false;
                 }
                 else if (e.getKeyCode() == KeyEvent.VK_SHIFT) {
@@ -308,6 +310,17 @@ public class InputHandler {
         if (!cancle) {
             System.exit(0);
         }
+    }
+
+    public static void setEvoAlVersion(String version) {
+        Main.evoalVersion = version;
+        Main.cacheManager.addToBuffer("build", version);
+        SyntaxTree.reload();
+    }
+
+    public static void setEvoAlVersionNoReload(String version) {
+        Main.evoalVersion = version;
+        Main.cacheManager.addToBuffer("build", version);
     }
 
     public static void processStarted() {

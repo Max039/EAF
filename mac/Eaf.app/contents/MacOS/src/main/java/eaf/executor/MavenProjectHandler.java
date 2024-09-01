@@ -31,7 +31,15 @@ public class MavenProjectHandler {
         for (var command : commands) {
             ProcessBuilder processBuilder = new ProcessBuilder();
             processBuilder.directory(new File(projectPath));
-            processBuilder.command("mvn.cmd", command);
+            switch (Main.os) {
+                case MAC -> {
+                    processBuilder.command("/bin/zsh", "-c", "source ~/.zshenv && mvn " + command);
+                }
+                case WINDOWS -> {
+                    processBuilder.command("mvn.cmd", command);
+                }
+            }
+
             Process process = processBuilder.start();
 
             // Capture the combined output (stdout and stderr)
@@ -55,7 +63,7 @@ public class MavenProjectHandler {
             int exitCode = process.waitFor();
             if (exitCode != 0) {
                 Main.console.println(LogManager.maven() + LogManager.error() + " Maven command failed with exit code " + exitCode);
-                throw new RuntimeException("Maven command failed with exit code " + exitCode);
+                throw new RuntimeException("Maven command failed with exit code " + exitCode + " " + process.errorReader().readLine());
             }
         }
     }

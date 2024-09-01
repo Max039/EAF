@@ -2,7 +2,10 @@ package eaf.ui.panels;
 
 import eaf.Main;
 import eaf.compiler.SyntaxTree;
+import eaf.input.InputHandler;
 import eaf.manager.ExtraRectManager;
+import eaf.manager.LogManager;
+import eaf.ui.UiUtil;
 
 import javax.swing.*;
 import javax.swing.text.*;
@@ -51,7 +54,17 @@ public class ConsolePane extends JScrollPane {
     }
 
     public void printInfo() {
-        println("Running with " + Main.programName + " version " + Main.version);
+        String os = "";
+        switch (Main.os) {
+            case MAC -> {
+                os = "Mac";
+            }
+            case WINDOWS -> {
+                os = "Windows";
+            }
+        }
+        println("Running on " + os);
+        println("Using " + Main.programName + " version " + Main.version);
         println("Using EvoAl Version " + Main.evoalVersion);
         println("Definition Paths:");
         for (var p : SyntaxTree.pathToSyntax) {
