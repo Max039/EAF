@@ -43,22 +43,22 @@
 
           <compilerArgs>
 
-			<arg>--add-exports=de.evoal.core.main/de.evoal.core.api.properties=de.test</arg>
-			<arg>--add-opens=de.evoal.core.main/de.evoal.core.api.properties=de.test</arg>
-			<arg>--add-exports=de.evoal.optimisation.api/de.evoal.optimisation.api.model=de.test</arg>
-			<arg>--add-opens=de.evoal.optimisation.api/de.evoal.optimisation.api.model=de.test</arg>
-			<arg>--add-exports=de.evoal.optimisation.ea/de.evoal.optimisation.ea.main.search=de.test</arg>
-			<arg>--add-opens=de.evoal.optimisation.ea/de.evoal.optimisation.ea.main.search=de.test</arg>
-			<arg>--add-exports=de.evoal.generator.main/de.evoal.generator.api=de.test</arg>
-			<arg>--add-opens=de.evoal.generator.main/de.evoal.generator.api=de.test</arg>
-			<arg>--add-exports=de.evoal.optimisation.ea/de.evoal.optimisation.ea.api.operators=de.test</arg>
-			<arg>--add-opens=de.evoal.optimisation.ea/de.evoal.optimisation.ea.api.operators=de.test</arg>
 			<arg>--add-exports=de.evoal.optimisation.ea/de.evoal.optimisation.ea.main.codec.vector.chromosome=de.test</arg>
 			<arg>--add-opens=de.evoal.optimisation.ea/de.evoal.optimisation.ea.main.codec.vector.chromosome=de.test</arg>
 			<arg>--add-exports=de.evoal.optimisation.api/de.evoal.optimisation.api.statistics.writer=de.test</arg>
 			<arg>--add-opens=de.evoal.optimisation.api/de.evoal.optimisation.api.statistics.writer=de.test</arg>
+			<arg>--add-exports=de.evoal.optimisation.ea/de.evoal.optimisation.ea.main.search=de.test</arg>
+			<arg>--add-opens=de.evoal.optimisation.ea/de.evoal.optimisation.ea.main.search=de.test</arg>
+			<arg>--add-exports=de.evoal.generator.main/de.evoal.generator.api=de.test</arg>
+			<arg>--add-opens=de.evoal.generator.main/de.evoal.generator.api=de.test</arg>
+			<arg>--add-exports=de.evoal.optimisation.api/de.evoal.optimisation.api.model=de.test</arg>
+			<arg>--add-opens=de.evoal.optimisation.api/de.evoal.optimisation.api.model=de.test</arg>
+			<arg>--add-exports=de.evoal.core.main/de.evoal.core.api.properties=de.test</arg>
+			<arg>--add-opens=de.evoal.core.main/de.evoal.core.api.properties=de.test</arg>
 			<arg>--add-exports=de.evoal.optimisation.api/de.evoal.optimisation.api.statistics=de.test</arg>
 			<arg>--add-opens=de.evoal.optimisation.api/de.evoal.optimisation.api.statistics=de.test</arg>
+			<arg>--add-exports=de.evoal.optimisation.ea/de.evoal.optimisation.ea.api.operators=de.test</arg>
+			<arg>--add-opens=de.evoal.optimisation.ea/de.evoal.optimisation.ea.api.operators=de.test</arg>
 
             <!-- Add other JVM arguments as needed -->
           </compilerArgs>
