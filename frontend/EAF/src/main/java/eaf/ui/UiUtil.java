@@ -25,10 +25,7 @@ import javax.swing.*;
 import javax.swing.border.Border;
 import javax.swing.border.EmptyBorder;
 import javax.swing.event.*;
-import javax.swing.plaf.basic.BasicMenuBarUI;
-import javax.swing.plaf.basic.BasicScrollBarUI;
-import javax.swing.plaf.basic.BasicSplitPaneDivider;
-import javax.swing.plaf.basic.BasicSplitPaneUI;
+import javax.swing.plaf.basic.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.awt.image.BufferedImage;
@@ -102,10 +99,10 @@ public class UiUtil {
     static void addFileMenu(JMenuBar menuBar) {
         // Create the File menu
         JMenu fileMenu = new JMenu("File");
-
+        fileMenu.setUI(new CustomMenuUI(bgColor, Color.WHITE)); // Set the custom UI delegate
         // Create menu items
         JMenuItem openFileDotDotDot = new JMenuItem("open ...");
-
+        openFileDotDotDot.setUI(new CustomMenuItemUI(bgColor)); // Set custom UI delegate
         openFileDotDotDot.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -128,6 +125,7 @@ public class UiUtil {
 
 
         JMenuItem saveFileDotDotDot = new JMenuItem("save as ...");
+        saveFileDotDotDot.setUI(new CustomMenuItemUI(bgColor)); // Set custom UI delegate
 
         saveFileDotDotDot.addActionListener(new ActionListener() {
             @Override
@@ -140,7 +138,7 @@ public class UiUtil {
 
         // Create a JMenuItem that will have a submenu
         JMenuItem open = new JMenu("open recent");
-
+        open.setUI(new CustomMenuUI(bgColor, Color.WHITE)); // Set the custom UI delegate
         // Add a MenuListener to update the submenu before it is shown
         ((JMenu) open).addMenuListener(new MenuListener() {
             @Override
@@ -154,6 +152,7 @@ public class UiUtil {
                 // Populate the submenu with the updated items
                 for (String item : items) {
                     JMenuItem menuItem = new JMenuItem(item);
+                    menuItem.setUI(new CustomMenuItemUI(bgColor)); // Set custom UI delegate
                     menuItem.addActionListener(new ActionListener() {
                         @Override
                         public void actionPerformed(ActionEvent e) {
@@ -192,7 +191,7 @@ public class UiUtil {
         });
 
         JMenuItem save = new JMenuItem("save");
-
+        save.setUI(new CustomMenuItemUI(bgColor)); // Set custom UI delegate
         save.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -203,7 +202,7 @@ public class UiUtil {
 
 
         JMenuItem newSave = new JMenuItem("new");
-
+        newSave.setUI(new CustomMenuItemUI(bgColor)); // Set custom UI delegate
         newSave.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -228,11 +227,11 @@ public class UiUtil {
     static void addRectMenu(JMenuBar menuBar) {
         // Create the File menu
         JMenu fileMenu = new JMenu("Rects");
-
+        fileMenu.setUI(new CustomMenuUI(bgColor, Color.WHITE)); // Set the custom UI delegate
 
         // Create menu items
         JMenuItem newRect = new JMenuItem("new");
-
+        newRect.setUI(new CustomMenuItemUI(bgColor)); // Set custom UI delegate
         newRect.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -245,7 +244,7 @@ public class UiUtil {
 
 
         JMenuItem newChild = new JMenuItem("new child");
-
+        newChild.setUI(new CustomMenuItemUI(bgColor)); // Set custom UI delegate
         newChild.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -257,7 +256,7 @@ public class UiUtil {
 
         // Create menu items
         JMenuItem edit = new JMenuItem("new from existing / edit");
-
+        edit.setUI(new CustomMenuItemUI(bgColor)); // Set custom UI delegate
         edit.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -271,7 +270,7 @@ public class UiUtil {
 
 
         JMenuItem reload = new JMenuItem("reload");
-
+        reload.setUI(new CustomMenuItemUI(bgColor)); // Set custom UI delegate
         reload.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -290,9 +289,10 @@ public class UiUtil {
     static void addScriptMenu(JMenuBar menuBar) {
         // Create the File menu
         JMenu scriptMenu = new JMenu("Script");
-
+        scriptMenu.setUI(new CustomMenuUI(bgColor, Color.WHITE)); // Set the custom UI delegate
         // Create menu items
         JMenuItem run = new JMenuItem("run");
+        run.setUI(new CustomMenuItemUI(bgColor)); // Set custom UI delegate
 
         run.addActionListener(new ActionListener() {
             @Override
@@ -311,10 +311,10 @@ public class UiUtil {
     static void addPluginMenu(JMenuBar menuBar) {
         // Create the File menu
         JMenu scriptMenu = new JMenu("Plugins");
-
+        //scriptMenu.setUI(new CustomMenuUI(bgColor, Color.WHITE)); // Set the custom UI delegate
         // Create menu items
         JMenuItem run = new JMenuItem("reload");
-
+        run.setUI(new CustomMenuItemUI(bgColor)); // Set custom UI delegate
         run.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -329,7 +329,7 @@ public class UiUtil {
 
         // Create menu items
         JMenuItem newClass = new JMenuItem("new implementation");
-
+        newClass.setUI(new CustomMenuItemUI(bgColor)); // Set custom UI delegate
         newClass.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -349,7 +349,7 @@ public class UiUtil {
 
         // Create menu items
         JMenuItem openInIntellij = new JMenuItem("open in intellij");
-
+        openInIntellij.setUI(new CustomMenuItemUI(bgColor)); // Set custom UI delegate
         openInIntellij.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -362,7 +362,7 @@ public class UiUtil {
 
         // Create menu items
         JMenuItem updatePom = new JMenuItem("update pom");
-
+        updatePom.setUI(new CustomMenuItemUI(bgColor)); // Set custom UI delegate
         updatePom.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
