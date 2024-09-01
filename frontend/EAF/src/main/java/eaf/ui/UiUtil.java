@@ -1952,6 +1952,16 @@ public class UiUtil {
             }
         });
 
+        // Add a window listener to handle the closing action (the "X" button)
+        dialog.addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                // Ensure pwdSet is true if the window is closed by the "X" button
+                Executor.pwdSet = true;
+                dialog.dispose();
+            }
+        });
+
     }
 
 
