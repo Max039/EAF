@@ -43,12 +43,5 @@ if [[ "$_java" ]]; then
     fi
 fi
 
-# Run the application with console output enabled
-exec $_java $VM_ARGS \
-    -Dapple.laf.useScreenMenuBar=true \
-    -Dcom.apple.macos.use-file-dialog-packages=true \
-    -Djava.util.logging.ConsoleHandler.level=ALL \
-    -Xdock:name="$APP_NAME" \
-    -Xdock:icon="$DIR/../Resources/application.icns" \
-    -cp ".;$DIR;" \
-    -jar "$DIR/$APP_JAR"
+# Run the application
+exec $_java $VM_ARGS -Dapple.laf.useScreenMenuBar=true -Dcom.apple.macos.use-file-dialog-packages=true -Xdock:name="$APP_NAME" -Xdock:icon="$DIR/../Resources/application.icns" -cp ".;$DIR;" -jar "$DIR/$APP_JAR"
