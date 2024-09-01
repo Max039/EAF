@@ -135,7 +135,7 @@ public class SyntaxTree {
         while (!fileQueue.isEmpty()) {
             File file = fileQueue.poll();
             String relativePath = new File(currentPath).toURI().relativize(file.toURI()).getPath();
-            processDlFileForImports(relativePath, makeModuleName(relativePath));
+            processDlFileForImports(file.getAbsolutePath(), makeModuleName(relativePath));
         }
 
 

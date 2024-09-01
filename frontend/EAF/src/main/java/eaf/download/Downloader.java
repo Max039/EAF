@@ -754,6 +754,11 @@ public class Downloader extends JFrame {
         }
     }
 
+    public static void updatePaths() {
+        Downloader.PATH = System.getProperty("user.dir") + "/" + Main.evoalBuildFolder;
+        Downloader.DOWNLOAD_PATH = Downloader.PATH + "/";
+    }
+
     public static void main(String[] args) {
         SwingUtilities.invokeLater(new Runnable() {
             public void run() {
