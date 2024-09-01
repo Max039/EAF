@@ -6,7 +6,7 @@ import javax.swing.*;
 import java.awt.*;
 
 public abstract class Intro extends JPanel {
-    public String objective = "";
+    protected String objective = "";
 
     public void setObjective(String objective) {
         this.objective = objective;

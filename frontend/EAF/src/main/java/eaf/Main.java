@@ -132,7 +132,7 @@ public class Main extends JPanel {
             else {
                 intro = new SimpleIntro();
             }
-            intro.objective = "Constructing Syntax-Tree";
+            intro.setObjective("Constructing Syntax-Tree");
             SyntaxTree.start();
             intro.stop();
             while (intro.isUnfinished()) {
