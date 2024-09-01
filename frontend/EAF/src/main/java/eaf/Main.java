@@ -216,6 +216,13 @@ public class Main extends JPanel {
     }
 
     private void setupUi() {
+        try {
+            UIManager.setLookAndFeel(UIManager.getCrossPlatformLookAndFeelClassName());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+
         UiUtil.createConstantPanel();
         UiUtil.createErrorPanel();
 
