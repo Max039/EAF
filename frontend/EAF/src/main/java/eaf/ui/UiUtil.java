@@ -312,6 +312,31 @@ public class UiUtil {
         menuBar.add(scriptMenu);
     }
 
+    static void addEvoAlMenu(JMenuBar menuBar) {
+        // Create the File menu
+        JMenu scriptMenu = new JMenu("EvoAl");
+        scriptMenu.setBackground(Color.WHITE);
+        scriptMenu.setBackground(dividerColor);
+        // Create menu items
+        JMenuItem run = new JMenuItem("select versions");
+        run.setUI(new CustomMenuItemUI(bgColor)); // Set custom UI delegate
+
+        run.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+
+                String currentPath = System.getProperty("user.dir");
+                openFolderWindow(currentPath + "/" + evoalBuildFolder);
+            }
+        });
+
+
+        scriptMenu.add(run);
+        scriptMenu.setBackground(Main.bgColor);
+        scriptMenu.setForeground(Color.WHITE);
+        menuBar.add(scriptMenu);
+    }
+
     static void addPluginMenu(JMenuBar menuBar) {
         // Create the File menu
         JMenu scriptMenu = new JMenu("Plugins");
@@ -1107,7 +1132,7 @@ public class UiUtil {
         addScriptMenu(menuBar);
         addRectMenu(menuBar);
         addPluginMenu(menuBar);
-
+        addEvoAlMenu(menuBar);
 
         // Set the menu bar to the frame
         mainPanel.add(menuBar, BorderLayout.NORTH);
@@ -2054,5 +2079,42 @@ public class UiUtil {
         return selectedObject;
     }
 
+    public static void openFolderWindow(String folderPath) {
+        // Create a JFrame (the main window)
+        JFrame frame = new JFrame("Folder Button App");
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setSize(400, 400);
+
+        // Create a JScrollPane with a JPanel inside it
+        JPanel panel = new JPanel();
+        panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+        JScrollPane scrollPane = new JScrollPane(panel);
+
+        // Get the list of folders in the specified directory
+        File folder = new File(folderPath);
+        File[] listOfFiles = folder.listFiles(File::isDirectory);
+
+        if (listOfFiles != null) {
+            for (File file : listOfFiles) {
+                // Create a button for each folder
+                JButton button = new JButton(file.getName());
+                button.addActionListener(new ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        // Print the name of the folder and close the window
+                        InputHandler.setEvoAlVersion(file.getName());
+                        frame.dispose();
+                    }
+                });
+                panel.add(button);
+            }
+        } else {
+            JOptionPane.showMessageDialog(frame, "The folder path is invalid or there are no subfolders.");
+        }
+
+        // Add the scroll pane to the frame and make it visible
+        frame.add(scrollPane);
+        frame.setVisible(true);
+    }
 
 }

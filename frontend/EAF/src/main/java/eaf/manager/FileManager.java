@@ -12,6 +12,8 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 import java.io.*;
 import java.nio.file.*;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Comparator;
 
 public class FileManager {
 
@@ -281,6 +283,40 @@ public class FileManager {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    public static boolean isDirectoryEmpty(File directory) {
+        // Check if the File object represents a directory
+        if (directory.isDirectory()) {
+            // Get the contents of the directory
+            String[] contents = directory.list();
+            // Return true if the directory is empty, false otherwise
+            return contents == null || contents.length == 0;
+        }
+        // If the file is not a directory, return false
+        return false;
+    }
+
+    public static File findFirstFileInReverseOrder(String folderPath) {
+        File folder = new File(folderPath);
+
+        if (folder.isDirectory()) {
+            File[] files = folder.listFiles();
+
+            if (files != null && files.length > 0) {
+                // Sort files by their names in reverse order
+                Arrays.sort(files, new Comparator<File>() {
+                    @Override
+                    public int compare(File f1, File f2) {
+                        return f2.getName().compareTo(f1.getName());
+                    }
+                });
+
+                // Return the first file in the sorted list
+                return files[0];
+            }
+        }
+        return null;
     }
 
     public static void copyJarFile(String projectPath, String destinationPath, String newFileName) throws IOException {

@@ -47,26 +47,26 @@ public class Downloader extends JFrame {
 
     private static int numberOfVersionsToShow = 100;
 
-    private JComboBox<String> versionComboBox;
+    private static JComboBox<String> versionComboBox;
     private JButton mainButton;
 
-    private JPanel panel;
+    private static JPanel panel;
 
-    private String outdated = "outdated / unsupported";
+    private static String outdated = "outdated / unsupported";
 
-    private String local = "local";
+    private static String local = "local";
 
-    private String downloaded = "downloaded";
+    private static String downloaded = "downloaded";
 
-    JSONArray defaultBranchPipelines = null;
+    static JSONArray defaultBranchPipelines = null;
 
-    JSONArray allPipelines = null;
+    static JSONArray allPipelines = null;
 
-    ArrayList<String> allPipelinesStings = null;
+    static ArrayList<String> allPipelinesStings = null;
 
-    ArrayList<Pair<String, String>> allPipelinesApprovedStings = null;
+    static ArrayList<Pair<String, String>> allPipelinesApprovedStings = null;
 
-    String lastAllResponse = "";
+    static String lastAllResponse = "";
 
     public static int progressBarWidth = 40;
 
@@ -206,7 +206,7 @@ public class Downloader extends JFrame {
 
 
     //Gets the newest nersion
-    public void downloadNewestVersionIfNeeded() {
+    public static void downloadNewestVersionIfNeeded() {
         try {
             JSONArray pipelines = getSuccessfulPipelines(true);
             System.out.println("Retrieved " + pipelines.length() + " successful pipelines. Current limit for successful pipelines is set to: " + numberOfVersionsToShow );
@@ -219,7 +219,7 @@ public class Downloader extends JFrame {
         }
     }
 
-    private void downloadIfNeeded(String versionName) {
+    private static void downloadIfNeeded(String versionName) {
         if (!Files.exists(Paths.get(DOWNLOAD_PATH + versionName))) {
             try {
                 downloadSelectedVersion(versionName, true);
@@ -234,7 +234,7 @@ public class Downloader extends JFrame {
     }
 
     // Custom renderer class for HTML content
-    class MyHtmlComboBoxRenderer extends DefaultListCellRenderer {
+    static class MyHtmlComboBoxRenderer extends DefaultListCellRenderer {
         @Override
         public Component getListCellRendererComponent(JList<?> list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
             Component c = super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
@@ -251,7 +251,7 @@ public class Downloader extends JFrame {
         }
     }
 
-    public void refreshPipelinesOnNextRequest() throws IOException {
+    public static void refreshPipelinesOnNextRequest() throws IOException {
         String lastAllResponseCopy = lastAllResponse;
         getSuccessfulPipelines(false);
         if (!lastAllResponseCopy.equals(lastAllResponse)) {
@@ -264,7 +264,7 @@ public class Downloader extends JFrame {
 
     }
 
-    public void populateVersions() {
+    public static void populateVersions() {
         if (versionComboBox != null) {
             panel.remove(versionComboBox);
         }
@@ -300,7 +300,7 @@ public class Downloader extends JFrame {
         }
     }
 
-    public void getPipelinesWithValidPackage() throws Exception {
+    public static void getPipelinesWithValidPackage() throws Exception {
         if (allPipelinesStings == null || allPipelinesApprovedStings == null) {
 
             allPipelinesStings = new ArrayList<>();
@@ -360,7 +360,7 @@ public class Downloader extends JFrame {
     }
 
 
-    private void addUniqueFoldersToComboBox(ArrayList items, ArrayList all) {
+    private static void addUniqueFoldersToComboBox(ArrayList items, ArrayList all) {
         try {
             Path downloadPath = Paths.get(DOWNLOAD_PATH);
             if (Files.exists(downloadPath) && Files.isDirectory(downloadPath)) {
@@ -417,7 +417,7 @@ public class Downloader extends JFrame {
     }
 
 
-    private Pair<Boolean, String> hasAllPackageJob(String webUrl) throws IOException {
+    private static Pair<Boolean, String> hasAllPackageJob(String webUrl) throws IOException {
         String buildUrl = GITLAB_URL + "/projects/" + PROJECT_ID + "/pipelines" + webUrl.split("pipelines")[1] + "/jobs";
         //System.out.println("Checking pipeline if artifact " + artifactName + " exists : " + buildUrl);
 
@@ -460,7 +460,7 @@ public class Downloader extends JFrame {
         return new Pair<>(false, "");
     }
 
-    private JSONArray getSuccessfulPipelines(boolean limitBranch) throws IOException {
+    private static JSONArray getSuccessfulPipelines(boolean limitBranch) throws IOException {
         fetchPipeline(limitBranch);
         if (limitBranch) {
             return defaultBranchPipelines;
@@ -470,7 +470,7 @@ public class Downloader extends JFrame {
         }
     }
 
-    private void fetchPipeline(boolean limitBranch) throws IOException {
+    private static void fetchPipeline(boolean limitBranch) throws IOException {
         if ((limitBranch && defaultBranchPipelines != null) || (!limitBranch && allPipelines != null)) {
             return;
         }
@@ -540,11 +540,11 @@ public class Downloader extends JFrame {
         }
     }
 
-    private void downloadSelectedVersion(String selectedVersion, boolean limitBranch) throws Exception {
+    private static void downloadSelectedVersion(String selectedVersion, boolean limitBranch) throws Exception {
         if (!Files.exists(Paths.get(DOWNLOAD_PATH + selectedVersion))) {
             _downloadSelectedVersion(selectedVersion, limitBranch);
         } else {
-            int choice = JOptionPane.showConfirmDialog(this,
+            int choice = JOptionPane.showConfirmDialog(Main.mainFrame,
                     "The selected version is already downloaded. Do you want to re-download it now?",
                     "Download Confirmation", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
 
@@ -558,7 +558,7 @@ public class Downloader extends JFrame {
     }
 
 
-    private void _downloadSelectedVersion(String selectedVersion, boolean limitBranch) throws Exception {
+    private static void _downloadSelectedVersion(String selectedVersion, boolean limitBranch) throws Exception {
         String outputFilePath = DOWNLOAD_PATH + selectedVersion + "/all-package-archive.zip";
         String extractToPath = DOWNLOAD_PATH + selectedVersion + "/";
 
@@ -576,7 +576,7 @@ public class Downloader extends JFrame {
                     Files.deleteIfExists(Paths.get(outputFilePath));
                     System.out.println("Download complete");
                     populateVersions();
-                    JOptionPane.showMessageDialog(this, "Downloaded and extracted: " + selectedVersion,
+                    JOptionPane.showMessageDialog(Main.mainFrame, "Downloaded and extracted: " + selectedVersion,
                             "Success", JOptionPane.INFORMATION_MESSAGE);
                 }
                 catch (Exception e) {
@@ -585,17 +585,17 @@ public class Downloader extends JFrame {
                 }
             } else {
                 deleteDirectory(new File(DOWNLOAD_PATH + selectedVersion));
-                JOptionPane.showMessageDialog(this, "Job with artifact '" + artifactName + "' not found.",
+                JOptionPane.showMessageDialog(Main.mainFrame, "Job with artifact '" + artifactName + "' not found.",
                         "Error", JOptionPane.ERROR_MESSAGE);
             }
         }
         else {
-            JOptionPane.showMessageDialog(this, "Artifact " + selectedVersion + " already downloaded!",
+            JOptionPane.showMessageDialog(Main.mainFrame, "Artifact " + selectedVersion + " already downloaded!",
                     "Error", JOptionPane.ERROR_MESSAGE);
         }
     }
 
-    private JSONObject findPipelineByVersion(String versionName, boolean limitBranch) throws IOException {
+    private static JSONObject findPipelineByVersion(String versionName, boolean limitBranch) throws IOException {
         JSONArray pipelines = getSuccessfulPipelines(limitBranch);
         for (int i = 0; i < pipelines.length(); i++) {
             JSONObject pipeline = pipelines.getJSONObject(i);
@@ -608,7 +608,7 @@ public class Downloader extends JFrame {
         throw new IOException("Pipeline for version " + versionName + " not found.");
     }
 
-    private int getJobId(int pipelineId, String jobName) throws IOException {
+    private static int getJobId(int pipelineId, String jobName) throws IOException {
         String url = GITLAB_URL + "/projects/" + PROJECT_ID + "/pipelines/" + pipelineId + "/jobs";
         HttpURLConnection connection = (HttpURLConnection) new URL(url).openConnection();
         connection.setRequestProperty("PRIVATE-TOKEN", PRIVATE_TOKEN);
@@ -630,7 +630,7 @@ public class Downloader extends JFrame {
         return -1;
     }
 
-    private void downloadArtifact(int jobId, String outputFileName) throws IOException {
+    private static void downloadArtifact(int jobId, String outputFileName) throws IOException {
         String url = GITLAB_URL + "/projects/" + PROJECT_ID + "/jobs/" + jobId + "/artifacts";
         HttpURLConnection connection = (HttpURLConnection) new URL(url).openConnection();
         connection.setRequestProperty("PRIVATE-TOKEN", PRIVATE_TOKEN);
@@ -659,7 +659,7 @@ public class Downloader extends JFrame {
         }
     }
 
-    private void updateProgressBar(long downloadedSize, long fileSize, int progressBarWidth) {
+    private static void updateProgressBar(long downloadedSize, long fileSize, int progressBarWidth) {
         double progress = (double) downloadedSize / fileSize * 100;
         int progressChars = (int) (progress / (100.0 / progressBarWidth));
         String progressBar = "=".repeat(progressChars);
@@ -667,7 +667,7 @@ public class Downloader extends JFrame {
         System.out.printf("\r[%s%s] %.2f%%", progressBar, emptyProgressBar, progress);
     }
 
-    private void extractZip(String zipFilePath, String destDir) throws IOException {
+    private static void extractZip(String zipFilePath, String destDir) throws IOException {
         File dir = new File(destDir);
         if (!dir.exists()) dir.mkdirs();
         byte[] buffer = new byte[1024];
@@ -698,7 +698,7 @@ public class Downloader extends JFrame {
         System.out.println("Artifact extracted successfully to " + destDir);
     }
 
-    private File newFile(File destinationDir, ZipEntry zipEntry) throws IOException {
+    private static File newFile(File destinationDir, ZipEntry zipEntry) throws IOException {
         File destFile = new File(destinationDir, zipEntry.getName());
         String destDirPath = destinationDir.getCanonicalPath();
         String destFilePath = destFile.getCanonicalPath();
@@ -710,7 +710,7 @@ public class Downloader extends JFrame {
         return destFile;
     }
 
-    private String getVersionNameFromDate(String dateStr) {
+    private static String getVersionNameFromDate(String dateStr) {
         try {
             SimpleDateFormat inputFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
             Date date = inputFormat.parse(dateStr);

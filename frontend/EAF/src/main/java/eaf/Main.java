@@ -1,6 +1,7 @@
 package eaf;
 
 import eaf.compiler.SyntaxTree;
+import eaf.download.Downloader;
 import eaf.executor.OpenIntelliJProject;
 import eaf.input.InputHandler;
 import eaf.intro.DoubleHelixAnimation;
@@ -19,6 +20,7 @@ import javax.swing.border.LineBorder;
 import java.awt.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.io.File;
 import java.util.ArrayList;
 
 import static eaf.ui.UiUtil.createMenuBar;
@@ -56,7 +58,8 @@ public class Main extends JPanel {
     public static ErrorPane errorManager;
 
     private static final int RECT_SPACING = 5;
-    public static String evoalVersion = "20240708-152016";
+    //public static String evoalVersion = "20240708-152016";
+    public static String evoalVersion = null;
 
     public final RectPanel leftPanel = new RectPanel();
     public final RectPanel rightPanel = new RectPanel();
@@ -125,6 +128,9 @@ public class Main extends JPanel {
     }
 
     public static void main(String[] args) throws Exception {
+
+
+
         try {
             if (os == OS.WINDOWS) {
                 intro = new DoubleHelixAnimation();
@@ -132,6 +138,22 @@ public class Main extends JPanel {
             else {
                 intro = new SimpleIntro();
             }
+
+            String currentPath = System.getProperty("user.dir");
+            File builds = new File(currentPath + "/" + evoalBuildFolder);
+
+            if (!builds.exists() || FileManager.isDirectoryEmpty(builds)) {
+                intro.setObjective("Downloading EvoAl Build");
+                Downloader.downloadNewestVersionIfNeeded();
+            }
+
+            evoalVersion = cacheManager.getFirstElement(String.class, "build");
+            if (evoalVersion == null) {
+                var build = FileManager.findFirstFileInReverseOrder(currentPath + "/" + evoalBuildFolder);
+                InputHandler.setEvoAlVersion(build.getName());
+            }
+
+
             intro.setObjective("Constructing Syntax-Tree");
             SyntaxTree.start();
             intro.stop();

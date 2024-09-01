@@ -5,12 +5,14 @@ import eaf.action.ActionHandler;
 import eaf.action.AddedRectAction;
 import eaf.action.DeletedRectAction;
 import eaf.action.MovedRectAction;
+import eaf.compiler.SyntaxTree;
 import eaf.executor.Executor;
 import eaf.manager.FileManager;
 import eaf.rects.Rect;
 import eaf.rects.multi.ClassRect;
 import eaf.rects.multi.RectWithRects;
 import eaf.sound.SoundManager;
+import org.json.JSONString;
 
 import javax.swing.*;
 import java.awt.*;
@@ -308,6 +310,12 @@ public class InputHandler {
         if (!cancle) {
             System.exit(0);
         }
+    }
+
+    public static void setEvoAlVersion(String version) {
+        Main.evoalVersion = version;
+        Main.cacheManager.addToBuffer("build", version);
+        SyntaxTree.reload();
     }
 
     public static void processStarted() {
