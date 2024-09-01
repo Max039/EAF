@@ -5,10 +5,7 @@ import eaf.manager.FileManager;
 import eaf.manager.LogManager;
 import eaf.plugin.PluginManager;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -18,7 +15,7 @@ public class MavenProjectHandler {
         try {
             // Step 1: Clean, install, and package the Maven project
             runMavenCommand(projectPath, List.of("clean", "install", "package"));
-
+            System.out.println(destinationPath);
             // Step 2: Copy the JAR file to the given destination path
             FileManager.copyJarFile(projectPath, destinationPath, name);
 
@@ -30,10 +27,10 @@ public class MavenProjectHandler {
     private static void runMavenCommand(String projectPath, List<String> commands) throws IOException, InterruptedException {
         for (var command : commands) {
             ProcessBuilder processBuilder = new ProcessBuilder();
-            //processBuilder.directory(new File(projectPath));
+            processBuilder.directory(new File(projectPath));
             switch (Main.os) {
                 case MAC -> {
-                    processBuilder.command("cd", projectPath, "&&", "mvn", command);
+                    processBuilder.command("/bin/zsh", "-c", "source ~/.zshenv && mvn " + command);
                 }
                 case WINDOWS -> {
                     processBuilder.command("mvn.cmd", command);
@@ -41,6 +38,7 @@ public class MavenProjectHandler {
             }
 
             Process process = processBuilder.start();
+
 
             // Capture the combined output (stdout and stderr)
             BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
@@ -63,7 +61,7 @@ public class MavenProjectHandler {
             int exitCode = process.waitFor();
             if (exitCode != 0) {
                 Main.console.println(LogManager.maven() + LogManager.error() + " Maven command failed with exit code " + exitCode);
-                throw new RuntimeException("Maven command failed with exit code " + exitCode);
+                throw new RuntimeException("Maven command failed with exit code " + exitCode + " " + process.errorReader().readLine());
             }
         }
     }

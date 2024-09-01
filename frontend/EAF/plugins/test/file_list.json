@@ -1,26 +1,30 @@
 {"files": [
     {
         "path": "/Users/max039/Documents/GitHub/EAF/frontend/EAF/plugins/test/src/main/resources/META-INF/beans.xml",
-        "lastModified": 1725131028005
+        "lastModified": 1725153687591
     },
     {
         "path": "/Users/max039/Documents/GitHub/EAF/frontend/EAF/plugins/test/.gitignore",
-        "lastModified": 1725131027992
+        "lastModified": 1725153687582
     },
     {
         "path": "/Users/max039/Documents/GitHub/EAF/frontend/EAF/plugins/test/src/main/resources/META-INF/MANIFEST.MF",
-        "lastModified": 1725131027997
+        "lastModified": 1725153687589
     },
     {
         "path": "/Users/max039/Documents/GitHub/EAF/frontend/EAF/plugins/test/src/main/java/module-info.java",
-        "lastModified": 1725131028009
+        "lastModified": 1725153687596
     },
     {
         "path": "/Users/max039/Documents/GitHub/EAF/frontend/EAF/plugins/test/pom.xml",
-        "lastModified": 1725131028009
+        "lastModified": 1725153687595
+    },
+    {
+        "path": "/Users/max039/Documents/GitHub/EAF/frontend/EAF/plugins/test/.DS_Store",
+        "lastModified": 1725153510051
     },
     {
         "path": "/Users/max039/Documents/GitHub/EAF/frontend/EAF/plugins/test/src/main/resources/META-INF/maven/archetype.xml",
-        "lastModified": 1725131027998
+        "lastModified": 1725153687590
     }
 ]}
