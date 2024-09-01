@@ -1896,7 +1896,7 @@ public class UiUtil {
         cr.setSnapSize(new Dimension(10, 10));
     }
 
-    public static String getPasswordFromUser() {
+    public static void getPasswordFromUser() {
         // Create a text field for password input
         JPasswordField passwordField = new JPasswordField();
         passwordField.setEchoChar('*');
@@ -1914,13 +1914,14 @@ public class UiUtil {
 
         JButton okButton = new JButton("OK");
         okButton.addActionListener(e -> {
+            char[] passwordArray = passwordField.getPassword();
+            Executor.ramTempVersionOfSudo = new String(passwordArray);
             Executor.pwdSet = true;
             dialog.dispose();
         });
         JButton cancelButton = new JButton("Cancel");
         cancelButton.addActionListener(e -> {
             Executor.pwdSet = true;
-            passwordField.setText(null);
             dialog.dispose();
         });
 
@@ -1938,25 +1939,19 @@ public class UiUtil {
             passwordField.requestFocusInWindow();
         });
 
-        // Retrieve the password from the field
-        String password = null;
-        if (okButton.isFocusOwner()) {
-            char[] passwordArray = passwordField.getPassword();
-            password = new String(passwordArray);
-        }
-
         passwordField.addKeyListener(new KeyAdapter() {
             @Override
-            public void keyTyped(KeyEvent e) {
+            public void keyPressed(KeyEvent e) {
                 super.keyTyped(e);
                 if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+                    char[] passwordArray = passwordField.getPassword();
+                    Executor.ramTempVersionOfSudo = new String(passwordArray);
                     Executor.pwdSet = true;
                     dialog.dispose();
                 }
             }
         });
 
-        return password;
     }
 
 

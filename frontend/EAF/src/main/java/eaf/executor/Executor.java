@@ -16,6 +16,7 @@ public class Executor {
     public static boolean pwdSet = false;
 
     public static String ramVersionOfSudo = null;
+    public static String ramTempVersionOfSudo = null;
 
     public static boolean makeExecutable(String filePath) {
         System.out.println(LogManager.executor() + LogManager.script() + LogManager.shell() + LogManager.status() + " Making script executable ...");
@@ -69,10 +70,12 @@ public class Executor {
                     if (sudoPwd == null) {
                         System.out.println(LogManager.executor() + LogManager.process() + LogManager.status() + " PLease enter sudo pwd!");
                         pwdSet = false;
-                        sudoPwd = UiUtil.getPasswordFromUser();
+                        ramTempVersionOfSudo = null;
+                        UiUtil.getPasswordFromUser();
                         while (!pwdSet) {
                             Thread.sleep(50);
                         }
+                        sudoPwd = ramTempVersionOfSudo;
 
                         if (sudoPwd == null) {
                             System.out.println(LogManager.executor() + LogManager.process() + LogManager.status() + " Password input cancelled.");
