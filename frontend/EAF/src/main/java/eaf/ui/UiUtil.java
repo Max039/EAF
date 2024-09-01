@@ -25,6 +25,7 @@ import javax.swing.*;
 import javax.swing.border.Border;
 import javax.swing.border.EmptyBorder;
 import javax.swing.event.*;
+import javax.swing.plaf.basic.BasicMenuBarUI;
 import javax.swing.plaf.basic.BasicScrollBarUI;
 import javax.swing.plaf.basic.BasicSplitPaneDivider;
 import javax.swing.plaf.basic.BasicSplitPaneUI;
@@ -1086,13 +1087,15 @@ public class UiUtil {
         customizeScrollBar(Main.dataPanel);
     }
 
+
+
     public static void createMenuBar() {
         // Create and set up the menu bar
         JMenuBar menuBar = new JMenuBar();
         menuBar.setBackground(Main.dividerColor);
         menuBar.setBorder(BorderFactory.createEmptyBorder(2, 20, 2, 0));
         menuBar.setForeground(Color.WHITE);
-
+        menuBar.setUI(new CustomMenuBarUI()); // Set the custom UI delegate
 
         addFileMenu(menuBar);
 
