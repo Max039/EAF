@@ -408,7 +408,7 @@ public class FileManager {
         try {
             // Convert URL to File
             File jarFile = new File(location.toURI());
-            Path sourceDir = jarFile.toPath();
+            Path sourceDir = jarFile.getParentFile().toPath();
             Path targetDir = Paths.get(System.getProperty("user.home"), "Documents", "Eaf");
             String excludeFileName = "eaf.jar";
             copyFilesExcludingJar(sourceDir, targetDir, excludeFileName);
