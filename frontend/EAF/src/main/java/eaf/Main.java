@@ -153,7 +153,7 @@ public class Main extends JPanel {
             }
 
             evoalVersion = cacheManager.getFirstElement(String.class, "build");
-            
+
 
             if (evoalVersion == null || !FileManager.folderExists(currentPath + "/" + evoalBuildFolder, evoalVersion)) {
                 var build = FileManager.findFirstFileInReverseOrder(currentPath + "/" + evoalBuildFolder);

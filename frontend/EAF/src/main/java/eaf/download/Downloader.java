@@ -209,10 +209,20 @@ public class Downloader extends JFrame {
         try {
             JSONArray pipelines = getSuccessfulPipelines(true);
             System.out.println("Retrieved " + pipelines.length() + " successful pipelines. Current limit for successful pipelines is set to: " + numberOfVersionsToShow );
-            JSONObject pipeline = pipelines.getJSONObject(0);
-            String updatedAt = pipeline.getString("updated_at");
-            String versionName = getVersionNameFromDate(updatedAt);
-            downloadIfNeeded(versionName);
+            for (int i = 0; i < 100; i++) {
+                JSONObject pipeline = pipelines.getJSONObject(i);
+                String updatedAt = pipeline.getString("updated_at");
+                String versionName = getVersionNameFromDate(updatedAt);
+                try {
+                    downloadIfNeeded(versionName);
+                    return;
+                }
+                catch (Exception e) {
+                    System.out.println("Skipping version " + versionName);
+                }
+            }
+
+
         } catch (Exception ex) {
             throw new RuntimeException(ex);
         }
@@ -574,7 +584,7 @@ public class Downloader extends JFrame {
                     extractZip(outputFilePath, extractToPath);
                     Files.deleteIfExists(Paths.get(outputFilePath));
                     System.out.println("Download complete");
-                    populateVersions();
+                    //populateVersions();
                     //JOptionPane.showMessageDialog(Main.mainFrame, "Downloaded and extracted: " + selectedVersion,
                     //       "Success", JOptionPane.INFORMATION_MESSAGE);
                 }
@@ -584,8 +594,10 @@ public class Downloader extends JFrame {
                 }
             } else {
                 deleteDirectory(new File(DOWNLOAD_PATH + selectedVersion));
-                JOptionPane.showMessageDialog(Main.mainFrame, "Job with artifact '" + artifactName + "' not found.",
-                        "Error", JOptionPane.ERROR_MESSAGE);
+                System.out.println("Job with artifact '" + artifactName + "' not found for version " + selectedVersion + " !");
+                throw new RuntimeException("Job with artifact '" + artifactName + "' not found for version " + selectedVersion + " !");
+                //JOptionPane.showMessageDialog(Main.mainFrame, "Job with artifact '" + artifactName + "' not found.",
+                        //"Error", JOptionPane.ERROR_MESSAGE);
             }
         }
         else {
