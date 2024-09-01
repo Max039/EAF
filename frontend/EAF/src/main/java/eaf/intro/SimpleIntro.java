@@ -14,7 +14,12 @@ public class SimpleIntro extends Intro {
 
     public SimpleIntro() {
         // Set up the JFrame
-        frame = new JFrame("Simple Intro");
+        frame = new JFrame(Main.programName + ": Loading");
+        // Load an image from file or resource
+        Image icon = Toolkit.getDefaultToolkit().getImage("imgs/evoal.png");
+
+        // Set the icon image for the frame
+        frame.setIconImage(icon);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setSize(300, 200);
         frame.setUndecorated(true); // Remove window decorations
