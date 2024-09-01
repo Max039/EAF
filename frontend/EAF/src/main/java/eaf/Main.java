@@ -166,7 +166,9 @@ public class Main extends JPanel {
 
         // Layout the frame with BorderLayout
         mainFrame.setLayout(new BorderLayout());
-        borderPanel.add(UiUtil.getHeader(), BorderLayout.NORTH);
+        if (os == OS.WINDOWS) {
+            borderPanel.add(UiUtil.getHeader(), BorderLayout.NORTH);
+        }
         borderPanel.add(mainPanel, BorderLayout.CENTER);
 
         borderPanel.setBorder(new LineBorder(Main.bgColor, 3));
