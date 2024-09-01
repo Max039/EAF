@@ -11,7 +11,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Random;
 
-public class DoubleHelixAnimation extends JPanel implements ActionListener {
+public class DoubleHelixAnimation extends Intro implements ActionListener {
     private static int WIDTH = 0;
     private static int HEIGHT = 0;
     private static final int RADIUS = 40;
@@ -35,7 +35,7 @@ public class DoubleHelixAnimation extends JPanel implements ActionListener {
 
     public static Color c3 = new Color(120, 120, 120, 255);
 
-    public String objective = "";
+
 
     private static double decayTime = 1200;
 
@@ -43,13 +43,12 @@ public class DoubleHelixAnimation extends JPanel implements ActionListener {
 
     private JFrame frame;
 
-    public DoubleHelixAnimation(JFrame frame) {
+    public DoubleHelixAnimation() {
         setOpaque(false);
         setDoubleBuffered(true);
         Random random = new Random();
         double randomSeconds = random.nextDouble() * 5; // Random time between 5 and 10 seconds
         this.stopTime = randomSeconds * 2 * Math.PI / (PERIOD / 1000.0); // Convert to animation time
-        this.frame = frame;
         timer = new Timer(1000 / FPS, this);
         timer.start();
 
@@ -65,6 +64,34 @@ public class DoubleHelixAnimation extends JPanel implements ActionListener {
             }
         });
         repaintThread.start();
+
+        frame = new JFrame(Main.programName + ": Loading");
+        // Load an image from file or resource
+        Image icon = Toolkit.getDefaultToolkit().getImage("imgs/evoal.png");
+
+        // Set the icon image for the frame
+        frame.setIconImage(icon);
+        frame.setUndecorated(true);
+
+        frame.add(this);
+        HEIGHT = Toolkit.getDefaultToolkit().getScreenSize().height;
+        WIDTH = Toolkit.getDefaultToolkit().getScreenSize().width;
+
+        frame.setSize(WIDTH, HEIGHT); // Assuming WIDTH and HEIGHT are 800 and 600, respectively
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setLocationRelativeTo(null);
+
+        // Set frame background to transparent
+        frame.setBackground(new Color(0, 0, 0, 0));
+
+        // Set panel background color with transparency (alpha < 255 for partial transparency)
+        Color bg = new Color(255, 255, 255, 0); // Fully transparent white
+        this.setBackground(bg);
+
+        // Set frame opacity (optional, for whole frame transparency)
+        frame.setOpacity(0.9f); // Range 0.0f to 1.0f, 1.0f is fully opaque
+
+        frame.setVisible(true);
     }
 
     @Override
@@ -313,38 +340,4 @@ public class DoubleHelixAnimation extends JPanel implements ActionListener {
         shouldStop = true;
     }
 
-    public static DoubleHelixAnimation create() {
-        JFrame frame = new JFrame(Main.programName + ": Loading");
-        // Load an image from file or resource
-        Image icon = Toolkit.getDefaultToolkit().getImage("imgs/evoal.png");
-
-        // Set the icon image for the frame
-        frame.setIconImage(icon);
-        frame.setUndecorated(true);
-
-        DoubleHelixAnimation helixAnimation = new DoubleHelixAnimation(frame);
-
-        frame.add(helixAnimation);
-        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-        HEIGHT = Toolkit.getDefaultToolkit().getScreenSize().height;
-        WIDTH = Toolkit.getDefaultToolkit().getScreenSize().width;
-
-        frame.setSize(WIDTH, HEIGHT); // Assuming WIDTH and HEIGHT are 800 and 600, respectively
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setLocationRelativeTo(null);
-
-        // Set frame background to transparent
-        frame.setBackground(new Color(0, 0, 0, 0));
-
-        // Set panel background color with transparency (alpha < 255 for partial transparency)
-        Color bg = new Color(255, 255, 255, 0); // Fully transparent white
-        helixAnimation.setBackground(bg);
-
-        // Set frame opacity (optional, for whole frame transparency)
-        frame.setOpacity(0.9f); // Range 0.0f to 1.0f, 1.0f is fully opaque
-
-        frame.setVisible(true);
-
-        return helixAnimation;
-    }
 }

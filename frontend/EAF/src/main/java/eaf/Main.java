@@ -4,6 +4,8 @@ import eaf.compiler.SyntaxTree;
 import eaf.executor.OpenIntelliJProject;
 import eaf.input.InputHandler;
 import eaf.intro.DoubleHelixAnimation;
+import eaf.intro.Intro;
+import eaf.intro.SimpleIntro;
 import eaf.manager.CacheManager;
 import eaf.models.Pair;
 import eaf.plugin.PluginCreator;
@@ -19,7 +21,6 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.ArrayList;
 
-import static eaf.ui.UiUtil.createMainTab;
 import static eaf.ui.UiUtil.createMenuBar;
 
 public class Main extends JPanel {
@@ -105,7 +106,7 @@ public class Main extends JPanel {
 
     public static PluginCreator pluginCreator = null;
 
-    public static DoubleHelixAnimation animation = null;
+    public static Intro intro = null;
 
     public static ArrayList<Pair<String, JComponent>> tabsList;
 
@@ -125,11 +126,16 @@ public class Main extends JPanel {
 
     public static void main(String[] args) throws Exception {
         try {
-            animation = DoubleHelixAnimation.create();
-            animation.objective = "Constructing Syntax-Tree";
+            if (os == OS.WINDOWS) {
+                intro = new DoubleHelixAnimation();
+            }
+            else {
+                intro = new SimpleIntro();
+            }
+            intro.objective = "Constructing Syntax-Tree";
             SyntaxTree.start();
-            animation.stop();
-            while (animation.isUnfinished()) {
+            intro.stop();
+            while (intro.isUnfinished()) {
                 Thread.sleep(100);
             }
         }
