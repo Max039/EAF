@@ -99,7 +99,8 @@ public class UiUtil {
     static void addFileMenu(JMenuBar menuBar) {
         // Create the File menu
         JMenu fileMenu = new JMenu("File");
-        fileMenu.setUI(new CustomMenuUI(bgColor, Color.WHITE)); // Set the custom UI delegate
+        fileMenu.setBackground(Color.WHITE);
+        fileMenu.setBackground(dividerColor);
         // Create menu items
         JMenuItem openFileDotDotDot = new JMenuItem("open ...");
         openFileDotDotDot.setUI(new CustomMenuItemUI(bgColor)); // Set custom UI delegate
@@ -138,7 +139,8 @@ public class UiUtil {
 
         // Create a JMenuItem that will have a submenu
         JMenuItem open = new JMenu("open recent");
-        open.setUI(new CustomMenuUI(bgColor, Color.WHITE)); // Set the custom UI delegate
+        open.setBackground(Color.WHITE);
+        open.setBackground(dividerColor);
         // Add a MenuListener to update the submenu before it is shown
         ((JMenu) open).addMenuListener(new MenuListener() {
             @Override
@@ -227,7 +229,8 @@ public class UiUtil {
     static void addRectMenu(JMenuBar menuBar) {
         // Create the File menu
         JMenu fileMenu = new JMenu("Rects");
-        fileMenu.setUI(new CustomMenuUI(bgColor, Color.WHITE)); // Set the custom UI delegate
+        fileMenu.setBackground(Color.WHITE);
+        fileMenu.setBackground(dividerColor);
 
         // Create menu items
         JMenuItem newRect = new JMenuItem("new");
@@ -289,7 +292,8 @@ public class UiUtil {
     static void addScriptMenu(JMenuBar menuBar) {
         // Create the File menu
         JMenu scriptMenu = new JMenu("Script");
-        scriptMenu.setUI(new CustomMenuUI(bgColor, Color.WHITE)); // Set the custom UI delegate
+        scriptMenu.setBackground(Color.WHITE);
+        scriptMenu.setBackground(dividerColor);
         // Create menu items
         JMenuItem run = new JMenuItem("run");
         run.setUI(new CustomMenuItemUI(bgColor)); // Set custom UI delegate
@@ -311,7 +315,8 @@ public class UiUtil {
     static void addPluginMenu(JMenuBar menuBar) {
         // Create the File menu
         JMenu scriptMenu = new JMenu("Plugins");
-        //scriptMenu.setUI(new CustomMenuUI(bgColor, Color.WHITE)); // Set the custom UI delegate
+        scriptMenu.setBackground(Color.WHITE);
+        scriptMenu.setBackground(dividerColor);
         // Create menu items
         JMenuItem run = new JMenuItem("reload");
         run.setUI(new CustomMenuItemUI(bgColor)); // Set custom UI delegate
