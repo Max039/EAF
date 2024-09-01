@@ -218,7 +218,15 @@ public class Downloader extends JFrame {
                     return;
                 }
                 catch (Exception e) {
-                    System.out.println("Skipping version " + versionName);
+                    if (e instanceof JobNotFoundException) {
+                        System.out.println("Skipping version " + versionName);
+                        if (i == 99) {
+                            throw new RuntimeException("No valid version was found!");
+                        }
+                    }
+                    else {
+                        throw new RuntimeException(e);
+                    }
                 }
             }
 
@@ -233,7 +241,13 @@ public class Downloader extends JFrame {
             try {
                 downloadSelectedVersion(versionName, true);
             } catch (Exception ex) {
-                throw new RuntimeException(ex);
+                if (ex instanceof JobNotFoundException) {
+                    throw new JobNotFoundException(ex.getMessage());
+                }
+                else {
+                    throw new RuntimeException(ex);
+                }
+
             }
         }
         else {
@@ -595,7 +609,7 @@ public class Downloader extends JFrame {
             } else {
                 deleteDirectory(new File(DOWNLOAD_PATH + selectedVersion));
                 System.out.println("Job with artifact '" + artifactName + "' not found for version " + selectedVersion + " !");
-                throw new RuntimeException("Job with artifact '" + artifactName + "' not found for version " + selectedVersion + " !");
+                throw new JobNotFoundException("Job with artifact '" + artifactName + "' not found for version " + selectedVersion + " !");
                 //JOptionPane.showMessageDialog(Main.mainFrame, "Job with artifact '" + artifactName + "' not found.",
                         //"Error", JOptionPane.ERROR_MESSAGE);
             }
@@ -603,6 +617,12 @@ public class Downloader extends JFrame {
         else {
             JOptionPane.showMessageDialog(Main.mainFrame, "Artifact " + selectedVersion + " already downloaded!",
                     "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+    public static class JobNotFoundException extends RuntimeException {
+        public JobNotFoundException(String s) {
+            super(s);
         }
     }
 

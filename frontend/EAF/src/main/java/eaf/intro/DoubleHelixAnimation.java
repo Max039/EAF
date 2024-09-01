@@ -153,7 +153,7 @@ public class DoubleHelixAnimation extends Intro implements ActionListener {
             int padding = 10;
             int fontsize = 20;
             g2d.setFont(new Font("Arial", Font.PLAIN, fontsize));
-            g2d.drawString(objective, padding, padding + fontsize);
+            g2d.drawString(objective + " ...", padding, padding + fontsize);
         }
     }
 
