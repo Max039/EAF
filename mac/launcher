@@ -42,6 +42,6 @@ if [[ "$_java" ]]; then
         exit 1
     fi
 fi
-
+cd "$DIR/../"
 # Run the application
-exec $_java $VM_ARGS -Dapple.laf.useScreenMenuBar=true -Dcom.apple.macos.use-file-dialog-packages=true -Xdock:name="$APP_NAME" -Xdock:icon="$DIR/../../Resources/application.icns" -cp ".;$DIR/../;" -jar "$DIR/$APP_JAR"
+exec $_java $VM_ARGS -Dapple.laf.useScreenMenuBar=true -Dcom.apple.macos.use-file-dialog-packages=true -Xdock:name="$APP_NAME" -Xdock:icon="$DIR/../../Resources/application.icns" -cp ".;$DIR/;" -jar "$DIR/$APP_JAR"
