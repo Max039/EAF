@@ -103,7 +103,7 @@ public class Main extends JPanel {
 
     public static String evoalBuildFolder = "builds";
 
-    public static CacheManager cacheManager = new CacheManager();
+    public static CacheManager cacheManager;
 
     public static OpenIntelliJProject openIntelliJProject = new OpenIntelliJProject();
 
@@ -115,7 +115,7 @@ public class Main extends JPanel {
 
     public static ArrayList<JButton> tabButtons;
 
-    public static PluginManager pluginManager = new PluginManager();
+    public static PluginManager pluginManager;
 
     static {
         String osName = System.getProperty("os.name").toLowerCase();
@@ -129,8 +129,12 @@ public class Main extends JPanel {
 
     public static void main(String[] args) throws Exception {
 
+        if (os == OS.MAC) {
+            FileManager.copyToDocuments();
+        }
 
-
+        cacheManager = new CacheManager();
+        pluginManager = new PluginManager();
         try {
             if (os == OS.WINDOWS) {
                 intro = new DoubleHelixAnimation();

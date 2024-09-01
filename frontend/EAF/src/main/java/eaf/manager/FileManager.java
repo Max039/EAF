@@ -11,6 +11,7 @@ import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import java.io.*;
 import java.nio.file.*;
+import java.nio.file.attribute.BasicFileAttributes;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
@@ -363,5 +364,60 @@ public class FileManager {
         Files.copy(jarFile.toPath(), destination, StandardCopyOption.REPLACE_EXISTING);
 
         System.out.println(LogManager.fileManager() + LogManager.write() + " Copied " + jarFile.getName() + " to " + destinationPath + " as " + newFileName);
+    }
+
+
+    public static void copyFilesExcludingJar(Path sourceDir, Path targetDir, String excludeFileName) throws IOException {
+        if (Files.exists(targetDir)) {
+            System.out.println("Target directory already exists. No files copied.");
+            return;
+        }
+
+        Files.createDirectories(targetDir);
+
+        Files.walkFileTree(sourceDir, new SimpleFileVisitor<Path>() {
+            @Override
+            public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
+                Path targetFile = targetDir.resolve(sourceDir.relativize(file));
+                if (!file.getFileName().toString().equals(excludeFileName)) {
+                    Files.createDirectories(targetFile.getParent());
+                    Files.copy(file, targetFile, StandardCopyOption.REPLACE_EXISTING);
+                }
+                return FileVisitResult.CONTINUE;
+            }
+
+            @Override
+            public FileVisitResult postVisitDirectory(Path dir, IOException exc) throws IOException {
+                if (exc == null) {
+                    Path targetDirPath = targetDir.resolve(sourceDir.relativize(dir));
+                    Files.createDirectories(targetDirPath);
+                    return FileVisitResult.CONTINUE;
+                } else {
+                    throw exc;
+                }
+            }
+        });
+    }
+
+    public static void copyToDocuments() {
+        Path sourceDir = Paths.get("Eaf.app/Contents/MacOS");
+        Path targetDir = Paths.get(System.getProperty("user.home"), "Documents", "EvoAl Frontend");
+        String excludeFileName = "eaf.jar";
+
+        try {
+            copyFilesExcludingJar(sourceDir, targetDir, excludeFileName);
+            changeWorkingDirectory(targetDir);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+
+    public static void changeWorkingDirectory(Path newDir) throws IOException {
+        if (!Files.exists(newDir)) {
+            throw new IOException("Directory does not exist: " + newDir);
+        }
+        System.setProperty("user.dir", newDir.toAbsolutePath().toString());
+        System.out.println("Working directory changed to: " + System.getProperty("user.dir"));
     }
 }
