@@ -2,6 +2,7 @@ package eaf.ui;
 
 import eaf.compiler.SyntaxTree;
 import eaf.*;
+import eaf.executor.Executor;
 import eaf.executor.OpenIntelliJProject;
 import eaf.input.InputHandler;
 import eaf.manager.ExtraRectManager;
@@ -1900,6 +1901,7 @@ public class UiUtil {
         JPasswordField passwordField = new JPasswordField();
         passwordField.setEchoChar('*');
 
+
         // Create the dialog with a custom panel
         JPanel panel = new JPanel(new GridLayout(2, 1));
         panel.add(new JLabel("Enter sudo password:"));
@@ -1911,9 +1913,13 @@ public class UiUtil {
         dialog.add(panel, BorderLayout.CENTER);
 
         JButton okButton = new JButton("OK");
-        okButton.addActionListener(e -> dialog.dispose());
+        okButton.addActionListener(e -> {
+            Executor.pwdSet = true;
+            dialog.dispose();
+        });
         JButton cancelButton = new JButton("Cancel");
         cancelButton.addActionListener(e -> {
+            Executor.pwdSet = true;
             passwordField.setText(null);
             dialog.dispose();
         });
@@ -1938,6 +1944,17 @@ public class UiUtil {
             char[] passwordArray = passwordField.getPassword();
             password = new String(passwordArray);
         }
+
+        passwordField.addKeyListener(new KeyAdapter() {
+            @Override
+            public void keyTyped(KeyEvent e) {
+                super.keyTyped(e);
+                if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+                    Executor.pwdSet = true;
+                    dialog.dispose();
+                }
+            }
+        });
 
         return password;
     }

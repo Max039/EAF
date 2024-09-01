@@ -13,6 +13,8 @@ import java.io.*;
 
 public class Executor {
 
+    public static boolean pwdSet = false;
+
     public static String ramVersionOfSudo = null;
 
     public static boolean makeExecutable(String filePath) {
@@ -66,7 +68,12 @@ public class Executor {
                     command = new String[]{"sudo","-S","/bin/bash", scriptPath};
                     if (sudoPwd == null) {
                         System.out.println(LogManager.executor() + LogManager.process() + LogManager.status() + " PLease enter sudo pwd!");
+                        pwdSet = false;
                         sudoPwd = UiUtil.getPasswordFromUser();
+                        while (!pwdSet) {
+                            Thread.sleep(50);
+                        }
+
                         if (sudoPwd == null) {
                             System.out.println(LogManager.executor() + LogManager.process() + LogManager.status() + " Password input cancelled.");
                             System.out.println(LogManager.executor() + LogManager.process() + LogManager.status() + " Terminating startup ...");
