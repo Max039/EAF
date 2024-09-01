@@ -10,6 +10,8 @@ import eaf.ui.panels.ErrorPane;
 import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import java.io.*;
+import java.net.URISyntaxException;
+import java.net.URL;
 import java.nio.file.*;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.util.ArrayList;
@@ -400,15 +402,21 @@ public class FileManager {
     }
 
     public static void copyToDocuments() {
-        Path sourceDir = Paths.get(System.getProperty("user.dir"));
-        Path targetDir = Paths.get(System.getProperty("user.home"), "Documents", "Eaf");
-        String excludeFileName = "eaf.jar";
+        URL location = FileManager.class.getProtectionDomain().getCodeSource().getLocation();
+
 
         try {
+            // Convert URL to File
+            File jarFile = new File(location.toURI());
+            Path sourceDir = jarFile.toPath();
+            Path targetDir = Paths.get(System.getProperty("user.home"), "Documents", "Eaf");
+            String excludeFileName = "eaf.jar";
             copyFilesExcludingJar(sourceDir, targetDir, excludeFileName);
             changeWorkingDirectory(targetDir);
         } catch (IOException e) {
             e.printStackTrace();
+        } catch (URISyntaxException e) {
+            throw new RuntimeException(e);
         }
     }
 
