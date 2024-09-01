@@ -135,7 +135,7 @@ public class SimpleIntro extends Intro {
     @Override
     public void stop() {
         stop = true;
-        frame.dispose();
+        //frame.dispose();
     }
 
     @Override
