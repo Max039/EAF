@@ -319,6 +319,28 @@ public class FileManager {
         return null;
     }
 
+    public static boolean folderExists(String directoryPath, String folderName) {
+        Path dirPath = Paths.get(directoryPath);
+
+        // Check if the provided path is a directory
+        if (!Files.isDirectory(dirPath)) {
+            System.out.println("The provided path is not a directory.");
+            return false;
+        }
+
+        try (DirectoryStream<Path> stream = Files.newDirectoryStream(dirPath)) {
+            for (Path entry : stream) {
+                if (Files.isDirectory(entry) && entry.getFileName().toString().equals(folderName)) {
+                    return true;
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return false;
+    }
+
     public static void copyJarFile(String projectPath, String destinationPath, String newFileName) throws IOException {
         Path targetDir = Paths.get(projectPath, "target/plugin");
         if (!Files.exists(targetDir)) {

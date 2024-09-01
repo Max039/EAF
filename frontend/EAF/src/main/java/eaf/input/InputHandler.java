@@ -318,6 +318,11 @@ public class InputHandler {
         SyntaxTree.reload();
     }
 
+    public static void setEvoAlVersionNoReload(String version) {
+        Main.evoalVersion = version;
+        Main.cacheManager.addToBuffer("build", version);
+    }
+
     public static void processStarted() {
         Main.console.flush();
         Main.processRunning = true;

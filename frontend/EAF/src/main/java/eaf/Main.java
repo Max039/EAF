@@ -142,17 +142,23 @@ public class Main extends JPanel {
             String currentPath = System.getProperty("user.dir");
             File builds = new File(currentPath + "/" + evoalBuildFolder);
 
+
+
+
             if (!builds.exists() || FileManager.isDirectoryEmpty(builds)) {
                 intro.setObjective("Downloading EvoAl Build");
                 Downloader.downloadNewestVersionIfNeeded();
+                var build = FileManager.findFirstFileInReverseOrder(currentPath + "/" + evoalBuildFolder);
+                InputHandler.setEvoAlVersionNoReload(build.getName());
             }
 
             evoalVersion = cacheManager.getFirstElement(String.class, "build");
-            if (evoalVersion == null) {
-                var build = FileManager.findFirstFileInReverseOrder(currentPath + "/" + evoalBuildFolder);
-                InputHandler.setEvoAlVersion(build.getName());
-            }
+            
 
+            if (evoalVersion == null || !FileManager.folderExists(currentPath + "/" + evoalBuildFolder, evoalVersion)) {
+                var build = FileManager.findFirstFileInReverseOrder(currentPath + "/" + evoalBuildFolder);
+                InputHandler.setEvoAlVersionNoReload(build.getName());
+            }
 
             intro.setObjective("Constructing Syntax-Tree");
             SyntaxTree.start();

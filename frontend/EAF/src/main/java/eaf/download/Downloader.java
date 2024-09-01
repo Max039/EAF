@@ -41,7 +41,7 @@ public class Downloader extends JFrame {
 
     private static final String DOWNLOAD_PATH = PATH + "/";
 
-    private static final String defaultBranch = "release";
+    private static final String defaultBranch = "develop";
 
     private static final String artifactName = "all:package";
 
@@ -50,7 +50,7 @@ public class Downloader extends JFrame {
     private static JComboBox<String> versionComboBox;
     private JButton mainButton;
 
-    private static JPanel panel;
+    private static JPanel panel = new JPanel();
 
     private static String outdated = "outdated / unsupported";
 
@@ -76,7 +76,6 @@ public class Downloader extends JFrame {
         setSize(400, 200);
         setLocationRelativeTo(null);
 
-        panel = new JPanel();
         panel.setLayout(new BorderLayout());
 
         // Create the main button that will show the dropdown menu
@@ -576,8 +575,8 @@ public class Downloader extends JFrame {
                     Files.deleteIfExists(Paths.get(outputFilePath));
                     System.out.println("Download complete");
                     populateVersions();
-                    JOptionPane.showMessageDialog(Main.mainFrame, "Downloaded and extracted: " + selectedVersion,
-                            "Success", JOptionPane.INFORMATION_MESSAGE);
+                    //JOptionPane.showMessageDialog(Main.mainFrame, "Downloaded and extracted: " + selectedVersion,
+                    //       "Success", JOptionPane.INFORMATION_MESSAGE);
                 }
                 catch (Exception e) {
                     deleteDirectory(new File(DOWNLOAD_PATH + selectedVersion));
