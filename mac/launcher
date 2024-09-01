@@ -11,7 +11,7 @@ VM_ARGS=""
 # Set the working directory to APP/contents/MacOS
 DIR=$(cd "$(dirname "$0")"; pwd)
 
-echo "Script directory: $DIR"
+cd $DIR
 
 # Error message for NO JAVA dialog
 ERROR_TITLE="Cannot launch $APP_NAME"
