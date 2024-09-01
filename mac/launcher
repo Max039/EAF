@@ -9,7 +9,7 @@ APP_NAME="Eaf"
 VM_ARGS=""
 
 # Set the working directory to APP/contents/MacOS
-DIR=$(cd "$(dirname "$0")/../APP/contents/MacOS"; pwd)
+DIR=$(cd "$(dirname "$0")/contents/MacOS"; pwd)
 
 # Error message for NO JAVA dialog
 ERROR_TITLE="Cannot launch $APP_NAME"
