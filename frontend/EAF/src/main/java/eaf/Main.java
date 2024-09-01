@@ -2,6 +2,7 @@ package eaf;
 
 import eaf.compiler.SyntaxTree;
 import eaf.executor.OpenIntelliJProject;
+import eaf.input.InputHandler;
 import eaf.intro.DoubleHelixAnimation;
 import eaf.manager.CacheManager;
 import eaf.models.Pair;
@@ -14,6 +15,8 @@ import eaf.ui.panels.*;
 import javax.swing.*;
 import javax.swing.border.LineBorder;
 import java.awt.*;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.util.ArrayList;
 
 import static eaf.ui.UiUtil.createMainTab;
@@ -141,6 +144,18 @@ public class Main extends JPanel {
     static void createAndShowGUI() {
         // Create the main frame
         mainFrame = new JFrame(programName);
+
+        // Set the default close operation to do nothing
+        mainFrame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+
+        // Add a window listener to handle the window closing event
+        mainFrame.addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                InputHandler.tryClose();
+            }
+        });
+
 
         if (os == OS.WINDOWS) {
             mainFrame.setUndecorated(true);
