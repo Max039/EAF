@@ -37,9 +37,9 @@ public class Downloader extends JFrame {
     private static final String PROJECT_ID = "evoal%2Fsource%2Fevoal-core"; // URL-encoded project ID
     private static final String PRIVATE_TOKEN = "oWVzZS_JquJwxFhqnx4y"; // Read api only - never expires
 
-    private static final String PATH = Main.evoalBuildFolder;
+    public static String PATH = System.getProperty("user.dir") + Main.evoalBuildFolder;
 
-    private static final String DOWNLOAD_PATH = PATH + "/";
+    public static String DOWNLOAD_PATH = PATH + "/";
 
     private static final String defaultBranch = "develop";
 
@@ -251,6 +251,7 @@ public class Downloader extends JFrame {
             }
         }
         else {
+            System.out.println(DOWNLOAD_PATH + versionName);
             System.out.println("Version " + versionName + " already present on filesystem!");
         }
 
@@ -751,6 +752,11 @@ public class Downloader extends JFrame {
             e.printStackTrace();
             return "unknown-version";
         }
+    }
+
+    public static void updatePaths() {
+        Downloader.PATH = System.getProperty("user.dir") + "/" + Main.evoalBuildFolder;
+        Downloader.DOWNLOAD_PATH = Downloader.PATH + "/";
     }
 
     public static void main(String[] args) {
