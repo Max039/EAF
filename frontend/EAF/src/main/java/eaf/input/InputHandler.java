@@ -8,6 +8,7 @@ import eaf.action.MovedRectAction;
 import eaf.compiler.SyntaxTree;
 import eaf.executor.Executor;
 import eaf.manager.FileManager;
+import eaf.manager.LogManager;
 import eaf.rects.Rect;
 import eaf.rects.multi.ClassRect;
 import eaf.rects.multi.RectWithRects;
@@ -316,6 +317,7 @@ public class InputHandler {
         Main.evoalVersion = version;
         Main.cacheManager.addToBuffer("build", version);
         SyntaxTree.reload();
+        System.out.println(LogManager.info() + " Changed active EvoAl version to: " + version);
     }
 
     public static void setEvoAlVersionNoReload(String version) {

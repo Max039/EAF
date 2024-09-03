@@ -113,6 +113,12 @@ public class ColorManager {
 
     public static Color intelliJ = new Color(255,160, 170);
 
+    //==========================================
+    //               Downloader
+    //==========================================
+
+    public static Color downloader = new Color(160,160, 170);
+
 
     //==========================================
     //==========================================

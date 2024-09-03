@@ -2,6 +2,7 @@ package eaf.ui;
 
 import eaf.compiler.SyntaxTree;
 import eaf.*;
+import eaf.download.Downloader;
 import eaf.executor.Executor;
 import eaf.executor.OpenIntelliJProject;
 import eaf.input.InputHandler;
@@ -332,6 +333,27 @@ public class UiUtil {
 
 
         scriptMenu.add(run);
+
+        JMenuItem downloadMenu = new JMenuItem("manage versions");
+        run.setUI(new CustomMenuItemUI(bgColor)); // Set custom UI delegate
+
+        downloadMenu.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                while (!isIndex()) {
+                    try {
+                        Thread.sleep(50);
+                    } catch (InterruptedException ex) {
+                        throw new RuntimeException(ex);
+                    }
+                }
+                Downloader.showMenu();
+            }
+        });
+
+
+        scriptMenu.add(downloadMenu);
+
         scriptMenu.setBackground(Main.bgColor);
         scriptMenu.setForeground(Color.WHITE);
         menuBar.add(scriptMenu);

@@ -117,6 +117,16 @@ public class Main extends JPanel {
 
     public static PluginManager pluginManager;
 
+    public synchronized static boolean isIndex() {
+        return index;
+    }
+
+    public synchronized static void setIndex(boolean index) {
+        Main.index = index;
+    }
+
+    private static boolean index = false;
+
     static {
         String osName = System.getProperty("os.name").toLowerCase();
         if (osName.contains("win")) {
@@ -245,6 +255,8 @@ public class Main extends JPanel {
         setupUi();
 
         FileManager.loadRecent();
+
+        postStart();
     }
 
     private void setupUi() {
@@ -287,5 +299,9 @@ public class Main extends JPanel {
         
     }
 
+
+    public static void postStart() {
+        Downloader.update();
+    }
 
 }
