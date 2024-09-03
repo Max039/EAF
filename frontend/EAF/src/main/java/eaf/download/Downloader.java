@@ -37,7 +37,7 @@ public class Downloader extends JFrame {
     private static final String PROJECT_ID = "evoal%2Fsource%2Fevoal-core"; // URL-encoded project ID
     private static final String PRIVATE_TOKEN = "oWVzZS_JquJwxFhqnx4y"; // Read api only - never expires
 
-    public static String PATH = System.getProperty("user.dir") + Main.evoalBuildFolder;
+    public static String PATH = System.getProperty("user.dir") + "/" + Main.evoalBuildFolder;
 
     public static String DOWNLOAD_PATH = PATH + "/";
 
