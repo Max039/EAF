@@ -171,7 +171,7 @@ public class Main extends JPanel {
 
             if (!builds.exists() || FileManager.isDirectoryEmpty(builds)) {
                 intro.setObjective("Downloading EvoAl Build");
-                Downloader.downloadNewestVersionIfNeeded();
+                Downloader.downloadNewestVersionIfNeeded(false);
                 var build = FileManager.findFirstFileInReverseOrder(currentPath + "/" + evoalBuildFolder);
                 InputHandler.setEvoAlVersionNoReload(build.getName());
             }
