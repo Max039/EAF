@@ -14,7 +14,7 @@ public class DownloadProgressWindow extends JFrame {
 
     public DownloadProgressWindow() {
         setTitle("Download Progress");
-        setSize(400, 150);
+        setSize(300, 30);
         setLocationRelativeTo(null); // Center the window
         setUndecorated(true);
 
