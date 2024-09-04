@@ -210,15 +210,8 @@ public class Downloader {
     }
 
     public static void update() {
-        Thread executionThread = new Thread(() -> {
-            try {
-                populateVersions();
-                Main.setIndex(true);
-            } catch (Exception e) {
-                throw new RuntimeException(e);
-            }
-        });
-        executionThread.start();
+        populateVersions();
+        Main.setIndex(true);
     }
 
     public static void openExplorer(String path) {
@@ -239,13 +232,79 @@ public class Downloader {
         }
     }
 
+    public static void checkForUpdate() {
+        try {
+            JSONArray pipelines = getSuccessfulPipelines(true);
+            System.out.println(LogManager.downloader() + " Retrieved " + pipelines.length() + " successful pipelines. Current limit for successful pipelines is set to: " + numberOfVersionsToShow );
+            for (int i = 0; i < pipelines.length(); i++) {
+                JSONObject pipeline = pipelines.getJSONObject(i);
+                String updatedAt = pipeline.getString("updated_at");
+                String versionName = getVersionNameFromDate(updatedAt);
+                if (hasJob(versionName, true)) {
+                    if (!Files.exists(Paths.get(DOWNLOAD_PATH + versionName))) {
+
+                        // Create the frame
+                        JFrame frame = new JFrame("EvoAl Updater");
+
+                        // Create the message with the version number
+                        String message = "There is a new build of EvoAl " + versionName + " would you like to download and activate?";
+
+                        // Create a checkbox for "Uninstall old outdated"
+                        JCheckBox uninstallCheckBox = new JCheckBox("Uninstall outdated");
+
+                        uninstallCheckBox.setSelected(true);
+
+                        // Object array to hold the message and the checkbox
+                        Object[] params = {message, uninstallCheckBox};
+
+                        // Create an option pane with Yes and No options
+                        int option = JOptionPane.showConfirmDialog(frame, params, "Update Available", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+
+                        // Check the user's choice
+                        if (option == JOptionPane.YES_OPTION) {
+                            System.out.println(LogManager.downloader() + " New EvoAl version found!");
+                            downloadIfNeeded(versionName);
+                            SwingUtilities.invokeLater(() -> {
+                                InputHandler.setEvoAlVersion(versionName);
+                            });
+
+                            if (uninstallCheckBox.isSelected()) {
+                                populateVersions();
+                                deleteNonMatchingFolders(new File(PATH), allPipelinesApprovedStings);
+                                populateVersions();
+                            }
+                            Main.setUpdateChecked(true);
+                        } else if (option == JOptionPane.NO_OPTION) {
+                            Main.setUpdateChecked(true);
+                        } else {
+                            // This block will handle the case when the window is closed without choosing Yes or No
+                            Main.setUpdateChecked(true);
+                        }
+
+                        // Close the frame after the user makes a choice or closes the window
+                        frame.dispose();
+                        return;
+                    }
+                    else {
+                        System.out.println(LogManager.downloader() + " Newest EvoAl version already downloaded!");
+                        return;
+                    }
+                }
+            }
+
+
+        } catch (Exception ex) {
+            throw new RuntimeException(ex);
+        }
+    }
+
 
     //Gets the newest nersion
     public static void downloadNewestVersionIfNeeded() {
         try {
             JSONArray pipelines = getSuccessfulPipelines(true);
             System.out.println(LogManager.downloader() + " Retrieved " + pipelines.length() + " successful pipelines. Current limit for successful pipelines is set to: " + numberOfVersionsToShow );
-            for (int i = 0; i < 100; i++) {
+            for (int i = 0; i < pipelines.length(); i++) {
                 JSONObject pipeline = pipelines.getJSONObject(i);
                 String updatedAt = pipeline.getString("updated_at");
                 String versionName = getVersionNameFromDate(updatedAt);
@@ -256,7 +315,7 @@ public class Downloader {
                 catch (Exception e) {
                     if (e instanceof JobNotFoundException) {
                         System.out.println(LogManager.downloader() + " Skipping version " + versionName);
-                        if (i == 99) {
+                        if (i == pipelines.length() - 1) {
                             throw new RuntimeException("No valid version was found!");
                         }
                     }
@@ -289,6 +348,8 @@ public class Downloader {
         else {
             System.out.println(LogManager.downloader() + " " + DOWNLOAD_PATH + versionName);
             System.out.println(LogManager.downloader() + " Version " + versionName + " already present on filesystem!");
+            JOptionPane.showMessageDialog(frame,
+                    "Version " + versionName + " already present on filesystem!", "Info", JOptionPane.INFORMATION_MESSAGE);
         }
 
     }
@@ -608,6 +669,14 @@ public class Downloader {
             }
         }
 
+    }
+
+
+    private static boolean hasJob(String selectedVersion, boolean limitBranch) throws Exception {
+        JSONObject pipeline = findPipelineByVersion(selectedVersion, limitBranch);
+        int pipelineId = pipeline.getInt("id");
+        int jobId = getJobId(pipelineId, artifactName);
+        return jobId != -1;
     }
 
 

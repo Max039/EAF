@@ -127,6 +127,16 @@ public class Main extends JPanel {
 
     private static boolean index = false;
 
+    public synchronized static boolean updateChecked() {
+        return updateCheck;
+    }
+
+    public synchronized static void setUpdateChecked(boolean updateCheck) {
+        Main.updateCheck = updateCheck;
+    }
+
+    private static boolean updateCheck = false;
+
     static {
         String osName = System.getProperty("os.name").toLowerCase();
         if (osName.contains("win")) {
@@ -301,7 +311,23 @@ public class Main extends JPanel {
 
 
     public static void postStart() {
-        Downloader.update();
+        Thread executionThread = new Thread(() -> {
+            try {
+                Downloader.checkForUpdate();
+                try {
+                    while (updateChecked()) {
+                        Thread.sleep(100);
+                    }
+                }
+                catch (Exception e) {
+                    throw new RuntimeException(e);
+                }
+                Downloader.update();
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        });
+        executionThread.start();
     }
 
 }
