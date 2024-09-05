@@ -16,9 +16,10 @@ SetupIconFile={#SourcePath}\icon.ico
 ; Copy the entire folder to the selected directory
 Source: "{#SourcePath}\..\frontend\EAF\*"; DestDir: "{app}"; Flags: recursesubdirs createallsubdirs; Excludes: "builds,session.cache";
 Source: "{#SourcePath}\icon.ico"; DestDir: "{app}"; Flags: ignoreversion
-Source: "{#SourcePath}\run_eaf.vbs"; DestDir: "{app}"; Flags: ignoreversion
+Source: "{#SourcePath}\vbs.bat"; DestDir: "{app}"; Flags: ignoreversion
+Source: "{#SourcePath}\run_eaf.vbs"; DestDir: "{app}"; Flags: ignoreversion; AfterInstall: FinishVbs
 Source: "{#SourcePath}\eaf.bat"; DestDir: "{app}"; Flags: ignoreversion; AfterInstall: AfterInstall
-;Source: "{#SourcePath}\first_time.bat"; DestDir: "{app}"; Flags: ignoreversion
+
 
 [Icons]
 ; Create a shortcut for the executable in the start menu with the icon
@@ -38,8 +39,7 @@ Name: "desktopicon"; Description: "Create a &desktop icon"; GroupDescription: "A
 Root: HKCR; Subkey: ".eaf"; ValueType: string; ValueName: ""; ValueData: "EvoAl-Frontend-File"; Flags: uninsdeletevalue
 Root: HKCR; Subkey: "EvoAl-Frontend-File"; ValueType: string; ValueName: ""; ValueData: "EvoAl-Frontend-File"; Flags: uninsdeletekey
 Root: HKCR; Subkey: "EvoAl-Frontend-File\DefaultIcon"; ValueType: string; ValueName: ""; ValueData: "{app}\icon.ico"; Flags: uninsdeletekey
-;Root: HKCR; Subkey: "EvoAl-Frontend-File\shell\open\command"; ValueType: string; ValueName: ""; ValueData: """{app}\run_eaf.vbs"" ""%1"""; Flags: uninsdeletekey
-Root: HKCR; Subkey: "EvoAl-Frontend-File\shell\open\command"; ValueType: string; ValueName: ""; ValueData: """{app}\eaf.bat"" ""%1"""; Flags: uninsdeletekey
+Root: HKCR; Subkey: "EvoAl-Frontend-File\shell\open\command"; ValueType: string; ValueName: ""; ValueData: """{app}\vbs.bat"" ""%1"""; Flags: uninsdeletekey
 
 
 [Code]
@@ -66,6 +66,29 @@ begin
   end;
 end;
 
+procedure FinishVbs();
+var
+  FileName: string;
+  FileContent: TStringList;
+begin
+  FileName := ExpandConstant('{app}\run_eaf.vbs');
+  
+  // Load the file into TStringList
+  FileContent := TStringList.Create;
+  try
+    FileContent.LoadFromFile(FileName);
+    FileContent.Add('WshShell.Run chr(34) & "' + ExpandConstant('{app}\eaf.bat') + '" & chr(34) & " " & argsString, 0'); // Change to /d for drive change support
+    // Add lines to the file
+    FileContent.Add('Set WshShell = Nothing');
+
+    
+    // Save the changes back to the file
+    FileContent.SaveToFile(FileName);
+  finally
+    FileContent.Free;
+  end;
+end;
+
 [Run]
 ; Create a VBS script to run the batch file
-;Filename: "{app}\first_time.bat"; Description: "Run EvoAl Frontend"; Flags: nowait postinstall skipifsilent
+;Filename: "{app}\vbs.bat"; Description: "Run EvoAl Frontend"; Flags: nowait postinstall skipifsilent
