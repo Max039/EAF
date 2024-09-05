@@ -194,9 +194,9 @@ public class FileManager {
         // Check if a file with the given name already exists
         if (file.exists()) {
             JOptionPane.showMessageDialog(null, "A file with that name already exists. Please choose a different name.", "Error", JOptionPane.ERROR_MESSAGE);
+            newFile();
             return;
         }
-        newFile();
         try {
             copyFolder(currentDirectory + "/project_base", currentDirectory  + Main.savesPath + "/" + saveName);
         }
