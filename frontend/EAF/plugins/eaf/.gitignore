@@ -3,6 +3,7 @@ target/
 !**/src/main/**/target/
 !**/src/test/**/target/
 /file_list.json
+/output/*
 
 ### IntelliJ IDEA ###
 .idea/modules.xml

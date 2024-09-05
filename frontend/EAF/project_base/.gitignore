@@ -1,9 +1,8 @@
 target/
-!.mvn/wrapper/maven-wrapper.jar
-!**/src/main/**/target/
-!**/src/test/**/target/
-/file_list.json
 /output/*
+/config.ddl
+/config.ol
+/run.sh
 
 ### IntelliJ IDEA ###
 .idea/modules.xml
