@@ -2,7 +2,8 @@
 ; General settings
 AppName=EvoAl Frontend
 AppVersion=1.0
-DefaultDirName={pf}\EvoAl Frontend\
+;DefaultDirName={pf}\EvoAl Frontend\
+DefaultDirName=C:\EvoAl\Eaf\
 DefaultGroupName=EvoAl Frontend
 OutputBaseFilename=eaf-setup
 Compression=lzma
