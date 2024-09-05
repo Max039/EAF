@@ -1,5 +1,24 @@
 @echo off
 
+:: Create a string to hold all arguments
+setlocal enabledelayedexpansion
+set "ALL_ARGS="
+
+:: Concatenate all arguments into a single string
+:concat
+if "%~1"=="" goto after_concat
+set "ALL_ARGS=!ALL_ARGS! %1"
+shift
+goto concat
+
+:after_concat
+endlocal & set ALL_ARGS=%ALL_ARGS%
+
+:: Continue with the rest of your script
+echo Number of arguments: %*
+echo Arguments: %ALL_ARGS%
+
+
 :: BatchGotAdmin
 :-------------------------------------
 REM  --> Check for permissions
@@ -17,7 +36,7 @@ if '%errorlevel%' NEQ '0' (
 
 :UACPrompt
     echo Set UAC = CreateObject^("Shell.Application"^) > "%temp%\getadmin.vbs"
-    set params= %*
+    set params= 
     echo UAC.ShellExecute "cmd.exe", "/c ""%~s0"" %params:"=""%", "", "runas", 0 >> "%temp%\getadmin.vbs"
 
     "%temp%\getadmin.vbs"
@@ -28,5 +47,5 @@ if '%errorlevel%' NEQ '0' (
     pushd "%CD%"
     CD /D "%~dp0"
 
-
-java -jar "C:\Program Files (x86)\EvoAl Frontend\eaf.jar"
+:: At this point, the script is running with admin privileges
+echo Elevated Script Arguments: %ALL_ARGS%

@@ -17,7 +17,7 @@ SetupIconFile={#SourcePath}\icon.ico
 Source: "{#SourcePath}\..\frontend\EAF\*"; DestDir: "{app}"; Flags: recursesubdirs createallsubdirs; Excludes: "builds,session.cache";
 Source: "{#SourcePath}\icon.ico"; DestDir: "{app}"; Flags: ignoreversion
 Source: "{#SourcePath}\run_eaf.vbs"; DestDir: "{app}"; Flags: ignoreversion
-Source: "{#SourcePath}\eaf.bat"; DestDir: "{app}"; Flags: ignoreversion
+Source: "{#SourcePath}\eaf.bat"; DestDir: "{app}"; Flags: ignoreversion; AfterInstall: AfterInstall
 ;Source: "{#SourcePath}\first_time.bat"; DestDir: "{app}"; Flags: ignoreversion
 
 [Icons]
@@ -38,11 +38,34 @@ Name: "desktopicon"; Description: "Create a &desktop icon"; GroupDescription: "A
 Root: HKCR; Subkey: ".eaf"; ValueType: string; ValueName: ""; ValueData: "EvoAl-Frontend-File"; Flags: uninsdeletevalue
 Root: HKCR; Subkey: "EvoAl-Frontend-File"; ValueType: string; ValueName: ""; ValueData: "EvoAl-Frontend-File"; Flags: uninsdeletekey
 Root: HKCR; Subkey: "EvoAl-Frontend-File\DefaultIcon"; ValueType: string; ValueName: ""; ValueData: "{app}\icon.ico"; Flags: uninsdeletekey
-Root: HKCR; Subkey: "EvoAl-Frontend-File\shell\open\command"; ValueType: string; ValueName: ""; ValueData: """{app}\run_eaf.vbs"" ""%1"""; Flags: uninsdeletekey
+;Root: HKCR; Subkey: "EvoAl-Frontend-File\shell\open\command"; ValueType: string; ValueName: ""; ValueData: """{app}\run_eaf.vbs"" ""%1"""; Flags: uninsdeletekey
+Root: HKCR; Subkey: "EvoAl-Frontend-File\shell\open\command"; ValueType: string; ValueName: ""; ValueData: """{app}\eaf.bat"" ""%1"""; Flags: uninsdeletekey
 
+
+[Code]
+procedure AfterInstall();
+var
+  FileName: string;
+  FileContent: TStringList;
+begin
+  FileName := ExpandConstant('{app}\eaf.bat');
+  
+  // Load the file into TStringList
+  FileContent := TStringList.Create;
+  try
+    FileContent.LoadFromFile(FileName);
+    FileContent.Add('cd /d ' + ExpandConstant('{app}')); // Change to /d for drive change support
+    // Add lines to the file
+    FileContent.Add('java -jar "' + ExpandConstant('{app}\eaf.jar') + '" %ALL_ARGS%');
+
+    
+    // Save the changes back to the file
+    FileContent.SaveToFile(FileName);
+  finally
+    FileContent.Free;
+  end;
+end;
 
 [Run]
 ; Create a VBS script to run the batch file
 ;Filename: "{app}\first_time.bat"; Description: "Run EvoAl Frontend"; Flags: nowait postinstall skipifsilent
-
-[Code]

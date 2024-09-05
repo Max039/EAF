@@ -154,6 +154,15 @@ public class Main extends JPanel {
         }
 
         cacheManager = new CacheManager();
+        System.out.println("Args:");
+        int i = 0;
+        for (var arg : args) {
+            if (i == 0) {
+                System.out.println(arg);
+                cacheManager.addToBuffer("filesOpened", arg);
+            }
+            i++;
+        }
         pluginManager = new PluginManager();
         try {
             if (os == OS.WINDOWS) {
