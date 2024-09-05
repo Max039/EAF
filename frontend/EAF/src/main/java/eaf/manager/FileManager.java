@@ -189,12 +189,7 @@ public class FileManager {
         // Construct the full path to the file
         String currentDirectory = System.getProperty("user.dir");
         File file = new File(currentDirectory + Main.savesPath + "/" + saveName, saveName + "." + Main.saveFormat);
-        try {
-            copyFolder(currentDirectory + "/project_base", currentDirectory  + Main.savesPath + "/" + saveName);
-        }
-        catch (Exception e) {
-            throw new RuntimeException(e);
-        }
+
 
         // Check if a file with the given name already exists
         if (file.exists()) {
@@ -202,6 +197,12 @@ public class FileManager {
             return;
         }
         newFile();
+        try {
+            copyFolder(currentDirectory + "/project_base", currentDirectory  + Main.savesPath + "/" + saveName);
+        }
+        catch (Exception e) {
+            throw new RuntimeException(e);
+        }
         writeJSONToFile(createSave(), file.getAbsolutePath());
         FileManager.emptySave();
         Main.cacheManager.addToBuffer("filesOpened", file.getAbsolutePath());
