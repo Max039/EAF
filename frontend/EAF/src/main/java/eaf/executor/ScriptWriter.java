@@ -54,8 +54,7 @@ public class ScriptWriter {
     public static String getPathToProject() {
         var r = Main.cacheManager.getFirstElement(String.class, "filesOpened");
         Path fileFullPath = Paths.get(r);
-        return Main.savesPath.substring(1) + "/" + fileFullPath.getParent().getFileName();
-
+        return fileFullPath.getParent().toAbsolutePath().toString();
     }
 
     public static void setOpenAndExports() {
@@ -94,11 +93,11 @@ public class ScriptWriter {
                 s = opens + " " + export;
             }
         }
-
+        String currentDir = System.getProperty("user.dir");
 
         return "#!/bin/sh\n" +
                 "export DISPLAY=localhost:0.0\n" +
-                "export EVOAL_HOME=$( cd -- \"$(dirname $0)/../../" + Main.evoalBuildFolder + "/" + build + "/evoal\" >/dev/null 2>&1 ; pwd -P )\n" +
+                "export EVOAL_HOME=$( cd -- \"" + currentDir + "/" + Main.evoalBuildFolder + "/" + build + "/evoal\" >/dev/null 2>&1 ; pwd -P )\n" +
                 "# Print the current working directory for debugging\n" +
                 "echo \"Current working directory in second script: $(pwd)\"\n" +
                 "echo \"EVOAL_HOME in second script: $EVOAL_HOME\"\n" +

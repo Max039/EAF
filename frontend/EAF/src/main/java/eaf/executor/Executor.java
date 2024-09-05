@@ -47,14 +47,13 @@ public class Executor {
         ClassLocator.refreshEvoAlModules();
 
         String currentPath = System.getProperty("user.dir");
-        var scriptTarget = currentPath + "/" +  ScriptWriter.getPathToProject() + "/run.sh";
+        var scriptPath = ScriptWriter.getPathToProject() + "/run.sh";
 
-        System.out.println(LogManager.executor() + LogManager.script() + LogManager.shell() + LogManager.status() + " Requesting script at " + scriptTarget + " .... ");
-        ScriptWriter.createScript(scriptTarget, Main.evoalVersion, ScriptWriter.projectType);
+        System.out.println(LogManager.executor() + LogManager.script() + LogManager.shell() + LogManager.status() + " Requesting script at " + scriptPath + " .... ");
+        ScriptWriter.createScript(scriptPath, Main.evoalVersion, ScriptWriter.projectType);
         System.out.println(LogManager.executor() + LogManager.script() + LogManager.shell() + LogManager.status() + " Trying to run script ...");
         try {
 
-            String scriptPath = currentPath + "/" + ScriptWriter.getPathToProject() + "/run.sh";
             System.out.println(LogManager.executor() + LogManager.script() + LogManager.shell() + LogManager.status() + " Current path: " + currentPath);
             System.out.println(LogManager.executor() + LogManager.script() + LogManager.shell() + LogManager.status() + " Script path: " + scriptPath);
 
