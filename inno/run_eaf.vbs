@@ -12,7 +12,3 @@ Next
 ' Trim any trailing space from the argument string
 argsString = Trim(argsString)
 
-' Run the batch file with all arguments
-WshShell.Run chr(34) & "C:\Program Files (x86)\EvoAl Frontend\eaf.bat" & chr(34) & " " & argsString, 0
-
-Set WshShell = Nothing
