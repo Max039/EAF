@@ -48,5 +48,3 @@ if '%errorlevel%' NEQ '0' (
 
 :: At this point, the script is running with admin privileges
 echo Elevated Script Arguments: %ALL_ARGS%
-cd /d C:\Program Files (x86)\EvoAl Frontend
-java -jar "C:\Program Files (x86)\EvoAl Frontend\eaf.jar" %ALL_ARGS%
