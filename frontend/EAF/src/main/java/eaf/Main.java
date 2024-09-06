@@ -153,6 +153,7 @@ public class Main extends JPanel {
     }
 
     public static void main(String[] args) throws Exception {
+        Preset.prepareSetups();
 
         if (os == OS.MAC) {
             FileManager.copyToDocuments();

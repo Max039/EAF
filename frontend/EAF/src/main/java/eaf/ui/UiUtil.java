@@ -18,6 +18,7 @@ import eaf.plugin.PluginManager;
 import eaf.rects.Rect;
 import eaf.rects.multi.ClassRect;
 import eaf.rects.multi.RectWithRects;
+import eaf.setup.Preset;
 import eaf.sound.SoundManager;
 import eaf.ui.panels.*;
 
@@ -38,6 +39,7 @@ import java.util.List;
 import java.util.Stack;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.logging.ErrorManager;
 import java.util.stream.Collectors;
 
 import static eaf.Main.*;
@@ -381,6 +383,31 @@ public class UiUtil {
 
 
         scriptMenu.add(downloadMenu);
+
+        scriptMenu.setBackground(Main.bgColor);
+        scriptMenu.setForeground(Color.WHITE);
+        menuBar.add(scriptMenu);
+    }
+
+    static void addPresetMenu(JMenuBar menuBar) {
+        // Create the File menu
+        JMenu scriptMenu = new JMenu("Preset");
+        scriptMenu.setBackground(Color.WHITE);
+        scriptMenu.setBackground(dividerColor);
+        // Create menu items
+        JMenuItem run = new JMenuItem("change preset");
+        run.setUI(new CustomMenuItemUI(bgColor)); // Set custom UI delegate
+
+        run.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                openPresetWindow();
+            }
+        });
+
+
+        scriptMenu.add(run);
+
 
         scriptMenu.setBackground(Main.bgColor);
         scriptMenu.setForeground(Color.WHITE);
@@ -1183,6 +1210,7 @@ public class UiUtil {
         addRectMenu(menuBar);
         addPluginMenu(menuBar);
         addEvoAlMenu(menuBar);
+        addPresetMenu(menuBar);
 
         // Set the menu bar to the frame
         mainPanel.add(menuBar, BorderLayout.NORTH);
@@ -2174,7 +2202,7 @@ public class UiUtil {
 
     public static void openFolderWindow(String folderPath) {
         // Create a JFrame (the main window)
-        JFrame frame = new JFrame("Folder Button App");
+        JFrame frame = new JFrame("Version Selector");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setSize(400, 400);
 
@@ -2203,6 +2231,40 @@ public class UiUtil {
             }
         } else {
             JOptionPane.showMessageDialog(frame, "The folder path is invalid or there are no subfolders.");
+        }
+
+        // Add the scroll pane to the frame and make it visible
+        frame.add(scrollPane);
+        frame.setVisible(true);
+    }
+
+    public static void openPresetWindow() {
+        // Create a JFrame (the main window)
+        JFrame frame = new JFrame("Preset Selector");
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setSize(400, 400);
+
+        // Create a JScrollPane with a JPanel inside it
+        JPanel panel = new JPanel();
+        panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+        JScrollPane scrollPane = new JScrollPane(panel);
+
+        for (var preset : Preset.presets) {
+            // Create a button for each folder
+            JButton button = new JButton(preset.getName());
+            button.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    // Print the name of the folder and close the window
+                    Main.preset = preset;
+                    InputHandler.actionHandler.changesMade();
+                    frame.dispose();
+                    ErrorPane.checkForErrors();
+                    mainFrame.revalidate();
+                    mainFrame.repaint();
+                }
+            });
+            panel.add(button);
         }
 
         // Add the scroll pane to the frame and make it visible
