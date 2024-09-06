@@ -108,4 +108,9 @@ public class EA extends Preset {
     public String getName() {
         return "ea";
     }
+
+    @Override
+    public boolean implementationError() {
+        return true;
+    }
 }
