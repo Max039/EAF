@@ -156,14 +156,12 @@ public class ErrorPane extends JScrollPane {
 
         if (Main.preset != null && !Main.mainPanel.leftPanel.getRects().isEmpty()) {
             if (Main.mainPanel.leftPanel.getRects().size() != Main.preset.requiredRectNames.size()) {
-                System.out.println("test1");
                 erroRects.put(Main.mainPanel.leftPanel.getRects().get(0), new Pair<>(0, "Incorrect of \"base\" rectangles in panel for preset! The preset requires: " + concatenateArrayList(Main.preset.requiredRectNames)));
             }
             else {
                 int i = 0;
                 for (var r : Main.mainPanel.leftPanel.getRects()) {
                     if (!r.clazz.name.equals(Main.preset.requiredRectNames.get(i))) {
-                        System.out.println("test2");
                         erroRects.put(r, new Pair<>(r.getY(), "Mismatching rectangle for preset at index " + i + " requiring " + Main.preset.requiredRectNames.get(i) + " instead of " + r.clazz.name));
                     }
                     i++;

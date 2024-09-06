@@ -16,6 +16,7 @@ import eaf.models.Pair;
 import eaf.plugin.PluginCreator;
 import eaf.plugin.PluginManager;
 import eaf.rects.Rect;
+import eaf.rects.RectFactory;
 import eaf.rects.multi.ClassRect;
 import eaf.rects.multi.RectWithRects;
 import eaf.setup.Preset;
@@ -245,8 +246,18 @@ public class UiUtil {
             }
         });
 
+        JMenuItem newSaveFromPreset = new JMenuItem("new from preset");
+        newSaveFromPreset.setUI(new CustomMenuItemUI(bgColor)); // Set custom UI delegate
+        newSaveFromPreset.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                fromPreset();
+            }
+        });
+
         // Add the submenu to the main menu
         fileMenu.add(newSave);
+        fileMenu.add(newSaveFromPreset);
         fileMenu.add(open);
         fileMenu.add(openFileDotDotDot);
         fileMenu.add(saveFileDotDotDot);
@@ -2271,5 +2282,51 @@ public class UiUtil {
         frame.add(scrollPane);
         frame.setVisible(true);
     }
+
+    public static void fromPreset() {
+        // Create a JFrame (the main window)
+        JFrame frame = new JFrame("Preset Selector");
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setSize(400, 400);
+
+        // Create a JScrollPane with a JPanel inside it
+        JPanel panel = new JPanel();
+        panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+        JScrollPane scrollPane = new JScrollPane(panel);
+
+        for (var preset : Preset.presets) {
+            // Create a button for each folder
+            JButton button = new JButton(preset.getName());
+            button.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    // Print the name of the folder and close the window
+                    var cancle = showUnsaveDialog();
+                    if (!cancle) {
+                        FileManager.newFile();
+                        Main.preset = preset;
+                        for (var r : preset.requiredRectNames) {
+                            mainPanel.leftPanel.addRect(RectFactory.getRectFromClassType(SyntaxTree.get(r)));
+                        }
+                        FileManager.save();
+                        frame.dispose();
+                        ErrorPane.checkForErrors();
+                        mainFrame.revalidate();
+                        mainFrame.repaint();
+                    }
+                }
+            });
+            panel.add(button);
+        }
+
+        // Add the scroll pane to the frame and make it visible
+        frame.add(scrollPane);
+        frame.setVisible(true);
+    }
+
+
+
+
+
 
 }
