@@ -119,6 +119,8 @@ public class SyntaxTree {
         baseClassRegister = new HashMap<>();
         constantRegister = new HashMap<>();
 
+        addFuncType();
+
         for (String path : pathToSyntax) {
             File rootDir = new File(path);
             if (rootDir.exists() && rootDir.isDirectory()) {
@@ -204,6 +206,12 @@ public class SyntaxTree {
 
     }
 
+    private static void addFuncType() {
+        ClassType func = new ClassType("func", null, "de.eaf.base");
+        func.setAbstract(true);
+        classRegister.put(func.name, func);
+        baseClassRegister.put(func.name, func);
+    }
 
 
     public static String makeModuleName(String s) {
@@ -338,7 +346,44 @@ public class SyntaxTree {
             constCount++;
         }
 
-        System.out.println(LogManager.type() + " Found " + i + " types and " + constCount + " constants in module " + moduleName);
+
+        int funcCount = 0;
+        // Define the regex pattern
+        String patternString = "def\\s+([^\\s]+)\\s+([^\\s]+)\\(([^)]*)\\);";
+
+
+        // Compile the pattern
+        Pattern funcPattern = Pattern.compile(patternString);
+
+        // Match the input string
+        Matcher funcMatcher = funcPattern.matcher(content.replace("'", ""));
+
+        // Check if the pattern matches
+        while (funcMatcher.find()) {
+
+
+            // Extract groups
+            String group1 = funcMatcher.group(1);
+            String group2 = funcMatcher.group(2);
+            String group3 = funcMatcher.group(3); // This will match everything inside the parentheses
+
+            System.out.println(LogManager.type() + " Found func: " + group1 + " " + group2 + "(" + group3 + ")");
+            var func  = get("func");
+            ClassType classType = new ClassType(group2, func, moduleName);
+            if (!group3.isEmpty()) {
+                var parts = group3.split(",");
+                for (var part : parts) {
+                    var p2 = part.trim().split(" ");
+                    FieldType type = new FieldType(p2[0], true, 0);
+                    classType.addField(p2[1], type);
+                }
+            }
+            classRegister.put(classType.name, classType);
+            func.children.add(classType);
+            funcCount++;
+        }
+
+        System.out.println(LogManager.type() + " Found " + i + " types, " + constCount + " constants and " + funcCount + " functions in module " + moduleName);
         return new Pair<>(moduleName, clazzTypes);
     }
 
