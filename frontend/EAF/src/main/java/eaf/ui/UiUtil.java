@@ -33,10 +33,12 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Stack;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.stream.Collectors;
 
 import static eaf.Main.*;
 import static eaf.manager.FileManager.loadSave;
@@ -1742,7 +1744,9 @@ public class UiUtil {
     }
 
     public static ClassType chooseInstance(JFrame owner, JPanel fieldsPanel, boolean addListener) {
-        List<ClassType> availableClasses = SyntaxTree.getClasses();
+        List<ClassType> availableClasses = SyntaxTree.getClasses().stream()
+                .sorted(Comparator.comparing(ClassType::getName))
+                .toList();
 
         // Use a modal dialog to block until selection is made
         JDialog instanceDialog = new JDialog(owner, "Add Instance Field", true);
@@ -1804,20 +1808,51 @@ public class UiUtil {
         JPanel instanceListPanel = new JPanel();
         instanceListPanel.setLayout(new BoxLayout(instanceListPanel, BoxLayout.Y_AXIS));
 
-        for (ClassType availableClass : availableClasses) {
-            JButton classButton = new JButton(availableClass.getName());
-            if (addListener) {
-                classButton.addActionListener(addListener(nameField, availableClass, arrayField, instanceDialog, fieldsPanel));
-            } else {
-                classButton.addActionListener(terminator(instanceDialog, availableClass));
-            }
-            instanceListPanel.add(classButton);
-        }
-
-
         JScrollPane instanceScrollPane = new JScrollPane(instanceListPanel);
         instanceDialog.add(instanceScrollPane, gbc);
 
+        // Method to refresh the list based on the search term
+        Runnable refreshInstanceList = () -> {
+            String searchText = searchField.getText().toLowerCase();
+            instanceListPanel.removeAll(); // Clear current buttons
+
+            // Re-add filtered buttons
+            for (ClassType availableClass : availableClasses) {
+                if (availableClass.getName().toLowerCase().contains(searchText)) {
+                    JButton classButton = new JButton(availableClass.getName());
+                    if (addListener) {
+                        classButton.addActionListener(addListener(nameField, availableClass, arrayField, instanceDialog, fieldsPanel));
+                    } else {
+                        classButton.addActionListener(terminator(instanceDialog, availableClass));
+                    }
+                    instanceListPanel.add(classButton);
+                }
+            }
+
+            instanceListPanel.revalidate(); // Revalidate to refresh the UI
+            instanceListPanel.repaint();
+        };
+
+        // Add DocumentListener to searchField to trigger filtering
+        searchField.getDocument().addDocumentListener(new DocumentListener() {
+            @Override
+            public void insertUpdate(DocumentEvent e) {
+                refreshInstanceList.run();
+            }
+
+            @Override
+            public void removeUpdate(DocumentEvent e) {
+                refreshInstanceList.run();
+            }
+
+            @Override
+            public void changedUpdate(DocumentEvent e) {
+                refreshInstanceList.run();
+            }
+        });
+
+        // Initial population of instance list
+        refreshInstanceList.run();
 
         instanceDialog.pack();
         instanceDialog.setLocationRelativeTo(null);  // Center the dialog
@@ -1825,6 +1860,7 @@ public class UiUtil {
 
         return selectedType;  // Return the selected class after the dialog is closed
     }
+
 
     public static ActionListener addListener(JTextField nameField, ClassType c, JTextField arrayCnt, JDialog instanceFrame, JPanel fieldsPanel) {
         return new ActionListener() {
