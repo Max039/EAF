@@ -1535,7 +1535,7 @@ public class UiUtil {
             primitiveFrame.add(fieldTypeLabel, gbcPrimitive);
 
             gbcPrimitive.gridx = 1;
-            String[] types = {"quotient real", "int", "string"};
+            String[] types = {"quotient real", "int", "string", "data"};
             JComboBox<String> typeComboBox = new JComboBox<>(types);
             primitiveFrame.add(typeComboBox, gbcPrimitive);
 
@@ -1584,6 +1584,10 @@ public class UiUtil {
                     int arrayCount = Integer.parseInt(arrayCountText);
                     if (arrayCount > 0 && !fieldValue.isEmpty()) {
                         JOptionPane.showMessageDialog(primitiveFrame, "Value field must be empty if Array Count is greater than 0.", "Input Error", JOptionPane.ERROR_MESSAGE);
+                        return;
+                    }
+                    if (typeComboBox.getSelectedItem().equals("data") && !fieldValue.isEmpty()) {
+                        JOptionPane.showMessageDialog(primitiveFrame, "Value field must be empty if data type is selected!.", "Input Error", JOptionPane.ERROR_MESSAGE);
                         return;
                     }
                 } catch (NumberFormatException ex) {
