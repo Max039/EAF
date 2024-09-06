@@ -15,6 +15,8 @@ import eaf.ui.panels.RectPanel;
 import java.util.ArrayList;
 
 import static eaf.models.ClassType.getUniqueImports;
+import static eaf.rects.Rect.stringPadding;
+import static eaf.ui.UiUtil.repeatString;
 
 public class ML extends Preset {
 
@@ -62,7 +64,7 @@ public class ML extends Preset {
                 }
             }
             else {
-                constants += Rect.stringPadding + "const " + r.type + " " + r.name + " := " + r.value + ";\n";
+                constants += stringPadding + "const " + r.type + " " + r.name + " := " + r.value + ";\n";
             }
 
         }
@@ -76,24 +78,24 @@ public class ML extends Preset {
         res += constants;
 
 
-        res += "prediction svr\n";
+        res += repeatString(stringPadding, 1) + "prediction svr\n";
         for (var _map : ((ArrayRect)base.getSubRectByName("maps")).getSubRects()) {
             var map = (ClassRect) _map;
             String source = map.getSubRectByName("source").toString(0).replace("data ", "") + "\n";
-            res += "maps " + source;
+            res += repeatString(stringPadding, 2) + "maps " + source;
 
             String buffer = "";
             String to = "";
-            buffer += "using\n";
-            buffer += "layer transfer\n";
-            buffer += "with\n";
+            buffer += repeatString(stringPadding, 2) + "using\n";
+            buffer += repeatString(stringPadding, 3) + "layer transfer\n";
+            buffer += repeatString(stringPadding, 4) + "with\n";
             for (var _func : ((ArrayRect)((ClassRect)map.getSubRectByName("transfer")).getSubRectByName("mapping")).getSubRects()) {
                 var func = (ClassRect) _func;
-                buffer += "function '" + func.getSubRectByName("function").clazz.name + "'\n";
-                buffer += "mapping " + source;
+                buffer += repeatString(stringPadding, 5) + "function '" + func.getSubRectByName("function").clazz.name + "'\n";
+                buffer += repeatString(stringPadding, 6) + "mapping " + source;
                 String target = func.getSubRectByName("target").toString(0).replace("data ", "");
-                buffer += "to '" + target + "'\n";
-                buffer += "with parameters\n";
+                buffer += repeatString(stringPadding, 6) + "to '" + target + "'\n";
+                buffer += repeatString(stringPadding, 6) + "with parameters\n";
                 if (to.isEmpty()) {
                     to = "'" + target + "'";
                 }
@@ -102,19 +104,20 @@ public class ML extends Preset {
                 }
                 var v = ((ClassRect)func.getSubRectByName("function"));
                 for (int i = 0; i < v.getSubRects().length; i++) {
-                    buffer += "'" + v.names[i] + "' := " + v.getSubRects()[i].toString(0) + ";\n";
+                    buffer += repeatString(stringPadding, 7) + "'" + v.names[i] + "' := " + v.getSubRects()[i].toString(0) + ";\n";
                 }
+                buffer += "\n";
             }
-            res += "to "+ to + " \n";
+            res += repeatString(stringPadding, 2) + "to "+ to + " \n";
             res += buffer;
         }
 
 
-        res += "predict svr from " + base.getSubRectByName("data-input-path").toString(0) + "\n";
-        res += "and measure\n";
+        res += repeatString(stringPadding, 2) + "predict svr from " + base.getSubRectByName("data-input-path").toString(0) + "\n";
+        res += repeatString(stringPadding, 2) + "and measure\n";
         for (var _measure : ((ArrayRect)base.getSubRectByName("measures")).getSubRects()) {
             var measure = (ClassRect) _measure;
-            res += "'" + measure.clazz.name + "'" + "(";
+            res += repeatString(stringPadding, 3) + "'" + measure.clazz.name + "'" + "(";
             int i = 0;
             for (var _param :  measure.getSubRects()) {
                 if (i > 0) {
@@ -126,8 +129,8 @@ public class ML extends Preset {
             }
             res += ");\n";
         }
-        res += "end\n";
-        res += "and store to " + base.getSubRectByName("data-output-path").toString(0) + "\n";
+        res += repeatString(stringPadding, 2) + "end\n";
+        res += repeatString(stringPadding, 2) + "and store to " + base.getSubRectByName("data-output-path").toString(0) + "\n";
 
 
 
