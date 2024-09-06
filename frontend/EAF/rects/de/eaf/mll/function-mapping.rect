@@ -1,0 +1,21 @@
+{
+    "parent": "",
+    "name": "function-mapping",
+    "abstract": false,
+    "fields": [
+        {
+            "field-name": "function",
+            "array-count": 0,
+            "primitive": false,
+            "value": "",
+            "type-name": "fitness-function"
+        },
+        {
+            "field-name": "target",
+            "array-count": 0,
+            "primitive": true,
+            "value": "",
+            "type-name": "0data"
+        }
+    ]
+}

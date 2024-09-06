@@ -1600,7 +1600,7 @@ public class UiUtil {
                 // If validation passes, proceed to add the field
                 JPanel fieldPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
                 JTextField fieldNameFieldDisplay = new JTextField(fieldName, 15);
-                JTextField fieldTypeField = new JTextField((!arrayCountText.isEmpty() ? "array " + arrayCountText + " " : "") + typeComboBox.getSelectedItem(), 15);
+                JTextField fieldTypeField = new JTextField(repeatString("array ", Integer.parseInt(arrayCountText)) + typeComboBox.getSelectedItem(), 15);
                 JCheckBox isPrimitive = new JCheckBox("Primitive", true);
                 JTextField fieldValueFieldDisplay = new JTextField(fieldValue, 15);
                 JButton removeFieldButton = new JButton("-");
@@ -1749,7 +1749,7 @@ public class UiUtil {
                 .toList();
 
         // Use a modal dialog to block until selection is made
-        JDialog instanceDialog = new JDialog(owner, "Add Instance Field", true);
+        JDialog instanceDialog = new JDialog(owner, "Choose Instance", true);
         instanceDialog.setPreferredSize(new Dimension(300, 500)); // Set preferred size for scroll pane
         instanceDialog.setLayout(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
@@ -1765,13 +1765,14 @@ public class UiUtil {
         gbc.gridwidth = 1;
         gbc.gridx = 0;
         gbc.gridy = 0;
-        JLabel nameLabel = new JLabel("Name:");
-        instanceDialog.add(nameLabel, gbc);
-
-        gbc.gridx = 1;
         JTextField nameField = new JTextField(15);
-        nameField.setPreferredSize(new Dimension(150, nameField.getPreferredSize().height));
-        instanceDialog.add(nameField, gbc);
+        if (addListener) {
+            JLabel nameLabel = new JLabel("Name:");
+            instanceDialog.add(nameLabel, gbc);
+            gbc.gridx = 1;
+            nameField.setPreferredSize(new Dimension(150, nameField.getPreferredSize().height));
+            instanceDialog.add(nameField, gbc);
+        }
 
         // Array Count Field
         JTextField arrayField = new JTextField(15);

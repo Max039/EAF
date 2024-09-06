@@ -1,0 +1,35 @@
+{
+    "parent": "",
+    "name": "prediction-svr",
+    "abstract": false,
+    "fields": [
+        {
+            "field-name": "measures",
+            "array-count": 1,
+            "primitive": false,
+            "value": "",
+            "type-name": "func"
+        },
+        {
+            "field-name": "maps",
+            "array-count": 1,
+            "primitive": false,
+            "value": "",
+            "type-name": "maps"
+        },
+        {
+            "field-name": "data-output.path",
+            "array-count": 0,
+            "primitive": true,
+            "value": "",
+            "type-name": "string"
+        },
+        {
+            "field-name": "data-input-path",
+            "array-count": 0,
+            "primitive": true,
+            "value": "",
+            "type-name": "string"
+        }
+    ]
+}

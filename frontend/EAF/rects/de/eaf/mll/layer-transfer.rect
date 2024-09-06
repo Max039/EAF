@@ -1,0 +1,12 @@
+{
+    "parent": "transfer",
+    "name": "layer-transfer",
+    "abstract": false,
+    "fields": [{
+        "field-name": "mapping",
+        "array-count": 1,
+        "primitive": false,
+        "value": "",
+        "type-name": "function-mapping"
+    }]
+}
