@@ -23,27 +23,21 @@ public class ScriptWriter {
     static void saveAndWriteEvoAlFiles() {
         System.out.println(LogManager.scriptWriter() + LogManager.write() + " Saving project ...");
         FileManager.save();
-        System.out.println(LogManager.scriptWriter() + LogManager.write() + LogManager.data() + " Writing EvoAl Data ...");
-        FileManager.write(Main.dataPanel.toString(), getPathToProject() + "/config.ddl");
-        System.out.println(LogManager.scriptWriter() + LogManager.write() + LogManager.ol()  + " Writing EvoAl Script ...");
-        FileManager.write(Main.mainPanel.leftPanel.toString(), getPathToProject()+ "/config.ol");
+
+        Main.preset.generateFiles(getPathToProject(), Main.mainPanel.leftPanel);
+
         Main.mainPanel.revalidate();
         Main.mainFrame.repaint();
     }
 
-    public enum ScriptType {
-        SEARCH
-    }
 
 
-    public static ScriptType projectType = ScriptType.SEARCH;
-
-    public static void createScript(String path, String build, ScriptType type) {
+    public static void createScript(String path, String build) {
 
         System.out.println(LogManager.scriptWriter() + LogManager.script() + LogManager.shell() + " Trying to writing Shell-Script script at " + path);
         try {
             List<String> lines = new ArrayList<>();
-            lines.add(getReplacementLines(build, type));
+            lines.add(getReplacementLines(build));
 
             Files.write(Paths.get(path), lines, StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING);
         } catch (IOException e) {
@@ -75,7 +69,7 @@ public class ScriptWriter {
 
     }
 
-    private static String getReplacementLines(String build, ScriptType type) {
+    private static String getReplacementLines(String build) {
         System.out.println(LogManager.scriptWriter() + LogManager.script() + LogManager.shell() + " Creating Opens And Exports of EvoAl Module for Plugin Modules ...");
         System.out.println(LogManager.scriptWriter() + LogManager.script() + LogManager.shell() + " EvoAl modules :");
         for (var module : ClassLocator.evoalModules) {
@@ -106,19 +100,11 @@ public class ScriptWriter {
                 "SCRIPT_DIR=$(dirname \"$(readlink -f \"$0\")\")\n" +
                 "# Change the working directory to the script's directory\n" +
                 "cd \"$SCRIPT_DIR\"\n" +
-                getExecutionLine(type);
+                getExecutionLine();
     }
 
-    private static String getExecutionLine(ScriptType type) {
-        switch (type) {
-            case SEARCH -> {
-                return  "$SHELL $EVOAL_HOME/bin/evoal-search.sh . config.ol output";
-            }
-            default ->
-            {
-                return "";
-            }
-        }
+    private static String getExecutionLine() {
+       return Main.preset.executionLine();
     }
 
 }

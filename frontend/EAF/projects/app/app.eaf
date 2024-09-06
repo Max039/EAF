@@ -519,7 +519,7 @@
             ]
         },
         {
-            "package": "de.eaf.documentor",
+            "package": "de.eaf.base.documentor",
             "type": "instance",
             "sub-type": "documentor",
             "value": [{

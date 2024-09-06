@@ -4,7 +4,6 @@ import eaf.Main;
 import eaf.input.InputHandler;
 import eaf.manager.ColorManager;
 import eaf.manager.LogManager;
-import eaf.process.GenerationTracker;
 import eaf.sound.SoundManager;
 import eaf.ui.UiUtil;
 import eaf.ui.panels.ErrorPane;
@@ -50,7 +49,7 @@ public class Executor {
         var scriptPath = ScriptWriter.getPathToProject() + "/run.sh";
 
         System.out.println(LogManager.executor() + LogManager.script() + LogManager.shell() + LogManager.status() + " Requesting script at " + scriptPath + " .... ");
-        ScriptWriter.createScript(scriptPath, Main.evoalVersion, ScriptWriter.projectType);
+        ScriptWriter.createScript(scriptPath, Main.evoalVersion);
         System.out.println(LogManager.executor() + LogManager.script() + LogManager.shell() + LogManager.status() + " Trying to run script ...");
         try {
 
@@ -117,7 +116,7 @@ public class Executor {
             InputStreamReader inputStreamReader = new InputStreamReader(inputStream);
             BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
 
-            boolean connected = false;
+            boolean postStartCompleted = false;
 
             System.out.println(LogManager.executor() + LogManager.process() + LogManager.status() + " Now mirroring console of process!");
             // Read the output of the process
@@ -129,27 +128,15 @@ public class Executor {
                     Main.console.println(line);
                 }
 
-                if (!connected) {
-                    try {
-                        GenerationTracker.connect();
-                        System.out.println(LogManager.executor() + LogManager.process() + LogManager.status() + " Connected to EvoAl!");
-                        connected = true;
-                    } catch (Exception ignored) {
-                        // Handle exception as necessary
-                    }
+                if (!postStartCompleted) {
+                    postStartCompleted = Main.preset.postStart();
                 }
 
                 // Check if the process is terminated
                 try {
                     int exitCode = process.exitValue();
 
-                    System.out.println(LogManager.executor() + LogManager.process() + LogManager.status() + " Eaf closing port!");
-                    try {
-                        GenerationTracker.disconnect();
-                    }
-                    catch (Exception e) {
-                        throw new RuntimeException(e);
-                    }
+                    Main.preset.postStop();
 
                     // Process has terminated, break out of the loop
                     if (exitCode == 0) {

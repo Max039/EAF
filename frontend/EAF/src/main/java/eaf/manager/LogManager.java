@@ -137,5 +137,9 @@ public class LogManager {
         return encased(ColorManager.colorText("Args", ColorManager.args));
     }
 
+    public static String preset() {
+        return encased(ColorManager.colorText("Preset", ColorManager.preset));
+    }
+
 }
 

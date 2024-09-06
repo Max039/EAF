@@ -12,6 +12,8 @@ import eaf.manager.LogManager;
 import eaf.models.Pair;
 import eaf.plugin.PluginCreator;
 import eaf.plugin.PluginManager;
+import eaf.setup.EA;
+import eaf.setup.Preset;
 import eaf.ui.*;
 import eaf.manager.FileManager;
 import eaf.ui.panels.*;
@@ -53,6 +55,8 @@ public class Main extends JPanel {
 
     public static Color searchBar = new Color(100, 100, 100);
     public static Color searchBarBorder = new Color(85, 85, 85);
+
+    public static Preset preset;
 
     public static ConstantPane constantManager;
 
@@ -164,6 +168,7 @@ public class Main extends JPanel {
             }
             i++;
         }
+        preset = new EA();
         pluginManager = new PluginManager();
         try {
             if (os == OS.WINDOWS) {

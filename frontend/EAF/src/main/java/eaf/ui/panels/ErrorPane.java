@@ -12,6 +12,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
 
@@ -145,10 +146,32 @@ public class ErrorPane extends JScrollPane {
     public static void checkForErrors() {
         Main.mainPanel.leftPanel.forceAdjustRects();
         clearErrors();
+
         System.out.println(LogManager.errorManager() + " Checking for errors");
+
         for (var r : Main.mainPanel.leftPanel.getRects()) {
             checkForErrors(r);
+
         }
+
+        if (!Main.mainPanel.leftPanel.getRects().isEmpty()) {
+            if (Main.mainPanel.leftPanel.getRects().size() != Main.preset.requiredRectNames.size()) {
+                System.out.println("test1");
+                erroRects.put(Main.mainPanel.leftPanel.getRects().get(0), new Pair<>(0, "Incorrect of \"base\" rectangles in panel for preset! The preset requires: " + concatenateArrayList(Main.preset.requiredRectNames)));
+            }
+            else {
+                int i = 0;
+                for (var r : Main.mainPanel.leftPanel.getRects()) {
+                    if (!r.clazz.name.equals(Main.preset.requiredRectNames.get(i))) {
+                        System.out.println("test2");
+                        erroRects.put(r, new Pair<>(r.getY(), "Mismatching rectangle for preset at index " + i + " requiring " + Main.preset.requiredRectNames.get(i) + " instead of " + r.clazz.name));
+                    }
+                    i++;
+                }
+            }
+        }
+
+
         updateLabels();
         warnings = warningRects.size();
         errors = erroRects.size();
@@ -157,6 +180,25 @@ public class ErrorPane extends JScrollPane {
             first = erroRects.values().stream().map(Pair::getFirst).min(Integer::compareTo).get();
         }
     }
+
+    public static String concatenateArrayList(ArrayList<String> list) {
+        if (list == null || list.isEmpty()) {
+            return "";
+        }
+
+        // Use StringBuilder for efficient string concatenation
+        StringBuilder result = new StringBuilder();
+
+        for (int i = 0; i < list.size(); i++) {
+            result.append(list.get(i));
+            if (i < list.size() - 1) {
+                result.append(", ");
+            }
+        }
+
+        return result.toString();
+    }
+
 
     private static void updateLabels() {
         errorListPanel.removeAll();
