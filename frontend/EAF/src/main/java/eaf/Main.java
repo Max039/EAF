@@ -34,7 +34,7 @@ public class Main extends JPanel {
 
     public static OS os = null;
 
-    public static String version = "0.1.0";
+    public static String version = "1.0.0";
 
     public static Color bgColor = new Color(49, 51, 53);
 
