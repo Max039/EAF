@@ -2,6 +2,7 @@ package eaf.manager;
 
 import eaf.download.Downloader;
 import eaf.models.Pair;
+import eaf.setup.Preset;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import eaf.input.InputHandler;
@@ -22,6 +23,8 @@ import java.util.Comparator;
 public class FileManager {
 
     public static void loadSave(JSONObject o) {
+        String preset = o.getString("preset");
+        Main.preset = Preset.getPreset(preset);
         JSONArray a2 = o.getJSONArray("data");
         Main.dataPanel.fromJson(a2);
         JSONArray a = o.getJSONArray("rects");
@@ -33,6 +36,7 @@ public class FileManager {
     }
 
     public static void emptySave() {
+        Main.preset = null;
         Main.dataPanel.fromJson(new JSONArray());
         Main.mainPanel.leftPanel.fromJson(new JSONArray());
         InputHandler.actionHandler.reset();
@@ -44,6 +48,12 @@ public class FileManager {
         o.put("rects", Main.mainPanel.leftPanel.toJson());
         o.put("data", Main.dataPanel.toJson());
         o.put("constants", Main.constantManager.toJson());
+        if (Main.preset != null) {
+            o.put("preset", Main.preset.getName());
+        }
+        else {
+            o.put("preset", "");
+        }
         return o;
     }
 
@@ -203,8 +213,8 @@ public class FileManager {
         catch (Exception e) {
             throw new RuntimeException(e);
         }
-        writeJSONToFile(createSave(), file.getAbsolutePath());
         FileManager.emptySave();
+        writeJSONToFile(createSave(), file.getAbsolutePath());
         Main.cacheManager.addToBuffer("filesOpened", file.getAbsolutePath());
         System.out.println(LogManager.fileManager() + LogManager.file() + " File " + file.getName() + " " + ColorManager.colorText("saved", ColorManager.sucessColor) + "!");
     }

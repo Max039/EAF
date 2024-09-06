@@ -928,7 +928,7 @@ public class UiUtil {
                 var picY = r.getVerticalScrollBar().getValue() + RectWithRects.spacing + Main.mainPanel.leftPanel.getHorizontalScrollBar().getHeight();
                 g2.drawImage(checkmark, picX, picY, checkmark.getWidth(), checkmark.getHeight(), null);
             }
-            if (ErrorPane.errors > 0) {
+            if (ErrorPane.errors > 0 || preset == null) {
                 var picX = r.getWidth() - cross.getWidth() - unrunable.getWidth() - RectWithRects.spacing * 2  - Main.mainPanel.leftPanel.getVerticalScrollBar().getWidth();
                 var picY = r.getVerticalScrollBar().getValue() + RectWithRects.spacing + Main.mainPanel.leftPanel.getHorizontalScrollBar().getHeight();
                 g2.drawImage(unrunable, picX, picY, unrunable.getWidth(), unrunable.getHeight(), null);

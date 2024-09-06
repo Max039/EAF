@@ -739,7 +739,7 @@ public abstract class RectWithRects extends Rect {
            warning = true;
            ErrorPane.warningRects.put(this, new Pair(getY(), filed + ": Empty Array!"));
        }
-        if (Main.preset.implementationError && this instanceof ClassRect && parent != null && !SyntaxTree.inModule(clazz.name)) {
+        if ((Main.preset != null && Main.preset.implementationError) && this instanceof ClassRect && parent != null && !SyntaxTree.inModule(clazz.name)) {
             valid = false;
             ErrorPane.erroRects.put(this, new Pair(getY(), clazz.name + ": Not implemented rect!"));
             color = errorColor;

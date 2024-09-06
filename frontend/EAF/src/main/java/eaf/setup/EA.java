@@ -104,4 +104,8 @@ public class EA extends Preset {
             throw new RuntimeException(e);
         }
     }
+    @Override
+    public String getName() {
+        return "ea";
+    }
 }

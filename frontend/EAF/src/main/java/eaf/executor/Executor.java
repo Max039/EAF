@@ -8,6 +8,7 @@ import eaf.sound.SoundManager;
 import eaf.ui.UiUtil;
 import eaf.ui.panels.ErrorPane;
 
+import javax.swing.*;
 import java.io.*;
 
 public class Executor {
@@ -166,24 +167,30 @@ public class Executor {
 
 
     public static void run() {
-        ErrorPane.checkForErrors();
-        if (ErrorPane.errors > 0) {
-            SoundManager.playExclamationSound();
-            Main.mainPanel.leftPanel.getVerticalScrollBar().setValue(ErrorPane.first);
-        } else {
-            ScriptWriter.saveAndWriteEvoAlFiles();
-            System.out.println(LogManager.executor() + LogManager.process() + LogManager.status() + " Preparing to execute ...");
-            // Create and start a new thread to run execute()
-            Thread executionThread = new Thread(() -> {
-                try {
-                    execute();
-                } catch (Exception e) {
-                    System.out.println(LogManager.executor() + LogManager.process() + LogManager.status() + LogManager.error() + " Script crashed: " + e);
-                    InputHandler.processTerminated();
-                }
-            });
-            executionThread.start();
+        if (Main.preset != null) {
+            ErrorPane.checkForErrors();
+            if (ErrorPane.errors > 0) {
+                SoundManager.playExclamationSound();
+                Main.mainPanel.leftPanel.getVerticalScrollBar().setValue(ErrorPane.first);
+            } else {
+                ScriptWriter.saveAndWriteEvoAlFiles();
+                System.out.println(LogManager.executor() + LogManager.process() + LogManager.status() + " Preparing to execute ...");
+                // Create and start a new thread to run execute()
+                Thread executionThread = new Thread(() -> {
+                    try {
+                        execute();
+                    } catch (Exception e) {
+                        System.out.println(LogManager.executor() + LogManager.process() + LogManager.status() + LogManager.error() + " Script crashed: " + e);
+                        InputHandler.processTerminated();
+                    }
+                });
+                executionThread.start();
+            }
         }
+        else {
+            JOptionPane.showMessageDialog(Main.mainFrame, "Error you need to select a preset first!.", "Error", JOptionPane.ERROR_MESSAGE);
+        }
+
     }
 
 }
