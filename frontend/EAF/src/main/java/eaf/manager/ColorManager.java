@@ -119,6 +119,13 @@ public class ColorManager {
 
     public static Color downloader = new Color(160,160, 170);
 
+    //==========================================
+    //               Main
+    //==========================================
+
+    public static Color main = new Color(30,160, 170);
+
+    public static Color args = new Color(160,50, 170);
 
     //==========================================
     //==========================================

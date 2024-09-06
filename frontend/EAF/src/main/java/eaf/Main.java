@@ -8,6 +8,7 @@ import eaf.intro.DoubleHelixAnimation;
 import eaf.intro.Intro;
 import eaf.intro.SimpleIntro;
 import eaf.manager.CacheManager;
+import eaf.manager.LogManager;
 import eaf.models.Pair;
 import eaf.plugin.PluginCreator;
 import eaf.plugin.PluginManager;
@@ -154,11 +155,11 @@ public class Main extends JPanel {
         }
 
         cacheManager = new CacheManager();
-        System.out.println("Args:");
+        System.out.println(LogManager.main() + LogManager.args() + " Args:");
         int i = 0;
         for (var arg : args) {
             if (i == 0) {
-                System.out.println(arg);
+                System.out.println(LogManager.main() + LogManager.args() + " " + arg);
                 cacheManager.addToBuffer("filesOpened", arg);
             }
             i++;
