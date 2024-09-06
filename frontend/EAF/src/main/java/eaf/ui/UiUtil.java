@@ -1252,6 +1252,10 @@ public class UiUtil {
                 updateClassInfo(container, root, frame);
             }
         });
+        if (root.equals(classType)) {
+            rootButton.setEnabled(false);
+            rootButton.setText("Root: this");
+        }
         panel.add(rootButton);
 
         panel.add(Box.createRigidArea(new Dimension(0, 15))); // Add vertical space
