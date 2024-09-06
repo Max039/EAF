@@ -277,6 +277,50 @@ public class FileManager {
         });
     }
 
+
+    public static File copyFile(String sourcePath, String targetPath) {
+        // Create streams for reading and writing
+        try (FileInputStream fis = new FileInputStream(sourcePath)) {
+
+            // Extract the target directory from the target path
+            File targetFile = new File(targetPath);
+            File targetDirectory = targetFile.getParentFile();
+
+            // Check if the directory exists; if not, create it
+            if (targetDirectory != null && !targetDirectory.exists()) {
+                if (targetDirectory.mkdirs()) {
+                    System.out.println(LogManager.fileManager() + LogManager.write() + " Target directory created successfully.");
+                } else {
+                    System.out.println(LogManager.fileManager() + LogManager.write()  + LogManager.error()  + " Failed to create target directory.");
+                    return null;  // Return null if the directory couldn't be created
+                }
+            }
+
+            try (FileOutputStream fos = new FileOutputStream(targetFile)) {
+                // Buffer to hold file contents
+                byte[] buffer = new byte[1024];
+                int bytesRead;
+
+                // Read and write the file contents
+                while ((bytesRead = fis.read(buffer)) != -1) {
+                    fos.write(buffer, 0, bytesRead);
+                }
+
+                System.out.println(LogManager.fileManager() + LogManager.write() + " File copied successfully.");
+                return targetFile;
+
+            } catch (IOException e) {
+                System.out.println(LogManager.fileManager() + LogManager.write() + LogManager.error() + " Error occurred during file copy: " + e.getMessage());
+                return null;  // Return null in case of error during file writing
+            }
+
+        } catch (IOException e) {
+            System.out.println(LogManager.fileManager() + LogManager.write() + LogManager.error() + " Error occurred during file copy: " + e.getMessage());
+            return null;  // Return null in case of error during file reading
+        }
+    }
+
+
     public static void replaceContentOfFile(String path, ArrayList<Pair<String, String>> replacements) {
         System.out.println(LogManager.fileManager() + LogManager.write() + " Replacing parts in File \"" + path + "\"");
         try {

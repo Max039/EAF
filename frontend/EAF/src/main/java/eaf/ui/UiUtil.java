@@ -124,6 +124,31 @@ public class UiUtil {
         });
 
 
+        JMenuItem imp = new JMenuItem("import ...");
+        imp.setUI(new CustomMenuItemUI(bgColor)); // Set custom UI delegate
+        imp.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                try {
+                    var cancle = showUnsaveDialog();
+                    if (!cancle) {
+                        var file = FileManager.chooseJavaFile(Main.savesPath, Main.saveFormat);
+                        if (file != null) {
+                            String curr = System.getProperty("user.dir");
+                            String name = file.getName().split("\\.")[0];
+                            System.out.println(curr + "/" + savesPath + "/" + name + "/" + file.getName());
+                            var newFile = FileManager.copyFile(file.getAbsolutePath(), curr + "/" + savesPath + "/" + name + "/" + file.getName());
+                            FileManager.copyFolder(curr + "/project_base", curr + "/" + savesPath + "/" + name);
+                            loadSave(readJSONFileToJSON(newFile));
+                            Main.cacheManager.addToBuffer("filesOpened", newFile.getPath());
+                        }
+                    }
+                } catch (IOException ex) {
+                    throw new RuntimeException(ex);
+                }
+            }
+        });
+
 
 
         JMenuItem saveFileDotDotDot = new JMenuItem("save as ...");
@@ -222,6 +247,7 @@ public class UiUtil {
         fileMenu.add(openFileDotDotDot);
         fileMenu.add(saveFileDotDotDot);
         fileMenu.add(save);
+        fileMenu.add(imp);
         fileMenu.setBackground(Main.bgColor);
         fileMenu.setForeground(Color.WHITE);
         menuBar.add(fileMenu);
