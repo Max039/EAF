@@ -330,6 +330,8 @@ public class SyntaxTree {
         Matcher typeMatcher = typePattern.matcher(content);
         int i = 0;
 
+        ArrayList<ClassType> posProcess = new ArrayList<>();
+
         ArrayList<Pair<ClassType, String>> que = new ArrayList<>();
         while (typeMatcher.find()) {
             boolean isAbstract = typeMatcher.group(1) != null;
@@ -344,6 +346,7 @@ public class SyntaxTree {
 
             que.add(new Pair<>(clazz, typeContent));
             newModule.addType(clazz);
+            posProcess.add(clazz);
             i++;
         }
         boolean changes = false;
@@ -367,6 +370,20 @@ public class SyntaxTree {
             }
             changesLastTime = changes;
             que = newQue;
+        }
+
+
+        while (!posProcess.isEmpty()) {
+            ArrayList<ClassType> next = new ArrayList<>();
+            for (var c : posProcess) {
+                if (c.parent == null || c.parent.parentFieldsSet) {
+                    c.setParentFields();
+                }
+                else {
+                    next.add(c);
+                }
+            }
+            posProcess = next;
         }
 
         int constCount = 0;
@@ -417,13 +434,12 @@ public class SyntaxTree {
                     classType.addField(p2[1], type);
                 }
             }
-            var name = classType.pack + "." + classType.name;
-            if (classRegister.get(name) == null) {
-                classRegister.put(name, classType);
+            if (classRegister.get(classType.name) == null) {
+                classRegister.put(classType.name, classType);
                 newModule.addType(classType);
             }
             else {
-                throw new ClassDomainAlreadyUsedException("The class domain " + name + " is already used!");
+                throw new ClassDomainAlreadyUsedException("The class domain " + classType.name + " is already used!");
             }
 
 

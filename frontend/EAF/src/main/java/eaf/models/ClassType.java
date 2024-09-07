@@ -29,18 +29,26 @@ public class ClassType implements Comparable {
 
     public String pack;
 
+    public boolean parentFieldsSet = false;
+
     public ClassType(String name, ClassType parent, String pack) {
         this.name = name;
         this.parent = parent;
         this.pack = pack;
         fields = new HashMap<>();
         if ( parent != null ) {
-            fields.putAll(parent.fields);
             extending = true;
         }
         else {
             extending = false;
         }
+    }
+
+    public void setParentFields() {
+        if ( parent != null ) {
+            fields.putAll(parent.fields);
+        }
+        parentFieldsSet = true;
     }
 
     public void setAbstract(boolean isAbstract) {

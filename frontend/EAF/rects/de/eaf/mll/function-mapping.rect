@@ -8,7 +8,7 @@
             "array-count": 0,
             "primitive": false,
             "value": "",
-            "type-name": "de.evoal.optimisation.core.fitness-function"
+            "type-name": "de.evoal.surrogate.ml.surrogate"
         },
         {
             "field-name": "target",
