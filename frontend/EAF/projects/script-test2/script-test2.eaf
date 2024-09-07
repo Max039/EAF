@@ -1,576 +1,94 @@
 {
-    "data": [
-        {
-            "instance": false,
-            "name": "x:0",
-            "type": "quotient real"
-        },
-        {
-            "instance": false,
-            "name": "y:0",
-            "type": "quotient real"
-        },
-        {
-            "instance": false,
-            "name": "y:1",
-            "type": "quotient real"
-        },
-        {
-            "instance": false,
-            "name": "y:2",
-            "type": "quotient real"
-        },
-        {
-            "instance": false,
-            "name": "y:3",
-            "type": "quotient real"
-        },
-        {
-            "instance": false,
-            "name": "y:4",
-            "type": "quotient real"
-        },
-        {
-            "instance": false,
-            "name": "y:5",
-            "type": "quotient real"
-        },
-        {
-            "instance": false,
-            "name": "y:6",
-            "type": "quotient real"
-        },
-        {
-            "instance": false,
-            "name": "y:7",
-            "type": "quotient real"
-        }
-    ],
+    "data": [],
     "rects": [{
-        "package": "de.eaf.mll.machine-learning",
+        "package": "de.evoal.optimisation.ea.optimisation",
         "type": "instance",
-        "sub-type": "machine-learning",
+        "sub-type": "de.evoal.optimisation.ea.optimisation.evolutionary-algorithm",
         "value": [
             {
-                "field-name": "measures",
+                "field-name": "offspring-fraction",
+                "editable": true,
+                "type": "text-field",
+                "sub-type": "real",
+                "value": "0.6"
+            },
+            {
+                "field-name": "size-of-population",
+                "editable": true,
+                "type": "text-field",
+                "sub-type": "int",
+                "value": "0"
+            },
+            {
+                "field-name": "maximum-age",
+                "editable": true,
+                "type": "text-field",
+                "sub-type": "int",
+                "value": "0"
+            },
+            {
+                "field-name": "handlers",
                 "package": "Array",
                 "primitive": false,
                 "count": 0,
                 "type": "array",
-                "sub-type": "func",
+                "sub-type": "de.evoal.optimisation.ea.optimisation.handler",
                 "value": [{
                     "field-name": "",
-                    "package": "de.evoal.surrogate.ml",
+                    "package": "de.evoal.optimisation.ea.optimisation",
                     "type": "instance",
-                    "sub-type": "R²",
-                    "value": []
+                    "sub-type": "de.evoal.optimisation.ea.optimisation.constraint-handler",
+                    "value": [{
+                        "field-name": "category",
+                        "editable": true,
+                        "type": "text-field",
+                        "sub-type": "string",
+                        "value": "Enter String here!"
+                    }]
                 }]
             },
             {
-                "field-name": "maps",
-                "package": "Array",
-                "primitive": false,
-                "count": 0,
-                "type": "array",
-                "sub-type": "maps",
-                "value": [{
-                    "field-name": "",
-                    "package": "de.eaf.mll.maps",
-                    "type": "instance",
-                    "sub-type": "maps",
-                    "value": [
-                        {
-                            "field-name": "transfer",
-                            "package": "de.eaf.mll.layer-transfer",
-                            "type": "instance",
-                            "sub-type": "layer-transfer",
-                            "value": [{
-                                "field-name": "mapping",
-                                "package": "Array",
-                                "primitive": false,
-                                "count": 0,
-                                "type": "array",
-                                "sub-type": "function-mapping",
-                                "value": [
-                                    {
-                                        "field-name": "",
-                                        "package": "de.eaf.mll.function-mapping",
-                                        "type": "instance",
-                                        "sub-type": "function-mapping",
-                                        "value": [
-                                            {
-                                                "field-name": "function",
-                                                "package": "de.evoal.surrogate.smile.ml",
-                                                "type": "instance",
-                                                "sub-type": "gaussian-svr",
-                                                "value": [
-                                                    {
-                                                        "field-name": "σ",
-                                                        "editable": true,
-                                                        "type": "text-field",
-                                                        "sub-type": "real",
-                                                        "value": "3.0"
-                                                    },
-                                                    {
-                                                        "field-name": "soft-margin",
-                                                        "editable": true,
-                                                        "type": "text-field",
-                                                        "sub-type": "real",
-                                                        "value": "0.15"
-                                                    },
-                                                    {
-                                                        "field-name": "ε",
-                                                        "editable": true,
-                                                        "type": "text-field",
-                                                        "sub-type": "real",
-                                                        "value": "1.4"
-                                                    },
-                                                    {
-                                                        "field-name": "tolerance",
-                                                        "editable": true,
-                                                        "type": "text-field",
-                                                        "sub-type": "real",
-                                                        "value": "0.1"
-                                                    }
-                                                ]
-                                            },
-                                            {
-                                                "field-name": "target",
-                                                "editable": true,
-                                                "type": "option-field",
-                                                "sub-type": "0data",
-                                                "value": "y:0"
-                                            }
-                                        ]
-                                    },
-                                    {
-                                        "field-name": "",
-                                        "package": "de.eaf.mll.function-mapping",
-                                        "type": "instance",
-                                        "sub-type": "function-mapping",
-                                        "value": [
-                                            {
-                                                "field-name": "function",
-                                                "package": "de.evoal.surrogate.smile.ml",
-                                                "type": "instance",
-                                                "sub-type": "hellinger-svr",
-                                                "value": [
-                                                    {
-                                                        "field-name": "σ",
-                                                        "editable": true,
-                                                        "type": "text-field",
-                                                        "sub-type": "real",
-                                                        "value": "1.4"
-                                                    },
-                                                    {
-                                                        "field-name": "soft-margin",
-                                                        "editable": true,
-                                                        "type": "text-field",
-                                                        "sub-type": "real",
-                                                        "value": "3.0"
-                                                    },
-                                                    {
-                                                        "field-name": "ε",
-                                                        "editable": true,
-                                                        "type": "text-field",
-                                                        "sub-type": "real",
-                                                        "value": "0.15"
-                                                    },
-                                                    {
-                                                        "field-name": "tolerance",
-                                                        "editable": true,
-                                                        "type": "text-field",
-                                                        "sub-type": "real",
-                                                        "value": "0.1"
-                                                    }
-                                                ]
-                                            },
-                                            {
-                                                "field-name": "target",
-                                                "editable": true,
-                                                "type": "option-field",
-                                                "sub-type": "0data",
-                                                "value": "y:1"
-                                            }
-                                        ]
-                                    },
-                                    {
-                                        "field-name": "",
-                                        "package": "de.eaf.mll.function-mapping",
-                                        "type": "instance",
-                                        "sub-type": "function-mapping",
-                                        "value": [
-                                            {
-                                                "field-name": "function",
-                                                "package": "de.evoal.surrogate.smile.ml",
-                                                "type": "instance",
-                                                "sub-type": "hyperbolic-tangent-svr",
-                                                "value": [
-                                                    {
-                                                        "field-name": "scale",
-                                                        "editable": true,
-                                                        "type": "text-field",
-                                                        "sub-type": "real",
-                                                        "value": "1.0"
-                                                    },
-                                                    {
-                                                        "field-name": "σ",
-                                                        "editable": true,
-                                                        "type": "text-field",
-                                                        "sub-type": "real",
-                                                        "value": "3.0"
-                                                    },
-                                                    {
-                                                        "field-name": "soft-margin",
-                                                        "editable": true,
-                                                        "type": "text-field",
-                                                        "sub-type": "real",
-                                                        "value": "0.15"
-                                                    },
-                                                    {
-                                                        "field-name": "offset",
-                                                        "editable": true,
-                                                        "type": "text-field",
-                                                        "sub-type": "real",
-                                                        "value": "1.0"
-                                                    },
-                                                    {
-                                                        "field-name": "ε",
-                                                        "editable": true,
-                                                        "type": "text-field",
-                                                        "sub-type": "real",
-                                                        "value": "1.4"
-                                                    },
-                                                    {
-                                                        "field-name": "tolerance",
-                                                        "editable": true,
-                                                        "type": "text-field",
-                                                        "sub-type": "real",
-                                                        "value": "0.1"
-                                                    }
-                                                ]
-                                            },
-                                            {
-                                                "field-name": "target",
-                                                "editable": true,
-                                                "type": "option-field",
-                                                "sub-type": "0data",
-                                                "value": "y:2"
-                                            }
-                                        ]
-                                    },
-                                    {
-                                        "field-name": "",
-                                        "package": "de.eaf.mll.function-mapping",
-                                        "type": "instance",
-                                        "sub-type": "function-mapping",
-                                        "value": [
-                                            {
-                                                "field-name": "function",
-                                                "package": "de.evoal.surrogate.smile.ml",
-                                                "type": "instance",
-                                                "sub-type": "laplacian-svr",
-                                                "value": [
-                                                    {
-                                                        "field-name": "σ",
-                                                        "editable": true,
-                                                        "type": "text-field",
-                                                        "sub-type": "real",
-                                                        "value": "3.0"
-                                                    },
-                                                    {
-                                                        "field-name": "soft-margin",
-                                                        "editable": true,
-                                                        "type": "text-field",
-                                                        "sub-type": "real",
-                                                        "value": "0.15"
-                                                    },
-                                                    {
-                                                        "field-name": "ε",
-                                                        "editable": true,
-                                                        "type": "text-field",
-                                                        "sub-type": "real",
-                                                        "value": "1.4"
-                                                    },
-                                                    {
-                                                        "field-name": "tolerance",
-                                                        "editable": true,
-                                                        "type": "text-field",
-                                                        "sub-type": "real",
-                                                        "value": "0.1"
-                                                    }
-                                                ]
-                                            },
-                                            {
-                                                "field-name": "target",
-                                                "editable": true,
-                                                "type": "option-field",
-                                                "sub-type": "0data",
-                                                "value": "y:3"
-                                            }
-                                        ]
-                                    },
-                                    {
-                                        "field-name": "",
-                                        "package": "de.eaf.mll.function-mapping",
-                                        "type": "instance",
-                                        "sub-type": "function-mapping",
-                                        "value": [
-                                            {
-                                                "field-name": "function",
-                                                "package": "de.evoal.surrogate.smile.ml",
-                                                "type": "instance",
-                                                "sub-type": "linear-svr",
-                                                "value": [
-                                                    {
-                                                        "field-name": "σ",
-                                                        "editable": true,
-                                                        "type": "text-field",
-                                                        "sub-type": "real",
-                                                        "value": "3.0"
-                                                    },
-                                                    {
-                                                        "field-name": "soft-margin",
-                                                        "editable": true,
-                                                        "type": "text-field",
-                                                        "sub-type": "real",
-                                                        "value": "0.15"
-                                                    },
-                                                    {
-                                                        "field-name": "ε",
-                                                        "editable": true,
-                                                        "type": "text-field",
-                                                        "sub-type": "real",
-                                                        "value": "1.4"
-                                                    },
-                                                    {
-                                                        "field-name": "tolerance",
-                                                        "editable": true,
-                                                        "type": "text-field",
-                                                        "sub-type": "real",
-                                                        "value": "0.1"
-                                                    }
-                                                ]
-                                            },
-                                            {
-                                                "field-name": "target",
-                                                "editable": true,
-                                                "type": "option-field",
-                                                "sub-type": "0data",
-                                                "value": "y:4"
-                                            }
-                                        ]
-                                    },
-                                    {
-                                        "field-name": "",
-                                        "package": "de.eaf.mll.function-mapping",
-                                        "type": "instance",
-                                        "sub-type": "function-mapping",
-                                        "value": [
-                                            {
-                                                "field-name": "function",
-                                                "package": "de.evoal.surrogate.smile.ml",
-                                                "type": "instance",
-                                                "sub-type": "pearson-svr",
-                                                "value": [
-                                                    {
-                                                        "field-name": "ω",
-                                                        "editable": true,
-                                                        "type": "text-field",
-                                                        "sub-type": "real",
-                                                        "value": "0.2"
-                                                    },
-                                                    {
-                                                        "field-name": "σ",
-                                                        "editable": true,
-                                                        "type": "text-field",
-                                                        "sub-type": "real",
-                                                        "value": "3.0"
-                                                    },
-                                                    {
-                                                        "field-name": "soft-margin",
-                                                        "editable": true,
-                                                        "type": "text-field",
-                                                        "sub-type": "real",
-                                                        "value": "0.15"
-                                                    },
-                                                    {
-                                                        "field-name": "ε",
-                                                        "editable": true,
-                                                        "type": "text-field",
-                                                        "sub-type": "real",
-                                                        "value": "1.4"
-                                                    },
-                                                    {
-                                                        "field-name": "tolerance",
-                                                        "editable": true,
-                                                        "type": "text-field",
-                                                        "sub-type": "real",
-                                                        "value": "0.1"
-                                                    }
-                                                ]
-                                            },
-                                            {
-                                                "field-name": "target",
-                                                "editable": true,
-                                                "type": "option-field",
-                                                "sub-type": "0data",
-                                                "value": "y:5"
-                                            }
-                                        ]
-                                    },
-                                    {
-                                        "field-name": "",
-                                        "package": "de.eaf.mll.function-mapping",
-                                        "type": "instance",
-                                        "sub-type": "function-mapping",
-                                        "value": [
-                                            {
-                                                "field-name": "function",
-                                                "package": "de.evoal.surrogate.smile.ml",
-                                                "type": "instance",
-                                                "sub-type": "polynomial-svr",
-                                                "value": [
-                                                    {
-                                                        "field-name": "σ",
-                                                        "editable": true,
-                                                        "type": "text-field",
-                                                        "sub-type": "real",
-                                                        "value": "3.0"
-                                                    },
-                                                    {
-                                                        "field-name": "soft-margin",
-                                                        "editable": true,
-                                                        "type": "text-field",
-                                                        "sub-type": "real",
-                                                        "value": "0.15"
-                                                    },
-                                                    {
-                                                        "field-name": "offset",
-                                                        "editable": true,
-                                                        "type": "text-field",
-                                                        "sub-type": "real",
-                                                        "value": "1.0"
-                                                    },
-                                                    {
-                                                        "field-name": "ε",
-                                                        "editable": true,
-                                                        "type": "text-field",
-                                                        "sub-type": "real",
-                                                        "value": "1.4"
-                                                    },
-                                                    {
-                                                        "field-name": "degree",
-                                                        "editable": true,
-                                                        "type": "text-field",
-                                                        "sub-type": "int",
-                                                        "value": "2"
-                                                    },
-                                                    {
-                                                        "field-name": "scale",
-                                                        "editable": true,
-                                                        "type": "text-field",
-                                                        "sub-type": "real",
-                                                        "value": "1.0"
-                                                    },
-                                                    {
-                                                        "field-name": "tolerance",
-                                                        "editable": true,
-                                                        "type": "text-field",
-                                                        "sub-type": "real",
-                                                        "value": "0.1"
-                                                    }
-                                                ]
-                                            },
-                                            {
-                                                "field-name": "target",
-                                                "editable": true,
-                                                "type": "option-field",
-                                                "sub-type": "0data",
-                                                "value": "y:6"
-                                            }
-                                        ]
-                                    },
-                                    {
-                                        "field-name": "",
-                                        "package": "de.eaf.mll.function-mapping",
-                                        "type": "instance",
-                                        "sub-type": "function-mapping",
-                                        "value": [
-                                            {
-                                                "field-name": "function",
-                                                "package": "de.evoal.surrogate.smile.ml",
-                                                "type": "instance",
-                                                "sub-type": "thin-plate-spline-svr",
-                                                "value": [
-                                                    {
-                                                        "field-name": "σ",
-                                                        "editable": true,
-                                                        "type": "text-field",
-                                                        "sub-type": "real",
-                                                        "value": "3.0"
-                                                    },
-                                                    {
-                                                        "field-name": "soft-margin",
-                                                        "editable": true,
-                                                        "type": "text-field",
-                                                        "sub-type": "real",
-                                                        "value": "0.15"
-                                                    },
-                                                    {
-                                                        "field-name": "ε",
-                                                        "editable": true,
-                                                        "type": "text-field",
-                                                        "sub-type": "real",
-                                                        "value": "1.4"
-                                                    },
-                                                    {
-                                                        "field-name": "tolerance",
-                                                        "editable": true,
-                                                        "type": "text-field",
-                                                        "sub-type": "real",
-                                                        "value": "0.1"
-                                                    }
-                                                ]
-                                            },
-                                            {
-                                                "field-name": "target",
-                                                "editable": true,
-                                                "type": "option-field",
-                                                "sub-type": "0data",
-                                                "value": "y:7"
-                                            }
-                                        ]
-                                    }
-                                ]
-                            }]
-                        },
-                        {
-                            "field-name": "source",
-                            "editable": true,
-                            "type": "option-field",
-                            "sub-type": "data",
-                            "value": "x:0"
-                        }
-                    ]
-                }]
+                "field-name": "alterers",
+                "package": "de.evoal.optimisation.ea.optimisation",
+                "type": "instance",
+                "sub-type": "de.evoal.optimisation.ea.optimisation.alterers",
+                "value": [
+                    {
+                        "field-name": "crossover",
+                        "package": "Array",
+                        "primitive": false,
+                        "count": 0,
+                        "type": "array",
+                        "sub-type": "de.evoal.optimisation.ea.optimisation.crossover",
+                        "value": []
+                    },
+                    {
+                        "field-name": "mutator",
+                        "package": "Array",
+                        "primitive": false,
+                        "count": 0,
+                        "type": "array",
+                        "sub-type": "de.evoal.optimisation.ea.optimisation.mutator",
+                        "value": []
+                    }
+                ]
             },
             {
-                "field-name": "data-output-path",
+                "field-name": "number-of-generations",
                 "editable": true,
                 "type": "text-field",
-                "sub-type": "string",
-                "value": "svr.pson"
+                "sub-type": "int",
+                "value": "0"
             },
             {
-                "field-name": "data-input-path",
-                "editable": true,
-                "type": "text-field",
-                "sub-type": "string",
-                "value": "data.json"
+                "field-name": "selectors",
+                "package": "de.evoal.optimisation.ea.optimisation",
+                "type": "instance",
+                "sub-type": "de.evoal.optimisation.ea.optimisation.selectors",
+                "value": []
             }
         ]
     }],
     "constants": [],
-    "preset": "ml"
+    "preset": ""
 }

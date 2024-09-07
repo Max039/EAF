@@ -36,6 +36,7 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import javax.imageio.ImageIO;
+import javax.swing.text.Utilities;
 
 import static eaf.models.FieldValue.doesTypesMatch;
 
@@ -184,7 +185,7 @@ public abstract class RectWithRects extends Rect {
         if (context != null && this instanceof ClassRect) {
             int extra = locked ? spacing + lock.getWidth() : 0;
 
-            maxWidth = Math.max(maxWidth, (int) getFont().getStringBounds(clazz.name, context).getWidth() + extra);
+            maxWidth = Math.max(maxWidth, (int) getFont().getStringBounds(SyntaxTree.toSimpleName(clazz.name), context).getWidth() + extra);
         }
         return spacing * 2 + maxWidth + extraSpacingToRight();
     }
@@ -543,7 +544,7 @@ public abstract class RectWithRects extends Rect {
 
 
                 valid = valid.stream()
-                        .sorted(Comparator.comparing(classType -> classType.name))
+                        .sorted(Comparator.comparing(classType -> SyntaxTree.toSimpleName(classType.name)))
                         .filter(t -> !t.isAbstract)
                         .collect(Collectors.toList());
 
@@ -552,7 +553,7 @@ public abstract class RectWithRects extends Rect {
                 int maxVisibleItems = 5;
                 for (int i = 0; i < Math.min(valid.size(), maxVisibleItems); i++) {
                     var item = valid.get(i);
-                    JMenuItem menuItem = new JMenuItem(item.name);
+                    JMenuItem menuItem = new JMenuItem(SyntaxTree.toSimpleName(item.name));
                     menuItem.addActionListener(new ActionListener() {
                         @Override
                         public void actionPerformed(ActionEvent e) {
@@ -608,8 +609,8 @@ public abstract class RectWithRects extends Rect {
                                     listPanel.removeAll();
 
                                     for (var fullItem : finalValid) {
-                                        if (fullItem.name.toLowerCase().contains(searchText)) {
-                                            JButton button = new JButton(fullItem.name);
+                                        if (SyntaxTree.toSimpleName(fullItem.name).toLowerCase().contains(searchText)) {
+                                            JButton button = new JButton(SyntaxTree.toSimpleName(fullItem.name));
                                             button.setHorizontalAlignment(SwingConstants.CENTER);
                                             button.setMaximumSize(new Dimension(Integer.MAX_VALUE, 50)); // Ensure full width and fixed height
                                             button.addActionListener(new ActionListener() {

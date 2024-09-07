@@ -8,14 +8,14 @@
             "array-count": 1,
             "primitive": false,
             "value": "",
-            "type-name": "func"
+            "type-name": "de.eaf.base.func"
         },
         {
             "field-name": "maps",
             "array-count": 1,
             "primitive": false,
             "value": "",
-            "type-name": "maps"
+            "type-name": "de.eaf.mll.maps"
         },
         {
             "field-name": "data-output-path",

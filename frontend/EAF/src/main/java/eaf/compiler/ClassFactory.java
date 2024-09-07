@@ -20,7 +20,7 @@ public class ClassFactory {
             }
         }
 
-        var c = new ClassType(name, parentClass, pack);
+        var c = new ClassType(pack, parentClass, pack);
         c.setAbstract(abst);
 
         for (var f : fields) {
@@ -51,7 +51,6 @@ public class ClassFactory {
             var value = o2.getString("value");
             fields.add(new Pair<>(fieldName, new Pair<>(new FieldType(typeName, primitive, arrayCount), value)));
         }
-        System.out.println(name + " " + abst);
         return createClass(name, pack, parent, abst, fields);
     }
 

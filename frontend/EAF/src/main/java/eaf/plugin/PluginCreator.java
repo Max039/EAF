@@ -82,7 +82,7 @@ public class PluginCreator {
                 findJavaFilesRecursively(file, javaFiles); // Recursively search in subfolders
             } else if (file.isFile() && file.getName().endsWith(".java")) {
                 var name = file.getName().replace(".java", "");
-                var found =  SyntaxTree.get(name);
+                var found =  SyntaxTree.getByEnd(name);
                 if (found != null) {
                     javaFiles.put(file.getName(), new Pair<>(file.getAbsolutePath(), found)); // Add the .java file path to the list
                 }

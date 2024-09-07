@@ -1,5 +1,6 @@
 package eaf.rects.multi;
 
+import eaf.compiler.SyntaxTree;
 import eaf.models.ClassType;
 import eaf.models.FieldType;
 import eaf.rects.Rect;
@@ -41,8 +42,9 @@ public class ClassRect extends RectWithRects {
     public void drawOnTop(Graphics g, int x, int y, int width, int height, int a) {
         g.setColor(new Color(nameColor.getRed(), nameColor.getGreen(), nameColor.getBlue(), a));
         if (!clazz.name.isEmpty()) {
-            g.drawString(clazz.name, x + spacing, y + spacing + fontSize);
-            registerString(clazz.name, y + spacing);
+            var n = SyntaxTree.toSimpleName(clazz.name);
+            g.drawString(n, x + spacing, y + spacing + fontSize);
+            registerString(n, y + spacing);
         }
     };
 

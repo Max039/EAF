@@ -1258,7 +1258,7 @@ public class UiUtil {
 
         String back = "← Back";
         if (!historyStack.isEmpty()) {
-            back += " to " + historyStack.peek().name;
+            back += " to " + SyntaxTree.toSimpleName(historyStack.peek().name);
         }
 
 
@@ -1273,19 +1273,20 @@ public class UiUtil {
                 }
             }
         });
+        backButton.setEnabled(!historyStack.isEmpty());
         panel.add(backButton);
         panel.add(Box.createRigidArea(new Dimension(0, 15))); // Add vertical space
 
 
         // Add the class name
-        JLabel nameLabel = new JLabel("Class Name: " + classType.getName());
+        JLabel nameLabel = new JLabel("Class Name: " + SyntaxTree.toSimpleName(classType.getName()));
         panel.add(nameLabel);
         panel.add(Box.createRigidArea(new Dimension(0, 15))); // Add vertical space
 
 
         var root = classType.getRoot();
         // Add a back button if there is history
-        JButton rootButton = new JButton("Root: " + root.name);
+        JButton rootButton = new JButton("Root: " + SyntaxTree.toSimpleName(root.name));
         rootButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -1322,7 +1323,12 @@ public class UiUtil {
                 value = " = " +field.getValue().getSecond().value;
             }
 
-            JButton fieldButton = new JButton(field.getKey() + " : " + repeatString("array ", type.arrayCount)  + type.typeName + value);
+            String name = type.typeName;
+            if (!type.primitive) {
+                name = SyntaxTree.toSimpleName(name);
+            }
+
+            JButton fieldButton = new JButton(field.getKey() + " : " + repeatString("array ", type.arrayCount)  + name + value);
             fieldButton.setMaximumSize(new Dimension(Integer.MAX_VALUE, 30)); // Set button to full width
             fieldButton.setAlignmentX(Component.CENTER_ALIGNMENT);
             fieldButton.addActionListener(new ActionListener() {
@@ -1345,8 +1351,13 @@ public class UiUtil {
 
         panel.add(Box.createRigidArea(new Dimension(0, 15))); // Add vertical space
 
+        String parent = "";
+        if (classType.parent != null) {
+            parent = SyntaxTree.toSimpleName(classType.getParentName());
+        }
+
         // Add the parent name with a clickable button
-        JButton parentButton = new JButton("Parent: " + classType.getParentName());
+        JButton parentButton = new JButton("Parent: " + parent);
         parentButton.setEnabled(classType.parent != null);
         parentButton.addActionListener(new ActionListener() {
             @Override
@@ -1370,7 +1381,7 @@ public class UiUtil {
         JPanel childrenPanel = new JPanel();
         childrenPanel.setLayout(new BoxLayout(childrenPanel, BoxLayout.Y_AXIS));
         for (ClassType child : classType.children) {
-            JButton childButton = new JButton(child.getName());
+            JButton childButton = new JButton(SyntaxTree.toSimpleName(child.getName()));
             childButton.setMaximumSize(new Dimension(Integer.MAX_VALUE, 30)); // Set button to full width
             childButton.setAlignmentX(Component.CENTER_ALIGNMENT);
             childButton.addActionListener(new ActionListener() {
@@ -1405,21 +1416,22 @@ public class UiUtil {
         for (var c : SyntaxTree.getClasses()) {
             for (var f : c.fields.entrySet()) {
                 var type = f.getValue().getFirst();
-                var class2 = SyntaxTree.get(type.typeName);
-                if (!type.primitive && class2.matchesType(classType)) {
-                    JButton childButton = new JButton(c.name + " - " + f.getKey() + " : " + repeatString("array ", type.arrayCount)  + type.typeName);
-                    childButton.setMaximumSize(new Dimension(Integer.MAX_VALUE, 30)); // Set button to full width
-                    childButton.setAlignmentX(Component.CENTER_ALIGNMENT);
-                    childButton.addActionListener(new ActionListener() {
-                        @Override
-                        public void actionPerformed(ActionEvent e) {
-                            historyStack.push(classType);
-                            updateClassInfo(container, c, frame);
-                        }
-                    });
-                    usesPanel.add(childButton);
+                if (!type.primitive) {
+                    var class2 = SyntaxTree.get(type.typeName);
+                    if (class2.matchesType(classType)) {
+                        JButton childButton = new JButton(SyntaxTree.toSimpleName(c.name)+ " - " + f.getKey() + " : " + repeatString("array ", type.arrayCount)  + SyntaxTree.toSimpleName(type.typeName));
+                        childButton.setMaximumSize(new Dimension(Integer.MAX_VALUE, 30)); // Set button to full width
+                        childButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+                        childButton.addActionListener(new ActionListener() {
+                            @Override
+                            public void actionPerformed(ActionEvent e) {
+                                historyStack.push(classType);
+                                updateClassInfo(container, c, frame);
+                            }
+                        });
+                        usesPanel.add(childButton);
+                    }
                 }
-
             }
         }
         JScrollPane scrollPane3 = new JScrollPane(usesPanel);
