@@ -24,7 +24,7 @@ public class ML extends Preset {
 
     public ML() {
         requiredRectNames = new ArrayList<>();
-        requiredRectNames.add("machine-learning");
+        requiredRectNames.add("de.eaf.mll.machine-learning");
     }
 
 

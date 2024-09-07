@@ -1,0 +1,11 @@
+target,run,generation,regression-function,?
+0,0,1,"multiply(sqrt(pow(minus(minus(constant,constant),divide(-39.0,x0)),divide(sqrt(-34.0),pow(34.0,constant)))),sqrt(pow(sqrt(sqrt(x0)),multiply(pow(48.0,x0),sqrt(-49.0)))))",NaN
+0,0,2,"multiply(sqrt(pow(minus(minus(constant,constant),divide(-39.0,x0)),divide(sqrt(-34.0),pow(34.0,constant)))),sqrt(pow(sqrt(sqrt(x0)),multiply(pow(48.0,x0),sqrt(-49.0)))))",NaN
+0,0,3,"multiply(sqrt(pow(minus(minus(constant,constant),divide(-39.0,x0)),divide(sqrt(-34.0),pow(34.0,constant)))),sqrt(pow(sqrt(sqrt(x0)),multiply(pow(48.0,x0),sqrt(-49.0)))))",NaN
+0,0,4,"multiply(sqrt(pow(minus(minus(constant,constant),divide(-39.0,x0)),divide(sqrt(-34.0),pow(34.0,constant)))),sqrt(pow(sqrt(sqrt(x0)),multiply(pow(48.0,x0),sqrt(-49.0)))))",NaN
+0,0,5,"multiply(sqrt(pow(minus(minus(constant,constant),divide(-39.0,x0)),divide(sqrt(-34.0),pow(34.0,constant)))),sqrt(pow(sqrt(sqrt(x0)),multiply(pow(48.0,x0),sqrt(-49.0)))))",NaN
+0,0,6,"plus(multiply(divide(minus(constant,1.0),divide(divide(8.0,x0),plus(constant,x0))),26.720778431774775),5.893345084892085E-203)",3.596443686563357E21
+0,0,7,"plus(multiply(divide(minus(constant,1.0),divide(divide(8.0,x0),plus(constant,x0))),26.720778431774775),5.893345084892085E-203)",3.596443686563357E21
+0,0,8,"plus(multiply(divide(minus(constant,1.0),divide(divide(8.0,x0),plus(constant,x0))),26.720778431774775),5.893345084892085E-203)",3.596443686563357E21
+0,0,9,"plus(multiply(divide(minus(constant,1.0),divide(divide(8.0,x0),plus(constant,x0))),26.720778431774775),5.893345084892085E-203)",3.596443686563357E21
+0,0,10,"plus(multiply(divide(minus(constant,1.0),divide(divide(8.0,x0),plus(constant,x0))),26.720778431774775),5.893345084892085E-203)",3.596443686563357E21

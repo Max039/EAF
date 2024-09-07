@@ -55,7 +55,7 @@ public class ClassRect extends RectWithRects {
 
     @Override
     public String toString(int level) {
-        String res = "'" + clazz.name + "' {";
+        String res = "'" + SyntaxTree.toSimpleName(clazz.name) + "' {";
         boolean test = subRects.length > 0;
         if (test) {
             res += "\n";

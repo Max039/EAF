@@ -1,6 +1,7 @@
 package eaf.setup;
 
 import eaf.Main;
+import eaf.compiler.SyntaxTree;
 import eaf.manager.FileManager;
 import eaf.manager.LogManager;
 import eaf.models.ClassType;
@@ -17,9 +18,9 @@ public class EA extends Preset {
 
     public EA() {
         requiredRectNames = new ArrayList<>();
-        requiredRectNames.add("problem");
-        requiredRectNames.add("evolutionary-algorithm");
-        requiredRectNames.add("documentor");
+        requiredRectNames.add("de.evoal.optimisation.core.problem");
+        requiredRectNames.add("de.evoal.optimisation.ea.optimisation.evolutionary-algorithm");
+        requiredRectNames.add("de.eaf.base.documentor");
     }
 
     @Override
@@ -32,9 +33,9 @@ public class EA extends Preset {
 
     public String rectPanelConversion(RectPanel panel) {
         String res = "";
-        String problemName = panel.getRects().get(0).clazz.name;;
+        String problemName = SyntaxTree.toSimpleName(panel.getRects().get(0).clazz.name);;
         String problemContent = panel.getRects().get(0).toString(1).split(" ", 2)[1];
-        String algorithmName = panel.getRects().get(1).clazz.name;
+        String algorithmName =SyntaxTree.toSimpleName( panel.getRects().get(1).clazz.name);
         String algorithmContent = panel.getRects().get(1).toString(1).split(" ", 2)[1];
         String documentors = panel.getRects().get(2).toString(1).split("\\{", 2)[1];
         documentors = documentors.substring(0, documentors.length() - 2).replace("'documentors'", "documenting");

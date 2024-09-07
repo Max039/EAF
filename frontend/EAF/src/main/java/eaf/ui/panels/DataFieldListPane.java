@@ -364,7 +364,7 @@ public class DataFieldListPane extends JScrollPane {
     private String findClosestMatch(String name) {
         Optional<String> closestMatch = SyntaxTree.getNonAbstractClasses().stream()
                 .map(t -> t.getName())
-                .min((s1, s2) -> Integer.compare(getLevenshteinDistance(s1, name), getLevenshteinDistance(s2, name)));
+                .min((s1, s2) -> Integer.compare(getLevenshteinDistance(SyntaxTree.toSimpleName(s1), name), getLevenshteinDistance(SyntaxTree.toSimpleName(s2), name)));
         return closestMatch.orElse(name); // Return the original name if no matches found
     }
 
@@ -433,7 +433,7 @@ public class DataFieldListPane extends JScrollPane {
 
         String s;
         if (dataField.isInstance()) {
-            s = "instance " + dataField.getType();
+            s = "instance " + SyntaxTree.toSimpleName(dataField.getType());
         } else {
             s = dataField.getType();
         }

@@ -1,5 +1,6 @@
 package eaf.models;
 
+import eaf.compiler.SyntaxTree;
 import org.json.JSONObject;
 
 public class DataField {
@@ -27,7 +28,7 @@ public class DataField {
 
     public String toFormat() {
         if (instance) {
-            return "data '" + name + "' of instance '" + type + "';";
+            return "data '" + name + "' of instance '" + SyntaxTree.toSimpleName(type) + "';";
         } else {
             return type + " data '" + name + "';";
         }
