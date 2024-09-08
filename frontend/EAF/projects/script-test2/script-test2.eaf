@@ -86,18 +86,18 @@
             "sub-type": "de.evoal.optimisation.ea.optimisation.evolutionary-algorithm",
             "value": [
                 {
-                    "field-name": "initialisation",
-                    "package": "de.evoal.optimisation.ea.'genetic-programming'",
-                    "type": "instance",
-                    "sub-type": "de.evoal.optimisation.ea.'genetic-programming'.random-tree-population",
-                    "value": []
-                },
-                {
                     "field-name": "offspring-fraction",
                     "editable": true,
                     "type": "text-field",
                     "sub-type": "real",
                     "value": "0.6"
+                },
+                {
+                    "field-name": "initialisation",
+                    "package": "de.evoal.optimisation.ea.'genetic-programming'",
+                    "type": "instance",
+                    "sub-type": "de.evoal.optimisation.ea.'genetic-programming'.random-tree-population",
+                    "value": []
                 },
                 {
                     "field-name": "comparator",

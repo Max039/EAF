@@ -21,8 +21,8 @@ module 'config' {
 
 
   configure 'evolutionary-algorithm' for 'problem' {
-    'initialisation' := 'random-tree-population' {};
     'offspring-fraction' := 0.6;
+    'initialisation' := 'random-tree-population' {};
     'comparator' := 'numeric-comparator' {};
     'size-of-population' := 20;
     'maximum-age' := 10;
