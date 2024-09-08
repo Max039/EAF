@@ -13,42 +13,50 @@
                 "value": "Enter String here!"
             },
             {
-                "field-name": "pipeline",
-                "package": "de.eaf.generator.pipeline",
-                "type": "instance",
+                "field-name": "pipelines",
+                "package": "Array",
+                "primitive": false,
+                "count": 0,
+                "type": "array",
                 "sub-type": "de.eaf.generator.pipeline",
                 "value": [{
-                    "field-name": "steps",
-                    "package": "Array",
-                    "primitive": false,
-                    "count": 0,
-                    "type": "array",
-                    "sub-type": "de.eaf.generator.step",
+                    "field-name": "",
+                    "package": "de.eaf.generator.pipeline",
+                    "type": "instance",
+                    "sub-type": "de.eaf.generator.pipeline",
                     "value": [{
-                        "field-name": "",
-                        "package": "de.eaf.generator.step",
-                        "type": "instance",
+                        "field-name": "steps",
+                        "package": "Array",
+                        "primitive": false,
+                        "count": 0,
+                        "type": "array",
                         "sub-type": "de.eaf.generator.step",
-                        "value": [
-                            {
-                                "field-name": "reads",
-                                "package": "Array",
-                                "primitive": true,
-                                "count": 0,
-                                "type": "array",
-                                "sub-type": "data",
-                                "value": []
-                            },
-                            {
-                                "field-name": "writes",
-                                "package": "Array",
-                                "primitive": true,
-                                "count": 0,
-                                "type": "array",
-                                "sub-type": "data",
-                                "value": []
-                            }
-                        ]
+                        "value": [{
+                            "field-name": "",
+                            "package": "de.eaf.generator.step",
+                            "type": "instance",
+                            "sub-type": "de.eaf.generator.step",
+                            "value": [
+                                {
+                                    "field-name": "reads",
+                                    "package": "Array",
+                                    "primitive": true,
+                                    "count": 0,
+                                    "type": "array",
+                                    "sub-type": "data",
+                                    "value": []
+                                },
+                                {
+                                    "field-name": "writes",
+                                    "package": "Array",
+                                    "primitive": true,
+                                    "count": 0,
+                                    "type": "array",
+                                    "sub-type": "data",
+                                    "value": []
+                                }
+                            ]
+                        }]
                     }]
                 }]
             },

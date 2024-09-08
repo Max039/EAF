@@ -11,7 +11,7 @@
             "type-name": "string"
         },
         {
-            "field-name": "pipeline",
+            "field-name": "pipelines",
             "array-count": 1,
             "primitive": false,
             "value": "",
