@@ -252,7 +252,7 @@ public class ClassType implements Comparable {
 
 
     public ClassType findSingleNonAbstractClass() {
-        ClassType result = this; 
+        ClassType result = this;
         for (ClassType child : children) {
             ClassType childResult = child.findSingleNonAbstractClass(); // Recursively check each child
             if (childResult == null) {

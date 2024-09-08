@@ -1,0 +1,14 @@
+{
+    "parent": "",
+    "name": "pipeline",
+    "abstract": false,
+    "fields": [
+        {
+            "field-name": "steps",
+            "array-count": 1,
+            "primitive": false,
+            "value": "",
+            "type-name": "de.eaf.generator.step"
+        }
+    ]
+}
