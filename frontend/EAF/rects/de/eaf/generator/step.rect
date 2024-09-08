@@ -1,0 +1,28 @@
+{
+    "parent": "",
+    "name": "step",
+    "abstract": false,
+    "fields": [
+        {
+            "field-name": "component",
+            "array-count": 0,
+            "primitive": false,
+            "value": "",
+            "type-name": "de.eaf.bridge.component"
+        },
+        {
+            "field-name": "reads",
+            "array-count": 1,
+            "primitive": true,
+            "value": "",
+            "type-name": "data"
+        },
+        {
+            "field-name": "writes",
+            "array-count": 1,
+            "primitive": true,
+            "value": "",
+            "type-name": "data"
+        }
+    ]
+}

@@ -211,7 +211,7 @@ public class SyntaxTree {
     }
 
     private static void createBridges() {
-        createAbstractBridgeRect("component", new String[]{"de.evoal.generator.generator.noise-data", "de.evoal.generator.generator.distribution"});
+        createAbstractBridgeRect("component", new String[]{"de.evoal.generator.generator.noise-data", "de.evoal.generator.generator.distribution", "de.evoal.generator.generator.benchmark"});
     }
 
     private static void addFuncType() {

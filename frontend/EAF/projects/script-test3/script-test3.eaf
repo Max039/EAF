@@ -1,6 +1,45 @@
 {
     "data": [],
-    "rects": [],
+    "rects": [{
+        "package": "de.eaf.generator.step",
+        "type": "instance",
+        "sub-type": "de.eaf.generator.step",
+        "value": [
+            {
+                "field-name": "component",
+                "package": "de.evoal.generator.generator",
+                "type": "instance",
+                "sub-type": "de.evoal.generator.generator.noise-data",
+                "value": [{
+                    "field-name": "distributions",
+                    "package": "Array",
+                    "primitive": false,
+                    "count": 0,
+                    "type": "array",
+                    "sub-type": "de.evoal.generator.generator.distribution",
+                    "value": []
+                }]
+            },
+            {
+                "field-name": "reads",
+                "package": "Array",
+                "primitive": true,
+                "count": 0,
+                "type": "array",
+                "sub-type": "data",
+                "value": []
+            },
+            {
+                "field-name": "writes",
+                "package": "Array",
+                "primitive": true,
+                "count": 0,
+                "type": "array",
+                "sub-type": "data",
+                "value": []
+            }
+        ]
+    }],
     "constants": [],
     "preset": ""
 }

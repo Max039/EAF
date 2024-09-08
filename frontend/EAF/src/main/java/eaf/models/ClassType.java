@@ -252,17 +252,29 @@ public class ClassType implements Comparable {
 
 
     public ClassType findSingleNonAbstractClass() {
-        ClassType result = isAbstract ? null : this; // Set result to this class if it's non-abstract, else null
+        ClassType result = this; 
         for (ClassType child : children) {
             ClassType childResult = child.findSingleNonAbstractClass(); // Recursively check each child
-            if (childResult != null) {
-                if (result != null) {
+            if (childResult == null) {
+                return null;
+            }
+            else  {
+                if (!result.isAbstract && !childResult.isAbstract) {
                     return null; // If more than one non-abstract class is found, return null
                 }
-                result = childResult; // Otherwise, set result to the non-abstract child
+                if (!childResult.isAbstract) {
+                    result = childResult; // Otherwise, set result to the non-abstract child
+                }
             }
+
         }
-        return result; // Return the single non-abstract class, or null if there's more than one
+        if (!result.isAbstract) {
+            return result;
+        }
+        else {
+            return null;
+        }
+
     }
 
     public ClassType getRoot() {
