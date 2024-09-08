@@ -875,7 +875,6 @@ public class UiUtil {
                 if (e.getButton() == 3 && rect instanceof RectWithRects) {
                     rect = ((RectWithRects) rect).getSubRect(point);
                     if (rect != null) {
-                        System.out.println("test");
                         rect.onMouseClicked(e.getButton() == 1, point, panelRelativePos, e, false);
                     }
                 }

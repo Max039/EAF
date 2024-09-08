@@ -16,6 +16,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.lang.reflect.Array;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -51,7 +52,7 @@ public class SyntaxTree {
     public static List<ClassType> getBasedClasses() {
         Collection<ClassType> ar = new ArrayList<>(baseClassRegister.values());
         ar.addAll(ExtraRectManager.baseClassRegister.values());
-        return ar.stream().sorted().toList();
+        return ar.stream().sorted(Comparator.comparing(t -> SyntaxTree.toSimpleName(t.name))).toList();
     }
 
     public static ArrayList<ClassType> getNonAbstractClasses() {
@@ -184,7 +185,7 @@ public class SyntaxTree {
                 "}");
          **/
 
-
+        createBridges();
 
         System.out.println("============================");
         System.out.println("Loaded modules count = " + moduleRegister.size());
@@ -207,6 +208,10 @@ public class SyntaxTree {
         System.out.println("============================");
 
 
+    }
+
+    private static void createBridges() {
+        createAbstractBridgeRect("component", new String[]{"de.evoal.generator.generator.noise-data", "de.evoal.generator.generator.distribution"});
     }
 
     private static void addFuncType() {
@@ -803,6 +808,12 @@ public class SyntaxTree {
         }
     }
 
+    public static class BridgeException extends RuntimeException {
+        public BridgeException(String s) {
+            super(s);
+        }
+    }
+
 
     public static ClassType getInstanceOfClass(String name, Module newModule) {
         try {
@@ -856,5 +867,27 @@ public class SyntaxTree {
     public static String toSimpleName(String s) {
         var parts = s.split("\\.");
         return parts[parts.length - 1];
+    }
+
+    public static void createAbstractBridgeRect(String name, String[] classesToBridge) {
+        ClassType bridge = new ClassType("de.eaf.bridge." + name, null, "de.eaf.bridge");
+        bridge.setAbstract(true);
+        for (int i = 0; i < classesToBridge.length; i++) {
+            var c = get(classesToBridge[i]);
+            if (c.parent == null) {
+                c.parent = bridge;
+                bridge.addChild(c);
+            }
+            else {
+                throw new BridgeException("Cannot create bridge " + bridge.name + " " + c.name + " already has a parent!");
+            }
+        }
+        if (classRegister.get(bridge.name) == null) {
+            classRegister.put(bridge.name, bridge);
+            baseClassRegister.put(bridge.name, bridge);
+        }
+        else {
+            throw new ClassDomainAlreadyUsedException("The class domain " + bridge.name + " is already used!");
+        }
     }
 }

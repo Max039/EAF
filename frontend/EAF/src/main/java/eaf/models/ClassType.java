@@ -150,7 +150,7 @@ public class ClassType implements Comparable {
                 indent += "│   ";
             }
         }
-        var childrenSorted = root.children.stream().sorted().toList();
+        var childrenSorted = root.children.stream().sorted(Comparator.comparing(t -> SyntaxTree.toSimpleName(t.name))).toList();
         sb.append(SyntaxTree.toSimpleName(root.name) + " (" + "\u001B[37m" + root.pack  + "\u001B[0m" + ")").append("\n");
         for (int i = 0; i < childrenSorted.size(); i++) {
             sb.append(getClassHierarchy(childrenSorted.get(i), indent, i == childrenSorted.size() - 1, false));

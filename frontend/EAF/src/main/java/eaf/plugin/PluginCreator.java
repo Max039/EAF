@@ -154,7 +154,6 @@ public class PluginCreator {
     public static void openClassMenuAndAddToPlugin(String pluginFolder, String name, ClassType parent) {
         if (currentPlugin != null) {
             addClass(pluginFolder, name, UiUtil.openClassEditorAndReturn(parent, true, false));
-            System.out.println("test");
         }
         else {
             noPluginSelected();
