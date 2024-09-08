@@ -826,12 +826,13 @@ public class UiUtil {
                 if (matchingRect instanceof RectWithRects) {
                     matchingRect = ((RectWithRects) matchingRect).getSubRect(leftPanelPos);
                     if (matchingRect != null && (main.leftPanel.hasFocus() || main.rightPanel.hasFocus())) {
-                        matchingRect.onMouseClicked(e.getButton() == 1, leftPanelPos, panelRelativePos, e);
+                        matchingRect.onMouseClicked(e.getButton() == 1, leftPanelPos, panelRelativePos, e, true);
                         if (InputHandler.isControlPressed && matchingRect instanceof ClassRect && prevSelected != matchingRect) {
                             InputHandler.setSelected((ClassRect)matchingRect);
                         }
                     }
                 }
+
                 if (matchingRect == null) {
                     main.leftPanel.requestFocusInWindow();
                 }
@@ -860,13 +861,25 @@ public class UiUtil {
             public void mousePressed(MouseEvent e) {
                 rightPanel.requestFocusInWindow();
 
+
                 Point point = SwingUtilities.convertPoint(e.getComponent(), e.getPoint(), rightPanel.getViewport().getView());
+                Point panelRelativePos = SwingUtilities.convertPoint(e.getComponent(), e.getPoint(), Main.mainFrame);
 
                 Rect rect = rightPanel.getRect(point);
 
-                if (rect != null && rect.contains(point)) {
+                if (e.getButton() == 1 && rect != null && rect.contains(point)) {
                     InputHandler.setDraggingRect(rect.clone(), e, new Point(point.x - rect.getX(), point.y - rect.getY()), null);
                 }
+
+
+                if (e.getButton() == 3 && rect instanceof RectWithRects) {
+                    rect = ((RectWithRects) rect).getSubRect(point);
+                    if (rect != null) {
+                        System.out.println("test");
+                        rect.onMouseClicked(e.getButton() == 1, point, panelRelativePos, e, false);
+                    }
+                }
+
 
             }
 

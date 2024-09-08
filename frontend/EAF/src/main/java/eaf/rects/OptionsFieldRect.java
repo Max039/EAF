@@ -270,7 +270,7 @@ public class OptionsFieldRect extends Rect {
     }
 
     @Override
-    public void onMouseClicked(boolean left, Point p, Point p2, MouseEvent e) {
+    public void onMouseClicked(boolean left, Point p, Point p2, MouseEvent e, boolean leftPanel) {
     }
 
     @Override

@@ -533,10 +533,10 @@ public abstract class RectWithRects extends Rect {
     };
 
     @Override
-    public void onMouseClicked(boolean left, Point p, Point p2, MouseEvent e) {
+    public void onMouseClicked(boolean left, Point p, Point p2, MouseEvent e, boolean leftPanel) {
         var res = getIndex(p);
 
-        if (res.getFirst() && !left) {
+        if (res.getFirst() && !left && leftPanel) {
             var index = types[res.getSecond()];
             if (!index.primitive) {
                 var clazz = SyntaxTree.get(index.typeName);
@@ -667,7 +667,7 @@ public abstract class RectWithRects extends Rect {
             }
 
         } else if (this instanceof ClassRect) {
-            if (left && parent != null && !locked && !InputHandler.isControlPressed) {
+            if (left && parent != null && !locked && !InputHandler.isControlPressed && leftPanel) {
                 // Copy, set dragging, delete, etc.
                 Main.mainPanel.leftPanel.removeRect(RectWithRects.this);
                 var s = parent;
@@ -693,7 +693,7 @@ public abstract class RectWithRects extends Rect {
                 popupMenu.add(info);
 
 
-                if (!locked) {
+                if (!locked && leftPanel) {
                     JMenuItem menuItem = new JMenuItem("Delete");
                     menuItem.addActionListener(new ActionListener() {
                         @Override
@@ -719,7 +719,7 @@ public abstract class RectWithRects extends Rect {
                 popupMenu.show(Main.mainFrame, p2.x, p2.y);
             }
         }
-        else if (this instanceof ArrayRect) {
+        else if (this instanceof ArrayRect && leftPanel) {
             if (left && InputHandler.showButtons) {
                 ((ArrayRect)this).pressedButton(p);
             }
