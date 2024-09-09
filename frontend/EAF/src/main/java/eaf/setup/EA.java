@@ -26,9 +26,9 @@ public class EA extends Preset {
     @Override
     public void generateFiles(String folder, RectPanel panel) {
         System.out.println(LogManager.preset() + LogManager.write() + LogManager.data() + " Writing EvoAl Data ...");
-        FileManager.write(Main.dataPanel.toString(), folder + "/config.ddl");
+        FileManager.write(Main.dataPanel.toString("optimisation"), folder + "/optimisation.ddl");
         System.out.println(LogManager.preset() + LogManager.write() + LogManager.ol()  + " Writing EvoAl Script ...");
-        FileManager.write(rectPanelConversion(panel), folder+ "/config.ol");
+        FileManager.write(rectPanelConversion(panel), folder+ "/optimisation.ol");
     }
 
     public String rectPanelConversion(RectPanel panel) {
@@ -62,8 +62,8 @@ public class EA extends Preset {
         }
 
         res += imports + "\n";
-        res += "import \"data\" from 'config';\n\n";
-        res += "module 'config' {\n";
+        res += "import \"data\" from 'optimisation';\n\n";
+        res += "module 'optimisation' {\n";
         res += constants;
         res += Rect.stringPadding + "specify problem '" + problemName + "' ";
         res += problemContent;
@@ -80,7 +80,7 @@ public class EA extends Preset {
 
     @Override
     public String executionLine() {
-        return "$SHELL $EVOAL_HOME/bin/evoal-search.sh . config.ol output";
+        return "$SHELL $EVOAL_HOME/bin/evoal-search.sh . optimisation.ol output";
     }
 
     @Override

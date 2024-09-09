@@ -535,7 +535,7 @@ public class DataFieldListPane extends JScrollPane {
     }
 
 
-    public String toString() {
+    public String toString(String moduleName) {
         String res = "";
         String data = "";
         ArrayList<ClassType> classesNeededForScript = new ArrayList<>();
@@ -549,7 +549,7 @@ public class DataFieldListPane extends JScrollPane {
         }
 
         res += getUniqueImports(classesNeededForScript) + "\n";
-        res += "module 'config' {\n";
+        res += "module '" + moduleName + "' {\n";
         res += " data:\n";
         res += data;
         res += "}";

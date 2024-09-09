@@ -32,9 +32,9 @@ public class ML extends Preset {
     @Override
     public void generateFiles(String folder, RectPanel panel) {
         System.out.println(LogManager.preset() + LogManager.write() + LogManager.data() + " Writing EvoAl Data ...");
-        FileManager.write(Main.dataPanel.toString(), folder + "/config.ddl");
+        FileManager.write(Main.dataPanel.toString("training"), folder + "/training.ddl");
         System.out.println(LogManager.preset() + LogManager.write() + LogManager.ol()  + " Writing EvoAl Script ...");
-        FileManager.write(rectPanelConversion(panel), folder+ "/config.mll");
+        FileManager.write(rectPanelConversion(panel), folder+ "/training.mll");
     }
 
     public String rectPanelConversion(RectPanel panel) {
@@ -74,8 +74,8 @@ public class ML extends Preset {
         }
 
         res += imports + "\n";
-        res += "import \"data\" from 'config';\n\n";
-        res += "module 'config' {\n";
+        res += "import \"data\" from 'training';\n\n";
+        res += "module 'training' {\n";
         res += constants;
 
 
@@ -150,7 +150,7 @@ public class ML extends Preset {
 
     @Override
     public String executionLine() {
-        return "$SHELL $EVOAL_HOME/bin/evoal-training.sh . config.mll";
+        return "$SHELL $EVOAL_HOME/bin/evoal-training.sh . training.mll";
     }
 
     @Override
