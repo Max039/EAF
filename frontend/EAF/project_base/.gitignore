@@ -1,11 +1,8 @@
 target/
 /output/*
-/config.ddl
-/config.ol
-/run.sh
-/optimize.sh
-/train.sh
-/generate.sh
+/*.ddl
+/*.ol
+/*.sh
 
 ### IntelliJ IDEA ###
 .idea/modules.xml
