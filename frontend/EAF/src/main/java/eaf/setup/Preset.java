@@ -33,4 +33,6 @@ public abstract class Preset {
         }
         return null;
     }
+
+    public abstract String shName();
 }

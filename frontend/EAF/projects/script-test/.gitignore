@@ -3,6 +3,9 @@ target/
 /config.ddl
 /config.ol
 /run.sh
+/optimize.sh
+/train.sh
+/generate.sh
 
 ### IntelliJ IDEA ###
 .idea/modules.xml

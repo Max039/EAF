@@ -165,4 +165,9 @@ public class ML extends Preset {
     public String getName() {
         return "ml";
     }
+
+    @Override
+    public String shName() {
+        return "train";
+    };
 }

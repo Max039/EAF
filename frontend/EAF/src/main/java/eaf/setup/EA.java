@@ -114,4 +114,9 @@ public class EA extends Preset {
     public boolean implementationError() {
         return true;
     }
+
+    @Override
+    public String shName() {
+        return "optimize";
+    };
 }

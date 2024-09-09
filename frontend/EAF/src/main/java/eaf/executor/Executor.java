@@ -47,7 +47,7 @@ public class Executor {
         ClassLocator.refreshEvoAlModules();
 
         String currentPath = System.getProperty("user.dir");
-        var scriptPath = ScriptWriter.getPathToProject() + "/run.sh";
+        var scriptPath = ScriptWriter.getPathToProject() + "/" + Main.preset.shName() + ".sh";
 
         System.out.println(LogManager.executor() + LogManager.script() + LogManager.shell() + LogManager.status() + " Requesting script at " + scriptPath + " .... ");
         ScriptWriter.createScript(scriptPath, Main.evoalVersion);
