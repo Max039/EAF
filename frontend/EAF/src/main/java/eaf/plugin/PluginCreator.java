@@ -40,7 +40,7 @@ public class PluginCreator {
 
     public PluginCreator() {
         loadExamples();
-        currentPlugin = createBaseForPlugin("test", "de.test");
+        //currentPlugin = createBaseForPlugin("test", "de.test");
     }
 
     public static void createNewFromExample() {

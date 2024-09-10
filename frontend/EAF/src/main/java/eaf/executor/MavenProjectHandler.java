@@ -74,6 +74,7 @@ public class MavenProjectHandler {
             ArrayList<String> ignore = new ArrayList<>();
             ignore.add(plugin.path + "/target");
             ignore.add(plugin.path + "/.idea");
+            ignore.add(plugin.path + "/" + FileChangesChecker.JSON_FILE_NAME);
             File f = new File(currentPath + "/" + Main.evoalBuildFolder + "/" + Main.evoalVersion + "/evoal/plugins/"+ plugin.name + ".jar");
             System.out.println(LogManager.maven() + " Preparing Plugin " + plugin.name + " at " + f.getPath());
             if (FileChangesChecker.updateFileJson(plugin.path, ignore) || !f.exists()) {
