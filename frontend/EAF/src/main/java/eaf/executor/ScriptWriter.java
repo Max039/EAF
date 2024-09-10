@@ -1,7 +1,6 @@
 package eaf.executor;
 
 import eaf.Main;
-import eaf.manager.FileManager;
 import eaf.manager.LogManager;
 import eaf.plugin.PluginManager;
 
@@ -20,10 +19,7 @@ public class ScriptWriter {
 
 
 
-    static void saveAndWriteEvoAlFiles() {
-        System.out.println(LogManager.scriptWriter() + LogManager.write() + " Saving project ...");
-        FileManager.save();
-
+    static void writeEvoAlFiles() {
         Main.preset.generateFiles(getPathToProject(), Main.mainPanel.leftPanel);
 
         Main.mainPanel.revalidate();

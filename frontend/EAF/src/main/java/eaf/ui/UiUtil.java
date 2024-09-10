@@ -353,6 +353,7 @@ public class UiUtil {
         run.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                Main.console.flush();
                 run();
             }
         });
@@ -2362,7 +2363,7 @@ public class UiUtil {
         String cur = cacheManager.getFirstElement(String.class, "filesOpened");
         if (cur != null) {
             File file = new File(cur);
-            file = new File(file.getParentFile().getAbsolutePath() + "/" + "generator" + "." + Main.saveFormat);
+            file = new File(file.getParentFile().getAbsolutePath() + "/generator." + Main.saveFormat);
             // Check if a file with the given name already exists
             if (file.exists()) {
                 JOptionPane.showMessageDialog(null, "A file with that name already exists. Please choose a different name.", "Error", JOptionPane.ERROR_MESSAGE);

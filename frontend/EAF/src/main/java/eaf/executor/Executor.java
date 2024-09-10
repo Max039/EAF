@@ -2,7 +2,9 @@ package eaf.executor;
 
 import eaf.Main;
 import eaf.input.InputHandler;
+import eaf.manager.CacheManager;
 import eaf.manager.ColorManager;
+import eaf.manager.FileManager;
 import eaf.manager.LogManager;
 import eaf.sound.SoundManager;
 import eaf.ui.UiUtil;
@@ -10,6 +12,7 @@ import eaf.ui.panels.ErrorPane;
 
 import javax.swing.*;
 import java.io.*;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public class Executor {
 
@@ -40,7 +43,6 @@ public class Executor {
     }
 
     public static void execute() throws IOException, InterruptedException {
-        InputHandler.processStarted();
 
         MavenProjectHandler.copyPlugins();
 
@@ -173,9 +175,33 @@ public class Executor {
                 SoundManager.playExclamationSound();
                 Main.mainPanel.leftPanel.getVerticalScrollBar().setValue(ErrorPane.first);
             } else {
-                ScriptWriter.saveAndWriteEvoAlFiles();
+                System.out.println(LogManager.scriptWriter() + LogManager.write() + " Saving project ...");
+                FileManager.save();
+                File currentProject = new File(Main.cacheManager.getFirstElement(String.class, "filesOpened"));
+                if (!currentProject.getAbsolutePath().endsWith("generator.eaf")) {
+                    File generator = new File(currentProject.getParentFile().getAbsolutePath() + "/generator." + Main.saveFormat);
+                    if (generator.exists()) {
+                        try {
+                            FileManager.loadSave(FileManager.readJSONFileToJSON(generator.getAbsolutePath()));
+                            Main.cacheManager.addToBuffer("filesOpened", generator.getAbsolutePath());
+                            run();
+                            while (Main.processRunning) {
+                                Thread.sleep(50);
+                            }
+
+                            FileManager.loadSave(FileManager.readJSONFileToJSON(currentProject.getAbsolutePath()));
+                            Main.cacheManager.addToBuffer("filesOpened", currentProject.getAbsolutePath());
+
+                        }
+                        catch (Exception e) {
+                            throw new RuntimeException(e);
+                        }
+                    }
+                }
+                ScriptWriter.writeEvoAlFiles();
                 System.out.println(LogManager.executor() + LogManager.process() + LogManager.status() + " Preparing to execute ...");
                 // Create and start a new thread to run execute()
+                InputHandler.processStarted();
                 Thread executionThread = new Thread(() -> {
                     try {
                         execute();
