@@ -167,6 +167,11 @@ public class ML extends Preset {
     }
 
     @Override
+    public String getDisplayName() {
+        return "Machine Learning";
+    }
+
+    @Override
     public String shName() {
         return "train";
     };

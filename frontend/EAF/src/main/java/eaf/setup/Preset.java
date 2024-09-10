@@ -22,6 +22,7 @@ public abstract class Preset {
     public abstract boolean postStart();
     public abstract void postStop();
     public abstract String getName();
+    public abstract String getDisplayName();
 
     public abstract boolean implementationError();
 

@@ -2238,7 +2238,6 @@ public class UiUtil {
     public static void openFolderWindow(String folderPath) {
         // Create a JFrame (the main window)
         JFrame frame = new JFrame("Version Selector");
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setSize(400, 400);
 
         // Create a JScrollPane with a JPanel inside it
@@ -2276,7 +2275,6 @@ public class UiUtil {
     public static void openPresetWindow() {
         // Create a JFrame (the main window)
         JFrame frame = new JFrame("Preset Selector");
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setSize(400, 400);
 
         // Create a JScrollPane with a JPanel inside it
@@ -2286,7 +2284,7 @@ public class UiUtil {
 
         for (var preset : Preset.presets) {
             // Create a button for each folder
-            JButton button = new JButton(preset.getName());
+            JButton button = new JButton(preset.getDisplayName());
             button.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
@@ -2310,7 +2308,6 @@ public class UiUtil {
     public static void fromPreset() {
         // Create a JFrame (the main window)
         JFrame frame = new JFrame("Preset Selector");
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setSize(400, 400);
 
         // Create a JScrollPane with a JPanel inside it
@@ -2320,7 +2317,7 @@ public class UiUtil {
 
         for (var preset : Preset.presets) {
             // Create a button for each folder
-            JButton button = new JButton(preset.getName());
+            JButton button = new JButton(preset.getDisplayName());
             button.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {

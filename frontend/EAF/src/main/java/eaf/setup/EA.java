@@ -111,6 +111,11 @@ public class EA extends Preset {
     }
 
     @Override
+    public String getDisplayName() {
+        return "Evolutionary Algorithm";
+    }
+
+    @Override
     public boolean implementationError() {
         return true;
     }
