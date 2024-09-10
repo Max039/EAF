@@ -250,7 +250,7 @@ public class Main extends JPanel {
 
         createMenuBar();
 
-        mainPanel.setBackground(Color.LIGHT_GRAY); // Set background color or any layout you need
+        mainPanel.setBackground(Main.bgColor); // Set background color or any layout you need
 
         // Layout the frame with BorderLayout
         mainFrame.setLayout(new BorderLayout());

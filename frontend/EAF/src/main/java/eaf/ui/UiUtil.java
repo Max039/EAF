@@ -660,7 +660,9 @@ public class UiUtil {
 
         // Add some example tabs
         tabsList.add(new Pair<>("Editor", createMainTab(Main.mainPanel)));  // Pass 'main' to createMainTab
-        tabsList.add(new Pair<>("Analysis", new JPanel()));
+        var a = new JPanel();
+        a.add(new JLabel("Not yet supported :/"), BorderLayout.CENTER);
+        tabsList.add(new Pair<>("Analysis", a));
 
         createTabs(screenSize);
         mergeTabAndTabs();
