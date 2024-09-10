@@ -1,5 +1,16 @@
 {
-    "data": [],
+    "data": [
+        {
+            "instance": false,
+            "name": "x:0",
+            "type": "quotient real"
+        },
+        {
+            "instance": false,
+            "name": "y:0",
+            "type": "quotient real"
+        }
+    ],
     "rects": [{
         "package": "de.eaf.generator.generator",
         "type": "instance",
@@ -10,7 +21,7 @@
                 "editable": true,
                 "type": "text-field",
                 "sub-type": "string",
-                "value": "Enter String here!"
+                "value": "ackley.json"
             },
             {
                 "field-name": "pipelines",
@@ -24,40 +35,146 @@
                     "package": "de.eaf.generator.pipeline",
                     "type": "instance",
                     "sub-type": "de.eaf.generator.pipeline",
-                    "value": [{
-                        "field-name": "steps",
-                        "package": "Array",
-                        "primitive": false,
-                        "count": 0,
-                        "type": "array",
-                        "sub-type": "de.eaf.generator.step",
-                        "value": [{
-                            "field-name": "",
-                            "package": "de.eaf.generator.step",
-                            "type": "instance",
+                    "value": [
+                        {
+                            "field-name": "name",
+                            "editable": true,
+                            "type": "text-field",
+                            "sub-type": "string",
+                            "value": "main-pipeline"
+                        },
+                        {
+                            "field-name": "steps",
+                            "package": "Array",
+                            "primitive": false,
+                            "count": 0,
+                            "type": "array",
                             "sub-type": "de.eaf.generator.step",
                             "value": [
                                 {
-                                    "field-name": "reads",
-                                    "package": "Array",
-                                    "primitive": true,
-                                    "count": 0,
-                                    "type": "array",
-                                    "sub-type": "data",
-                                    "value": []
+                                    "field-name": "",
+                                    "package": "de.eaf.generator.step",
+                                    "type": "instance",
+                                    "sub-type": "de.eaf.generator.step",
+                                    "value": [
+                                        {
+                                            "field-name": "component",
+                                            "package": "de.evoal.generator.generator",
+                                            "type": "instance",
+                                            "sub-type": "de.evoal.generator.generator.normal-distribution",
+                                            "value": [
+                                                {
+                                                    "field-name": "σ",
+                                                    "editable": true,
+                                                    "type": "text-field",
+                                                    "sub-type": "real",
+                                                    "value": "5.12"
+                                                },
+                                                {
+                                                    "field-name": "μ",
+                                                    "editable": true,
+                                                    "type": "text-field",
+                                                    "sub-type": "real",
+                                                    "value": "0"
+                                                }
+                                            ]
+                                        },
+                                        {
+                                            "field-name": "reads",
+                                            "package": "Array",
+                                            "primitive": true,
+                                            "count": 0,
+                                            "type": "array",
+                                            "sub-type": "data",
+                                            "value": []
+                                        },
+                                        {
+                                            "field-name": "writes",
+                                            "package": "Array",
+                                            "primitive": true,
+                                            "count": 0,
+                                            "type": "array",
+                                            "sub-type": "data",
+                                            "value": [{
+                                                "field-name": "",
+                                                "editable": true,
+                                                "type": "option-field",
+                                                "sub-type": "data",
+                                                "value": "x:0"
+                                            }]
+                                        }
+                                    ]
                                 },
                                 {
-                                    "field-name": "writes",
-                                    "package": "Array",
-                                    "primitive": true,
-                                    "count": 0,
-                                    "type": "array",
-                                    "sub-type": "data",
-                                    "value": []
+                                    "field-name": "",
+                                    "package": "de.eaf.generator.step",
+                                    "type": "instance",
+                                    "sub-type": "de.eaf.generator.step",
+                                    "value": [
+                                        {
+                                            "field-name": "component",
+                                            "package": "de.evoal.generator.generator",
+                                            "type": "instance",
+                                            "sub-type": "de.evoal.generator.generator.ackley",
+                                            "value": [
+                                                {
+                                                    "field-name": "a",
+                                                    "editable": true,
+                                                    "type": "text-field",
+                                                    "sub-type": "real",
+                                                    "value": "20.0"
+                                                },
+                                                {
+                                                    "field-name": "b",
+                                                    "editable": true,
+                                                    "type": "text-field",
+                                                    "sub-type": "real",
+                                                    "value": "0.2"
+                                                },
+                                                {
+                                                    "field-name": "c",
+                                                    "editable": true,
+                                                    "type": "text-field",
+                                                    "sub-type": "real",
+                                                    "value": "2*PI"
+                                                }
+                                            ]
+                                        },
+                                        {
+                                            "field-name": "reads",
+                                            "package": "Array",
+                                            "primitive": true,
+                                            "count": 0,
+                                            "type": "array",
+                                            "sub-type": "data",
+                                            "value": [{
+                                                "field-name": "",
+                                                "editable": true,
+                                                "type": "option-field",
+                                                "sub-type": "data",
+                                                "value": "x:0"
+                                            }]
+                                        },
+                                        {
+                                            "field-name": "writes",
+                                            "package": "Array",
+                                            "primitive": true,
+                                            "count": 0,
+                                            "type": "array",
+                                            "sub-type": "data",
+                                            "value": [{
+                                                "field-name": "",
+                                                "editable": true,
+                                                "type": "option-field",
+                                                "sub-type": "data",
+                                                "value": "y:0"
+                                            }]
+                                        }
+                                    ]
                                 }
                             ]
-                        }]
-                    }]
+                        }
+                    ]
                 }]
             },
             {
@@ -65,10 +182,10 @@
                 "editable": true,
                 "type": "text-field",
                 "sub-type": "int",
-                "value": "0"
+                "value": "1000"
             }
         ]
     }],
     "constants": [],
-    "preset": ""
+    "preset": "generator"
 }

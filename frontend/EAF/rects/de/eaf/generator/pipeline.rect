@@ -3,6 +3,13 @@
     "name": "pipeline",
     "abstract": false,
     "fields": [
+		{
+            "field-name": "name",
+            "array-count": 0,
+            "primitive": true,
+            "value": "",
+            "type-name": "string"
+        },
         {
             "field-name": "steps",
             "array-count": 1,

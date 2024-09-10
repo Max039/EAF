@@ -15,6 +15,7 @@ public abstract class Preset {
     public static void prepareSetups() {
         presets.add(new EA());
         presets.add(new ML());
+        presets.add(new Generator());
     }
 
     public abstract void generateFiles(String folder, RectPanel panel);
