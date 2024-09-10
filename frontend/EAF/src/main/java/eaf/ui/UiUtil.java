@@ -44,9 +44,8 @@ import java.util.logging.ErrorManager;
 import java.util.stream.Collectors;
 
 import static eaf.Main.*;
-import static eaf.manager.FileManager.loadSave;
-import static eaf.manager.FileManager.readJSONFileToJSON;
 import static eaf.executor.Executor.run;
+import static eaf.manager.FileManager.*;
 import static eaf.plugin.PluginCreator.createNewFromExample;
 
 
@@ -255,6 +254,16 @@ public class UiUtil {
             }
         });
 
+        JMenuItem newGenerator = new JMenuItem("add generator to project");
+        newGenerator.setUI(new CustomMenuItemUI(bgColor)); // Set custom UI delegate
+        newGenerator.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                newGeneratorFile();
+            }
+        });
+
+
         // Add the submenu to the main menu
         fileMenu.add(newSave);
         fileMenu.add(newSaveFromPreset);
@@ -265,6 +274,7 @@ public class UiUtil {
         fileMenu.add(imp);
         fileMenu.setBackground(Main.bgColor);
         fileMenu.setForeground(Color.WHITE);
+        fileMenu.add(newGenerator);
         menuBar.add(fileMenu);
     }
 
@@ -2348,6 +2358,33 @@ public class UiUtil {
     }
 
 
+    public static void newGeneratorFile() {
+        String cur = cacheManager.getFirstElement(String.class, "filesOpened");
+        if (cur != null) {
+            File file = new File(cur);
+            file = new File(file.getParentFile().getAbsolutePath() + "/" + "generator" + "." + Main.saveFormat);
+            // Check if a file with the given name already exists
+            if (file.exists()) {
+                JOptionPane.showMessageDialog(null, "A file with that name already exists. Please choose a different name.", "Error", JOptionPane.ERROR_MESSAGE);
+
+            }
+            else {
+                FileManager.emptySave();
+                writeJSONToFile(createSave(), file.getAbsolutePath());
+                Main.cacheManager.addToBuffer("filesOpened", file.getAbsolutePath());
+                Main.preset = Preset.getPreset("generator");
+                for (var r : preset.requiredRectNames) {
+                    mainPanel.leftPanel.addRect(RectFactory.getRectFromClassType(SyntaxTree.get(r)));
+                }
+                FileManager.save();
+                ErrorPane.checkForErrors();
+                mainFrame.revalidate();
+                mainFrame.repaint();
+            }
+        }
+
+
+    }
 
 
 
