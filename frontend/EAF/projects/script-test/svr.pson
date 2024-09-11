@@ -94,19 +94,19 @@
         "name" : "σ",
         "value" : {
           "type" : "double",
-          "value" : 1.4
+          "value" : 3.0
         }
       }, {
         "name" : "soft-margin",
         "value" : {
           "type" : "double",
-          "value" : 3.0
+          "value" : 0.15
         }
       }, {
         "name" : "ε",
         "value" : {
           "type" : "double",
-          "value" : 0.15
+          "value" : 1.4
         }
       }, {
         "name" : "tolerance",
@@ -119,22 +119,22 @@
         "name" : "weights",
         "value" : {
           "type" : "array(double)",
-          "size" : 20,
-          "value" : [ 3.0, 1.5477820369600614, -2.4173095707049965, 3.0, 3.0, 3.0, -3.0, 3.0, 3.0, -3.0, -2.1304724662550645, -3.0, -3.0, 3.0, 3.0, -3.0, -3.0, 3.0, -3.0, -3.0 ]
+          "size" : 6,
+          "value" : [ -0.15, 0.15, -0.15, -0.15, 0.15, 0.15 ]
         }
       }, {
         "name" : "intercept",
         "value" : {
           "type" : "double",
-          "value" : -3.0422003952768346
+          "value" : -0.8230772829439774
         }
       }, {
         "name" : "instances",
         "value" : {
           "type" : "array(array(double))",
-          "size-1" : 20,
+          "size-1" : 6,
           "size-2" : 1,
-          "value" : [ 0.7587237822295846, 0.40078924370621627, 1.027523820747077, 1.1433942270247412, 1.2913265691526115, 1.2985664093528673, 0.2851610861630415, 0.9551806395446822, 0.9243309278997063, 0.6582483407229774, 0.09533590213401227, 0.10759983834987694, 0.1013896078724885, 0.7133589475117132, 0.7680195971449866, 1.1980206130499702, 1.5446490462794777, 1.1080029529305813, 1.773348590748642, 2.0796236464073345 ]
+          "value" : [ 0.09533590213401227, 1.6277402280982993, 0.10759983834987694, 0.1013896078724885, 1.8345969321754696, 2.0796236464073345 ]
         }
       }, {
         "name" : "kernel",
@@ -177,22 +177,10 @@
       "name" : "hyperbolic-tangent-svr",
       "outputDimensions" : [ "y:2" ],
       "parameters" : [ {
-        "name" : "scale",
-        "value" : {
-          "type" : "double",
-          "value" : 1.0
-        }
-      }, {
         "name" : "σ",
         "value" : {
           "type" : "double",
           "value" : 3.0
-        }
-      }, {
-        "name" : "soft-margin",
-        "value" : {
-          "type" : "double",
-          "value" : 0.15
         }
       }, {
         "name" : "offset",
@@ -201,10 +189,22 @@
           "value" : 1.0
         }
       }, {
+        "name" : "soft-margin",
+        "value" : {
+          "type" : "double",
+          "value" : 0.15
+        }
+      }, {
         "name" : "ε",
         "value" : {
           "type" : "double",
           "value" : 1.4
+        }
+      }, {
+        "name" : "scale",
+        "value" : {
+          "type" : "double",
+          "value" : 1.0
         }
       }, {
         "name" : "tolerance",
@@ -447,12 +447,6 @@
       "name" : "pearson-svr",
       "outputDimensions" : [ "y:5" ],
       "parameters" : [ {
-        "name" : "ω",
-        "value" : {
-          "type" : "double",
-          "value" : 0.2
-        }
-      }, {
         "name" : "σ",
         "value" : {
           "type" : "double",
@@ -469,6 +463,12 @@
         "value" : {
           "type" : "double",
           "value" : 1.4
+        }
+      }, {
+        "name" : "ω",
+        "value" : {
+          "type" : "double",
+          "value" : 0.2
         }
       }, {
         "name" : "tolerance",
@@ -545,16 +545,16 @@
           "value" : 3.0
         }
       }, {
-        "name" : "soft-margin",
-        "value" : {
-          "type" : "double",
-          "value" : 0.15
-        }
-      }, {
         "name" : "offset",
         "value" : {
           "type" : "double",
           "value" : 1.0
+        }
+      }, {
+        "name" : "soft-margin",
+        "value" : {
+          "type" : "double",
+          "value" : 0.15
         }
       }, {
         "name" : "ε",

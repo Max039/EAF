@@ -8,7 +8,7 @@
             "array-count": 0,
             "primitive": false,
             "value": "",
-            "type-name": "transfer"
+            "type-name": "de.eaf.mll.transfer"
         },
         {
             "field-name": "source",

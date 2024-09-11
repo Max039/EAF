@@ -1,6 +1,7 @@
 package eaf.setup;
 
 import eaf.Main;
+import eaf.compiler.SyntaxTree;
 import eaf.manager.FileManager;
 import eaf.manager.LogManager;
 import eaf.models.ClassType;
@@ -17,24 +18,24 @@ public class EA extends Preset {
 
     public EA() {
         requiredRectNames = new ArrayList<>();
-        requiredRectNames.add("problem");
-        requiredRectNames.add("evolutionary-algorithm");
-        requiredRectNames.add("documentor");
+        requiredRectNames.add("de.evoal.optimisation.core.problem");
+        requiredRectNames.add("de.evoal.optimisation.ea.optimisation.evolutionary-algorithm");
+        requiredRectNames.add("de.eaf.base.documentor");
     }
 
     @Override
     public void generateFiles(String folder, RectPanel panel) {
         System.out.println(LogManager.preset() + LogManager.write() + LogManager.data() + " Writing EvoAl Data ...");
-        FileManager.write(Main.dataPanel.toString(), folder + "/config.ddl");
+        FileManager.write(Main.dataPanel.toString("optimisation"), folder + "/optimisation.ddl");
         System.out.println(LogManager.preset() + LogManager.write() + LogManager.ol()  + " Writing EvoAl Script ...");
-        FileManager.write(rectPanelConversion(panel), folder+ "/config.ol");
+        FileManager.write(rectPanelConversion(panel), folder+ "/optimisation.ol");
     }
 
     public String rectPanelConversion(RectPanel panel) {
         String res = "";
-        String problemName = panel.getRects().get(0).clazz.name;;
+        String problemName = SyntaxTree.toSimpleName(panel.getRects().get(0).clazz.name);;
         String problemContent = panel.getRects().get(0).toString(1).split(" ", 2)[1];
-        String algorithmName = panel.getRects().get(1).clazz.name;
+        String algorithmName =SyntaxTree.toSimpleName( panel.getRects().get(1).clazz.name);
         String algorithmContent = panel.getRects().get(1).toString(1).split(" ", 2)[1];
         String documentors = panel.getRects().get(2).toString(1).split("\\{", 2)[1];
         documentors = documentors.substring(0, documentors.length() - 2).replace("'documentors'", "documenting");
@@ -61,8 +62,8 @@ public class EA extends Preset {
         }
 
         res += imports + "\n";
-        res += "import \"data\" from 'config';\n\n";
-        res += "module 'config' {\n";
+        res += "import \"data\" from 'optimisation';\n\n";
+        res += "module 'optimisation' {\n";
         res += constants;
         res += Rect.stringPadding + "specify problem '" + problemName + "' ";
         res += problemContent;
@@ -79,7 +80,7 @@ public class EA extends Preset {
 
     @Override
     public String executionLine() {
-        return "$SHELL $EVOAL_HOME/bin/evoal-search.sh . config.ol output";
+        return "$SHELL $EVOAL_HOME/bin/evoal-search.sh . optimisation.ol output";
     }
 
     @Override
@@ -110,7 +111,17 @@ public class EA extends Preset {
     }
 
     @Override
+    public String getDisplayName() {
+        return "Evolutionary Algorithm";
+    }
+
+    @Override
     public boolean implementationError() {
         return true;
     }
+
+    @Override
+    public String shName() {
+        return "optimize";
+    };
 }

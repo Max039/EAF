@@ -8,14 +8,14 @@
             "array-count": 0,
             "primitive": false,
             "value": "",
-            "type-name": "fitness-function"
+            "type-name": "de.evoal.surrogate.ml.surrogate"
         },
         {
             "field-name": "target",
             "array-count": 0,
             "primitive": true,
             "value": "",
-            "type-name": "0data"
+            "type-name": "data"
         }
     ]
 }

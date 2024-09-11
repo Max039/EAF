@@ -40,7 +40,7 @@ public class PluginCreator {
 
     public PluginCreator() {
         loadExamples();
-        currentPlugin = createBaseForPlugin("test", "de.test");
+        //currentPlugin = createBaseForPlugin("test", "de.test");
     }
 
     public static void createNewFromExample() {
@@ -82,7 +82,7 @@ public class PluginCreator {
                 findJavaFilesRecursively(file, javaFiles); // Recursively search in subfolders
             } else if (file.isFile() && file.getName().endsWith(".java")) {
                 var name = file.getName().replace(".java", "");
-                var found =  SyntaxTree.get(name);
+                var found =  SyntaxTree.getByEnd(name);
                 if (found != null) {
                     javaFiles.put(file.getName(), new Pair<>(file.getAbsolutePath(), found)); // Add the .java file path to the list
                 }
@@ -154,7 +154,6 @@ public class PluginCreator {
     public static void openClassMenuAndAddToPlugin(String pluginFolder, String name, ClassType parent) {
         if (currentPlugin != null) {
             addClass(pluginFolder, name, UiUtil.openClassEditorAndReturn(parent, true, false));
-            System.out.println("test");
         }
         else {
             noPluginSelected();

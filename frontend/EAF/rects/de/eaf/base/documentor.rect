@@ -7,6 +7,6 @@
         "array-count": 1,
         "primitive": false,
         "value": "",
-        "type-name": "statistics-writer"
+        "type-name": "de.evoal.optimisation.core.statistics-writer"
     }]
 }

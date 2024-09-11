@@ -126,6 +126,7 @@ public class InputHandler {
                     FileManager.save();
                 }
                 else if (e.getKeyCode() == KeyEvent.VK_R && isControlPressed) {
+                    Main.console.flush();
                     Executor.run();
                 }
             }
@@ -326,7 +327,6 @@ public class InputHandler {
     }
 
     public static void processStarted() {
-        Main.console.flush();
         Main.processRunning = true;
     }
 

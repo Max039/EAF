@@ -241,7 +241,7 @@ public class RectPanel extends JScrollPane {
             var parts = filter.split(" ");
             boolean found = true;
             for (var part : parts) {
-                if (!s.clazz.name.toLowerCase().contains(part.toLowerCase())) {
+                if (!SyntaxTree.toSimpleName(s.clazz.name).toLowerCase().contains(part.toLowerCase())) {
                     found = false;
                     break;
                 }
@@ -282,7 +282,7 @@ public class RectPanel extends JScrollPane {
                     var parts = filter.split(" ");
                     boolean found = true;
                     for (var part : parts) {
-                        if (!rect.clazz.name.toLowerCase().contains(part.toLowerCase())) {
+                        if (!SyntaxTree.toSimpleName(rect.clazz.name).toLowerCase().contains(part.toLowerCase())) {
                             found = false;
                             break;
                         }

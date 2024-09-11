@@ -14,7 +14,7 @@ import java.util.Map;
 
 public class FileChangesChecker {
 
-    private static final String JSON_FILE_NAME = "file_list.json";
+    public static final String JSON_FILE_NAME = "file_list.json";
 
     public static boolean updateFileJson(String folderPath, ArrayList<String> ignore) {
         try {
@@ -25,6 +25,7 @@ public class FileChangesChecker {
             // Check if the JSON file exists
             File jsonFile = new File(folderPath + "/" + JSON_FILE_NAME);
             if (jsonFile.exists()) {
+
                 // Read the existing JSON file
                 String existingJsonContent = new String(Files.readAllBytes(Paths.get(folderPath + "/" + JSON_FILE_NAME)));
                 JSONObject existingJson = new JSONObject(existingJsonContent);
@@ -36,9 +37,20 @@ public class FileChangesChecker {
                     JSONObject fileObject = filesArray.getJSONObject(i);
                     existingFileState.put(fileObject.getString("path"), fileObject.getLong("lastModified"));
                 }
+                var test = existingFileState.size() == currentFileState.size();
+
+                if (test) {
+                    for (var existing : existingFileState.entrySet()) {
+                        var v = currentFileState.get(existing.getKey());
+                        if (v == null || !v.equals(existing.getValue()) ) {
+                            test = false;
+                            break;
+                        }
+                    }
+                }
 
                 // Check for differences
-                if (!currentFileState.equals(existingFileState)) {
+                if (!test) {
                     // Update JSON file with the new state
                     return writeJsonToFile(folderPath, currentFileState);
                 } else {

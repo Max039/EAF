@@ -1,8 +1,8 @@
 target/
 /output/*
-/config.ddl
-/config.ol
-/run.sh
+/*.ddl
+/*.ol
+/*.sh
 
 ### IntelliJ IDEA ###
 .idea/modules.xml

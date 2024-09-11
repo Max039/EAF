@@ -44,9 +44,8 @@ import java.util.logging.ErrorManager;
 import java.util.stream.Collectors;
 
 import static eaf.Main.*;
-import static eaf.manager.FileManager.loadSave;
-import static eaf.manager.FileManager.readJSONFileToJSON;
 import static eaf.executor.Executor.run;
+import static eaf.manager.FileManager.*;
 import static eaf.plugin.PluginCreator.createNewFromExample;
 
 
@@ -255,6 +254,16 @@ public class UiUtil {
             }
         });
 
+        JMenuItem newGenerator = new JMenuItem("add generator to project");
+        newGenerator.setUI(new CustomMenuItemUI(bgColor)); // Set custom UI delegate
+        newGenerator.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                newGeneratorFile();
+            }
+        });
+
+
         // Add the submenu to the main menu
         fileMenu.add(newSave);
         fileMenu.add(newSaveFromPreset);
@@ -265,6 +274,7 @@ public class UiUtil {
         fileMenu.add(imp);
         fileMenu.setBackground(Main.bgColor);
         fileMenu.setForeground(Color.WHITE);
+        fileMenu.add(newGenerator);
         menuBar.add(fileMenu);
     }
 
@@ -343,6 +353,7 @@ public class UiUtil {
         run.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                Main.console.flush();
                 run();
             }
         });
@@ -660,7 +671,9 @@ public class UiUtil {
 
         // Add some example tabs
         tabsList.add(new Pair<>("Editor", createMainTab(Main.mainPanel)));  // Pass 'main' to createMainTab
-        tabsList.add(new Pair<>("Analysis", new JPanel()));
+        var a = new JPanel();
+        a.add(new JLabel("Not yet supported :/"), BorderLayout.CENTER);
+        tabsList.add(new Pair<>("Analysis", a));
 
         createTabs(screenSize);
         mergeTabAndTabs();
@@ -826,12 +839,13 @@ public class UiUtil {
                 if (matchingRect instanceof RectWithRects) {
                     matchingRect = ((RectWithRects) matchingRect).getSubRect(leftPanelPos);
                     if (matchingRect != null && (main.leftPanel.hasFocus() || main.rightPanel.hasFocus())) {
-                        matchingRect.onMouseClicked(e.getButton() == 1, leftPanelPos, panelRelativePos, e);
+                        matchingRect.onMouseClicked(e.getButton() == 1, leftPanelPos, panelRelativePos, e, true);
                         if (InputHandler.isControlPressed && matchingRect instanceof ClassRect && prevSelected != matchingRect) {
                             InputHandler.setSelected((ClassRect)matchingRect);
                         }
                     }
                 }
+
                 if (matchingRect == null) {
                     main.leftPanel.requestFocusInWindow();
                 }
@@ -860,13 +874,24 @@ public class UiUtil {
             public void mousePressed(MouseEvent e) {
                 rightPanel.requestFocusInWindow();
 
+
                 Point point = SwingUtilities.convertPoint(e.getComponent(), e.getPoint(), rightPanel.getViewport().getView());
+                Point panelRelativePos = SwingUtilities.convertPoint(e.getComponent(), e.getPoint(), Main.mainFrame);
 
                 Rect rect = rightPanel.getRect(point);
 
-                if (rect != null && rect.contains(point)) {
+                if (e.getButton() == 1 && rect != null && rect.contains(point)) {
                     InputHandler.setDraggingRect(rect.clone(), e, new Point(point.x - rect.getX(), point.y - rect.getY()), null);
                 }
+
+
+                if (e.getButton() == 3 && rect instanceof RectWithRects) {
+                    rect = ((RectWithRects) rect).getSubRect(point);
+                    if (rect != null) {
+                        rect.onMouseClicked(e.getButton() == 1, point, panelRelativePos, e, false);
+                    }
+                }
+
 
             }
 
@@ -1258,7 +1283,7 @@ public class UiUtil {
 
         String back = "← Back";
         if (!historyStack.isEmpty()) {
-            back += " to " + historyStack.peek().name;
+            back += " to " + SyntaxTree.toSimpleName(historyStack.peek().name);
         }
 
 
@@ -1273,19 +1298,20 @@ public class UiUtil {
                 }
             }
         });
+        backButton.setEnabled(!historyStack.isEmpty());
         panel.add(backButton);
         panel.add(Box.createRigidArea(new Dimension(0, 15))); // Add vertical space
 
 
         // Add the class name
-        JLabel nameLabel = new JLabel("Class Name: " + classType.getName());
+        JLabel nameLabel = new JLabel("Class Name: " + SyntaxTree.toSimpleName(classType.getName()));
         panel.add(nameLabel);
         panel.add(Box.createRigidArea(new Dimension(0, 15))); // Add vertical space
 
 
         var root = classType.getRoot();
         // Add a back button if there is history
-        JButton rootButton = new JButton("Root: " + root.name);
+        JButton rootButton = new JButton("Root: " + SyntaxTree.toSimpleName(root.name));
         rootButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -1322,7 +1348,12 @@ public class UiUtil {
                 value = " = " +field.getValue().getSecond().value;
             }
 
-            JButton fieldButton = new JButton(field.getKey() + " : " + repeatString("array ", type.arrayCount)  + type.typeName + value);
+            String name = type.typeName;
+            if (!type.primitive) {
+                name = SyntaxTree.toSimpleName(name);
+            }
+
+            JButton fieldButton = new JButton(field.getKey() + " : " + repeatString("array ", type.arrayCount)  + name + value);
             fieldButton.setMaximumSize(new Dimension(Integer.MAX_VALUE, 30)); // Set button to full width
             fieldButton.setAlignmentX(Component.CENTER_ALIGNMENT);
             fieldButton.addActionListener(new ActionListener() {
@@ -1345,8 +1376,13 @@ public class UiUtil {
 
         panel.add(Box.createRigidArea(new Dimension(0, 15))); // Add vertical space
 
+        String parent = "";
+        if (classType.parent != null) {
+            parent = SyntaxTree.toSimpleName(classType.getParentName());
+        }
+
         // Add the parent name with a clickable button
-        JButton parentButton = new JButton("Parent: " + classType.getParentName());
+        JButton parentButton = new JButton("Parent: " + parent);
         parentButton.setEnabled(classType.parent != null);
         parentButton.addActionListener(new ActionListener() {
             @Override
@@ -1370,7 +1406,7 @@ public class UiUtil {
         JPanel childrenPanel = new JPanel();
         childrenPanel.setLayout(new BoxLayout(childrenPanel, BoxLayout.Y_AXIS));
         for (ClassType child : classType.children) {
-            JButton childButton = new JButton(child.getName());
+            JButton childButton = new JButton(SyntaxTree.toSimpleName(child.getName()));
             childButton.setMaximumSize(new Dimension(Integer.MAX_VALUE, 30)); // Set button to full width
             childButton.setAlignmentX(Component.CENTER_ALIGNMENT);
             childButton.addActionListener(new ActionListener() {
@@ -1405,21 +1441,22 @@ public class UiUtil {
         for (var c : SyntaxTree.getClasses()) {
             for (var f : c.fields.entrySet()) {
                 var type = f.getValue().getFirst();
-                var class2 = SyntaxTree.get(type.typeName);
-                if (!type.primitive && class2.matchesType(classType)) {
-                    JButton childButton = new JButton(c.name + " - " + f.getKey() + " : " + repeatString("array ", type.arrayCount)  + type.typeName);
-                    childButton.setMaximumSize(new Dimension(Integer.MAX_VALUE, 30)); // Set button to full width
-                    childButton.setAlignmentX(Component.CENTER_ALIGNMENT);
-                    childButton.addActionListener(new ActionListener() {
-                        @Override
-                        public void actionPerformed(ActionEvent e) {
-                            historyStack.push(classType);
-                            updateClassInfo(container, c, frame);
-                        }
-                    });
-                    usesPanel.add(childButton);
+                if (!type.primitive) {
+                    var class2 = SyntaxTree.get(type.typeName);
+                    if (class2.matchesType(classType)) {
+                        JButton childButton = new JButton(SyntaxTree.toSimpleName(c.name)+ " - " + f.getKey() + " : " + repeatString("array ", type.arrayCount)  + SyntaxTree.toSimpleName(type.typeName));
+                        childButton.setMaximumSize(new Dimension(Integer.MAX_VALUE, 30)); // Set button to full width
+                        childButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+                        childButton.addActionListener(new ActionListener() {
+                            @Override
+                            public void actionPerformed(ActionEvent e) {
+                                historyStack.push(classType);
+                                updateClassInfo(container, c, frame);
+                            }
+                        });
+                        usesPanel.add(childButton);
+                    }
                 }
-
             }
         }
         JScrollPane scrollPane3 = new JScrollPane(usesPanel);
@@ -2214,7 +2251,6 @@ public class UiUtil {
     public static void openFolderWindow(String folderPath) {
         // Create a JFrame (the main window)
         JFrame frame = new JFrame("Version Selector");
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setSize(400, 400);
 
         // Create a JScrollPane with a JPanel inside it
@@ -2252,7 +2288,6 @@ public class UiUtil {
     public static void openPresetWindow() {
         // Create a JFrame (the main window)
         JFrame frame = new JFrame("Preset Selector");
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setSize(400, 400);
 
         // Create a JScrollPane with a JPanel inside it
@@ -2262,7 +2297,7 @@ public class UiUtil {
 
         for (var preset : Preset.presets) {
             // Create a button for each folder
-            JButton button = new JButton(preset.getName());
+            JButton button = new JButton(preset.getDisplayName());
             button.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
@@ -2286,7 +2321,6 @@ public class UiUtil {
     public static void fromPreset() {
         // Create a JFrame (the main window)
         JFrame frame = new JFrame("Preset Selector");
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setSize(400, 400);
 
         // Create a JScrollPane with a JPanel inside it
@@ -2296,7 +2330,7 @@ public class UiUtil {
 
         for (var preset : Preset.presets) {
             // Create a button for each folder
-            JButton button = new JButton(preset.getName());
+            JButton button = new JButton(preset.getDisplayName());
             button.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
@@ -2325,6 +2359,33 @@ public class UiUtil {
     }
 
 
+    public static void newGeneratorFile() {
+        String cur = cacheManager.getFirstElement(String.class, "filesOpened");
+        if (cur != null) {
+            File file = new File(cur);
+            file = new File(file.getParentFile().getAbsolutePath() + "/generator." + Main.saveFormat);
+            // Check if a file with the given name already exists
+            if (file.exists()) {
+                JOptionPane.showMessageDialog(null, "A file with that name already exists. Please choose a different name.", "Error", JOptionPane.ERROR_MESSAGE);
+
+            }
+            else {
+                FileManager.emptySave();
+                writeJSONToFile(createSave(), file.getAbsolutePath());
+                Main.cacheManager.addToBuffer("filesOpened", file.getAbsolutePath());
+                Main.preset = Preset.getPreset("generator");
+                for (var r : preset.requiredRectNames) {
+                    mainPanel.leftPanel.addRect(RectFactory.getRectFromClassType(SyntaxTree.get(r)));
+                }
+                FileManager.save();
+                ErrorPane.checkForErrors();
+                mainFrame.revalidate();
+                mainFrame.repaint();
+            }
+        }
+
+
+    }
 
 
 
