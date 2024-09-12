@@ -304,7 +304,10 @@ public class UiUtil {
         newChild.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                openClassEditor(SyntaxTree.get("de.evoal.optimisation.ea.optimisation.evolutionary-algorithm"), true, true, true, false);
+                var res = chooseInstance(mainFrame, null, false);
+                if (res != null) {
+                    openClassEditor(res, true, true, true, false);
+                }
             }
         });
 
@@ -316,7 +319,10 @@ public class UiUtil {
         edit.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                openClassEditor(SyntaxTree.get("de.evoal.optimisation.ea.optimisation.evolutionary-algorithm"), false, true, true, false);
+                var res = chooseInstance(mainFrame, null, false);
+                if (res != null) {
+                    openClassEditor(res, false, true, true, false);
+                }
             }
         });
 
@@ -1832,6 +1838,8 @@ public class UiUtil {
     }
 
     public static ClassType chooseInstance(JFrame owner, JPanel fieldsPanel, boolean addListener) {
+        selectedType = null;
+
         List<ClassType> availableClasses = SyntaxTree.getClasses().stream()
                 .sorted(Comparator.comparing(ClassType::getName))
                 .toList();
