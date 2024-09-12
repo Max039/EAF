@@ -224,7 +224,7 @@ public abstract class RectWithRects extends Rect {
     }
 
     public static Font getFont() {
-        return new Font("TimesRoman", Font.PLAIN, (int)(fontSize));
+        return new Font("Arial", Font.PLAIN, (int)(fontSize));
     }
 
     @Override

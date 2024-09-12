@@ -77,7 +77,7 @@ begin
     FileContent.LoadFromFile(FileName);
     FileContent.Add('cd /d ' + ExpandConstant('{app}')); // Change to /d for drive change support
     // Add lines to the file
-    FileContent.Add('java -jar "' + ExpandConstant('{app}\eaf.jar') + '" %ALL_ARGS%');
+    FileContent.Add('java -Dfile.encoding=utf-8 -jar "' + ExpandConstant('{app}\eaf.jar') + '" %ALL_ARGS%');
 
     
     // Save the changes back to the file
