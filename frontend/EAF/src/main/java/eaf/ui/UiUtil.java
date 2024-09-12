@@ -353,8 +353,7 @@ public class UiUtil {
         run.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                Main.console.flush();
-                run();
+                InputHandler.tryRun();
             }
         });
 
@@ -979,39 +978,50 @@ public class UiUtil {
         return leftContainerPanel;
     }
 
+
+
     public static void drawIcons(RectPanel r, Graphics g) {
-            var g2 = (Graphics2D) g;
-            if (InputHandler.actionHandler.areChangesMadeSinceSave()) {
-                var picX = r.getWidth() - cross.getWidth() - RectWithRects.spacing - Main.mainPanel.leftPanel.getVerticalScrollBar().getWidth();
-                var picY = r.getVerticalScrollBar().getValue() + RectWithRects.spacing + Main.mainPanel.leftPanel.getHorizontalScrollBar().getHeight();
-                g2.drawImage(cross, picX, picY, cross.getWidth(), cross.getHeight(), null);
+        var g2 = (Graphics2D) g;
+        if (InputHandler.actionHandler.areChangesMadeSinceSave()) {
+            var picX = r.getWidth() - cross.getWidth() - RectWithRects.spacing - Main.mainPanel.leftPanel.getVerticalScrollBar().getWidth();
+            var picY = r.getVerticalScrollBar().getValue() + RectWithRects.spacing + Main.mainPanel.leftPanel.getHorizontalScrollBar().getHeight();
+            r.rightButton.setSize(cross.getWidth(), cross.getHeight());
+            r.rightButton.setLocation(picX, picY);
+            g2.drawImage(cross, picX, picY, cross.getWidth(), cross.getHeight(), null);
+        }
+        else {
+            var picX = r.getWidth() - checkmark.getWidth() - RectWithRects.spacing - Main.mainPanel.leftPanel.getVerticalScrollBar().getWidth();
+            var picY = r.getVerticalScrollBar().getValue() + RectWithRects.spacing + Main.mainPanel.leftPanel.getHorizontalScrollBar().getHeight();
+            r.rightButton.setSize(checkmark.getWidth(), checkmark.getHeight());
+            r.rightButton.setLocation(picX, picY);
+            g2.drawImage(checkmark, picX, picY, checkmark.getWidth(), checkmark.getHeight(), null);
+        }
+        if (ErrorPane.errors > 0 || preset == null) {
+            var picX = r.getWidth() - cross.getWidth() - unrunable.getWidth() - RectWithRects.spacing * 2  - Main.mainPanel.leftPanel.getVerticalScrollBar().getWidth();
+            var picY = r.getVerticalScrollBar().getValue() + RectWithRects.spacing + Main.mainPanel.leftPanel.getHorizontalScrollBar().getHeight();
+            r.leftButton.setSize(unrunable.getWidth(), unrunable.getHeight());
+            r.leftButton.setLocation(picX, picY);
+            g2.drawImage(unrunable, picX, picY, unrunable.getWidth(), unrunable.getHeight(), null);
+        }
+        else {
+            if (ErrorPane.warnings > 0) {
+                var picX = r.getWidth() - checkmark.getWidth() - warning.getWidth() - RectWithRects.spacing * 2 - Main.mainPanel.leftPanel.getVerticalScrollBar().getWidth();
+                var picY = r.getVerticalScrollBar().getValue() + RectWithRects.spacing + Main.mainPanel.leftPanel.getHorizontalScrollBar().getHeight();;
+                r.leftButton.setSize(warning.getWidth(), warning.getHeight());
+                r.leftButton.setLocation(picX, picY);
+                g2.drawImage(warning, picX, picY, warning.getWidth(), warning.getHeight(), null);
             }
             else {
-                var picX = r.getWidth() - checkmark.getWidth() - RectWithRects.spacing - Main.mainPanel.leftPanel.getVerticalScrollBar().getWidth();
-                var picY = r.getVerticalScrollBar().getValue() + RectWithRects.spacing + Main.mainPanel.leftPanel.getHorizontalScrollBar().getHeight();
-                g2.drawImage(checkmark, picX, picY, checkmark.getWidth(), checkmark.getHeight(), null);
-            }
-            if (ErrorPane.errors > 0 || preset == null) {
-                var picX = r.getWidth() - cross.getWidth() - unrunable.getWidth() - RectWithRects.spacing * 2  - Main.mainPanel.leftPanel.getVerticalScrollBar().getWidth();
-                var picY = r.getVerticalScrollBar().getValue() + RectWithRects.spacing + Main.mainPanel.leftPanel.getHorizontalScrollBar().getHeight();
-                g2.drawImage(unrunable, picX, picY, unrunable.getWidth(), unrunable.getHeight(), null);
-            }
-            else {
-                if (ErrorPane.warnings > 0) {
-                    var picX = r.getWidth() - checkmark.getWidth() - warning.getWidth() - RectWithRects.spacing * 2 - Main.mainPanel.leftPanel.getVerticalScrollBar().getWidth();
-                    var picY = r.getVerticalScrollBar().getValue() + RectWithRects.spacing + Main.mainPanel.leftPanel.getHorizontalScrollBar().getHeight();;
-                    g2.drawImage(warning, picX, picY, warning.getWidth(), warning.getHeight(), null);
-                }
-                else {
-                    var picX = r.getWidth() - checkmark.getWidth() - runable.getWidth() - RectWithRects.spacing * 2 - Main.mainPanel.leftPanel.getVerticalScrollBar().getWidth();
-                    var picY = r.getVerticalScrollBar().getValue() + RectWithRects.spacing + Main.mainPanel.leftPanel.getHorizontalScrollBar().getHeight();;
-                    g2.drawImage(runable, picX, picY, runable.getWidth(), runable.getHeight(), null);
-                }
-
+                var picX = r.getWidth() - checkmark.getWidth() - runable.getWidth() - RectWithRects.spacing * 2 - Main.mainPanel.leftPanel.getVerticalScrollBar().getWidth();
+                var picY = r.getVerticalScrollBar().getValue() + RectWithRects.spacing + Main.mainPanel.leftPanel.getHorizontalScrollBar().getHeight();;
+                r.leftButton.setSize(runable.getWidth(), runable.getHeight());
+                r.leftButton.setLocation(picX, picY);
+                g2.drawImage(runable, picX, picY, runable.getWidth(), runable.getHeight(), null);
             }
 
-
+        }
     }
+
 
     public static void setLeftPanelTextFieldListeners(final Main main) {
         main.leftPanelTextField.addKeyListener(new KeyListener() {
@@ -1244,7 +1254,7 @@ public class UiUtil {
 
         addScriptMenu(menuBar);
         addRectMenu(menuBar);
-        addPluginMenu(menuBar);
+        //addPluginMenu(menuBar);
         addEvoAlMenu(menuBar);
         addPresetMenu(menuBar);
 

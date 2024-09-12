@@ -1,8 +1,10 @@
 package eaf.ui.panels;
 
 import eaf.compiler.SyntaxTree;
+import eaf.executor.Executor;
 import eaf.input.InputHandler;
 import eaf.Main;
+import eaf.manager.FileManager;
 import eaf.models.ClassType;
 import eaf.ui.UiUtil;
 import org.json.JSONArray;
@@ -13,6 +15,8 @@ import eaf.rects.multi.RectWithRects;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Optional;
@@ -25,6 +29,10 @@ public class RectPanel extends JScrollPane {
     public static Color arrayColor = new Color(43, 43, 43, 255);
     public static Color primitiveColor = new Color(50, 50, 50, 255);
     public static Color instanceColor = new Color(43, 43, 43, 255);
+
+    // Static variables for buttons
+    public JButton leftButton = null;
+    public JButton rightButton = null;
 
     public static int textBoxWidth = 40;
 
@@ -55,7 +63,7 @@ public class RectPanel extends JScrollPane {
 
     public int lastMatchedCount = 0;
 
-    public RectPanel() {
+    public RectPanel(boolean buttons) {
         super();
         drawingPanel = new DrawingPanel();
         dragPanel = new DragPanel();
@@ -83,6 +91,46 @@ public class RectPanel extends JScrollPane {
         this.setBorder(BorderFactory.createEmptyBorder());
         layeredPane.setBorder(BorderFactory.createEmptyBorder());
         drawingPanel.setBorder(BorderFactory.createEmptyBorder());
+
+        if (buttons) {
+            leftButton = new JButton("Left");
+            rightButton = new JButton("Right");
+
+            leftButton.setOpaque(false);
+            rightButton.setOpaque(false);
+
+            leftButton.setBackground(new Color(0, 0, 0, 0));
+            leftButton.setForeground(new Color(0, 0, 0, 0));
+
+            rightButton.setBackground(new Color(0, 0, 0, 0));
+            rightButton.setForeground(new Color(0, 0, 0, 0));
+
+            leftButton.setBorder(BorderFactory.createEmptyBorder());
+            rightButton.setBorder(BorderFactory.createEmptyBorder());
+
+            leftButton.setFocusPainted(false);
+            rightButton.setFocusPainted(false);
+
+            leftButton.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    InputHandler.tryRun();
+                }
+            });
+
+            rightButton.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    if (InputHandler.actionHandler.areChangesMadeSinceSave()) {
+                        FileManager.save();
+                    }
+                }
+            });
+
+            // Add buttons to the correct layer
+            drawingPanel.add(leftButton);
+            drawingPanel.add(rightButton);
+        }
 
         setViewportView(layeredPane);
 
