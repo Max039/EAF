@@ -77,6 +77,8 @@ public class UiUtil {
 
     private static Stack<ClassType> historyStack = new Stack<>();
 
+    private static int classEntryCounterForRectMenu = 0;
+
     static {
         try {
             // Load the image from the root directory
@@ -302,7 +304,7 @@ public class UiUtil {
         newChild.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                openClassEditor(SyntaxTree.get("empty-string-initial"), true, true, true, false);
+                openClassEditor(SyntaxTree.get("de.evoal.optimisation.ea.optimisation.evolutionary-algorithm"), true, true, true, false);
             }
         });
 
@@ -314,7 +316,7 @@ public class UiUtil {
         edit.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                openClassEditor(SyntaxTree.get("evolutionary-algorithm"), false, true, true, false);
+                openClassEditor(SyntaxTree.get("de.evoal.optimisation.ea.optimisation.evolutionary-algorithm"), false, true, true, false);
             }
         });
 
@@ -558,7 +560,7 @@ public class UiUtil {
                 }
             }
         });
-    
+
         scrollPane.addMouseWheelListener(new MouseWheelListener() {
             @Override
             public void mouseWheelMoved(MouseWheelEvent e) {
@@ -1323,20 +1325,27 @@ public class UiUtil {
                 }
             }
         });
+        backButton.setAlignmentX(Component.LEFT_ALIGNMENT);
         backButton.setEnabled(!historyStack.isEmpty());
         panel.add(backButton);
         panel.add(Box.createRigidArea(new Dimension(0, 15))); // Add vertical space
 
 
         // Add the class name
-        JLabel nameLabel = new JLabel("Class Name: " + SyntaxTree.toSimpleName(classType.getName()));
+        JTextArea nameLabel = new JTextArea("Class Name: " + SyntaxTree.toSimpleName(classType.getName()));
         panel.add(nameLabel);
         panel.add(Box.createRigidArea(new Dimension(0, 15))); // Add vertical space
+        // Get the font from the JLabel
+        Font labelFont = new JLabel().getFont();
 
+        // Set the same font to the JTextArea
+        nameLabel.setFont(labelFont);
+        nameLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
 
         var root = classType.getRoot();
         // Add a back button if there is history
         JButton rootButton = new JButton("Root: " + SyntaxTree.toSimpleName(root.name));
+        rootButton.setAlignmentX(Component.LEFT_ALIGNMENT);
         rootButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -1353,9 +1362,11 @@ public class UiUtil {
         panel.add(Box.createRigidArea(new Dimension(0, 15))); // Add vertical space
 
         // Add the package name
-        JLabel packageLabel = new JLabel("Package: " + classType.pack);
+        JTextArea packageLabel = new JTextArea("Package: " + classType.pack);
         panel.add(packageLabel);
+        packageLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
         panel.add(Box.createRigidArea(new Dimension(0, 15))); // Add vertical space
+        packageLabel.setFont(labelFont);
 
         JLabel fields = new JLabel("Fields");
         panel.add(fields);
@@ -1408,6 +1419,7 @@ public class UiUtil {
 
         // Add the parent name with a clickable button
         JButton parentButton = new JButton("Parent: " + parent);
+        parentButton.setAlignmentX(Component.LEFT_ALIGNMENT);
         parentButton.setEnabled(classType.parent != null);
         parentButton.addActionListener(new ActionListener() {
             @Override
@@ -1509,6 +1521,8 @@ public class UiUtil {
 
     public static void openClassEditor(ClassType classType, boolean newChild, boolean saveAsRect, boolean parentChangeable, boolean forceNonAbstract) {
 
+        classEntryCounterForRectMenu = 0;
+
         // Frame setup
         JFrame frame = new JFrame("Class Editor");
         frame.setLayout(new GridBagLayout());
@@ -1517,7 +1531,7 @@ public class UiUtil {
         gbc.anchor = GridBagConstraints.WEST;
         gbc.fill = GridBagConstraints.HORIZONTAL;
 
-        frame.setSize(600, 600); // Adjust frame size if necessary
+        frame.setSize(1200, 1000); // Adjust frame size if necessary
         frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 
         // Name TextField
@@ -1601,7 +1615,7 @@ public class UiUtil {
 
 
         JPanel fieldsPanel = new JPanel();
-        fieldsPanel.setLayout(new BoxLayout(fieldsPanel, BoxLayout.Y_AXIS));
+        //fieldsPanel.setLayout(new BoxLayout(fieldsPanel, BoxLayout.Y_AXIS));
         fieldsPanel.setPreferredSize(new Dimension(800, 300)); // Adjust preferred size if necessary
 
 
@@ -1698,24 +1712,8 @@ public class UiUtil {
                     return;
                 }
 
-                // If validation passes, proceed to add the field
-                JPanel fieldPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
-                JTextField fieldNameFieldDisplay = new JTextField(fieldName, 15);
-                JTextField fieldTypeField = new JTextField(repeatString("array ", Integer.parseInt(arrayCountText)) + typeComboBox.getSelectedItem(), 15);
-                JCheckBox isPrimitive = new JCheckBox("Primitive", true);
-                JTextField fieldValueFieldDisplay = new JTextField(fieldValue, 15);
-                JButton removeFieldButton = new JButton("-");
 
-                fieldPanel.add(new JLabel("Field:"));
-                fieldPanel.add(fieldNameFieldDisplay);
-                fieldPanel.add(fieldTypeField);
-                fieldPanel.add(isPrimitive);
-                fieldPanel.add(fieldValueFieldDisplay);
-                fieldPanel.add(removeFieldButton);
-
-                removeFieldButton.addActionListener(e1 -> fieldsPanel.remove(fieldPanel));
-
-                fieldsPanel.add(fieldPanel);
+                rectEditorEntryPanel(fieldName, repeatString("array ", Integer.parseInt(arrayCountText)) + typeComboBox.getSelectedItem(), true, fieldValue, fieldsPanel);
                 fieldsPanel.revalidate();
                 primitiveFrame.dispose();
             });
@@ -1740,8 +1738,20 @@ public class UiUtil {
         gbc.fill = GridBagConstraints.BOTH;
         gbc.weightx = 1.0;
         gbc.weighty = 1.0;
-        JScrollPane fieldsScrollPane = new JScrollPane(fieldsPanel);
-        fieldsScrollPane.setPreferredSize(new Dimension(500, 450)); // Set preferred size for scroll pane
+        JScrollPane fieldsScrollPane = new JScrollPane(fieldsPanel) {
+            @Override
+            public Dimension getPreferredSize() {
+                int maxX = 100;
+                int maxY = 0;
+                for (var comp : getComponents()) {
+                    maxX = Math.max(maxX, comp.getX() + comp.getWidth());
+                    maxY = Math.max(maxY, comp.getY() + comp.getHeight());
+                }
+                return new Dimension(maxX, maxY);
+            };
+        };
+        fieldsScrollPane.setSize(100, 0);
+
         frame.add(fieldsScrollPane, gbc);
 
         // Adding existing fields
@@ -1751,30 +1761,7 @@ public class UiUtil {
                 FieldType fieldType = entry.getValue().getFirst();
                 FieldValue fieldValue = entry.getValue().getSecond();
 
-                JPanel fieldPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
-                JTextField fieldNameField = new JTextField(fieldName, 15);
-                fieldNameField.setEnabled(false);
-                fieldNameField.setDisabledTextColor(Color.BLACK);
-                JTextField fieldTypeField = new JTextField(repeatString("array ", fieldType.arrayCount) + fieldType.typeName, 15);
-                fieldTypeField.setEnabled(false);
-                fieldTypeField.setDisabledTextColor(Color.BLACK);
-                JCheckBox isPrimitiveCheckBox = new JCheckBox("Primitive", fieldType.primitive);
-                isPrimitiveCheckBox.setEnabled(false);
-                JTextField fieldValueField = new JTextField(fieldValue != null ? fieldValue.value : "", 15);
-                fieldValueField.setEnabled(false);
-                fieldValueField.setDisabledTextColor(Color.BLACK);
-                JButton removeFieldButton = new JButton("-");
-
-                fieldPanel.add(new JLabel("Field:"));
-                fieldPanel.add(fieldNameField);
-                fieldPanel.add(fieldTypeField);
-                fieldPanel.add(isPrimitiveCheckBox);
-                fieldPanel.add(fieldValueField);
-                fieldPanel.add(removeFieldButton);
-
-                removeFieldButton.addActionListener(e -> fieldsPanel.remove(fieldPanel));
-
-                fieldsPanel.add(fieldPanel);
+                rectEditorEntryPanel(fieldName, repeatString("array ", fieldType.arrayCount) + fieldType.typeName, entry.getValue().getFirst().primitive, fieldValue != null ? fieldValue.value : "", fieldsPanel);
             }
         }
 
@@ -1963,38 +1950,49 @@ public class UiUtil {
         return selectedType;  // Return the selected class after the dialog is closed
     }
 
+    public static void rectEditorEntryPanel(String name, String type, boolean primitive, String value, JPanel fieldsPanel) {
+        JPanel fieldPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        fieldPanel.setSize(15, 300);
+        fieldPanel.setLocation(0, 20 * classEntryCounterForRectMenu);
+        classEntryCounterForRectMenu++;
+        JTextField fieldNameFieldDisplay = new JTextField(name, 15);
+        fieldNameFieldDisplay.setEnabled(false);
+        fieldNameFieldDisplay.setDisabledTextColor(Color.BLACK);
+        JTextField fieldTypeField = new JTextField(type, 40);
+        fieldTypeField.setEnabled(false);
+        fieldTypeField.setDisabledTextColor(Color.BLACK);
+        JCheckBox isPrimitive = new JCheckBox("Primitive", primitive);
+        isPrimitive.setEnabled(false);
+        JTextField fieldValueFieldDisplay = new JTextField(value, 15);
+        fieldValueFieldDisplay.setEnabled(false);
+        fieldValueFieldDisplay.setDisabledTextColor(Color.BLACK);
+        JButton removeFieldButton = new JButton("-");
+
+        fieldPanel.add(new JLabel("Field:"));
+        fieldPanel.add(fieldNameFieldDisplay);
+        fieldPanel.add(fieldTypeField);
+        fieldPanel.add(isPrimitive);
+        fieldPanel.add(fieldValueFieldDisplay);
+        fieldPanel.add(removeFieldButton);
+
+        removeFieldButton.addActionListener(e1 -> {
+            fieldsPanel.remove(fieldPanel);
+            fieldsPanel.revalidate();
+            fieldsPanel.repaint();
+            classEntryCounterForRectMenu--;
+        });
+        fieldsPanel.add(fieldPanel);
+    }
+
 
     public static ActionListener addListener(JTextField nameField, ClassType c, JTextField arrayCnt, JDialog instanceFrame, JPanel fieldsPanel) {
         return new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 if (!nameField.getText().isEmpty()) {
-                    JPanel fieldPanel = new JPanel(new FlowLayout());
-                    JTextField fieldName = new JTextField(nameField.getText(), 10);
-                    fieldName.setEnabled(false);
-                    fieldName.setDisabledTextColor(Color.BLACK);
-                    JTextField fieldType = new JTextField(repeatString("array ", Integer.parseInt(arrayCnt.getText())) + c.name, 10);
-                    fieldType.setEnabled(false);
-                    fieldType.setDisabledTextColor(Color.BLACK);
-                    JCheckBox isPrimitive = new JCheckBox("Primitive", false);
-                    isPrimitive.setEnabled(false);
-                    JTextField fieldValue = new JTextField("", 10);
-                    fieldValue.setEnabled(false);
-                    fieldValue.setDisabledTextColor(Color.BLACK);
-                    JButton removeFieldButton = new JButton("-");
-
-                    fieldPanel.add(new JLabel("Field:"));
-                    fieldPanel.add(fieldName);
-                    fieldPanel.add(fieldType);
-                    fieldPanel.add(isPrimitive);
-                    fieldPanel.add(fieldValue);
-                    fieldPanel.add(removeFieldButton);
-
-                    removeFieldButton.addActionListener(e1 -> fieldsPanel.remove(fieldPanel));
-
                     selectedType = c;
 
-                    fieldsPanel.add(fieldPanel);
+                    rectEditorEntryPanel(nameField.getText(), repeatString("array ", Integer.parseInt(arrayCnt.getText())) + c.name, false, "", fieldsPanel);
                     fieldsPanel.revalidate();
                     instanceFrame.dispose();
                 }

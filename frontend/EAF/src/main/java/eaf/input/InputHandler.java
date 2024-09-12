@@ -338,6 +338,10 @@ public class InputHandler {
             Main.console.flush();
             Executor.run();
         }
+        else {
+            JOptionPane.showMessageDialog(Main.mainFrame,
+                    "Process is still running!", "Info", JOptionPane.INFORMATION_MESSAGE);
+        }
         Main.mainPanel.leftPanel.requestFocus();
     }
 
