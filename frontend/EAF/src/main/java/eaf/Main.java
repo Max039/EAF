@@ -154,7 +154,7 @@ public class Main extends JPanel {
 
     public static void main(String[] args) throws Exception {
         Font font = new Font("Arial", Font.PLAIN, 14);
-        
+
         UIManager.put("Button.font", font);
         UIManager.put("ToggleButton.font", font);
         UIManager.put("RadioButton.font", font);

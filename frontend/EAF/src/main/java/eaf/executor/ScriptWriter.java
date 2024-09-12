@@ -83,6 +83,14 @@ public class ScriptWriter {
                 s = opens + " " + export;
             }
         }
+
+        if (!s.isEmpty()) {
+            s += " -Dfile.encoding=utf-8";
+        }
+        else {
+            s = "-Dfile.encoding=utf-8";
+        }
+
         String currentDir = System.getProperty("user.dir");
 
         return "#!/bin/sh\n" +
