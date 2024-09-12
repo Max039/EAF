@@ -154,11 +154,7 @@ public class Main extends JPanel {
 
     public static void main(String[] args) throws Exception {
         Font font = new Font("Arial", Font.PLAIN, 14);
-
-        // Register the font with the graphics environment
-        GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
-        ge.registerFont(font);
-
+        
         UIManager.put("Button.font", font);
         UIManager.put("ToggleButton.font", font);
         UIManager.put("RadioButton.font", font);
