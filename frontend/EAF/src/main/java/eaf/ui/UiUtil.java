@@ -44,7 +44,6 @@ import java.util.logging.ErrorManager;
 import java.util.stream.Collectors;
 
 import static eaf.Main.*;
-import static eaf.executor.Executor.run;
 import static eaf.manager.FileManager.*;
 import static eaf.plugin.PluginCreator.createNewFromExample;
 
@@ -556,6 +555,22 @@ public class UiUtil {
             public void stateChanged(ChangeEvent e){
                 if (!Main.mainPanel.leftPanelTextField.hasFocus() && !Main.mainPanel.rightPanelTextField.hasFocus()) {
                     Main.mainPanel.leftPanel.requestFocus();
+                }
+            }
+        });
+    
+        scrollPane.addMouseWheelListener(new MouseWheelListener() {
+            @Override
+            public void mouseWheelMoved(MouseWheelEvent e) {
+                JScrollBar verticalBar = scrollPane.getVerticalScrollBar();
+                JScrollBar horizontalBar = scrollPane.getHorizontalScrollBar();
+
+                // Only scroll the vertical scrollbar
+                if (e.getScrollType() == MouseWheelEvent.WHEEL_UNIT_SCROLL) {
+                    int rotation = e.getWheelRotation();
+                    int units = e.getScrollAmount();
+                    int increment = verticalBar.getUnitIncrement() * units * rotation;
+                    verticalBar.setValue(verticalBar.getValue() + increment);
                 }
             }
         });

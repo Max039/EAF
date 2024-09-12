@@ -338,6 +338,7 @@ public class InputHandler {
             Main.console.flush();
             Executor.run();
         }
+        Main.mainPanel.leftPanel.requestFocus();
     }
 
 }
