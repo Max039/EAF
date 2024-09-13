@@ -1,4 +1,4 @@
-# EvoAl Automated File (EAF) Generation Process
+# EvoAl Frontend (EAF) Automated File Generation Process
 
 ![My Diagram](../imgs/eaf-diagram.jpg)
 
