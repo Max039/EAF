@@ -50,7 +50,7 @@ public class Executor {
 
         String currentPath = System.getProperty("user.dir");
         var scriptPath = ScriptWriter.getPathToProject() + "/" + Main.preset.shName() + ".sh";
-
+        Main.console.println("Script: " + scriptPath);
         System.out.println(LogManager.executor() + LogManager.script() + LogManager.shell() + LogManager.status() + " Requesting script at " + scriptPath + " .... ");
         ScriptWriter.createScript(scriptPath, Main.evoalVersion);
         System.out.println(LogManager.executor() + LogManager.script() + LogManager.shell() + LogManager.status() + " Trying to run script ...");
