@@ -37,8 +37,35 @@ This project is designed to create a frontend for [EvoAl](https://evoal.de/) tha
 - **Add rectangle per rightclick:**  
   ![](github/gifs/rightclickadd.gif)
   
-- **Feature 4:** Explanation of how this feature enhances the project.
-- **Feature 5:** Additional capabilities or advanced functionalities.
+- **Add array element (hold schift):**  
+  ![](github/gifs/addarrayelement.gif)
+
+- **Add data:**  
+  ![](github/gifs/adddata.gif)
+
+- **Add constant:**  
+  ![](github/gifs/addconstant.gif)
+
+- **Run machine learning:**  
+  ![](github/gifs/ml.gif)
+
+- **Run generator:**  
+  ![](github/gifs/generator.gif)
+
+- **Run evolutionary algorithm with pre run generator:**  
+  ![](github/gifs/eawithgenerator.gif)
+
+- **Error:**  
+  ![](github/gifs/error.gif)
+  
+- **Class info:**  
+  ![](github/gifs/info.gif)
+
+- **Search definitions:**  
+  ![](github/gifs/folders.gif)
+  
+ - **Config generation:**  
+  ![](github/gifs/filecreation.gif)
 
 ---
 
