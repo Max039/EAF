@@ -1,4 +1,4 @@
-### Undo / Redo - STRG Z and STRG Y
+### Undo / Redo - CTRL Z and CTRL Y
 ![](../gifs/strgZandY.gif)
 
 ### Select - CTRL Leftclick
