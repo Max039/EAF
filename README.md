@@ -39,9 +39,6 @@ This project is designed to create a frontend for [EvoAl](https://evoal.de/) tha
 
 ---
 
-## Installation
-
-*Content for the Installation section*
 
 ## Example
 
