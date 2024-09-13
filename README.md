@@ -28,7 +28,7 @@ This project is designed to create a frontend for [EvoAl](https://evoal.de/) tha
 ---
 
 ## Example
-- **Feature 1:** ![New from preset](../gifs/preset.gif)
+- **Feature 1:** ![New from preset](github/gifs/preset.gif)
 - **Feature 2:** Brief description of the second feature.
 - **Feature 3:** Overview of another feature.
 - **Feature 4:** Explanation of how this feature enhances the project.
