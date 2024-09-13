@@ -2115,7 +2115,7 @@ public class UiUtil {
                         Main.mainFrame.getLocation().y + me.getY() - pY);
             }
         });
-
+        titleBar.setBorder(BorderFactory.createEmptyBorder());
         return titleBar;
     }
 

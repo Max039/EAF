@@ -278,6 +278,7 @@ public class Main extends JPanel {
 
         borderPanel.setLayout(new BorderLayout());
 
+
         new Main(); // Initialize main panel
 
         pluginCreator = new PluginCreator();
@@ -292,9 +293,11 @@ public class Main extends JPanel {
             borderPanel.add(UiUtil.getHeader(), BorderLayout.NORTH);
         }
         borderPanel.add(mainPanel, BorderLayout.CENTER);
-
+        borderPanel.setBackground(Main.bgColor);
         if (os == OS.WINDOWS) {
+            //borderPanel.setBorder(BorderFactory.createEmptyBorder());
             borderPanel.setBorder(new LineBorder(Main.bgColor, 3));
+
         }else {
             borderPanel.setBorder(BorderFactory.createEmptyBorder());
         }
