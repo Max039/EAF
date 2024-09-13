@@ -205,7 +205,7 @@ public class Main extends JPanel {
         }
         pluginManager = new PluginManager();
         try {
-            if (os == OS.WINDOWS) {
+            if (true) {
                 intro = new DoubleHelixAnimation();
             }
             else {

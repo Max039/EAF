@@ -101,7 +101,7 @@ public class ScriptWriter {
                 "echo \"EVOAL_HOME in second script: $EVOAL_HOME\"\n" +
                 "export EVOAL_JVM_ARGUMENTS=\"" + s + "\"\n" +
                 "# Get the directory of the currently executed script\n" +
-                (Main.os == Main.OS.WINDOWS ? "SCRIPT_DIR=$(dirname \"$(readlink -f \"$0\")\")\n" : "SCRIPT_DIR=$(dirname \"$(greadlink -f \"$0\")\")") +
+                (Main.os == Main.OS.WINDOWS ? "SCRIPT_DIR=$(dirname \"$(readlink -f \"$0\")\")\n" : "SCRIPT_DIR=$(dirname \"$(greadlink -f \"$0\")\")\n") +
                 "# Change the working directory to the script's directory\n" +
                 "cd \"$SCRIPT_DIR\"\n" +
                 getExecutionLine();
