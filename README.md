@@ -30,7 +30,7 @@ This project is designed to create a frontend for [EvoAl](https://evoal.de/) tha
    - [Class info](#class-info)
    - [Search definitions](#search-definitions)
    - [Config generation](#config-generation)
-4. [Shortcuts](#usage)
+4. [Shortcuts](github/md/shortcuts.md)
 5. [EvoAl Version Management](#usage)
 6. [EvoAl Plugins](#usage)
 7. [Rect Creation / Editing](#usage)
