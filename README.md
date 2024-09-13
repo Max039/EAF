@@ -74,7 +74,7 @@ This project is designed to create a frontend for [EvoAl](https://evoal.de/) tha
 ## Windows Installation
 
 1. **Download and Install JDK (Java 17)**  
-   Download JDK 17 from the [official Oracle website](https://www.oracle.com/java/technologies/javase-jdk17-downloads.html).
+   Download JDK 17 from the [official Oracle website](https://www.oracle.com/java/technologies/javase/jdk17-archive-downloads.html).
 
    - Set up environment variables:
      - Go to `Environment Variables` → `System Variables` → `Path` → Edit → New
@@ -116,7 +116,7 @@ This project is designed to create a frontend for [EvoAl](https://evoal.de/) tha
 ## Mac Installation
 
 1. **Download and Install JDK (Java 17)**  
-   Download JDK 17 from the [official Oracle website](https://www.oracle.com/java/technologies/javase-jdk17-downloads.html) or using a package manager like Homebrew.
+   Download JDK 17 from the [official Oracle website](https://www.oracle.com/java/technologies/javase/jdk17-archive-downloads.html) or using a package manager like Homebrew.
 
 2. **Install Maven**  
    - Download Maven from the [official website](https://maven.apache.org/download.cgi) and move it to a preferred location.
