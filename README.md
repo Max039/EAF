@@ -6,10 +6,11 @@
 This project is designed to create a frontend for [EvoAl](https://evoal.de/) that is accessible to useres without any programming knowledge. It aims to simplify the generation of configuration files using simple drag and drop operations with rectangles. Below you will find a detailed table of contents and key features.
 
 
-
-<h2 style="text-align: center;">[--- Download here ---](https://github.com/Max039/EAF/releases/latest)</h2>
-
 ---
+<div align="center">
+  <h2><a href="https://github.com/Max039/EAF/releases/latest">Download</a></h2>
+</div>
+
 
 ## Table of Contents
 
