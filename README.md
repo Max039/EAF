@@ -3,7 +3,7 @@
 
 ---
 
-This project is designed to create a frontend for [EvoAl](https://evoal.de/) that is accessible to users without any programming knowledge. It aims to simplify the generation of configuration files using simple drag and drop operations with rectangles. Below you will find a detailed table of contents and key features.
+This project is designed to create a frontend for [EvoAl](https://evoal.de/) that is accessible to users without any programming knowledge. It aims to simplify the creation of configuration files using simple drag and drop operations with rectangles. Below you will find a detailed table of contents and key features.
 
 
 ---
