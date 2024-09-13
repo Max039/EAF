@@ -1,0 +1,28 @@
+{
+    "parent": "",
+    "name": "generator",
+    "abstract": false,
+    "fields": [
+        {
+            "field-name": "output",
+            "array-count": 0,
+            "primitive": true,
+            "value": "",
+            "type-name": "string"
+        },
+        {
+            "field-name": "pipelines",
+            "array-count": 1,
+            "primitive": false,
+            "value": "",
+            "type-name": "de.eaf.generator.pipeline"
+        },
+        {
+            "field-name": "samples",
+            "array-count": 0,
+            "primitive": true,
+            "value": "",
+            "type-name": "int"
+        }
+    ]
+}

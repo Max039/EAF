@@ -1,8 +1,10 @@
 package eaf.ui.panels;
 
 import eaf.compiler.SyntaxTree;
+import eaf.executor.Executor;
 import eaf.input.InputHandler;
 import eaf.Main;
+import eaf.manager.FileManager;
 import eaf.models.ClassType;
 import eaf.ui.UiUtil;
 import org.json.JSONArray;
@@ -13,6 +15,8 @@ import eaf.rects.multi.RectWithRects;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Optional;
@@ -25,6 +29,10 @@ public class RectPanel extends JScrollPane {
     public static Color arrayColor = new Color(43, 43, 43, 255);
     public static Color primitiveColor = new Color(50, 50, 50, 255);
     public static Color instanceColor = new Color(43, 43, 43, 255);
+
+    // Static variables for buttons
+    public JButton leftButton = null;
+    public JButton rightButton = null;
 
     public static int textBoxWidth = 40;
 
@@ -55,7 +63,7 @@ public class RectPanel extends JScrollPane {
 
     public int lastMatchedCount = 0;
 
-    public RectPanel() {
+    public RectPanel(boolean buttons) {
         super();
         drawingPanel = new DrawingPanel();
         dragPanel = new DragPanel();
@@ -83,6 +91,46 @@ public class RectPanel extends JScrollPane {
         this.setBorder(BorderFactory.createEmptyBorder());
         layeredPane.setBorder(BorderFactory.createEmptyBorder());
         drawingPanel.setBorder(BorderFactory.createEmptyBorder());
+
+        if (buttons) {
+            leftButton = new JButton("Left");
+            rightButton = new JButton("Right");
+
+            leftButton.setOpaque(false);
+            rightButton.setOpaque(false);
+
+            leftButton.setBackground(new Color(0, 0, 0, 0));
+            leftButton.setForeground(new Color(0, 0, 0, 0));
+
+            rightButton.setBackground(new Color(0, 0, 0, 0));
+            rightButton.setForeground(new Color(0, 0, 0, 0));
+
+            leftButton.setBorder(BorderFactory.createEmptyBorder());
+            rightButton.setBorder(BorderFactory.createEmptyBorder());
+
+            leftButton.setFocusPainted(false);
+            rightButton.setFocusPainted(false);
+
+            leftButton.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    InputHandler.tryRun();
+                }
+            });
+
+            rightButton.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    if (InputHandler.actionHandler.areChangesMadeSinceSave()) {
+                        FileManager.save();
+                    }
+                }
+            });
+
+            // Add buttons to the correct layer
+            drawingPanel.add(leftButton);
+            drawingPanel.add(rightButton);
+        }
 
         setViewportView(layeredPane);
 
@@ -234,59 +282,14 @@ public class RectPanel extends JScrollPane {
         return t;
     }
 
-    public String toString() {
-        String res = "";
-        String problemName = rects.get(0).clazz.name;;
-        String problemContent = rects.get(0).toString(1).split(" ", 2)[1];
-        String algorithmName = rects.get(1).clazz.name;
-        String algorithmContent = rects.get(1).toString(1).split(" ", 2)[1];
-        String documentors = rects.get(2).toString(1).split("\\{", 2)[1];
-        documentors = documentors.substring(0, documentors.length() - 2).replace("'documentors'", "documenting");
-        ArrayList<ClassType> classesNeededForScript = new ArrayList<>();
-        for (var r : rects) {
-            getAllRects(classesNeededForScript, r);
-        }
 
-        String constants = "";
-        var imports = getUniqueImports(classesNeededForScript);
-        for (var r : ConstantPane.getUsedConstants()) {
-            if (!r.pack.isEmpty()) {
-                if (!imports.contains(r.pack)) {
-                    imports += "import \"definitions\" from " + r.pack + ";\n";
-                }
-            }
-            else {
-                constants += Rect.stringPadding + "const " + r.type + " " + r.name + " := " + r.value + ";\n";
-            }
-
-        }
-        if (!constants.isEmpty()) {
-            constants = "\n" + constants + "\n";
-        }
-
-        res += imports + "\n";
-        res += "import \"data\" from 'config';\n\n";
-        res += "module 'config' {\n";
-        res += constants;
-        res += Rect.stringPadding + "specify problem '" + problemName + "' ";
-        res += problemContent;
-        res += "\n\n\n";
-        res += Rect.stringPadding + "configure '" + algorithmName + "' for '" + problemName + "' ";
-        res += algorithmContent;
-        StringBuilder sb = new StringBuilder(res);
-        sb.insert(res.length() - 2, documentors);
-        res = sb.toString();
-        res += "}";
-
-        return res;
-    }
 
     public Long getMatchingRects() {
         return rects.stream().filter(s -> {
             var parts = filter.split(" ");
             boolean found = true;
             for (var part : parts) {
-                if (!s.clazz.name.toLowerCase().contains(part.toLowerCase())) {
+                if (!SyntaxTree.toSimpleName(s.clazz.name).toLowerCase().contains(part.toLowerCase())) {
                     found = false;
                     break;
                 }
@@ -327,7 +330,7 @@ public class RectPanel extends JScrollPane {
                     var parts = filter.split(" ");
                     boolean found = true;
                     for (var part : parts) {
-                        if (!rect.clazz.name.toLowerCase().contains(part.toLowerCase())) {
+                        if (!SyntaxTree.toSimpleName(rect.clazz.name).toLowerCase().contains(part.toLowerCase())) {
                             found = false;
                             break;
                         }

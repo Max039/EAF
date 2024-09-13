@@ -8,6 +8,7 @@ import eaf.action.MovedRectAction;
 import eaf.compiler.SyntaxTree;
 import eaf.executor.Executor;
 import eaf.manager.FileManager;
+import eaf.manager.LogManager;
 import eaf.rects.Rect;
 import eaf.rects.multi.ClassRect;
 import eaf.rects.multi.RectWithRects;
@@ -125,7 +126,7 @@ public class InputHandler {
                     FileManager.save();
                 }
                 else if (e.getKeyCode() == KeyEvent.VK_R && isControlPressed) {
-                    Executor.run();
+                    InputHandler.tryRun();
                 }
             }
 
@@ -316,6 +317,7 @@ public class InputHandler {
         Main.evoalVersion = version;
         Main.cacheManager.addToBuffer("build", version);
         SyntaxTree.reload();
+        System.out.println(LogManager.info() + " Changed active EvoAl version to: " + version);
     }
 
     public static void setEvoAlVersionNoReload(String version) {
@@ -324,12 +326,23 @@ public class InputHandler {
     }
 
     public static void processStarted() {
-        Main.console.flush();
         Main.processRunning = true;
     }
 
     public static void processTerminated() {
         Main.processRunning = false;
+    }
+
+    public static void tryRun() {
+        if (!Main.processRunning) {
+            Main.console.flush();
+            Executor.run();
+        }
+        else {
+            JOptionPane.showMessageDialog(Main.mainFrame,
+                    "Process is still running!", "Info", JOptionPane.INFORMATION_MESSAGE);
+        }
+        Main.mainPanel.leftPanel.requestFocus();
     }
 
 }

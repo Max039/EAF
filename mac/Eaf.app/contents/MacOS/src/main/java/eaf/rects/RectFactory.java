@@ -76,7 +76,7 @@ public class RectFactory {
                     }
                     else {
                         content  = "Unkown primitive";
-                        System.out.println(LogManager.reactFactory() + LogManager.error() + " Unkown primitve: " + type.typeName);
+                        System.out.println(LogManager.reactFactory() + LogManager.error() + " Unkown primitve: \"" + type.typeName + "\"");
                     }
                     preR = new TextFieldRect(content, RectPanel.textBoxWidth, RectPanel.textBoxHeight, RectPanel.primitiveColor, c, true);
                     ((TextFieldRect) preR).setTextColor(TextFieldRect.uneditableColor);
@@ -127,7 +127,7 @@ public class RectFactory {
                     }
                     else {
                         content  = "Unkown primitive";
-                        System.out.println(LogManager.reactFactory() + LogManager.error() +" Unkown primitve: " + type.typeName);
+                        System.out.println(LogManager.reactFactory() + LogManager.error() +" Unkown primitve: \"" + type.typeName + "\"");
                     }
                     return (T) new TextFieldRect(content, RectPanel.textBoxWidth, RectPanel.textBoxHeight, RectPanel.primitiveColor, c, true);
                 }

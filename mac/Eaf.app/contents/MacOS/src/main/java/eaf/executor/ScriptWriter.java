@@ -1,7 +1,6 @@
 package eaf.executor;
 
 import eaf.Main;
-import eaf.manager.FileManager;
 import eaf.manager.LogManager;
 import eaf.plugin.PluginManager;
 
@@ -20,30 +19,21 @@ public class ScriptWriter {
 
 
 
-    static void saveAndWriteEvoAlFiles() {
-        System.out.println(LogManager.scriptWriter() + LogManager.write() + " Saving project ...");
-        FileManager.save();
-        System.out.println(LogManager.scriptWriter() + LogManager.write() + LogManager.data() + " Writing EvoAl Data ...");
-        FileManager.write(Main.dataPanel.toString(), getPathToProject() + "/config.ddl");
-        System.out.println(LogManager.scriptWriter() + LogManager.write() + LogManager.ol()  + " Writing EvoAl Script ...");
-        FileManager.write(Main.mainPanel.leftPanel.toString(), getPathToProject()+ "/config.ol");
+    static void writeEvoAlFiles() {
+        Main.preset.generateFiles(getPathToProject(), Main.mainPanel.leftPanel);
+
         Main.mainPanel.revalidate();
         Main.mainFrame.repaint();
     }
 
-    public enum ScriptType {
-        SEARCH
-    }
 
 
-    public static ScriptType projectType = ScriptType.SEARCH;
-
-    public static void createScript(String path, String build, ScriptType type) {
+    public static void createScript(String path, String build) {
 
         System.out.println(LogManager.scriptWriter() + LogManager.script() + LogManager.shell() + " Trying to writing Shell-Script script at " + path);
         try {
             List<String> lines = new ArrayList<>();
-            lines.add(getReplacementLines(build, type));
+            lines.add(getReplacementLines(build));
 
             Files.write(Paths.get(path), lines, StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING);
         } catch (IOException e) {
@@ -54,8 +44,7 @@ public class ScriptWriter {
     public static String getPathToProject() {
         var r = Main.cacheManager.getFirstElement(String.class, "filesOpened");
         Path fileFullPath = Paths.get(r);
-        return Main.savesPath.substring(1) + "/" + fileFullPath.getParent().getFileName();
-
+        return fileFullPath.getParent().toAbsolutePath().toString();
     }
 
     public static void setOpenAndExports() {
@@ -76,7 +65,7 @@ public class ScriptWriter {
 
     }
 
-    private static String getReplacementLines(String build, ScriptType type) {
+    private static String getReplacementLines(String build) {
         System.out.println(LogManager.scriptWriter() + LogManager.script() + LogManager.shell() + " Creating Opens And Exports of EvoAl Module for Plugin Modules ...");
         System.out.println(LogManager.scriptWriter() + LogManager.script() + LogManager.shell() + " EvoAl modules :");
         for (var module : ClassLocator.evoalModules) {
@@ -95,31 +84,31 @@ public class ScriptWriter {
             }
         }
 
+        if (!s.isEmpty()) {
+            s += " -Dfile.encoding=utf-8";
+        }
+        else {
+            s = "-Dfile.encoding=utf-8";
+        }
+
+        String currentDir = System.getProperty("user.dir");
 
         return "#!/bin/sh\n" +
                 "export DISPLAY=localhost:0.0\n" +
-                "export EVOAL_HOME=$( cd -- \"$(dirname $0)/../../" + Main.evoalBuildFolder + "/" + build + "/evoal\" >/dev/null 2>&1 ; pwd -P )\n" +
+                "export EVOAL_HOME=$( cd -- \"" + currentDir + "/" + Main.evoalBuildFolder + "/" + build + "/evoal\" >/dev/null 2>&1 ; pwd -P )\n" +
                 "# Print the current working directory for debugging\n" +
                 "echo \"Current working directory in second script: $(pwd)\"\n" +
                 "echo \"EVOAL_HOME in second script: $EVOAL_HOME\"\n" +
                 "export EVOAL_JVM_ARGUMENTS=\"" + s + "\"\n" +
                 "# Get the directory of the currently executed script\n" +
-                "SCRIPT_DIR=$(dirname \"$(readlink -f \"$0\")\")\n" +
+                (Main.os == Main.OS.WINDOWS ? "SCRIPT_DIR=$(dirname \"$(readlink -f \"$0\")\")\n" : "SCRIPT_DIR=$(cd \"$(dirname \"$0\")\" && pwd)\n") +
                 "# Change the working directory to the script's directory\n" +
                 "cd \"$SCRIPT_DIR\"\n" +
-                getExecutionLine(type);
+                getExecutionLine();
     }
 
-    private static String getExecutionLine(ScriptType type) {
-        switch (type) {
-            case SEARCH -> {
-                return  "$SHELL $EVOAL_HOME/bin/evoal-search.sh . config.ol output";
-            }
-            default ->
-            {
-                return "";
-            }
-        }
+    private static String getExecutionLine() {
+       return Main.preset.executionLine();
     }
 
 }

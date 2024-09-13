@@ -1,0 +1,12 @@
+{
+    "parent": "de.eaf.mll.transfer",
+    "name": "layer-transfer",
+    "abstract": false,
+    "fields": [{
+        "field-name": "mapping",
+        "array-count": 1,
+        "primitive": false,
+        "value": "",
+        "type-name": "de.eaf.mll.function-mapping"
+    }]
+}

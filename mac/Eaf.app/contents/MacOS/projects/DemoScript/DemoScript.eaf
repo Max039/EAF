@@ -1,0 +1,14 @@
+{
+    "data": [{
+        "instance": false,
+        "name": "x:0",
+        "type": "quotient real"
+    }],
+    "rects": [],
+    "constants": [{
+        "name": "test",
+        "type": "int",
+        "value": "5"
+    }],
+    "preset": "ea"
+}

@@ -8,9 +8,12 @@ import eaf.intro.DoubleHelixAnimation;
 import eaf.intro.Intro;
 import eaf.intro.SimpleIntro;
 import eaf.manager.CacheManager;
+import eaf.manager.LogManager;
 import eaf.models.Pair;
 import eaf.plugin.PluginCreator;
 import eaf.plugin.PluginManager;
+import eaf.setup.EA;
+import eaf.setup.Preset;
 import eaf.ui.*;
 import eaf.manager.FileManager;
 import eaf.ui.panels.*;
@@ -34,7 +37,7 @@ public class Main extends JPanel {
 
     public static OS os = null;
 
-    public static String version = "0.1.0";
+    public static String version = "1.0.0";
 
     public static Color bgColor = new Color(49, 51, 53);
 
@@ -53,6 +56,8 @@ public class Main extends JPanel {
     public static Color searchBar = new Color(100, 100, 100);
     public static Color searchBarBorder = new Color(85, 85, 85);
 
+    public static Preset preset = null;
+
     public static ConstantPane constantManager;
 
     public static ErrorPane errorManager;
@@ -61,8 +66,8 @@ public class Main extends JPanel {
     //public static String evoalVersion = "20240708-152016";
     public static String evoalVersion = null;
 
-    public final RectPanel leftPanel = new RectPanel();
-    public final RectPanel rightPanel = new RectPanel();
+    public final RectPanel leftPanel = new RectPanel(true);
+    public final RectPanel rightPanel = new RectPanel(false);
 
     public static boolean processRunning = false;
 
@@ -117,6 +122,26 @@ public class Main extends JPanel {
 
     public static PluginManager pluginManager;
 
+    public synchronized static boolean isIndex() {
+        return index;
+    }
+
+    public synchronized static void setIndex(boolean index) {
+        Main.index = index;
+    }
+
+    private static boolean index = false;
+
+    public synchronized static boolean updateChecked() {
+        return updateCheck;
+    }
+
+    public synchronized static void setUpdateChecked(boolean updateCheck) {
+        Main.updateCheck = updateCheck;
+    }
+
+    private static boolean updateCheck = false;
+
     static {
         String osName = System.getProperty("os.name").toLowerCase();
         if (osName.contains("win")) {
@@ -128,20 +153,59 @@ public class Main extends JPanel {
     }
 
     public static void main(String[] args) throws Exception {
+        Font font = new Font("Arial", Font.PLAIN, 14);
+
+        UIManager.put("Button.font", font);
+        UIManager.put("ToggleButton.font", font);
+        UIManager.put("RadioButton.font", font);
+        UIManager.put("CheckBox.font", font);
+        UIManager.put("ColorChooser.font", font);
+        UIManager.put("ComboBox.font", font);
+        UIManager.put("Label.font", font);
+        UIManager.put("List.font", font);
+        UIManager.put("MenuBar.font", font);
+        UIManager.put("MenuItem.font", font);
+        UIManager.put("RadioButtonMenuItem.font", font);
+        UIManager.put("CheckBoxMenuItem.font", font);
+        UIManager.put("Menu.font", font);
+        UIManager.put("PopupMenu.font", font);
+        UIManager.put("OptionPane.font", font);
+        UIManager.put("Panel.font", font);
+        UIManager.put("ProgressBar.font", font);
+        UIManager.put("ScrollPane.font", font);
+        UIManager.put("Viewport.font", font);
+        UIManager.put("TabbedPane.font", font);
+        UIManager.put("Table.font", font);
+        UIManager.put("TableHeader.font", font);
+        UIManager.put("TextField.font", font);
+        UIManager.put("PasswordField.font", font);
+        UIManager.put("TextArea.font", font);
+        UIManager.put("TextPane.font", font);
+        UIManager.put("EditorPane.font", font);
+        UIManager.put("TitledBorder.font", font);
+        UIManager.put("ToolBar.font", font);
+        UIManager.put("ToolTip.font", font);
+        UIManager.put("Tree.font", font);
+
+        Preset.prepareSetups();
 
         if (os == OS.MAC) {
             FileManager.copyToDocuments();
         }
 
         cacheManager = new CacheManager();
+        System.out.println(LogManager.main() + LogManager.args() + " Args:");
+        int i = 0;
+        for (var arg : args) {
+            if (i == 0) {
+                System.out.println(LogManager.main() + LogManager.args() + " " + arg);
+                cacheManager.addToBuffer("filesOpened", arg);
+            }
+            i++;
+        }
         pluginManager = new PluginManager();
         try {
-            if (os == OS.WINDOWS) {
-                intro = new DoubleHelixAnimation();
-            }
-            else {
-                intro = new SimpleIntro();
-            }
+            intro = new DoubleHelixAnimation();
 
             String currentPath = System.getProperty("user.dir");
             File builds = new File(currentPath + "/" + evoalBuildFolder);
@@ -151,7 +215,7 @@ public class Main extends JPanel {
 
             if (!builds.exists() || FileManager.isDirectoryEmpty(builds)) {
                 intro.setObjective("Downloading EvoAl Build");
-                Downloader.downloadNewestVersionIfNeeded();
+                Downloader.downloadNewestVersionIfNeeded(false);
                 var build = FileManager.findFirstFileInReverseOrder(currentPath + "/" + evoalBuildFolder);
                 InputHandler.setEvoAlVersionNoReload(build.getName());
             }
@@ -209,13 +273,14 @@ public class Main extends JPanel {
 
         borderPanel.setLayout(new BorderLayout());
 
+
         new Main(); // Initialize main panel
 
         pluginCreator = new PluginCreator();
 
         createMenuBar();
 
-        mainPanel.setBackground(Color.LIGHT_GRAY); // Set background color or any layout you need
+        mainPanel.setBackground(Main.bgColor); // Set background color or any layout you need
 
         // Layout the frame with BorderLayout
         mainFrame.setLayout(new BorderLayout());
@@ -223,9 +288,11 @@ public class Main extends JPanel {
             borderPanel.add(UiUtil.getHeader(), BorderLayout.NORTH);
         }
         borderPanel.add(mainPanel, BorderLayout.CENTER);
-
+        borderPanel.setBackground(Main.bgColor);
         if (os == OS.WINDOWS) {
+            //borderPanel.setBorder(BorderFactory.createEmptyBorder());
             borderPanel.setBorder(new LineBorder(Main.bgColor, 3));
+
         }else {
             borderPanel.setBorder(BorderFactory.createEmptyBorder());
         }
@@ -245,6 +312,8 @@ public class Main extends JPanel {
         setupUi();
 
         FileManager.loadRecent();
+
+        postStart();
     }
 
     private void setupUi() {
@@ -286,6 +355,29 @@ public class Main extends JPanel {
         leftPanel.requestFocusInWindow();
         
     }
+
+
+    public static void postStart() {
+        Thread executionThread = new Thread(() -> {
+            try {
+                Downloader.checkForUpdate();
+                try {
+                    while (updateChecked()) {
+                        Thread.sleep(100);
+                    }
+                }
+                catch (Exception e) {
+                    throw new RuntimeException(e);
+                }
+                Downloader.update();
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        });
+        executionThread.start();
+    }
+
+
 
 
 }

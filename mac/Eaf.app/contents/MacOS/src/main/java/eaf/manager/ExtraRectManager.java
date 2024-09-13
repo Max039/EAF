@@ -15,9 +15,9 @@ public class ExtraRectManager {
     static String pathToRects = "/rects";
     static String extension = ".rect";
 
-    public static HashMap<String, ClassType> baseClassRegister;
+    public static HashMap<String, ClassType> baseClassRegister = new HashMap<>();
 
-    public static HashMap<String, ClassType> classRegister;
+    public static HashMap<String, ClassType> classRegister = new HashMap<>();
 
     public static void saveRect(ClassType c) {
         var content = ClassFactory.toRectFile(c);
@@ -51,7 +51,7 @@ public class ExtraRectManager {
             while (iterator.hasNext()) {
                 File file = iterator.next();
                 String filePath = file.getPath();
-                System.out.print("Trying to process: " + filePath);
+                System.out.println("Trying to process: " + filePath);
 
                 // Generate the package name by removing the base path and modifying the rest
                 String pack = filePath
@@ -63,16 +63,30 @@ public class ExtraRectManager {
                 Pair<Boolean, ClassType> res;
                 try {
                     // Create the ClassType object from the .rect file
-                    res = ClassFactory.fromRectFile(FileManager.readJSONFileToJSON(file), pack);
+
+                    try {
+                        res = ClassFactory.fromRectFile(FileManager.readJSONFileToJSON(file), pack);
+                    }
+                    catch (Exception ignored) {
+                        System.out.println(" -> processing " + ColorManager.colorText("failed", ColorManager.errorColor) + " error during rect creating!");
+                        continue;
+                    }
 
                     // Check if the processing was successful
                     if (res.getFirst()) {
-
                         var c = res.getSecond();
 
+                        System.out.println(c.name);
 
+                        var exits = false;
+                        try {
+                            SyntaxTree.get(c.name);
+                            exits = true;
+                        }
+                        catch (Exception ignored) {
+                        }
 
-                        if (SyntaxTree.get(c.name) != null) {
+                        if (exits) {
                             System.out.println(" -> processing " + ColorManager.colorText("failed", ColorManager.errorColor) + " rect file name \"" + c.name + "\" already taken!");
                         }
                         else {

@@ -2,6 +2,7 @@ package eaf.ui;
 
 import eaf.compiler.SyntaxTree;
 import eaf.*;
+import eaf.download.Downloader;
 import eaf.executor.Executor;
 import eaf.executor.OpenIntelliJProject;
 import eaf.input.InputHandler;
@@ -15,8 +16,10 @@ import eaf.models.Pair;
 import eaf.plugin.PluginCreator;
 import eaf.plugin.PluginManager;
 import eaf.rects.Rect;
+import eaf.rects.RectFactory;
 import eaf.rects.multi.ClassRect;
 import eaf.rects.multi.RectWithRects;
+import eaf.setup.Preset;
 import eaf.sound.SoundManager;
 import eaf.ui.panels.*;
 
@@ -32,15 +35,16 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Stack;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.logging.ErrorManager;
+import java.util.stream.Collectors;
 
 import static eaf.Main.*;
-import static eaf.manager.FileManager.loadSave;
-import static eaf.manager.FileManager.readJSONFileToJSON;
-import static eaf.executor.Executor.run;
+import static eaf.manager.FileManager.*;
 import static eaf.plugin.PluginCreator.createNewFromExample;
 
 
@@ -72,6 +76,8 @@ public class UiUtil {
     public static boolean obectSelected;
 
     private static Stack<ClassType> historyStack = new Stack<>();
+
+    private static int classEntryCounterForRectMenu = 0;
 
     static {
         try {
@@ -122,6 +128,31 @@ public class UiUtil {
             }
         });
 
+
+        JMenuItem imp = new JMenuItem("import ...");
+        imp.setUI(new CustomMenuItemUI(bgColor)); // Set custom UI delegate
+        imp.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                try {
+                    var cancle = showUnsaveDialog();
+                    if (!cancle) {
+                        var file = FileManager.chooseJavaFile(Main.savesPath, Main.saveFormat);
+                        if (file != null) {
+                            String curr = System.getProperty("user.dir");
+                            String name = file.getName().split("\\.")[0];
+                            System.out.println(curr + "/" + savesPath + "/" + name + "/" + file.getName());
+                            var newFile = FileManager.copyFile(file.getAbsolutePath(), curr + "/" + savesPath + "/" + name + "/" + file.getName());
+                            FileManager.copyFolder(curr + "/project_base", curr + "/" + savesPath + "/" + name);
+                            loadSave(readJSONFileToJSON(newFile));
+                            Main.cacheManager.addToBuffer("filesOpened", newFile.getPath());
+                        }
+                    }
+                } catch (IOException ex) {
+                    throw new RuntimeException(ex);
+                }
+            }
+        });
 
 
 
@@ -215,14 +246,36 @@ public class UiUtil {
             }
         });
 
+        JMenuItem newSaveFromPreset = new JMenuItem("new from preset");
+        newSaveFromPreset.setUI(new CustomMenuItemUI(bgColor)); // Set custom UI delegate
+        newSaveFromPreset.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                fromPreset();
+            }
+        });
+
+        JMenuItem newGenerator = new JMenuItem("add generator to project");
+        newGenerator.setUI(new CustomMenuItemUI(bgColor)); // Set custom UI delegate
+        newGenerator.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                newGeneratorFile();
+            }
+        });
+
+
         // Add the submenu to the main menu
         fileMenu.add(newSave);
+        fileMenu.add(newSaveFromPreset);
         fileMenu.add(open);
         fileMenu.add(openFileDotDotDot);
         fileMenu.add(saveFileDotDotDot);
         fileMenu.add(save);
+        fileMenu.add(imp);
         fileMenu.setBackground(Main.bgColor);
         fileMenu.setForeground(Color.WHITE);
+        fileMenu.add(newGenerator);
         menuBar.add(fileMenu);
     }
 
@@ -251,7 +304,10 @@ public class UiUtil {
         newChild.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                openClassEditor(SyntaxTree.get("empty-string-initial"), true, true, true, false);
+                var res = chooseInstance(mainFrame, null, false);
+                if (res != null) {
+                    openClassEditor(res, true, true, true, false);
+                }
             }
         });
 
@@ -263,7 +319,10 @@ public class UiUtil {
         edit.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                openClassEditor(SyntaxTree.get("evolutionary-algorithm"), false, true, true, false);
+                var res = chooseInstance(mainFrame, null, false);
+                if (res != null) {
+                    openClassEditor(res, false, true, true, false);
+                }
             }
         });
 
@@ -301,7 +360,7 @@ public class UiUtil {
         run.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                run();
+                InputHandler.tryRun();
             }
         });
 
@@ -332,6 +391,52 @@ public class UiUtil {
 
 
         scriptMenu.add(run);
+
+        JMenuItem downloadMenu = new JMenuItem("manage versions");
+        run.setUI(new CustomMenuItemUI(bgColor)); // Set custom UI delegate
+
+        downloadMenu.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                while (!isIndex()) {
+                    try {
+                        Thread.sleep(50);
+                    } catch (InterruptedException ex) {
+                        throw new RuntimeException(ex);
+                    }
+                }
+                Downloader.showMenu();
+            }
+        });
+
+
+        scriptMenu.add(downloadMenu);
+
+        scriptMenu.setBackground(Main.bgColor);
+        scriptMenu.setForeground(Color.WHITE);
+        menuBar.add(scriptMenu);
+    }
+
+    static void addPresetMenu(JMenuBar menuBar) {
+        // Create the File menu
+        JMenu scriptMenu = new JMenu("Preset");
+        scriptMenu.setBackground(Color.WHITE);
+        scriptMenu.setBackground(dividerColor);
+        // Create menu items
+        JMenuItem run = new JMenuItem("change preset");
+        run.setUI(new CustomMenuItemUI(bgColor)); // Set custom UI delegate
+
+        run.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                openPresetWindow();
+            }
+        });
+
+
+        scriptMenu.add(run);
+
+
         scriptMenu.setBackground(Main.bgColor);
         scriptMenu.setForeground(Color.WHITE);
         menuBar.add(scriptMenu);
@@ -462,6 +567,22 @@ public class UiUtil {
             }
         });
 
+        scrollPane.addMouseWheelListener(new MouseWheelListener() {
+            @Override
+            public void mouseWheelMoved(MouseWheelEvent e) {
+                JScrollBar verticalBar = scrollPane.getVerticalScrollBar();
+                JScrollBar horizontalBar = scrollPane.getHorizontalScrollBar();
+
+                // Only scroll the vertical scrollbar
+                if (e.getScrollType() == MouseWheelEvent.WHEEL_UNIT_SCROLL) {
+                    int rotation = e.getWheelRotation();
+                    int units = e.getScrollAmount();
+                    int increment = verticalBar.getUnitIncrement() * units * rotation;
+                    verticalBar.setValue(verticalBar.getValue() + increment);
+                }
+            }
+        });
+
 
         JScrollBar verticalScrollBar = scrollPane.getVerticalScrollBar();
         JScrollBar horizontalScrollBar = scrollPane.getHorizontalScrollBar();
@@ -572,7 +693,9 @@ public class UiUtil {
 
         // Add some example tabs
         tabsList.add(new Pair<>("Editor", createMainTab(Main.mainPanel)));  // Pass 'main' to createMainTab
-        tabsList.add(new Pair<>("Analysis", new JPanel()));
+        var a = new JPanel();
+        a.add(new JLabel("Not yet supported :/"), BorderLayout.CENTER);
+        tabsList.add(new Pair<>("Analysis", a));
 
         createTabs(screenSize);
         mergeTabAndTabs();
@@ -738,12 +861,13 @@ public class UiUtil {
                 if (matchingRect instanceof RectWithRects) {
                     matchingRect = ((RectWithRects) matchingRect).getSubRect(leftPanelPos);
                     if (matchingRect != null && (main.leftPanel.hasFocus() || main.rightPanel.hasFocus())) {
-                        matchingRect.onMouseClicked(e.getButton() == 1, leftPanelPos, panelRelativePos, e);
+                        matchingRect.onMouseClicked(e.getButton() == 1, leftPanelPos, panelRelativePos, e, true);
                         if (InputHandler.isControlPressed && matchingRect instanceof ClassRect && prevSelected != matchingRect) {
                             InputHandler.setSelected((ClassRect)matchingRect);
                         }
                     }
                 }
+
                 if (matchingRect == null) {
                     main.leftPanel.requestFocusInWindow();
                 }
@@ -772,13 +896,24 @@ public class UiUtil {
             public void mousePressed(MouseEvent e) {
                 rightPanel.requestFocusInWindow();
 
+
                 Point point = SwingUtilities.convertPoint(e.getComponent(), e.getPoint(), rightPanel.getViewport().getView());
+                Point panelRelativePos = SwingUtilities.convertPoint(e.getComponent(), e.getPoint(), Main.mainFrame);
 
                 Rect rect = rightPanel.getRect(point);
 
-                if (rect != null && rect.contains(point)) {
+                if (e.getButton() == 1 && rect != null && rect.contains(point)) {
                     InputHandler.setDraggingRect(rect.clone(), e, new Point(point.x - rect.getX(), point.y - rect.getY()), null);
                 }
+
+
+                if (e.getButton() == 3 && rect instanceof RectWithRects) {
+                    rect = ((RectWithRects) rect).getSubRect(point);
+                    if (rect != null) {
+                        rect.onMouseClicked(e.getButton() == 1, point, panelRelativePos, e, false);
+                    }
+                }
+
 
             }
 
@@ -866,39 +1001,50 @@ public class UiUtil {
         return leftContainerPanel;
     }
 
+
+
     public static void drawIcons(RectPanel r, Graphics g) {
-            var g2 = (Graphics2D) g;
-            if (InputHandler.actionHandler.areChangesMadeSinceSave()) {
-                var picX = r.getWidth() - cross.getWidth() - RectWithRects.spacing - Main.mainPanel.leftPanel.getVerticalScrollBar().getWidth();
-                var picY = r.getVerticalScrollBar().getValue() + RectWithRects.spacing + Main.mainPanel.leftPanel.getHorizontalScrollBar().getHeight();
-                g2.drawImage(cross, picX, picY, cross.getWidth(), cross.getHeight(), null);
+        var g2 = (Graphics2D) g;
+        if (InputHandler.actionHandler.areChangesMadeSinceSave()) {
+            var picX = r.getWidth() - cross.getWidth() - RectWithRects.spacing - Main.mainPanel.leftPanel.getVerticalScrollBar().getWidth();
+            var picY = r.getVerticalScrollBar().getValue() + RectWithRects.spacing + Main.mainPanel.leftPanel.getHorizontalScrollBar().getHeight();
+            r.rightButton.setSize(cross.getWidth(), cross.getHeight());
+            r.rightButton.setLocation(picX, picY);
+            g2.drawImage(cross, picX, picY, cross.getWidth(), cross.getHeight(), null);
+        }
+        else {
+            var picX = r.getWidth() - checkmark.getWidth() - RectWithRects.spacing - Main.mainPanel.leftPanel.getVerticalScrollBar().getWidth();
+            var picY = r.getVerticalScrollBar().getValue() + RectWithRects.spacing + Main.mainPanel.leftPanel.getHorizontalScrollBar().getHeight();
+            r.rightButton.setSize(checkmark.getWidth(), checkmark.getHeight());
+            r.rightButton.setLocation(picX, picY);
+            g2.drawImage(checkmark, picX, picY, checkmark.getWidth(), checkmark.getHeight(), null);
+        }
+        if (ErrorPane.errors > 0 || preset == null || mainPanel.leftPanel.getRects().isEmpty()) {
+            var picX = r.getWidth() - cross.getWidth() - unrunable.getWidth() - RectWithRects.spacing * 2  - Main.mainPanel.leftPanel.getVerticalScrollBar().getWidth();
+            var picY = r.getVerticalScrollBar().getValue() + RectWithRects.spacing + Main.mainPanel.leftPanel.getHorizontalScrollBar().getHeight();
+            r.leftButton.setSize(unrunable.getWidth(), unrunable.getHeight());
+            r.leftButton.setLocation(picX, picY);
+            g2.drawImage(unrunable, picX, picY, unrunable.getWidth(), unrunable.getHeight(), null);
+        }
+        else {
+            if (ErrorPane.warnings > 0) {
+                var picX = r.getWidth() - checkmark.getWidth() - warning.getWidth() - RectWithRects.spacing * 2 - Main.mainPanel.leftPanel.getVerticalScrollBar().getWidth();
+                var picY = r.getVerticalScrollBar().getValue() + RectWithRects.spacing + Main.mainPanel.leftPanel.getHorizontalScrollBar().getHeight();;
+                r.leftButton.setSize(warning.getWidth(), warning.getHeight());
+                r.leftButton.setLocation(picX, picY);
+                g2.drawImage(warning, picX, picY, warning.getWidth(), warning.getHeight(), null);
             }
             else {
-                var picX = r.getWidth() - checkmark.getWidth() - RectWithRects.spacing - Main.mainPanel.leftPanel.getVerticalScrollBar().getWidth();
-                var picY = r.getVerticalScrollBar().getValue() + RectWithRects.spacing + Main.mainPanel.leftPanel.getHorizontalScrollBar().getHeight();
-                g2.drawImage(checkmark, picX, picY, checkmark.getWidth(), checkmark.getHeight(), null);
-            }
-            if (ErrorPane.errors > 0) {
-                var picX = r.getWidth() - cross.getWidth() - unrunable.getWidth() - RectWithRects.spacing * 2  - Main.mainPanel.leftPanel.getVerticalScrollBar().getWidth();
-                var picY = r.getVerticalScrollBar().getValue() + RectWithRects.spacing + Main.mainPanel.leftPanel.getHorizontalScrollBar().getHeight();
-                g2.drawImage(unrunable, picX, picY, unrunable.getWidth(), unrunable.getHeight(), null);
-            }
-            else {
-                if (ErrorPane.warnings > 0) {
-                    var picX = r.getWidth() - checkmark.getWidth() - warning.getWidth() - RectWithRects.spacing * 2 - Main.mainPanel.leftPanel.getVerticalScrollBar().getWidth();
-                    var picY = r.getVerticalScrollBar().getValue() + RectWithRects.spacing + Main.mainPanel.leftPanel.getHorizontalScrollBar().getHeight();;
-                    g2.drawImage(warning, picX, picY, warning.getWidth(), warning.getHeight(), null);
-                }
-                else {
-                    var picX = r.getWidth() - checkmark.getWidth() - runable.getWidth() - RectWithRects.spacing * 2 - Main.mainPanel.leftPanel.getVerticalScrollBar().getWidth();
-                    var picY = r.getVerticalScrollBar().getValue() + RectWithRects.spacing + Main.mainPanel.leftPanel.getHorizontalScrollBar().getHeight();;
-                    g2.drawImage(runable, picX, picY, runable.getWidth(), runable.getHeight(), null);
-                }
-
+                var picX = r.getWidth() - checkmark.getWidth() - runable.getWidth() - RectWithRects.spacing * 2 - Main.mainPanel.leftPanel.getVerticalScrollBar().getWidth();
+                var picY = r.getVerticalScrollBar().getValue() + RectWithRects.spacing + Main.mainPanel.leftPanel.getHorizontalScrollBar().getHeight();;
+                r.leftButton.setSize(runable.getWidth(), runable.getHeight());
+                r.leftButton.setLocation(picX, picY);
+                g2.drawImage(runable, picX, picY, runable.getWidth(), runable.getHeight(), null);
             }
 
-
+        }
     }
+
 
     public static void setLeftPanelTextFieldListeners(final Main main) {
         main.leftPanelTextField.addKeyListener(new KeyListener() {
@@ -1131,8 +1277,9 @@ public class UiUtil {
 
         addScriptMenu(menuBar);
         addRectMenu(menuBar);
-        addPluginMenu(menuBar);
+        //addPluginMenu(menuBar);
         addEvoAlMenu(menuBar);
+        addPresetMenu(menuBar);
 
         // Set the menu bar to the frame
         mainPanel.add(menuBar, BorderLayout.NORTH);
@@ -1169,7 +1316,7 @@ public class UiUtil {
 
         String back = "← Back";
         if (!historyStack.isEmpty()) {
-            back += " to " + historyStack.peek().name;
+            back += " to " + SyntaxTree.toSimpleName(historyStack.peek().name);
         }
 
 
@@ -1184,19 +1331,27 @@ public class UiUtil {
                 }
             }
         });
+        backButton.setAlignmentX(Component.LEFT_ALIGNMENT);
+        backButton.setEnabled(!historyStack.isEmpty());
         panel.add(backButton);
         panel.add(Box.createRigidArea(new Dimension(0, 15))); // Add vertical space
 
 
         // Add the class name
-        JLabel nameLabel = new JLabel("Class Name: " + classType.getName());
+        JTextArea nameLabel = new JTextArea("Class Name: " + SyntaxTree.toSimpleName(classType.getName()));
         panel.add(nameLabel);
         panel.add(Box.createRigidArea(new Dimension(0, 15))); // Add vertical space
+        // Get the font from the JLabel
+        Font labelFont = new JLabel().getFont();
 
+        // Set the same font to the JTextArea
+        nameLabel.setFont(labelFont);
+        nameLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
 
         var root = classType.getRoot();
         // Add a back button if there is history
-        JButton rootButton = new JButton("Root: " + root.name);
+        JButton rootButton = new JButton("Root: " + SyntaxTree.toSimpleName(root.name));
+        rootButton.setAlignmentX(Component.LEFT_ALIGNMENT);
         rootButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -1204,14 +1359,20 @@ public class UiUtil {
                 updateClassInfo(container, root, frame);
             }
         });
+        if (root.equals(classType)) {
+            rootButton.setEnabled(false);
+            rootButton.setText("Root: this");
+        }
         panel.add(rootButton);
 
         panel.add(Box.createRigidArea(new Dimension(0, 15))); // Add vertical space
 
         // Add the package name
-        JLabel packageLabel = new JLabel("Package: " + classType.pack);
+        JTextArea packageLabel = new JTextArea("Package: " + classType.pack);
         panel.add(packageLabel);
+        packageLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
         panel.add(Box.createRigidArea(new Dimension(0, 15))); // Add vertical space
+        packageLabel.setFont(labelFont);
 
         JLabel fields = new JLabel("Fields");
         panel.add(fields);
@@ -1229,7 +1390,12 @@ public class UiUtil {
                 value = " = " +field.getValue().getSecond().value;
             }
 
-            JButton fieldButton = new JButton(field.getKey() + " : " + repeatString("array ", type.arrayCount)  + type.typeName + value);
+            String name = type.typeName;
+            if (!type.primitive) {
+                name = SyntaxTree.toSimpleName(name);
+            }
+
+            JButton fieldButton = new JButton(field.getKey() + " : " + repeatString("array ", type.arrayCount)  + name + value);
             fieldButton.setMaximumSize(new Dimension(Integer.MAX_VALUE, 30)); // Set button to full width
             fieldButton.setAlignmentX(Component.CENTER_ALIGNMENT);
             fieldButton.addActionListener(new ActionListener() {
@@ -1252,8 +1418,14 @@ public class UiUtil {
 
         panel.add(Box.createRigidArea(new Dimension(0, 15))); // Add vertical space
 
+        String parent = "";
+        if (classType.parent != null) {
+            parent = SyntaxTree.toSimpleName(classType.getParentName());
+        }
+
         // Add the parent name with a clickable button
-        JButton parentButton = new JButton("Parent: " + classType.getParentName());
+        JButton parentButton = new JButton("Parent: " + parent);
+        parentButton.setAlignmentX(Component.LEFT_ALIGNMENT);
         parentButton.setEnabled(classType.parent != null);
         parentButton.addActionListener(new ActionListener() {
             @Override
@@ -1277,7 +1449,7 @@ public class UiUtil {
         JPanel childrenPanel = new JPanel();
         childrenPanel.setLayout(new BoxLayout(childrenPanel, BoxLayout.Y_AXIS));
         for (ClassType child : classType.children) {
-            JButton childButton = new JButton(child.getName());
+            JButton childButton = new JButton(SyntaxTree.toSimpleName(child.getName()));
             childButton.setMaximumSize(new Dimension(Integer.MAX_VALUE, 30)); // Set button to full width
             childButton.setAlignmentX(Component.CENTER_ALIGNMENT);
             childButton.addActionListener(new ActionListener() {
@@ -1312,21 +1484,22 @@ public class UiUtil {
         for (var c : SyntaxTree.getClasses()) {
             for (var f : c.fields.entrySet()) {
                 var type = f.getValue().getFirst();
-                var class2 = SyntaxTree.get(type.typeName);
-                if (!type.primitive && class2.matchesType(classType)) {
-                    JButton childButton = new JButton(c.name + " - " + f.getKey() + " : " + repeatString("array ", type.arrayCount)  + type.typeName);
-                    childButton.setMaximumSize(new Dimension(Integer.MAX_VALUE, 30)); // Set button to full width
-                    childButton.setAlignmentX(Component.CENTER_ALIGNMENT);
-                    childButton.addActionListener(new ActionListener() {
-                        @Override
-                        public void actionPerformed(ActionEvent e) {
-                            historyStack.push(classType);
-                            updateClassInfo(container, c, frame);
-                        }
-                    });
-                    usesPanel.add(childButton);
+                if (!type.primitive) {
+                    var class2 = SyntaxTree.get(type.typeName);
+                    if (class2.matchesType(classType)) {
+                        JButton childButton = new JButton(SyntaxTree.toSimpleName(c.name)+ " - " + f.getKey() + " : " + repeatString("array ", type.arrayCount)  + SyntaxTree.toSimpleName(type.typeName));
+                        childButton.setMaximumSize(new Dimension(Integer.MAX_VALUE, 30)); // Set button to full width
+                        childButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+                        childButton.addActionListener(new ActionListener() {
+                            @Override
+                            public void actionPerformed(ActionEvent e) {
+                                historyStack.push(classType);
+                                updateClassInfo(container, c, frame);
+                            }
+                        });
+                        usesPanel.add(childButton);
+                    }
                 }
-
             }
         }
         JScrollPane scrollPane3 = new JScrollPane(usesPanel);
@@ -1354,6 +1527,8 @@ public class UiUtil {
 
     public static void openClassEditor(ClassType classType, boolean newChild, boolean saveAsRect, boolean parentChangeable, boolean forceNonAbstract) {
 
+        classEntryCounterForRectMenu = 0;
+
         // Frame setup
         JFrame frame = new JFrame("Class Editor");
         frame.setLayout(new GridBagLayout());
@@ -1362,7 +1537,7 @@ public class UiUtil {
         gbc.anchor = GridBagConstraints.WEST;
         gbc.fill = GridBagConstraints.HORIZONTAL;
 
-        frame.setSize(600, 600); // Adjust frame size if necessary
+        frame.setSize(1200, 1000); // Adjust frame size if necessary
         frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 
         // Name TextField
@@ -1446,7 +1621,7 @@ public class UiUtil {
 
 
         JPanel fieldsPanel = new JPanel();
-        fieldsPanel.setLayout(new BoxLayout(fieldsPanel, BoxLayout.Y_AXIS));
+        //fieldsPanel.setLayout(new BoxLayout(fieldsPanel, BoxLayout.Y_AXIS));
         fieldsPanel.setPreferredSize(new Dimension(800, 300)); // Adjust preferred size if necessary
 
 
@@ -1483,7 +1658,7 @@ public class UiUtil {
             primitiveFrame.add(fieldTypeLabel, gbcPrimitive);
 
             gbcPrimitive.gridx = 1;
-            String[] types = {"quotient real", "int", "string"};
+            String[] types = {"quotient real", "int", "string", "data"};
             JComboBox<String> typeComboBox = new JComboBox<>(types);
             primitiveFrame.add(typeComboBox, gbcPrimitive);
 
@@ -1534,29 +1709,17 @@ public class UiUtil {
                         JOptionPane.showMessageDialog(primitiveFrame, "Value field must be empty if Array Count is greater than 0.", "Input Error", JOptionPane.ERROR_MESSAGE);
                         return;
                     }
+                    if (typeComboBox.getSelectedItem().equals("data") && !fieldValue.isEmpty()) {
+                        JOptionPane.showMessageDialog(primitiveFrame, "Value field must be empty if data type is selected!.", "Input Error", JOptionPane.ERROR_MESSAGE);
+                        return;
+                    }
                 } catch (NumberFormatException ex) {
                     JOptionPane.showMessageDialog(primitiveFrame, "Array Count must be a valid integer.", "Input Error", JOptionPane.ERROR_MESSAGE);
                     return;
                 }
 
-                // If validation passes, proceed to add the field
-                JPanel fieldPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
-                JTextField fieldNameFieldDisplay = new JTextField(fieldName, 15);
-                JTextField fieldTypeField = new JTextField((!arrayCountText.isEmpty() ? "array " + arrayCountText + " " : "") + typeComboBox.getSelectedItem(), 15);
-                JCheckBox isPrimitive = new JCheckBox("Primitive", true);
-                JTextField fieldValueFieldDisplay = new JTextField(fieldValue, 15);
-                JButton removeFieldButton = new JButton("-");
 
-                fieldPanel.add(new JLabel("Field:"));
-                fieldPanel.add(fieldNameFieldDisplay);
-                fieldPanel.add(fieldTypeField);
-                fieldPanel.add(isPrimitive);
-                fieldPanel.add(fieldValueFieldDisplay);
-                fieldPanel.add(removeFieldButton);
-
-                removeFieldButton.addActionListener(e1 -> fieldsPanel.remove(fieldPanel));
-
-                fieldsPanel.add(fieldPanel);
+                rectEditorEntryPanel(fieldName, repeatString("array ", Integer.parseInt(arrayCountText)) + typeComboBox.getSelectedItem(), true, fieldValue, fieldsPanel);
                 fieldsPanel.revalidate();
                 primitiveFrame.dispose();
             });
@@ -1581,8 +1744,20 @@ public class UiUtil {
         gbc.fill = GridBagConstraints.BOTH;
         gbc.weightx = 1.0;
         gbc.weighty = 1.0;
-        JScrollPane fieldsScrollPane = new JScrollPane(fieldsPanel);
-        fieldsScrollPane.setPreferredSize(new Dimension(500, 450)); // Set preferred size for scroll pane
+        JScrollPane fieldsScrollPane = new JScrollPane(fieldsPanel) {
+            @Override
+            public Dimension getPreferredSize() {
+                int maxX = 100;
+                int maxY = 0;
+                for (var comp : getComponents()) {
+                    maxX = Math.max(maxX, comp.getX() + comp.getWidth());
+                    maxY = Math.max(maxY, comp.getY() + comp.getHeight());
+                }
+                return new Dimension(maxX, maxY);
+            };
+        };
+        fieldsScrollPane.setSize(100, 0);
+
         frame.add(fieldsScrollPane, gbc);
 
         // Adding existing fields
@@ -1592,30 +1767,7 @@ public class UiUtil {
                 FieldType fieldType = entry.getValue().getFirst();
                 FieldValue fieldValue = entry.getValue().getSecond();
 
-                JPanel fieldPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
-                JTextField fieldNameField = new JTextField(fieldName, 15);
-                fieldNameField.setEnabled(false);
-                fieldNameField.setDisabledTextColor(Color.BLACK);
-                JTextField fieldTypeField = new JTextField(repeatString("array ", fieldType.arrayCount) + fieldType.typeName, 15);
-                fieldTypeField.setEnabled(false);
-                fieldTypeField.setDisabledTextColor(Color.BLACK);
-                JCheckBox isPrimitiveCheckBox = new JCheckBox("Primitive", fieldType.primitive);
-                isPrimitiveCheckBox.setEnabled(false);
-                JTextField fieldValueField = new JTextField(fieldValue != null ? fieldValue.value : "", 15);
-                fieldValueField.setEnabled(false);
-                fieldValueField.setDisabledTextColor(Color.BLACK);
-                JButton removeFieldButton = new JButton("-");
-
-                fieldPanel.add(new JLabel("Field:"));
-                fieldPanel.add(fieldNameField);
-                fieldPanel.add(fieldTypeField);
-                fieldPanel.add(isPrimitiveCheckBox);
-                fieldPanel.add(fieldValueField);
-                fieldPanel.add(removeFieldButton);
-
-                removeFieldButton.addActionListener(e -> fieldsPanel.remove(fieldPanel));
-
-                fieldsPanel.add(fieldPanel);
+                rectEditorEntryPanel(fieldName, repeatString("array ", fieldType.arrayCount) + fieldType.typeName, entry.getValue().getFirst().primitive, fieldValue != null ? fieldValue.value : "", fieldsPanel);
             }
         }
 
@@ -1686,10 +1838,14 @@ public class UiUtil {
     }
 
     public static ClassType chooseInstance(JFrame owner, JPanel fieldsPanel, boolean addListener) {
-        List<ClassType> availableClasses = SyntaxTree.getClasses();
+        selectedType = null;
+
+        List<ClassType> availableClasses = SyntaxTree.getClasses().stream()
+                .sorted(Comparator.comparing(ClassType::getName))
+                .toList();
 
         // Use a modal dialog to block until selection is made
-        JDialog instanceDialog = new JDialog(owner, "Add Instance Field", true);
+        JDialog instanceDialog = new JDialog(owner, "Choose Instance", true);
         instanceDialog.setPreferredSize(new Dimension(300, 500)); // Set preferred size for scroll pane
         instanceDialog.setLayout(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
@@ -1705,13 +1861,14 @@ public class UiUtil {
         gbc.gridwidth = 1;
         gbc.gridx = 0;
         gbc.gridy = 0;
-        JLabel nameLabel = new JLabel("Name:");
-        instanceDialog.add(nameLabel, gbc);
-
-        gbc.gridx = 1;
         JTextField nameField = new JTextField(15);
-        nameField.setPreferredSize(new Dimension(150, nameField.getPreferredSize().height));
-        instanceDialog.add(nameField, gbc);
+        if (addListener) {
+            JLabel nameLabel = new JLabel("Name:");
+            instanceDialog.add(nameLabel, gbc);
+            gbc.gridx = 1;
+            nameField.setPreferredSize(new Dimension(150, nameField.getPreferredSize().height));
+            instanceDialog.add(nameField, gbc);
+        }
 
         // Array Count Field
         JTextField arrayField = new JTextField(15);
@@ -1748,20 +1905,51 @@ public class UiUtil {
         JPanel instanceListPanel = new JPanel();
         instanceListPanel.setLayout(new BoxLayout(instanceListPanel, BoxLayout.Y_AXIS));
 
-        for (ClassType availableClass : availableClasses) {
-            JButton classButton = new JButton(availableClass.getName());
-            if (addListener) {
-                classButton.addActionListener(addListener(nameField, availableClass, arrayField, instanceDialog, fieldsPanel));
-            } else {
-                classButton.addActionListener(terminator(instanceDialog, availableClass));
-            }
-            instanceListPanel.add(classButton);
-        }
-
-
         JScrollPane instanceScrollPane = new JScrollPane(instanceListPanel);
         instanceDialog.add(instanceScrollPane, gbc);
 
+        // Method to refresh the list based on the search term
+        Runnable refreshInstanceList = () -> {
+            String searchText = searchField.getText().toLowerCase();
+            instanceListPanel.removeAll(); // Clear current buttons
+
+            // Re-add filtered buttons
+            for (ClassType availableClass : availableClasses) {
+                if (availableClass.getName().toLowerCase().contains(searchText)) {
+                    JButton classButton = new JButton(availableClass.getName());
+                    if (addListener) {
+                        classButton.addActionListener(addListener(nameField, availableClass, arrayField, instanceDialog, fieldsPanel));
+                    } else {
+                        classButton.addActionListener(terminator(instanceDialog, availableClass));
+                    }
+                    instanceListPanel.add(classButton);
+                }
+            }
+
+            instanceListPanel.revalidate(); // Revalidate to refresh the UI
+            instanceListPanel.repaint();
+        };
+
+        // Add DocumentListener to searchField to trigger filtering
+        searchField.getDocument().addDocumentListener(new DocumentListener() {
+            @Override
+            public void insertUpdate(DocumentEvent e) {
+                refreshInstanceList.run();
+            }
+
+            @Override
+            public void removeUpdate(DocumentEvent e) {
+                refreshInstanceList.run();
+            }
+
+            @Override
+            public void changedUpdate(DocumentEvent e) {
+                refreshInstanceList.run();
+            }
+        });
+
+        // Initial population of instance list
+        refreshInstanceList.run();
 
         instanceDialog.pack();
         instanceDialog.setLocationRelativeTo(null);  // Center the dialog
@@ -1770,37 +1958,49 @@ public class UiUtil {
         return selectedType;  // Return the selected class after the dialog is closed
     }
 
+    public static void rectEditorEntryPanel(String name, String type, boolean primitive, String value, JPanel fieldsPanel) {
+        JPanel fieldPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        fieldPanel.setSize(15, 300);
+        fieldPanel.setLocation(0, 20 * classEntryCounterForRectMenu);
+        classEntryCounterForRectMenu++;
+        JTextField fieldNameFieldDisplay = new JTextField(name, 15);
+        fieldNameFieldDisplay.setEnabled(false);
+        fieldNameFieldDisplay.setDisabledTextColor(Color.BLACK);
+        JTextField fieldTypeField = new JTextField(type, 40);
+        fieldTypeField.setEnabled(false);
+        fieldTypeField.setDisabledTextColor(Color.BLACK);
+        JCheckBox isPrimitive = new JCheckBox("Primitive", primitive);
+        isPrimitive.setEnabled(false);
+        JTextField fieldValueFieldDisplay = new JTextField(value, 15);
+        fieldValueFieldDisplay.setEnabled(false);
+        fieldValueFieldDisplay.setDisabledTextColor(Color.BLACK);
+        JButton removeFieldButton = new JButton("-");
+
+        fieldPanel.add(new JLabel("Field:"));
+        fieldPanel.add(fieldNameFieldDisplay);
+        fieldPanel.add(fieldTypeField);
+        fieldPanel.add(isPrimitive);
+        fieldPanel.add(fieldValueFieldDisplay);
+        fieldPanel.add(removeFieldButton);
+
+        removeFieldButton.addActionListener(e1 -> {
+            fieldsPanel.remove(fieldPanel);
+            fieldsPanel.revalidate();
+            fieldsPanel.repaint();
+            classEntryCounterForRectMenu--;
+        });
+        fieldsPanel.add(fieldPanel);
+    }
+
+
     public static ActionListener addListener(JTextField nameField, ClassType c, JTextField arrayCnt, JDialog instanceFrame, JPanel fieldsPanel) {
         return new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 if (!nameField.getText().isEmpty()) {
-                    JPanel fieldPanel = new JPanel(new FlowLayout());
-                    JTextField fieldName = new JTextField(nameField.getText(), 10);
-                    fieldName.setEnabled(false);
-                    fieldName.setDisabledTextColor(Color.BLACK);
-                    JTextField fieldType = new JTextField(repeatString("array ", Integer.parseInt(arrayCnt.getText())) + c.name, 10);
-                    fieldType.setEnabled(false);
-                    fieldType.setDisabledTextColor(Color.BLACK);
-                    JCheckBox isPrimitive = new JCheckBox("Primitive", false);
-                    isPrimitive.setEnabled(false);
-                    JTextField fieldValue = new JTextField("", 10);
-                    fieldValue.setEnabled(false);
-                    fieldValue.setDisabledTextColor(Color.BLACK);
-                    JButton removeFieldButton = new JButton("-");
-
-                    fieldPanel.add(new JLabel("Field:"));
-                    fieldPanel.add(fieldName);
-                    fieldPanel.add(fieldType);
-                    fieldPanel.add(isPrimitive);
-                    fieldPanel.add(fieldValue);
-                    fieldPanel.add(removeFieldButton);
-
-                    removeFieldButton.addActionListener(e1 -> fieldsPanel.remove(fieldPanel));
-
                     selectedType = c;
 
-                    fieldsPanel.add(fieldPanel);
+                    rectEditorEntryPanel(nameField.getText(), repeatString("array ", Integer.parseInt(arrayCnt.getText())) + c.name, false, "", fieldsPanel);
                     fieldsPanel.revalidate();
                     instanceFrame.dispose();
                 }
@@ -1915,7 +2115,7 @@ public class UiUtil {
                         Main.mainFrame.getLocation().y + me.getY() - pY);
             }
         });
-
+        titleBar.setBorder(BorderFactory.createEmptyBorder());
         return titleBar;
     }
 
@@ -2081,8 +2281,7 @@ public class UiUtil {
 
     public static void openFolderWindow(String folderPath) {
         // Create a JFrame (the main window)
-        JFrame frame = new JFrame("Folder Button App");
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        JFrame frame = new JFrame("Version Selector");
         frame.setSize(400, 400);
 
         // Create a JScrollPane with a JPanel inside it
@@ -2116,5 +2315,116 @@ public class UiUtil {
         frame.add(scrollPane);
         frame.setVisible(true);
     }
+
+    public static void openPresetWindow() {
+        // Create a JFrame (the main window)
+        JFrame frame = new JFrame("Preset Selector");
+        frame.setSize(400, 400);
+
+        // Create a JScrollPane with a JPanel inside it
+        JPanel panel = new JPanel();
+        panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+        JScrollPane scrollPane = new JScrollPane(panel);
+
+        for (var preset : Preset.presets) {
+            // Create a button for each folder
+            JButton button = new JButton(preset.getDisplayName());
+            button.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    // Print the name of the folder and close the window
+                    Main.preset = preset;
+                    InputHandler.actionHandler.changesMade();
+                    frame.dispose();
+                    ErrorPane.checkForErrors();
+                    mainFrame.revalidate();
+                    mainFrame.repaint();
+                }
+            });
+            panel.add(button);
+        }
+
+        // Add the scroll pane to the frame and make it visible
+        frame.add(scrollPane);
+        frame.setVisible(true);
+    }
+
+    public static void centerFrame(JFrame frame) {
+        frame.setLocationRelativeTo(null);
+    }
+
+    public static void fromPreset() {
+        // Create a JFrame (the main window)
+        JFrame frame = new JFrame("Preset Selector");
+        frame.setSize(400, 400);
+        centerFrame(frame);
+
+
+        // Create a JScrollPane with a JPanel inside it
+        JPanel panel = new JPanel();
+        panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+        JScrollPane scrollPane = new JScrollPane(panel);
+
+        for (var preset : Preset.presets) {
+            // Create a button for each folder
+            JButton button = new JButton(preset.getDisplayName());
+            button.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    // Print the name of the folder and close the window
+                    var cancle = showUnsaveDialog();
+                    if (!cancle) {
+                        FileManager.newFile();
+                        Main.preset = preset;
+                        for (var r : preset.requiredRectNames) {
+                            mainPanel.leftPanel.addRect(RectFactory.getRectFromClassType(SyntaxTree.get(r)));
+                        }
+                        FileManager.save();
+                        frame.dispose();
+                        ErrorPane.checkForErrors();
+                        mainFrame.revalidate();
+                        mainFrame.repaint();
+                    }
+                }
+            });
+            panel.add(button);
+        }
+
+        // Add the scroll pane to the frame and make it visible
+        frame.add(scrollPane);
+        frame.setVisible(true);
+    }
+
+
+    public static void newGeneratorFile() {
+        String cur = cacheManager.getFirstElement(String.class, "filesOpened");
+        if (cur != null) {
+            File file = new File(cur);
+            file = new File(file.getParentFile().getAbsolutePath() + "/generator." + Main.saveFormat);
+            // Check if a file with the given name already exists
+            if (file.exists()) {
+                JOptionPane.showMessageDialog(null, "A file with that name already exists. Please choose a different name.", "Error", JOptionPane.ERROR_MESSAGE);
+
+            }
+            else {
+                FileManager.emptySave();
+                writeJSONToFile(createSave(), file.getAbsolutePath());
+                Main.cacheManager.addToBuffer("filesOpened", file.getAbsolutePath());
+                Main.preset = Preset.getPreset("generator");
+                for (var r : preset.requiredRectNames) {
+                    mainPanel.leftPanel.addRect(RectFactory.getRectFromClassType(SyntaxTree.get(r)));
+                }
+                FileManager.save();
+                ErrorPane.checkForErrors();
+                mainFrame.revalidate();
+                mainFrame.repaint();
+            }
+        }
+
+
+    }
+
+
+
 
 }

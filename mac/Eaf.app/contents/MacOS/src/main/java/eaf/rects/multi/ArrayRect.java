@@ -223,6 +223,9 @@ public class ArrayRect <T extends Rect> extends RectWithRects {
                 newNames[i] = "";
                 newTypes[i] = fillType;
                 newRects[i] = r;
+                if (r != null) {
+                    r.parentIndex = i;
+                }
             }
         }
 
@@ -234,6 +237,7 @@ public class ArrayRect <T extends Rect> extends RectWithRects {
 
 
         if (r != null) {
+            r.parent = this;
             r.addTo(Main.mainPanel.leftPanel.drawingPanel);
         }
     }
@@ -310,6 +314,7 @@ public class ArrayRect <T extends Rect> extends RectWithRects {
     public void addLast(Rect r) {
         addElement(r, Math.max(subRects.length-1, 0));
     }
+
 
 
 }

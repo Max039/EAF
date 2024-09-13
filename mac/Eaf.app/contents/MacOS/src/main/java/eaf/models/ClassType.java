@@ -29,18 +29,26 @@ public class ClassType implements Comparable {
 
     public String pack;
 
+    public boolean parentFieldsSet = false;
+
     public ClassType(String name, ClassType parent, String pack) {
         this.name = name;
         this.parent = parent;
         this.pack = pack;
         fields = new HashMap<>();
         if ( parent != null ) {
-            fields.putAll(parent.fields);
             extending = true;
         }
         else {
             extending = false;
         }
+    }
+
+    public void setParentFields() {
+        if ( parent != null ) {
+            fields.putAll(parent.fields);
+        }
+        parentFieldsSet = true;
     }
 
     public void setAbstract(boolean isAbstract) {
@@ -142,8 +150,8 @@ public class ClassType implements Comparable {
                 indent += "│   ";
             }
         }
-        var childrenSorted = root.children.stream().sorted().toList();
-        sb.append(root.name + " (" + "\u001B[37m" + root.pack  + "\u001B[0m" + ")").append("\n");
+        var childrenSorted = root.children.stream().sorted(Comparator.comparing(t -> SyntaxTree.toSimpleName(t.name))).toList();
+        sb.append(SyntaxTree.toSimpleName(root.name) + " (" + "\u001B[37m" + root.pack  + "\u001B[0m" + ")").append("\n");
         for (int i = 0; i < childrenSorted.size(); i++) {
             sb.append(getClassHierarchy(childrenSorted.get(i), indent, i == childrenSorted.size() - 1, false));
         }
@@ -244,17 +252,29 @@ public class ClassType implements Comparable {
 
 
     public ClassType findSingleNonAbstractClass() {
-        ClassType result = isAbstract ? null : this; // Set result to this class if it's non-abstract, else null
+        ClassType result = this;
         for (ClassType child : children) {
             ClassType childResult = child.findSingleNonAbstractClass(); // Recursively check each child
-            if (childResult != null) {
-                if (result != null) {
+            if (childResult == null) {
+                return null;
+            }
+            else  {
+                if (!result.isAbstract && !childResult.isAbstract) {
                     return null; // If more than one non-abstract class is found, return null
                 }
-                result = childResult; // Otherwise, set result to the non-abstract child
+                if (!childResult.isAbstract) {
+                    result = childResult; // Otherwise, set result to the non-abstract child
+                }
             }
+
         }
-        return result; // Return the single non-abstract class, or null if there's more than one
+        if (!result.isAbstract) {
+            return result;
+        }
+        else {
+            return null;
+        }
+
     }
 
     public ClassType getRoot() {

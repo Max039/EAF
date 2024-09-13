@@ -1,0 +1,21 @@
+{
+    "parent": "",
+    "name": "maps",
+    "abstract": false,
+    "fields": [
+        {
+            "field-name": "transfer",
+            "array-count": 0,
+            "primitive": false,
+            "value": "",
+            "type-name": "de.eaf.mll.transfer"
+        },
+        {
+            "field-name": "source",
+            "array-count": 0,
+            "primitive": true,
+            "value": "",
+            "type-name": "data"
+        }
+    ]
+}

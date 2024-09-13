@@ -36,6 +36,7 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import javax.imageio.ImageIO;
+import javax.swing.text.Utilities;
 
 import static eaf.models.FieldValue.doesTypesMatch;
 
@@ -184,7 +185,7 @@ public abstract class RectWithRects extends Rect {
         if (context != null && this instanceof ClassRect) {
             int extra = locked ? spacing + lock.getWidth() : 0;
 
-            maxWidth = Math.max(maxWidth, (int) getFont().getStringBounds(clazz.name, context).getWidth() + extra);
+            maxWidth = Math.max(maxWidth, (int) getFont().getStringBounds(SyntaxTree.toSimpleName(clazz.name), context).getWidth() + extra);
         }
         return spacing * 2 + maxWidth + extraSpacingToRight();
     }
@@ -223,7 +224,7 @@ public abstract class RectWithRects extends Rect {
     }
 
     public static Font getFont() {
-        return new Font("TimesRoman", Font.PLAIN, (int)(fontSize));
+        return new Font("Arial", Font.PLAIN, (int)(fontSize));
     }
 
     @Override
@@ -532,10 +533,10 @@ public abstract class RectWithRects extends Rect {
     };
 
     @Override
-    public void onMouseClicked(boolean left, Point p, Point p2, MouseEvent e) {
+    public void onMouseClicked(boolean left, Point p, Point p2, MouseEvent e, boolean leftPanel) {
         var res = getIndex(p);
 
-        if (res.getFirst() && !left) {
+        if (res.getFirst() && !left && leftPanel) {
             var index = types[res.getSecond()];
             if (!index.primitive) {
                 var clazz = SyntaxTree.get(index.typeName);
@@ -543,7 +544,7 @@ public abstract class RectWithRects extends Rect {
 
 
                 valid = valid.stream()
-                        .sorted(Comparator.comparing(classType -> classType.name))
+                        .sorted(Comparator.comparing(classType -> SyntaxTree.toSimpleName(classType.name)))
                         .filter(t -> !t.isAbstract)
                         .collect(Collectors.toList());
 
@@ -552,7 +553,7 @@ public abstract class RectWithRects extends Rect {
                 int maxVisibleItems = 5;
                 for (int i = 0; i < Math.min(valid.size(), maxVisibleItems); i++) {
                     var item = valid.get(i);
-                    JMenuItem menuItem = new JMenuItem(item.name);
+                    JMenuItem menuItem = new JMenuItem(SyntaxTree.toSimpleName(item.name));
                     menuItem.addActionListener(new ActionListener() {
                         @Override
                         public void actionPerformed(ActionEvent e) {
@@ -608,8 +609,8 @@ public abstract class RectWithRects extends Rect {
                                     listPanel.removeAll();
 
                                     for (var fullItem : finalValid) {
-                                        if (fullItem.name.toLowerCase().contains(searchText)) {
-                                            JButton button = new JButton(fullItem.name);
+                                        if (SyntaxTree.toSimpleName(fullItem.name).toLowerCase().contains(searchText)) {
+                                            JButton button = new JButton(SyntaxTree.toSimpleName(fullItem.name));
                                             button.setHorizontalAlignment(SwingConstants.CENTER);
                                             button.setMaximumSize(new Dimension(Integer.MAX_VALUE, 50)); // Ensure full width and fixed height
                                             button.addActionListener(new ActionListener() {
@@ -666,7 +667,7 @@ public abstract class RectWithRects extends Rect {
             }
 
         } else if (this instanceof ClassRect) {
-            if (left && parent != null && !locked && !InputHandler.isControlPressed) {
+            if (left && parent != null && !locked && !InputHandler.isControlPressed && leftPanel) {
                 // Copy, set dragging, delete, etc.
                 Main.mainPanel.leftPanel.removeRect(RectWithRects.this);
                 var s = parent;
@@ -692,7 +693,7 @@ public abstract class RectWithRects extends Rect {
                 popupMenu.add(info);
 
 
-                if (!locked) {
+                if (!locked && leftPanel) {
                     JMenuItem menuItem = new JMenuItem("Delete");
                     menuItem.addActionListener(new ActionListener() {
                         @Override
@@ -718,7 +719,7 @@ public abstract class RectWithRects extends Rect {
                 popupMenu.show(Main.mainFrame, p2.x, p2.y);
             }
         }
-        else if (this instanceof ArrayRect) {
+        else if (this instanceof ArrayRect && leftPanel) {
             if (left && InputHandler.showButtons) {
                 ((ArrayRect)this).pressedButton(p);
             }
@@ -739,7 +740,7 @@ public abstract class RectWithRects extends Rect {
            warning = true;
            ErrorPane.warningRects.put(this, new Pair(getY(), filed + ": Empty Array!"));
        }
-        if (this instanceof ClassRect && parent != null && !SyntaxTree.inModule(clazz.name)) {
+        if ((Main.preset != null && Main.preset.implementationError()) && this instanceof ClassRect && parent != null && !SyntaxTree.inModule(clazz.name)) {
             valid = false;
             ErrorPane.erroRects.put(this, new Pair(getY(), clazz.name + ": Not implemented rect!"));
             color = errorColor;
@@ -828,5 +829,16 @@ public abstract class RectWithRects extends Rect {
             }
         }
     }
+
+    public Rect getSubRectByName(String name) {
+        for (int i = 0; i < names.length; i++) {
+            if (names[i].equals(name)) {
+                return subRects[i];
+            }
+        }
+
+        return null;
+    }
+
 
 }

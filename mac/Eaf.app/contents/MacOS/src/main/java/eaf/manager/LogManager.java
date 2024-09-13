@@ -125,5 +125,21 @@ public class LogManager {
         return encased(ColorManager.colorText("IntelliJ IDEA", ColorManager.intelliJ));
     }
 
+    public static String downloader() {
+        return encased(ColorManager.colorText("Downloader", ColorManager.downloader));
+    }
+
+    public static String main() {
+        return encased(ColorManager.colorText("Main", ColorManager.main));
+    }
+
+    public static String args() {
+        return encased(ColorManager.colorText("Args", ColorManager.args));
+    }
+
+    public static String preset() {
+        return encased(ColorManager.colorText("Preset", ColorManager.preset));
+    }
+
 }
 

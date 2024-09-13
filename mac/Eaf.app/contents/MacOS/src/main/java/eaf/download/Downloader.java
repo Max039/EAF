@@ -18,12 +18,15 @@ import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
 import eaf.Main;
+import eaf.input.InputHandler;
+import eaf.manager.LogManager;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import eaf.models.Pair;
@@ -31,13 +34,13 @@ import eaf.models.Pair;
 import javax.swing.*;
 
 
-public class Downloader extends JFrame {
+public class Downloader {
 
     private static final String GITLAB_URL = "https://gitlab.informatik.uni-bremen.de/api/v4";
     private static final String PROJECT_ID = "evoal%2Fsource%2Fevoal-core"; // URL-encoded project ID
     private static final String PRIVATE_TOKEN = "oWVzZS_JquJwxFhqnx4y"; // Read api only - never expires
 
-    public static String PATH = System.getProperty("user.dir") + Main.evoalBuildFolder;
+    public static String PATH = System.getProperty("user.dir") + "/" + Main.evoalBuildFolder;
 
     public static String DOWNLOAD_PATH = PATH + "/";
 
@@ -47,7 +50,7 @@ public class Downloader extends JFrame {
 
     private static int numberOfVersionsToShow = 100;
 
-    private static JComboBox<String> versionComboBox;
+    private static JComboBox<String> versionComboBox = new JComboBox<>();
     private JButton mainButton;
 
     private static JPanel panel = new JPanel();
@@ -70,100 +73,124 @@ public class Downloader extends JFrame {
 
     public static int progressBarWidth = 40;
 
-    public Downloader() {
-        setTitle("Artifact Downloader");
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setSize(400, 200);
-        setLocationRelativeTo(null);
+    public static JFrame frame = null;
+
+    static {
+        versionComboBox.setRenderer(new MyHtmlComboBoxRenderer());
+    }
+
+    public static void showMenu() {
+        frame = new JFrame();
+
+        frame.setTitle("Artifact Downloader");
+        frame.setSize(400, 200);
+        frame.setLocationRelativeTo(null);
 
         panel.setLayout(new BorderLayout());
 
-        // Create the main button that will show the dropdown menu
-        mainButton = new JButton("Options");
-        JPopupMenu popupMenu = new JPopupMenu();
+        // Create the dropdown menu (JComboBox)
+        String[] options = {
+                "Download selected version",
+                "Delete outdated versions",
+                "Open in file explorer",
+                "Delete selected installation",
+                "Change to selected version"
+        };
+        JComboBox<String> optionsDropdown = new JComboBox<>(options);
 
-        // Download selected version menu item
-        JMenuItem downloadSelectedVersionItem = new JMenuItem("Download selected version");
-        downloadSelectedVersionItem.addActionListener(new ActionListener() {
+        // Create the OK button
+        JButton okButton = new JButton("OK");
+        okButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                String selectedVersion = (String) versionComboBox.getSelectedItem();
-                if (selectedVersion != null && !selectedVersion.contains("local") && !selectedVersion.contains("outdated")) {
-                    selectedVersion = selectedVersion.split("<html>")[1].split(" ")[0];
-                    try {
-                        downloadSelectedVersion(selectedVersion, false);
-                    } catch (Exception ex) {
-                        ex.printStackTrace();
-                        JOptionPane.showMessageDialog(Downloader.this,
-                                "Failed to download artifact: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+                Thread executionThread = new Thread(() -> {
+                    String selectedOption = (String) optionsDropdown.getSelectedItem();
+                    switch (selectedOption) {
+                        case "Download selected version":
+                            String selectedVersion = (String) versionComboBox.getSelectedItem();
+                            if (selectedVersion != null && !selectedVersion.contains("local") && !selectedVersion.contains("outdated")) {
+                                selectedVersion = selectedVersion.split("<html>")[1].split(" ")[0];
+                                try {
+                                    downloadSelectedVersion(selectedVersion, false, true);
+                                    JOptionPane.showMessageDialog(frame,
+                                            "Successfully downloaded and activated EvoAl Build " + selectedVersion, "Info", JOptionPane.INFORMATION_MESSAGE);
+                                } catch (Exception ex) {
+                                    ex.printStackTrace();
+                                    JOptionPane.showMessageDialog(frame,
+                                            "Failed to download artifact: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+                                }
+                                InputHandler.setEvoAlVersion(selectedVersion);
+                                populateVersions();
+                            }
+                            break;
+
+                        case "Delete outdated versions":
+                            try {
+                                deleteNonMatchingFolders(new File(PATH), allPipelinesApprovedStings);
+                                JOptionPane.showMessageDialog(frame,
+                                        "All outdated versions deleted!", "Info", JOptionPane.INFORMATION_MESSAGE);
+                            } catch (Exception ex) {
+                                throw new RuntimeException(ex);
+                            }
+                            populateVersions();
+                            break;
+
+                        case "Open in file explorer":
+                            selectedVersion = (String) versionComboBox.getSelectedItem();
+                            selectedVersion = selectedVersion.split("<html>")[1].split(" ")[0];
+                            if (Files.exists(Paths.get(DOWNLOAD_PATH + selectedVersion))) {
+                                openExplorer(DOWNLOAD_PATH + selectedVersion);
+                            }
+                            else {
+                                JOptionPane.showMessageDialog(frame,
+                                        "Cannot open file explorer version not present on hard drive!", "Error", JOptionPane.ERROR_MESSAGE);
+                            }
+                            populateVersions();
+                            break;
+
+                        case "Delete selected installation":
+                            selectedVersion = (String) versionComboBox.getSelectedItem();
+                            selectedVersion = selectedVersion.split("<html>")[1].split(" ")[0];
+                            if (Files.exists(Paths.get(DOWNLOAD_PATH + selectedVersion))) {
+                                try {
+                                    deleteDirectory(new File(DOWNLOAD_PATH + selectedVersion));
+                                } catch (Exception ex) {
+                                    throw new RuntimeException(ex);
+                                }
+                                populateVersions();
+                            }
+                            break;
+                        case "Change to selected version":
+                            selectedVersion = (String) versionComboBox.getSelectedItem();
+                            selectedVersion = selectedVersion.split("<html>")[1].split(" ")[0];
+                            if (Files.exists(Paths.get(DOWNLOAD_PATH + selectedVersion))) {
+                                InputHandler.setEvoAlVersion(selectedVersion);
+                                JOptionPane.showMessageDialog(frame,
+                                        "Successfully change to EvoAl Build " + selectedVersion, "Info", JOptionPane.INFORMATION_MESSAGE);
+                            }
+                            break;
+
+                        default:
+                            break;
                     }
-                    populateVersions();
-                }
+                });
+                executionThread.start();
             }
         });
-        popupMenu.add(downloadSelectedVersionItem);
 
-        // Delete outdated versions menu item
-        JMenuItem deleteOutdatedVersionsItem = new JMenuItem("Delete outdated versions");
-        deleteOutdatedVersionsItem.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                try {
+        // Panel for the dropdown and OK button
+        JPanel controlPanel = new JPanel();
+        controlPanel.setLayout(new FlowLayout());
+        controlPanel.add(optionsDropdown);
+        controlPanel.add(okButton);
 
-                    deleteNonMatchingFolders(new File(PATH), allPipelinesApprovedStings);
-
-                } catch (Exception ex) {
-                    throw new RuntimeException(ex);
-                }
-                populateVersions();
-            }
-        });
-        popupMenu.add(deleteOutdatedVersionsItem);
-
-        JMenuItem openFileExplorer = new JMenuItem("Open in file explorer");
-        openFileExplorer.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                String selectedVersion = (String) versionComboBox.getSelectedItem();
-                selectedVersion = selectedVersion.split("<html>")[1].split(" ")[0];
-                if (Files.exists(Paths.get(DOWNLOAD_PATH + selectedVersion))) {
-                    openExplorer(DOWNLOAD_PATH + selectedVersion);
-                }
-                populateVersions();
-            }
-        });
-        popupMenu.add(openFileExplorer);
-
-        // Delete outdated versions menu item
-        JMenuItem delete = new JMenuItem("Delete selected installation");
-        delete.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                String selectedVersion = (String) versionComboBox.getSelectedItem();
-                selectedVersion = selectedVersion.split("<html>")[1].split(" ")[0];
-                if (Files.exists(Paths.get(DOWNLOAD_PATH + selectedVersion))) {
-
-                    try {
-                        deleteDirectory(new File(DOWNLOAD_PATH + selectedVersion));
-                    } catch (Exception ex) {
-                        throw new RuntimeException(ex);
-                    }
-                    populateVersions();
-                }
-
-            }
-        });
-        popupMenu.add(delete);
-
-        // Add action listener to the main button to show the popup menu
-        mainButton.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                popupMenu.show(mainButton, mainButton.getWidth() / 2, mainButton.getHeight() / 2);
-            }
-        });
-        panel.add(mainButton, BorderLayout.SOUTH);
+        panel.add(controlPanel, BorderLayout.SOUTH);
 
         // Most recent button
         JButton mostRecentButton = new JButton("Download newest version");
         mostRecentButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                downloadNewestVersionIfNeeded();
+                downloadNewestVersionIfNeeded(true);
+                populateVersions();
             }
         });
         panel.add(mostRecentButton, BorderLayout.NORTH);
@@ -181,14 +208,20 @@ public class Downloader extends JFrame {
             }
         });
         panel.add(refresh, BorderLayout.EAST);
+        panel.add(versionComboBox, BorderLayout.CENTER);
+        frame.add(panel);
+        frame.setVisible(true);
+    }
 
-        add(panel);
+    public static void update() {
+        populateVersions();
+        Main.setIndex(true);
     }
 
     public static void openExplorer(String path) {
         File file = new File(path);
         if (!file.exists()) {
-            System.out.println("Directory or file does not exist.");
+            System.out.println(LogManager.downloader() + " Directory or file does not exist.");
             return;
         }
 
@@ -196,31 +229,104 @@ public class Downloader extends JFrame {
             if (Desktop.isDesktopSupported()) {
                 Desktop.getDesktop().open(file);
             } else {
-                System.out.println("Desktop is not supported.");
+                System.out.println(LogManager.downloader() + " Desktop is not supported.");
             }
         } catch (IOException e) {
-            System.out.println("Error opening file explorer: " + e.getMessage());
+            System.out.println(LogManager.downloader() + " Error opening file explorer: " + e.getMessage());
+        }
+    }
+
+    public static void checkForUpdate() {
+        try {
+            JSONArray pipelines = getSuccessfulPipelines(true);
+            System.out.println(LogManager.downloader() + " Retrieved " + pipelines.length() + " successful pipelines. Current limit for successful pipelines is set to: " + numberOfVersionsToShow );
+            for (int i = 0; i < pipelines.length(); i++) {
+                JSONObject pipeline = pipelines.getJSONObject(i);
+                String updatedAt = pipeline.getString("updated_at");
+                String versionName = getVersionNameFromDate(updatedAt);
+                if (hasJob(versionName, true)) {
+                    if (!Files.exists(Paths.get(DOWNLOAD_PATH + versionName))) {
+
+                        // Create the frame
+                        JFrame frame = new JFrame("EvoAl Updater");
+
+                        // Create the message with the version number
+                        String message = "There is a new build of EvoAl " + versionName + " would you like to download and activate?";
+
+                        // Create a checkbox for "Uninstall old outdated"
+                        JCheckBox uninstallCheckBox = new JCheckBox("Uninstall outdated");
+
+                        uninstallCheckBox.setSelected(true);
+
+                        // Object array to hold the message and the checkbox
+                        Object[] params = {message, uninstallCheckBox};
+
+                        // Create an option pane with Yes and No options
+                        int option = JOptionPane.showConfirmDialog(frame, params, "Update Available", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+
+                        // Check the user's choice
+                        if (option == JOptionPane.YES_OPTION) {
+                            Thread executionThread = new Thread(() -> {
+                                System.out.println(LogManager.downloader() + " New EvoAl version found!");
+                                downloadIfNeeded(versionName, true);
+                                SwingUtilities.invokeLater(() -> {
+                                    InputHandler.setEvoAlVersion(versionName);
+                                });
+
+                                if (uninstallCheckBox.isSelected()) {
+                                    populateVersions();
+                                    try {
+                                        deleteNonMatchingFolders(new File(PATH), allPipelinesApprovedStings);
+                                    } catch (Exception e) {
+                                        throw new RuntimeException(e);
+                                    }
+                                    populateVersions();
+                                }
+                                Main.setUpdateChecked(true);
+                            });
+                            executionThread.start();
+                        } else if (option == JOptionPane.NO_OPTION) {
+                            Main.setUpdateChecked(true);
+                        } else {
+                            // This block will handle the case when the window is closed without choosing Yes or No
+                            Main.setUpdateChecked(true);
+                        }
+
+                        // Close the frame after the user makes a choice or closes the window
+                        frame.dispose();
+                        return;
+                    }
+                    else {
+                        System.out.println(LogManager.downloader() + " Newest EvoAl version already downloaded!");
+                        return;
+                    }
+                }
+            }
+
+
+        } catch (Exception ex) {
+            throw new RuntimeException(ex);
         }
     }
 
 
     //Gets the newest nersion
-    public static void downloadNewestVersionIfNeeded() {
+    public static void downloadNewestVersionIfNeeded(boolean downloadWindow) {
         try {
             JSONArray pipelines = getSuccessfulPipelines(true);
-            System.out.println("Retrieved " + pipelines.length() + " successful pipelines. Current limit for successful pipelines is set to: " + numberOfVersionsToShow );
-            for (int i = 0; i < 100; i++) {
+            System.out.println(LogManager.downloader() + " Retrieved " + pipelines.length() + " successful pipelines. Current limit for successful pipelines is set to: " + numberOfVersionsToShow );
+            for (int i = 0; i < pipelines.length(); i++) {
                 JSONObject pipeline = pipelines.getJSONObject(i);
                 String updatedAt = pipeline.getString("updated_at");
                 String versionName = getVersionNameFromDate(updatedAt);
                 try {
-                    downloadIfNeeded(versionName);
+                    downloadIfNeeded(versionName, downloadWindow);
                     return;
                 }
                 catch (Exception e) {
                     if (e instanceof JobNotFoundException) {
-                        System.out.println("Skipping version " + versionName);
-                        if (i == 99) {
+                        System.out.println(LogManager.downloader() + " Skipping version " + versionName);
+                        if (i == pipelines.length() - 1) {
                             throw new RuntimeException("No valid version was found!");
                         }
                     }
@@ -236,10 +342,10 @@ public class Downloader extends JFrame {
         }
     }
 
-    private static void downloadIfNeeded(String versionName) {
+    private static void downloadIfNeeded(String versionName, boolean downloadWindow) {
         if (!Files.exists(Paths.get(DOWNLOAD_PATH + versionName))) {
             try {
-                downloadSelectedVersion(versionName, true);
+                downloadSelectedVersion(versionName, true, downloadWindow);
             } catch (Exception ex) {
                 if (ex instanceof JobNotFoundException) {
                     throw new JobNotFoundException(ex.getMessage());
@@ -251,8 +357,10 @@ public class Downloader extends JFrame {
             }
         }
         else {
-            System.out.println(DOWNLOAD_PATH + versionName);
-            System.out.println("Version " + versionName + " already present on filesystem!");
+            System.out.println(LogManager.downloader() + " " + DOWNLOAD_PATH + versionName);
+            System.out.println(LogManager.downloader() + " Version " + versionName + " already present on filesystem!");
+            JOptionPane.showMessageDialog(frame,
+                    "Version " + versionName + " already present on filesystem!", "Info", JOptionPane.INFORMATION_MESSAGE);
         }
 
     }
@@ -289,14 +397,7 @@ public class Downloader extends JFrame {
     }
 
     public static void populateVersions() {
-        if (versionComboBox != null) {
-            panel.remove(versionComboBox);
-        }
-
-        versionComboBox = new JComboBox<>();
-        versionComboBox.setRenderer(new MyHtmlComboBoxRenderer());
-        panel.add(versionComboBox, BorderLayout.CENTER);
-
+        versionComboBox.removeAllItems();
         try {
             getPipelinesWithValidPackage();
 
@@ -307,7 +408,7 @@ public class Downloader extends JFrame {
                 }
 
                 String finalBuild = build;
-                SwingUtilities.invokeLater(() -> versionComboBox.addItem("<html>" + finalBuild + "</html>"));
+                versionComboBox.addItem("<html>" + finalBuild + "</html>");
             }
 
             versionComboBox.revalidate();
@@ -331,8 +432,8 @@ public class Downloader extends JFrame {
             allPipelinesApprovedStings = new ArrayList<>();
             try {
                 JSONArray pipelines = getSuccessfulPipelines(false);
-                System.out.println("Retrieved " + pipelines.length() + " successful pipelines. Current limit for successful pipelines is set to: " + numberOfVersionsToShow);
-                System.out.println("Indexing pipelines that have valid artifact ...");
+                System.out.println(LogManager.downloader() + " Retrieved " + pipelines.length() + " successful pipelines. Current limit for successful pipelines is set to: " + numberOfVersionsToShow);
+                System.out.println(LogManager.downloader() + " Indexing pipelines that have valid artifact ...");
                 CountDownLatch latch = new CountDownLatch(pipelines.length());
                 AtomicInteger count = new AtomicInteger();
 
@@ -503,7 +604,7 @@ public class Downloader extends JFrame {
             url += "&ref=" + defaultBranch;
         }
         url += "&order_by=id&sort=desc&per_page=" + numberOfVersionsToShow;
-        System.out.println("Requesting successful pipelines from branch " + defaultBranch + " requiring artifact " + artifactName + " : " + url);
+        System.out.println(LogManager.downloader() + " Requesting successful pipelines from branch " + defaultBranch + " requiring artifact " + artifactName + " : " + url);
         HttpURLConnection connection = (HttpURLConnection) new URL(url).openConnection();
         connection.setRequestProperty("PRIVATE-TOKEN", PRIVATE_TOKEN);
 
@@ -544,7 +645,7 @@ public class Downloader extends JFrame {
         }
     }
 
-    public void deleteNonMatchingFolders(File directory, ArrayList<Pair<String, String>> retainFolderNames) throws Exception {
+    public static void deleteNonMatchingFolders(File directory, ArrayList<Pair<String, String>> retainFolderNames) throws Exception {
         if (!directory.isDirectory()) {
             throw new IllegalArgumentException("Parameter must be a directory.");
         }
@@ -564,25 +665,33 @@ public class Downloader extends JFrame {
         }
     }
 
-    private static void downloadSelectedVersion(String selectedVersion, boolean limitBranch) throws Exception {
+    private static void downloadSelectedVersion(String selectedVersion, boolean limitBranch, boolean downloadWindow) throws Exception {
         if (!Files.exists(Paths.get(DOWNLOAD_PATH + selectedVersion))) {
-            _downloadSelectedVersion(selectedVersion, limitBranch);
+            _downloadSelectedVersion(selectedVersion, limitBranch, downloadWindow);
         } else {
             int choice = JOptionPane.showConfirmDialog(Main.mainFrame,
                     "The selected version is already downloaded. Do you want to re-download it now?",
                     "Download Confirmation", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
 
             if (choice == JOptionPane.YES_OPTION) {
-                System.out.println("Deleting Artifact " + selectedVersion);
+                System.out.println(LogManager.downloader() + " Deleting Artifact " + selectedVersion);
                 deleteDirectory(new File(DOWNLOAD_PATH + selectedVersion));
-                _downloadSelectedVersion(selectedVersion, limitBranch);
+                _downloadSelectedVersion(selectedVersion, limitBranch, downloadWindow);
             }
         }
 
     }
 
 
-    private static void _downloadSelectedVersion(String selectedVersion, boolean limitBranch) throws Exception {
+    private static boolean hasJob(String selectedVersion, boolean limitBranch) throws Exception {
+        JSONObject pipeline = findPipelineByVersion(selectedVersion, limitBranch);
+        int pipelineId = pipeline.getInt("id");
+        int jobId = getJobId(pipelineId, artifactName);
+        return jobId != -1;
+    }
+
+
+    private static void _downloadSelectedVersion(String selectedVersion, boolean limitBranch, boolean downloadWindow) throws Exception {
         String outputFilePath = DOWNLOAD_PATH + selectedVersion + "/all-package-archive.zip";
         String extractToPath = DOWNLOAD_PATH + selectedVersion + "/";
 
@@ -594,11 +703,11 @@ public class Downloader extends JFrame {
 
             if (jobId != -1) {
                 try {
-                    System.out.println("Downloading Artifact " + selectedVersion + " ... ");
-                    downloadArtifact(jobId, outputFilePath);
+                    System.out.println(LogManager.downloader() + " Downloading Artifact " + selectedVersion + " ... ");
+                    downloadArtifact(jobId, outputFilePath, downloadWindow);
                     extractZip(outputFilePath, extractToPath);
                     Files.deleteIfExists(Paths.get(outputFilePath));
-                    System.out.println("Download complete");
+                    System.out.println(LogManager.downloader() + " Download complete");
                     //populateVersions();
                     //JOptionPane.showMessageDialog(Main.mainFrame, "Downloaded and extracted: " + selectedVersion,
                     //       "Success", JOptionPane.INFORMATION_MESSAGE);
@@ -609,7 +718,7 @@ public class Downloader extends JFrame {
                 }
             } else {
                 deleteDirectory(new File(DOWNLOAD_PATH + selectedVersion));
-                System.out.println("Job with artifact '" + artifactName + "' not found for version " + selectedVersion + " !");
+                System.out.println(LogManager.downloader() + " Job with artifact '" + artifactName + "' not found for version " + selectedVersion + " !");
                 throw new JobNotFoundException("Job with artifact '" + artifactName + "' not found for version " + selectedVersion + " !");
                 //JOptionPane.showMessageDialog(Main.mainFrame, "Job with artifact '" + artifactName + "' not found.",
                         //"Error", JOptionPane.ERROR_MESSAGE);
@@ -662,7 +771,7 @@ public class Downloader extends JFrame {
         return -1;
     }
 
-    private static void downloadArtifact(int jobId, String outputFileName) throws IOException {
+    private static void downloadArtifact(int jobId, String outputFileName, boolean downloadWindow) throws IOException {
         String url = GITLAB_URL + "/projects/" + PROJECT_ID + "/jobs/" + jobId + "/artifacts";
         HttpURLConnection connection = (HttpURLConnection) new URL(url).openConnection();
         connection.setRequestProperty("PRIVATE-TOKEN", PRIVATE_TOKEN);
@@ -676,15 +785,35 @@ public class Downloader extends JFrame {
                 int count;
                 long downloadedSize = 0;
 
-                System.out.print("Downloading... [");
+                System.out.print(LogManager.downloader() + " Downloading... [");
+
+
+                final DownloadProgressWindow[] window = new DownloadProgressWindow[1];
+                if (downloadWindow) {
+                    Thread executionThread = new Thread(() -> {
+                        window[0] = new DownloadProgressWindow();
+                    });
+                    executionThread.start();
+                    while (executionThread.isAlive()) {
+                        Thread.sleep(50);
+                    }
+                }
 
                 while ((count = in.read(buffer)) != -1) {
                     out.write(buffer, 0, count);
                     downloadedSize += count;
                     updateProgressBar(downloadedSize, fileSize, progressBarWidth);
+                    if (downloadWindow) {
+                        window[0].setProgress((int) ((double)downloadedSize/(double)fileSize * 100.0));
+                    }
                 }
 
-                System.out.println("\nArtifact downloaded successfully to " + outputFileName);
+                if (downloadWindow) {
+                    window[0].stop();
+                }
+                System.out.println("\n"+ LogManager.downloader() + " Artifact downloaded successfully to " + outputFileName);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
             }
         } else {
             throw new IOException("Failed to download artifacts: " + connection.getResponseMessage());
@@ -696,7 +825,7 @@ public class Downloader extends JFrame {
         int progressChars = (int) (progress / (100.0 / progressBarWidth));
         String progressBar = "=".repeat(progressChars);
         String emptyProgressBar = " ".repeat(progressBarWidth - progressChars);
-        System.out.printf("\r[%s%s] %.2f%%", progressBar, emptyProgressBar, progress);
+        System.out.printf("\r" + "[%s%s] %.2f%%", progressBar, emptyProgressBar, progress);
     }
 
     private static void extractZip(String zipFilePath, String destDir) throws IOException {
@@ -727,7 +856,7 @@ public class Downloader extends JFrame {
         }
         zis.closeEntry();
         zis.close();
-        System.out.println("Artifact extracted successfully to " + destDir);
+        System.out.println(LogManager.downloader() + " Artifact extracted successfully to " + destDir);
     }
 
     private static File newFile(File destinationDir, ZipEntry zipEntry) throws IOException {
@@ -759,13 +888,4 @@ public class Downloader extends JFrame {
         Downloader.DOWNLOAD_PATH = Downloader.PATH + "/";
     }
 
-    public static void main(String[] args) {
-        SwingUtilities.invokeLater(new Runnable() {
-            public void run() {
-                Downloader downloader = new Downloader();
-                downloader.setVisible(true);
-                downloader.populateVersions(); // Fetch versions and populate UI
-            }
-        });
-    }
 }
