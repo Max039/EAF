@@ -150,7 +150,7 @@ public class DoubleHelixAnimation extends Intro implements ActionListener {
         }
         if (!shouldStop) {
             g2d.setColor(new Color (255, 255, 255, 255));
-            int padding = 10;
+            int padding = 25;
             int fontsize = 20;
             g2d.setFont(new Font("Arial", Font.PLAIN, fontsize));
             g2d.drawString(objective + " ...", padding, padding + fontsize);

@@ -205,12 +205,7 @@ public class Main extends JPanel {
         }
         pluginManager = new PluginManager();
         try {
-            if (true) {
-                intro = new DoubleHelixAnimation();
-            }
-            else {
-                intro = new SimpleIntro();
-            }
+            intro = new DoubleHelixAnimation();
 
             String currentPath = System.getProperty("user.dir");
             File builds = new File(currentPath + "/" + evoalBuildFolder);
