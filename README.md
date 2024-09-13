@@ -14,7 +14,7 @@ This project is designed to create a frontend for [EvoAl](https://evoal.de/) tha
 
 ## Table of Contents
 1. [Installation](#installation)
-2. [Example](#example)
+2. [Examples](#examples)
    - [Create new from preset](#create-new-from-preset)
    - [Drag and drop rectangle](#drag-and-drop-rectangle)
    - [Add rectangle per rightclick](#add-rectangle-per-rightclick)
@@ -40,7 +40,7 @@ This project is designed to create a frontend for [EvoAl](https://evoal.de/) tha
 ---
 
 
-## Example
+## Examples
 
 ### Create new from preset
 ![](github/gifs/preset.gif)
