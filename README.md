@@ -28,12 +28,15 @@ This project is designed to create a frontend for [EvoAl](https://evoal.de/) tha
 ---
 
 ## Example
-- **Create new from preset:** 
-![](github/gifs/preset.gif)
-- **Drag and drop rectangle:** 
-![](github/gifs/draganddrop.gif)
-- **Add rectangle per rightclick:** 
-![](github/gifs/rightclickadd.gif)
+- **Create new from preset:**  
+  ![](github/gifs/preset.gif)
+
+- **Drag and drop rectangle:**  
+  ![](github/gifs/draganddrop.gif)
+
+- **Add rectangle per rightclick:**  
+  ![](github/gifs/rightclickadd.gif)
+  
 - **Feature 4:** Explanation of how this feature enhances the project.
 - **Feature 5:** Additional capabilities or advanced functionalities.
 
