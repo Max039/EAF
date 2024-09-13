@@ -13,7 +13,6 @@ This project is designed to create a frontend for [EvoAl](https://evoal.de/) tha
 
 
 ## Table of Contents
-
 1. [Installation](#installation)
 2. [Example](#example)
    - [Create new from preset](#create-new-from-preset)
@@ -40,45 +39,50 @@ This project is designed to create a frontend for [EvoAl](https://evoal.de/) tha
 
 ---
 
+## Installation
+
+*Content for the Installation section*
+
 ## Example
-- **Create new from preset:**  
-  ![](github/gifs/preset.gif)
 
-- **Drag and drop rectangle:**  
-  ![](github/gifs/draganddrop.gif)
+### Create new from preset
+![](github/gifs/preset.gif)
 
-- **Add rectangle per rightclick:**  
-  ![](github/gifs/rightclickadd.gif)
-  
-- **Add array element (hold schift):**  
-  ![](github/gifs/addarrayelement.gif)
+### Drag and drop rectangle
+![](github/gifs/draganddrop.gif)
 
-- **Add data:**  
-  ![](github/gifs/adddata.gif)
+### Add rectangle per rightclick
+![](github/gifs/rightclickadd.gif)
 
-- **Add constant:**  
-  ![](github/gifs/addconstant.gif)
+### Add array element (hold shift)
+![](github/gifs/addarrayelement.gif)
 
-- **Run machine learning:**  
-  ![](github/gifs/ml.gif)
+### Add data
+![](github/gifs/adddata.gif)
 
-- **Run generator:**  
-  ![](github/gifs/generator.gif)
+### Add constant
+![](github/gifs/addconstant.gif)
 
-- **Run evolutionary algorithm with pre run generator:**  
-  ![](github/gifs/eawithgenerator.gif)
+### Run machine learning
+![](github/gifs/ml.gif)
 
-- **Error:**  
-  ![](github/gifs/error.gif)
-  
-- **Class info:**  
-  ![](github/gifs/info.gif)
+### Run generator
+![](github/gifs/generator.gif)
 
-- **Search definitions:**  
-  ![](github/gifs/folders.gif)
-  
- - **Config generation:**  
-  ![](github/gifs/filecreation.gif)
+### Run evolutionary algorithm with pre run generator
+![](github/gifs/eawithgenerator.gif)
+
+### Error
+![](github/gifs/error.gif)
+
+### Class info
+![](github/gifs/info.gif)
+
+### Search definitions
+![](github/gifs/folders.gif)
+
+### Config generation
+![](github/gifs/filecreation.gif)
 
 ---
 
