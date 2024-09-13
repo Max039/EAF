@@ -14,7 +14,7 @@ This project is designed to create a frontend for [EvoAl](https://evoal.de/) tha
 
 ## Table of Contents
 1. [Installation](#installation)
-2. [Examples](#examples)
+2. [Guides](#guides)
    - [Create new from preset](#create-new-from-preset)
    - [Drag and drop rectangle](#drag-and-drop-rectangle)
    - [Add rectangle per rightclick](#add-rectangle-per-rightclick)
@@ -29,6 +29,7 @@ This project is designed to create a frontend for [EvoAl](https://evoal.de/) tha
    - [Search definitions](#search-definitions)
    - [Config generation](#config-generation)
 3. [Project](#usage)
+	- [Examples](https://github.com/Max039/EAF/tree/main/examples)
 4. [Shortcuts](#usage)
 5. [EvoAl Version Management](#usage)
 6. [EvoAl Plugins](#usage)
@@ -40,7 +41,7 @@ This project is designed to create a frontend for [EvoAl](https://evoal.de/) tha
 ---
 
 
-## Examples
+## Guides
 
 ### Create new from preset
 ![](github/gifs/preset.gif)
