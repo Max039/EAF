@@ -1,7 +1,15 @@
 
 # EvoAl Frontend - EAF
 
+---
+
 This project is designed to create a frontend for [EvoAl](https://evoal.de/) that is accessible to useres without any programming knowledge. It aims to simplify the generation of configuration files using simple drag and drop operations with rectangles. Below you will find a detailed table of contents and key features.
+
+---
+
+## [Download](https://github.com/Max039/EAF/releases/latest)
+
+---
 
 ## Table of Contents
 
@@ -16,8 +24,6 @@ This project is designed to create a frontend for [EvoAl](https://evoal.de/) tha
 9. [Pre Run Generator Setup](#usage)
 10. [About](github/md/about.md)
 
----
-## [Download](https://github.com/Max039/EAF/releases/latest)
 ---
 
 ## Example
