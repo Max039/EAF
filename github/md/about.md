@@ -1,0 +1,1 @@
+![My Diagram](github/imgs/eaf-diagram.jpg)
