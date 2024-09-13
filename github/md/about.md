@@ -20,7 +20,7 @@ The EAF begins by reading all definitions from the active EvoAl build and the pl
 For each non-abstract type and function, a rectangular representation is created. 
 - Fields that already have a value assigned are set and colored purple
 - Fields with no value will be colored white and a assigned a default value of 0, true, "Enter String here!" or nothing in case of data or type fields.
-- If there is only one matching non-abstract type available for a field a instance of the only non abstract type is added and locked (visually a lock in the top right)
+- If there is only one matching non-abstract type available for a field a instance of the only non abstract type is added and locked automatically (visually a lock in the top right)
 
 ## 5. **Preset Configuration and Project File Creation**
 - The configuration defines the active preset, the rectangles to be chosen, constants to be added, and data definitions. This information is stored inside the project file, which ends with a `.eaf` extension.
