@@ -1,11 +1,11 @@
 
 # EvoAl Frontend - EAF
 
-This project is designed to [insert brief description here]. It aims to [insert goals or purpose of the project]. Below you will find a detailed table of contents and key features.
+This project is designed to create a frontend for [EvoAl](https://evoal.de/). It aims to simplify the generation of configuration files using simple drag and drop operations with rectangles. Below you will find a detailed table of contents and key features.
 
 ## Table of Contents
 1. [Introduction](github/md/about.md)
-2. [Installation](#installation)
+2. [Installation](github/md/installation.md)
 3. [Usage](#usage)
 4. [Features](#features)
 

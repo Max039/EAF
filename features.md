@@ -1,1 +1,0 @@
-![My Diagram](../imgs/eaf-diagram.jpg)
