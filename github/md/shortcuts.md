@@ -1,17 +1,17 @@
 ### Undo / Redo - STRG Z and STRG Y
 ![](../gifs/strgZandY.gif)
 
-### Select - STRG Leftclick
+### Select - CTRL Leftclick
 ![](../gifs/strgLeft.gif)
 
-### Copy / Paste - STRG C and STRG V
+### Copy / Paste - CTRL C and CTRL V
 ![](../gifs/strgCandV.gif)
 
-### Cut - STRG X
+### Cut - CTRL X
 ![](../gifs/strgXandV.gif)
 
-### Save - STRG S
+### Save - CTRL S
 ![](../gifs/strgS.gif)
 
-### Run - STRG R
+### Run - CTRL R
 ![](../gifs/strgR.gif)
