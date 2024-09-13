@@ -17,6 +17,8 @@ This project is designed to create a frontend for [EvoAl](https://evoal.de/) tha
 10. [About](github/md/about.md)
 
 ---
+## [Download](https://github.com/Max039/EAF/releases/latest)
+---
 
 ## Example
 - **Feature 1:** New Preset
