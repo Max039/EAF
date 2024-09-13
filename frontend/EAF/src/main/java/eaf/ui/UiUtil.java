@@ -1019,7 +1019,7 @@ public class UiUtil {
             r.rightButton.setLocation(picX, picY);
             g2.drawImage(checkmark, picX, picY, checkmark.getWidth(), checkmark.getHeight(), null);
         }
-        if (ErrorPane.errors > 0 || preset == null) {
+        if (ErrorPane.errors > 0 || preset == null || mainPanel.leftPanel.getRects().isEmpty()) {
             var picX = r.getWidth() - cross.getWidth() - unrunable.getWidth() - RectWithRects.spacing * 2  - Main.mainPanel.leftPanel.getVerticalScrollBar().getWidth();
             var picY = r.getVerticalScrollBar().getValue() + RectWithRects.spacing + Main.mainPanel.leftPanel.getHorizontalScrollBar().getHeight();
             r.leftButton.setSize(unrunable.getWidth(), unrunable.getHeight());
@@ -2349,10 +2349,16 @@ public class UiUtil {
         frame.setVisible(true);
     }
 
+    public static void centerFrame(JFrame frame) {
+        frame.setLocationRelativeTo(null);
+    }
+
     public static void fromPreset() {
         // Create a JFrame (the main window)
         JFrame frame = new JFrame("Preset Selector");
         frame.setSize(400, 400);
+        centerFrame(frame);
+
 
         // Create a JScrollPane with a JPanel inside it
         JPanel panel = new JPanel();
