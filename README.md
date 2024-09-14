@@ -88,6 +88,8 @@ This project is designed to create a frontend for [EvoAl](https://evoal.de/) tha
 
 ## Windows Installation
 
+**!!! Note that currently neither the path of the Eaf installation nor the path to a .eaf file can contain spaces (' ') or sepcial characters !!!**
+
 1. **Download and Install JDK (Java 17)**  
    Download JDK 17 from the [official Oracle website](https://www.oracle.com/java/technologies/javase/jdk17-archive-downloads.html).
 
