@@ -16,7 +16,7 @@ if not exist "%eaf_bat_path%" (
     exit /b 1
 )
 
-:: Check if an argument was provided
+:: Check if the first argument was provided
 if "%~1"=="" (
     echo No file provided.
     exit /b 1
@@ -38,7 +38,19 @@ if not exist "%file%" (
 :: Get the absolute path of the file
 for %%F in ("%file%") do set "abs_path=%%~fF"
 
-:: Run the eaf.bat file with the absolute path of the file
-"%eaf_bat_path%" "%abs_path%"
+:: Initialize a variable to hold additional arguments
+set "additional_args="
+
+:: Loop through all arguments starting from %2 and build the additional_args string
+shift
+:loop
+if "%~1"=="" goto endloop
+set "additional_args=%additional_args% %1"
+shift
+goto loop
+:endloop
+
+:: Run the eaf.bat file with the absolute path of the file and remaining arguments
+"%eaf_bat_path%" "%abs_path%" %additional_args%
 
 endlocal

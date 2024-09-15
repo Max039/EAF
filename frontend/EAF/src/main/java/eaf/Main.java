@@ -144,6 +144,8 @@ public class Main extends JPanel {
 
     public static boolean ansi = true;
 
+    public static boolean nogui = false;
+
     static {
         String osName = System.getProperty("os.name").toLowerCase();
         if (osName.contains("win")) {
@@ -202,6 +204,7 @@ public class Main extends JPanel {
             if (arg.startsWith("-")) {
                 switch (arg) {
                     case "-noansi" -> ansi = false;
+                    case "-nogui" -> nogui = true;
                     default -> System.out.println(LogManager.main() + LogManager.args() + " unknown arg: " + arg);
                 }
             }
@@ -218,7 +221,11 @@ public class Main extends JPanel {
         }
         pluginManager = new PluginManager();
         try {
-            intro = new DoubleHelixAnimation();
+            if (!nogui) {
+                intro = new DoubleHelixAnimation();
+            }
+
+
 
             String currentPath = System.getProperty("user.dir");
             File builds = new File(currentPath + "/" + evoalBuildFolder);
@@ -227,7 +234,14 @@ public class Main extends JPanel {
 
 
             if (!builds.exists() || FileManager.isDirectoryEmpty(builds)) {
-                intro.setObjective("Downloading EvoAl Build");
+                String target = "Downloading EvoAl Build";
+                if (!nogui) {
+                    intro.setObjective(target);
+                }
+                else {
+                    System.out.println(target);
+                }
+
                 Downloader.downloadNewestVersionIfNeeded(false);
                 var build = FileManager.findFirstFileInReverseOrder(currentPath + "/" + evoalBuildFolder);
                 InputHandler.setEvoAlVersionNoReload(build.getName());
@@ -241,11 +255,21 @@ public class Main extends JPanel {
                 InputHandler.setEvoAlVersionNoReload(build.getName());
             }
 
-            intro.setObjective("Constructing Syntax-Tree");
+            String target = "Constructing Syntax-Tree";
+            if (!nogui) {
+                intro.setObjective(target);
+            }
+            else {
+                System.out.println(target);
+            }
+
+
             SyntaxTree.start();
-            intro.stop();
-            while (intro.isUnfinished()) {
-                Thread.sleep(100);
+            if (!nogui) {
+                intro.stop();
+                while (intro.isUnfinished()) {
+                    Thread.sleep(100);
+                }
             }
         }
         catch (Exception e) {
@@ -316,7 +340,14 @@ public class Main extends JPanel {
         // Set frame size and location
         mainFrame.setSize(new Dimension(800, 600));
         mainFrame.setLocationRelativeTo(null);
-        mainFrame.setVisible(true);
+
+        if (nogui) {
+            runAndStop();
+        }
+        else {
+            mainFrame.setVisible(true);
+        }
+
     }
 
     public Main() {
@@ -371,26 +402,40 @@ public class Main extends JPanel {
 
 
     public static void postStart() {
-        Thread executionThread = new Thread(() -> {
-            try {
-                Downloader.checkForUpdate();
+        if (!nogui) {
+            Thread executionThread = new Thread(() -> {
                 try {
-                    while (updateChecked()) {
-                        Thread.sleep(100);
+                    Downloader.checkForUpdate();
+                    try {
+                        while (updateChecked()) {
+                            Thread.sleep(100);
+                        }
                     }
-                }
-                catch (Exception e) {
+                    catch (Exception e) {
+                        throw new RuntimeException(e);
+                    }
+                    Downloader.update();
+                } catch (Exception e) {
                     throw new RuntimeException(e);
                 }
-                Downloader.update();
-            } catch (Exception e) {
-                throw new RuntimeException(e);
-            }
-        });
-        executionThread.start();
+            });
+            executionThread.start();
+        }
     }
 
 
+    public static void runAndStop() {
+        InputHandler.tryRun();
+        while (processRunning) {
+            try {
+                Thread.sleep(50);
 
+            }
+            catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        }
+        System.exit(0);
+    }
 
 }
