@@ -1,5 +1,7 @@
 ## Commands
 
+![](../gifs/console.gif)
+
 - To run EAF:
     ```bash
     eaf "eaf-file-path"
