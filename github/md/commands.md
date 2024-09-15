@@ -2,7 +2,7 @@
 
 To use the following commands on macOS, you need to set up environment variables:
 
-## Update Your Shell Environment
+## MAC ONLY Update Your Shell Environment
 
 1. Open your `.zshenv` file:
     ```bash
@@ -20,7 +20,7 @@ To use the following commands on macOS, you need to set up environment variables
     - Type `:w` and press `Enter` to save.
     - Type `:q` and press `Enter` to quit.
 
-## Prepare Script
+# Prepare Script
 
 1. Restart Terminal (Cmd + Alt + Esc).
 2. Change directory and make the script executable:
