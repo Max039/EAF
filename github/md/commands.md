@@ -39,4 +39,4 @@ To use the following commands on macOS, you need to set up environment variables
     ```
 3. Restart Terminal again (Cmd + Alt + Esc).
 
-    ```
+  
