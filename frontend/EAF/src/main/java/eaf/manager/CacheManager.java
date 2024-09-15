@@ -27,7 +27,7 @@ public class CacheManager {
 
         JSONObject o = null;
         try {
-            o = FileManager.readJSONFileToJSON(cachePath + "." + cacheFileType);
+            o = FileManager.readJSONFileToJSON(System.getProperty("user.dir") + "/" +  cachePath + "." + cacheFileType);
             System.out.println(LogManager.cacheManager()  + LogManager.read() + " Cache found!");
         }
         catch (Exception e) {
@@ -78,7 +78,7 @@ public class CacheManager {
     }
 
     public void saveCache() {
-        FileManager.writeJSONToFile(toCache(), cachePath + "." + cacheFileType);
+        FileManager.writeJSONToFile(toCache(), System.getProperty("user.dir")  + "/" + cachePath + "." + cacheFileType);
     }
 
     public <T> void addToBuffer(String b, T item) {
