@@ -1,3 +1,14 @@
+## Commands
+
+- To run EAF:
+    ```bash
+    eaf "relative/full eaf-file path"
+    ```
+- To run EAF without GUI:
+    ```bash
+    eaf "relative/full eaf-file path" -nogui
+
+
 # Disclaimer:
 
 To use the following commands on macOS, you need to set up environment variables:
@@ -20,8 +31,6 @@ To use the following commands on macOS, you need to set up environment variables
     - Type `:w` and press `Enter` to save.
     - Type `:q` and press `Enter` to quit.
 
-# Prepare Script
-
 1. Restart Terminal (Cmd + Alt + Esc).
 2. Change directory and make the script executable:
     ```bash
@@ -30,13 +39,4 @@ To use the following commands on macOS, you need to set up environment variables
     ```
 3. Restart Terminal again (Cmd + Alt + Esc).
 
-## Commands
-
-- To run EAF:
-    ```bash
-    eaf "relative/full eaf-file path"
-    ```
-- To run EAF without GUI:
-    ```bash
-    eaf "relative/full eaf-file path" -nogui
     ```
