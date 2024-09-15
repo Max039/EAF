@@ -25,9 +25,9 @@ public class EA extends Preset {
 
     @Override
     public void generateFiles(String folder, RectPanel panel) {
-        System.out.println(LogManager.preset() + LogManager.write() + LogManager.data() + " Writing EvoAl Data ...");
+        LogManager.println(LogManager.preset() + LogManager.write() + LogManager.data() + " Writing EvoAl Data ...");
         FileManager.write(Main.dataPanel.toString("optimisation"), folder + "/optimisation.ddl");
-        System.out.println(LogManager.preset() + LogManager.write() + LogManager.ol()  + " Writing EvoAl Script ...");
+        LogManager.println(LogManager.preset() + LogManager.write() + LogManager.ol()  + " Writing EvoAl Script ...");
         FileManager.write(rectPanelConversion(panel), folder+ "/optimisation.ol");
     }
 
@@ -87,7 +87,7 @@ public class EA extends Preset {
     public boolean postStart() {
         try {
             GenerationTracker.connect();
-            System.out.println(LogManager.executor() + LogManager.process() + LogManager.status() + " Connected to EvoAl!");
+            LogManager.println(LogManager.executor() + LogManager.process() + LogManager.status() + " Connected to EvoAl!");
             return true;
         } catch (Exception ignored) {
             // Handle exception as necessary
@@ -97,7 +97,7 @@ public class EA extends Preset {
 
     @Override
     public void postStop() {
-        System.out.println(LogManager.executor() + LogManager.process() + LogManager.status() + " Eaf closing port!");
+        LogManager.println(LogManager.executor() + LogManager.process() + LogManager.status() + " Eaf closing port!");
         try {
             GenerationTracker.disconnect();
         }

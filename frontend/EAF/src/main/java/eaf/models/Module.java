@@ -75,7 +75,7 @@ public class Module {
     }
 
     public ClassType resolveClass(String className) {
-        System.out.println(LogManager.syntax() + " Trying to resolve " + className + " in module " + name);
+        LogManager.println(LogManager.syntax() + " Trying to resolve " + className + " in module " + name);
         return classesLoaded.get(className);
     }
 

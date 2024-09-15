@@ -48,7 +48,7 @@ public class MavenProjectHandler {
 
             while (process.isAlive() || reader.ready()) {
                 while ((reader.ready() && (line = reader.readLine()) != null)) {
-                    System.out.println(LogManager.maven() + " " + line);
+                    LogManager.println(LogManager.maven() + " " + line);
                     Main.console.println(line);
 
                 }
@@ -76,7 +76,7 @@ public class MavenProjectHandler {
             ignore.add(plugin.path + "/.idea");
             ignore.add(plugin.path + "/" + FileChangesChecker.JSON_FILE_NAME);
             File f = new File(currentPath + "/" + Main.evoalBuildFolder + "/" + Main.evoalVersion + "/evoal/plugins/"+ plugin.name + ".jar");
-            System.out.println(LogManager.maven() + " Preparing Plugin " + plugin.name + " at " + f.getPath());
+            LogManager.println(LogManager.maven() + " Preparing Plugin " + plugin.name + " at " + f.getPath());
             if (FileChangesChecker.updateFileJson(plugin.path, ignore) || !f.exists()) {
                 if (f.exists()) {
                     f.delete();

@@ -111,10 +111,10 @@ public class SyntaxTree {
                         }
                     }
                 } else {
-                    System.out.println(LogManager.syntax() + LogManager.warning() + " " + plugin.name + " has no definitions!");
+                    LogManager.println(LogManager.syntax() + LogManager.warning() + " " + plugin.name + " has no definitions!");
                 }
             } else {
-                System.out.println(LogManager.syntax() + LogManager.error() + " " + plugin.name + " has no definitions folder!");
+                LogManager.println(LogManager.syntax() + LogManager.error() + " " + plugin.name + " has no definitions folder!");
             }
         }
 
@@ -128,7 +128,7 @@ public class SyntaxTree {
         for (String path : pathToSyntax) {
             File rootDir = new File(path);
             if (rootDir.exists() && rootDir.isDirectory()) {
-                System.out.println(LogManager.syntax() + LogManager.read() + " Building file tree for: " + path);
+                LogManager.println(LogManager.syntax() + LogManager.read() + " Building file tree for: " + path);
                 buildFileTree(root, rootDir); // Start building the file tree recursively
             } else {
                 System.err.println("Directory does not exist or is not a directory: " + path);
@@ -136,7 +136,7 @@ public class SyntaxTree {
         }
 
         // Example: Printing the tree structure using toString()
-        System.out.println(root.toString());
+        LogManager.println(root.toString());
 
         while (!fileQueue.isEmpty()) {
             File file = fileQueue.poll();
@@ -147,7 +147,7 @@ public class SyntaxTree {
 
         //processFile("EvoAlScripts\\genetic-programming\\config.ol", "script", false);
 
-        System.out.println("============================");
+        LogManager.println("============================");
         /**
         ClassType type = new ClassType("ZeTestType", null, "TestPackage");
         processContentOfType(type, "{ " +
@@ -187,25 +187,25 @@ public class SyntaxTree {
 
         createBridges();
 
-        System.out.println("============================");
-        System.out.println("Loaded modules count = " + moduleRegister.size());
-        System.out.println("Loaded modules: ");
-        System.out.println("============================");
+        LogManager.println("============================");
+        LogManager.println("Loaded modules count = " + moduleRegister.size());
+        LogManager.println("Loaded modules: ");
+        LogManager.println("============================");
         for (var im : moduleRegister.keySet().stream().sorted().toList()) {
-            System.out.println(im);
+            LogManager.println(im);
         }
-        System.out.println("============================");
-        System.out.println("Adding extra rects ...");
+        LogManager.println("============================");
+        LogManager.println("Adding extra rects ...");
         ExtraRectManager.start();
-        System.out.println("============================");
+        LogManager.println("============================");
         for (var im :getBasedClasses()) {
-            System.out.print(getClassHierarchy(im, "", true, true));
+            LogManager.print(getClassHierarchy(im, "", true, true));
         }
-        System.out.println("============================");
+        LogManager.println("============================");
         for (var im : constantRegister.values().stream().sorted().toList()) {
-            System.out.println(im.toString());
+            LogManager.println(im.toString());
         }
-        System.out.println("============================");
+        LogManager.println("============================");
 
 
     }
@@ -260,8 +260,8 @@ public class SyntaxTree {
         var res = moduleRegister.get(definitionName);
         if (res == null) {
             ArrayList<Module> modulesImported = new ArrayList<>();
-            System.out.println(LogManager.imp() + " \"" + definitionName + "\"" + ColorManager.colorText(" is not ", ColorManager.errorColor) + "yet in memory!");
-            System.out.println(LogManager.imp() + " Processing definition " + definitionName + " under path " + filename);
+            LogManager.println(LogManager.imp() + " \"" + definitionName + "\"" + ColorManager.colorText(" is not ", ColorManager.errorColor) + "yet in memory!");
+            LogManager.println(LogManager.imp() + " Processing definition " + definitionName + " under path " + filename);
             try (BufferedReader reader = new BufferedReader(new FileReader(filename))) {
                 String line;
                 while ((line = reader.readLine()) != null) {
@@ -295,7 +295,7 @@ public class SyntaxTree {
                             modulesImported.add(res2);
                         }
 
-                        //System.out.println(line);
+                        //LogManager.println(line);
                     } else {
                         break;  // Stop processing on the first non-matching line
                     }
@@ -306,7 +306,7 @@ public class SyntaxTree {
             }
         }
         else {
-            System.out.println(LogManager.imp() + " Skipping \"" + definitionName +"\"" +  ColorManager.colorText(" is ", ColorManager.sucessColor) + "already in memory!");
+            LogManager.println(LogManager.imp() + " Skipping \"" + definitionName +"\"" +  ColorManager.colorText(" is ", ColorManager.sucessColor) + "already in memory!");
             return res;
         }
     }
@@ -402,7 +402,7 @@ public class SyntaxTree {
             String type = matcher.group(1);
             String name = matcher.group(2).replace("'", "");
             String value = matcher.group(3).replace("\"", "");
-            System.out.println(LogManager.type() + " Found constant \"" + name + "\" of type \"" + type + "\" with value \"" + value + "\" in module " + moduleName);
+            LogManager.println(LogManager.type() + " Found constant \"" + name + "\" of type \"" + type + "\" with value \"" + value + "\" in module " + moduleName);
             constantRegister.put(name, new Constant(name, value, type, moduleName));
             constCount++;
         }
@@ -428,7 +428,7 @@ public class SyntaxTree {
             String group2 = funcMatcher.group(2);
             String group3 = funcMatcher.group(3); // This will match everything inside the parentheses
 
-            System.out.println(LogManager.type() + " Found func: " + group1 + " " + group2 + "(" + group3 + ")");
+            LogManager.println(LogManager.type() + " Found func: " + group1 + " " + group2 + "(" + group3 + ")");
             var func  = get("de.eaf.base.func");
             ClassType classType = new ClassType(moduleName + "." + group2, func, moduleName);
             if (!group3.isEmpty()) {
@@ -452,7 +452,7 @@ public class SyntaxTree {
             funcCount++;
         }
 
-        System.out.println(LogManager.type() + " Found " + i + " types, " + constCount + " constants and " + funcCount + " functions in module " + moduleName);
+        LogManager.println(LogManager.type() + " Found " + i + " types, " + constCount + " constants and " + funcCount + " functions in module " + moduleName);
         return newModule;
     }
 
@@ -486,19 +486,19 @@ public class SyntaxTree {
         if (isInstance) {
             typename = UiUtil.repeatString("array ", isArray) + " instance " + newModule.resolveClass(typename.replace("array", "").replace("instance", "").trim()).name;
         }
-        System.out.println(LogManager.field() + " DefiningField called with field: " + field + ", typename: " + typename + ", isInstance: " + isInstance+ ", isArray: " + isArray);
+        LogManager.println(LogManager.field() + " DefiningField called with field: " + field + ", typename: " + typename + ", isInstance: " + isInstance+ ", isArray: " + isArray);
         context.addField(field, new FieldType(typename, !isInstance, isArray));
     }
 
     static void PrimitiveFieldSetter(ClassType context, String field, String typename, String rawValue) {
         typename = getFieldTypeIfNull(context, field, typename);
-        System.out.println(LogManager.field() + " FieldSetterPrimitive called with field: " + field + ", typename: " + typename + ", value: " + rawValue);
+        LogManager.println(LogManager.field() + " FieldSetterPrimitive called with field: " + field + ", typename: " + typename + ", value: " + rawValue);
         context.setField(field, primitiveStringToFieldValue(typename, rawValue), true);
     }
 
     static void InstanceFieldSetter(ClassType context, String field, String typename, String rawValue, Module newModule) {
         typename = getFieldTypeIfNull(context, field, newModule.resolveClass(typename).name);
-        System.out.println(LogManager.field() + " FieldSetterInstance called with field: " + field + ", typename: " + typename + ", value: " + rawValue);
+        LogManager.println(LogManager.field() + " FieldSetterInstance called with field: " + field + ", typename: " + typename + ", value: " + rawValue);
         ClassType instanceContext = getInstanceOfClass(typename, newModule);
         FieldValue value = processContentOfType(instanceContext, rawValue, newModule);
         context.setField(field, value, true);
@@ -506,7 +506,7 @@ public class SyntaxTree {
 
     static void ArrayFieldSetter(ClassType context, String field, String typename, String rawValue, boolean defineAndSet, Module newModule) {
         typename = getFieldTypeIfNull(context, field, typename);
-        System.out.println(LogManager.field() + " ArraySetter called with field: " + field + " type: " + typename + ", value: " + rawValue);
+        LogManager.println(LogManager.field() + " ArraySetter called with field: " + field + " type: " + typename + ", value: " + rawValue);
         if (!rawValue.isEmpty()) {
             int arrayDepth ;
             boolean instance;
@@ -618,7 +618,7 @@ public class SyntaxTree {
             Matcher floatMatcher = floatPattern.matcher(item);
 
             if (item.startsWith("[") && item.endsWith("]")) {
-                System.out.println(LogManager.parsing() + " Parsing sub array: " + item);
+                LogManager.println(LogManager.parsing() + " Parsing sub array: " + item);
                 values.add(processArrayField(fieldType, item, newModule));
             } else if (instanceMatcher.find()) {
                 String type = item.split("\\s*\\{")[0];
@@ -646,8 +646,8 @@ public class SyntaxTree {
     public static FieldValue processContentOfType(ClassType context, String input, Module newModule) {
         input = input.replace("'", "");
 
-        System.out.println(LogManager.parsing() + " Parsing: ");
-        System.out.println(input);
+        LogManager.println(LogManager.parsing() + " Parsing: ");
+        LogManager.println(input);
 
         Pattern definingFieldPattern = Pattern.compile("\\b\\b.+:\\b.");
         Pattern fieldSetterPrimitivePattern = Pattern.compile("\\b\\w+:=\\w+(\\.\\w+)?\\b");
@@ -700,7 +700,7 @@ public class SyntaxTree {
     }
 
     public static void printArrayElement(String typename, String value) {
-        System.out.println(LogManager.parsing() + " Array Element: type= " + typename + " value= " + value);
+        LogManager.println(LogManager.parsing() + " Array Element: type= " + typename + " value= " + value);
     }
 
 
@@ -723,9 +723,9 @@ public class SyntaxTree {
 
 
     public static ClassType DefineType(String typeName, String parent, String module, boolean isAbstract, Module newModule) {
-        System.out.println(LogManager.type() + " Registering Type: " + module + ", Type: " + typeName + ", Extending Type: " + parent + ", isAbstract: " + isAbstract);
+        LogManager.println(LogManager.type() + " Registering Type: " + module + ", Type: " + typeName + ", Extending Type: " + parent + ", isAbstract: " + isAbstract);
         var test = classRegister.get(module + "." + typeName);
-        System.out.println(LogManager.pack() + " " + module);
+        LogManager.println(LogManager.pack() + " " + module);
         if (test != null) {
             throw new ClassDomainAlreadyUsedException("Type \"" + typeName + "\" in module \"" + module + "\" already defined!");
         }

@@ -30,7 +30,7 @@ public class ScriptWriter {
 
     public static void createScript(String path, String build) {
 
-        System.out.println(LogManager.scriptWriter() + LogManager.script() + LogManager.shell() + " Trying to writing Shell-Script script at " + path);
+        LogManager.println(LogManager.scriptWriter() + LogManager.script() + LogManager.shell() + " Trying to writing Shell-Script script at " + path);
         try {
             List<String> lines = new ArrayList<>();
             lines.add(getReplacementLines(build));
@@ -49,13 +49,13 @@ public class ScriptWriter {
 
     public static void setOpenAndExports() {
         openAndExports = new ArrayList<>();
-        System.out.println(LogManager.scriptWriter() + LogManager.script() + LogManager.shell() + " Searching for Modules in plugins ...");
+        LogManager.println(LogManager.scriptWriter() + LogManager.script() + LogManager.shell() + " Searching for Modules in plugins ...");
         for (var plugin : PluginManager.plugins.values()) {
             ArrayList<String> modules = ModuleFinder.getModules(plugin.path);
-            System.out.println(LogManager.scriptWriter() + LogManager.script() + LogManager.shell() + " =============");
-            System.out.println(LogManager.scriptWriter() + LogManager.script() + LogManager.shell() + " " + plugin.name + " modules :");
+            LogManager.println(LogManager.scriptWriter() + LogManager.script() + LogManager.shell() + " =============");
+            LogManager.println(LogManager.scriptWriter() + LogManager.script() + LogManager.shell() + " " + plugin.name + " modules :");
             for (String moduleName : modules) {
-                System.out.println(LogManager.scriptWriter() + LogManager.script() + LogManager.shell() + " " + moduleName);
+                LogManager.println(LogManager.scriptWriter() + LogManager.script() + LogManager.shell() + " " + moduleName);
                 for (var module : ClassLocator.evoalModules) {
                     openAndExports.add(module + "=" + moduleName);
                 }
@@ -66,10 +66,10 @@ public class ScriptWriter {
     }
 
     private static String getReplacementLines(String build) {
-        System.out.println(LogManager.scriptWriter() + LogManager.script() + LogManager.shell() + " Creating Opens And Exports of EvoAl Module for Plugin Modules ...");
-        System.out.println(LogManager.scriptWriter() + LogManager.script() + LogManager.shell() + " EvoAl modules :");
+        LogManager.println(LogManager.scriptWriter() + LogManager.script() + LogManager.shell() + " Creating Opens And Exports of EvoAl Module for Plugin Modules ...");
+        LogManager.println(LogManager.scriptWriter() + LogManager.script() + LogManager.shell() + " EvoAl modules :");
         for (var module : ClassLocator.evoalModules) {
-            System.out.println(LogManager.scriptWriter() + LogManager.script() + LogManager.shell() + " " + module);
+            LogManager.println(LogManager.scriptWriter() + LogManager.script() + LogManager.shell() + " " + module);
         }
         setOpenAndExports();
         String s = "";

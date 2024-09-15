@@ -22,7 +22,7 @@ public class Executor {
     public static String ramTempVersionOfSudo = null;
 
     public static boolean makeExecutable(String filePath) {
-        System.out.println(LogManager.executor() + LogManager.script() + LogManager.shell() + LogManager.status() + " Making script executable ...");
+        LogManager.println(LogManager.executor() + LogManager.script() + LogManager.shell() + LogManager.status() + " Making script executable ...");
         // Construct the chmod command
         String command = "chmod +x " + filePath;
 
@@ -51,13 +51,13 @@ public class Executor {
         String currentPath = System.getProperty("user.dir");
         var scriptPath = ScriptWriter.getPathToProject() + "/" + Main.preset.shName() + ".sh";
         Main.console.println("Script: " + scriptPath);
-        System.out.println(LogManager.executor() + LogManager.script() + LogManager.shell() + LogManager.status() + " Requesting script at " + scriptPath + " .... ");
+        LogManager.println(LogManager.executor() + LogManager.script() + LogManager.shell() + LogManager.status() + " Requesting script at " + scriptPath + " .... ");
         ScriptWriter.createScript(scriptPath, Main.evoalVersion);
-        System.out.println(LogManager.executor() + LogManager.script() + LogManager.shell() + LogManager.status() + " Trying to run script ...");
+        LogManager.println(LogManager.executor() + LogManager.script() + LogManager.shell() + LogManager.status() + " Trying to run script ...");
         try {
 
-            System.out.println(LogManager.executor() + LogManager.script() + LogManager.shell() + LogManager.status() + " Current path: " + currentPath);
-            System.out.println(LogManager.executor() + LogManager.script() + LogManager.shell() + LogManager.status() + " Script path: " + scriptPath);
+            LogManager.println(LogManager.executor() + LogManager.script() + LogManager.shell() + LogManager.status() + " Current path: " + currentPath);
+            LogManager.println(LogManager.executor() + LogManager.script() + LogManager.shell() + LogManager.status() + " Script path: " + scriptPath);
 
 
 
@@ -69,7 +69,7 @@ public class Executor {
                     makeExecutable(scriptPath);
                     command = new String[]{"sudo","-S","/bin/bash", scriptPath};
                     if (sudoPwd == null) {
-                        System.out.println(LogManager.executor() + LogManager.process() + LogManager.status() + " Please enter sudo pwd!");
+                        LogManager.println(LogManager.executor() + LogManager.process() + LogManager.status() + " Please enter sudo pwd!");
                         pwdSet = false;
                         ramTempVersionOfSudo = null;
                         if (Main.nogui) {
@@ -87,8 +87,8 @@ public class Executor {
                         sudoPwd = ramTempVersionOfSudo;
 
                         if (sudoPwd == null) {
-                            System.out.println(LogManager.executor() + LogManager.process() + LogManager.status() + " Password input cancelled.");
-                            System.out.println(LogManager.executor() + LogManager.process() + LogManager.status() + " Terminating startup ...");
+                            LogManager.println(LogManager.executor() + LogManager.process() + LogManager.status() + " Password input cancelled.");
+                            LogManager.println(LogManager.executor() + LogManager.process() + LogManager.status() + " Terminating startup ...");
                             InputHandler.processTerminated();
                             return;
                         }
@@ -105,12 +105,12 @@ public class Executor {
             }
 
 
-            System.out.println(LogManager.executor() + LogManager.process() + LogManager.status() + " Building process ...");
+            LogManager.println(LogManager.executor() + LogManager.process() + LogManager.status() + " Building process ...");
             ProcessBuilder pb = new ProcessBuilder(command);
             pb.redirectErrorStream(true); // Redirect error stream to the input stream
-            System.out.println(LogManager.executor() + LogManager.process() + LogManager.status() + " Starting process ...");
+            LogManager.println(LogManager.executor() + LogManager.process() + LogManager.status() + " Starting process ...");
             Process process = pb.start();
-            System.out.println(LogManager.executor() + LogManager.process() + LogManager.status() + " " + ColorManager.colorText("Successfully", ColorManager.sucessColor) + " started process!");
+            LogManager.println(LogManager.executor() + LogManager.process() + LogManager.status() + " " + ColorManager.colorText("Successfully", ColorManager.sucessColor) + " started process!");
 
             if(Main.os == Main.OS.MAC){
                 try (OutputStream ops = process.getOutputStream();
@@ -121,7 +121,7 @@ public class Executor {
             }
 
 
-            System.out.println(LogManager.executor() + LogManager.process() + LogManager.status() + " Setting input stream reader ...");
+            LogManager.println(LogManager.executor() + LogManager.process() + LogManager.status() + " Setting input stream reader ...");
             // Get input stream of the process (combined output and error stream)
             InputStream inputStream = process.getInputStream();
             InputStreamReader inputStreamReader = new InputStreamReader(inputStream);
@@ -129,13 +129,13 @@ public class Executor {
 
             boolean postStartCompleted = false;
 
-            System.out.println(LogManager.executor() + LogManager.process() + LogManager.status() + " Now mirroring console of process!");
+            LogManager.println(LogManager.executor() + LogManager.process() + LogManager.status() + " Now mirroring console of process!");
             // Read the output of the process
             String line;
             while (true) {
                 // Read standard output and error lines if available
                 while (bufferedReader.ready() && (line = bufferedReader.readLine()) != null) {
-                    System.out.println(LogManager.executor() + LogManager.process() + LogManager.log() + " " + line);
+                    LogManager.println(LogManager.executor() + LogManager.process() + LogManager.log() + " " + line);
                     Main.console.println(line);
                 }
 
@@ -152,12 +152,12 @@ public class Executor {
                     // Process has terminated, break out of the loop
                     if (exitCode == 0) {
                         ramVersionOfSudo = sudoPwd;
-                        System.out.println(LogManager.executor() + LogManager.process() + LogManager.status() + " Process " + ColorManager.colorText("finished successfully", ColorManager.sucessColor) + "!");
+                        LogManager.println(LogManager.executor() + LogManager.process() + LogManager.status() + " Process " + ColorManager.colorText("finished successfully", ColorManager.sucessColor) + "!");
                         Main.console.print("Process finished ");
                         Main.console.printColored("successfully", ColorManager.sucessColor);
                         Main.console.println("!");
                     } else {
-                        System.out.println(LogManager.executor() + LogManager.process() + LogManager.status() + LogManager.error() + " Process " + ColorManager.colorText("failed", ColorManager.errorColor) + " with error code: " + exitCode);
+                        LogManager.println(LogManager.executor() + LogManager.process() + LogManager.status() + LogManager.error() + " Process " + ColorManager.colorText("failed", ColorManager.errorColor) + " with error code: " + exitCode);
                         Main.console.print("Process ");
                         Main.console.printColored("failed", ColorManager.errorColor);
                         Main.console.println(" with error code: " + exitCode);
@@ -187,7 +187,7 @@ public class Executor {
                     SoundManager.playExclamationSound();
                     Main.mainPanel.leftPanel.getVerticalScrollBar().setValue(ErrorPane.first);
                 } else {
-                    System.out.println(LogManager.scriptWriter() + LogManager.write() + " Saving project ...");
+                    LogManager.println(LogManager.scriptWriter() + LogManager.write() + " Saving project ...");
                     FileManager.save();
                     File currentProject = new File(Main.cacheManager.getFirstElement(String.class, "filesOpened"));
                     if (!currentProject.getAbsolutePath().endsWith("generator.eaf")) {
@@ -211,14 +211,14 @@ public class Executor {
                         }
                     }
                     ScriptWriter.writeEvoAlFiles();
-                    System.out.println(LogManager.executor() + LogManager.process() + LogManager.status() + " Preparing to execute ...");
+                    LogManager.println(LogManager.executor() + LogManager.process() + LogManager.status() + " Preparing to execute ...");
                     // Create and start a new thread to run execute()
                     InputHandler.processStarted();
                     Thread executionThread = new Thread(() -> {
                         try {
                             execute();
                         } catch (Exception e) {
-                            System.out.println(LogManager.executor() + LogManager.process() + LogManager.status() + LogManager.error() + " Script crashed: " + e);
+                            LogManager.println(LogManager.executor() + LogManager.process() + LogManager.status() + LogManager.error() + " Script crashed: " + e);
                             InputHandler.processTerminated();
                         }
                     });

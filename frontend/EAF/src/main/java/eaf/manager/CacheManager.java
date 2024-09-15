@@ -28,10 +28,10 @@ public class CacheManager {
         JSONObject o = null;
         try {
             o = FileManager.readJSONFileToJSON(System.getProperty("user.dir") + "/" +  cachePath + "." + cacheFileType);
-            System.out.println(LogManager.cacheManager()  + LogManager.read() + " Cache found!");
+            LogManager.println(LogManager.cacheManager()  + LogManager.read() + " Cache found!");
         }
         catch (Exception e) {
-            System.out.println(LogManager.cacheManager() + LogManager.read() + " Cache could not be found!");
+            LogManager.println(LogManager.cacheManager() + LogManager.read() + " Cache could not be found!");
         }
         if (o != null) {
             readCache(o);
@@ -49,7 +49,7 @@ public class CacheManager {
                 buffer.put(b.getKey(), makeBuffer(b.getValue().getFirst(), b.getValue().getSecond(), (JSONArray) o.get(b.getKey())));
             }
             else {
-                System.out.println(LogManager.cacheManager() + LogManager.read() + LogManager.error() + " Field \"" + b.getKey() + "\" was not found in cache!");
+                LogManager.println(LogManager.cacheManager() + LogManager.read() + LogManager.error() + " Field \"" + b.getKey() + "\" was not found in cache!");
                 buffer.put(b.getKey(), makeBuffer(b.getValue().getFirst(), b.getValue().getSecond()));
             }
         }
@@ -84,14 +84,14 @@ public class CacheManager {
     public <T> void addToBuffer(String b, T item) {
         LimitedBuffer<T> buf = (LimitedBuffer<T>) buffer.get(b);
         buf.add(item);
-        System.out.println(LogManager.cacheManager() + " Cache \"" + ColorManager.colorText(b, ColorManager.infoColor) + "\" updated to: ");
+        LogManager.println(LogManager.cacheManager() + " Cache \"" + ColorManager.colorText(b, ColorManager.infoColor) + "\" updated to: ");
         print(b);
         saveCache();
     }
 
     public void print(String buf) {
         for (var e : buffer.get(buf).getElements()) {
-            System.out.println(LogManager.cacheManager() + " " + e.toString());
+            LogManager.println(LogManager.cacheManager() + " " + e.toString());
         }
     }
 

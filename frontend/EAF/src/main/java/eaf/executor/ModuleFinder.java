@@ -1,5 +1,7 @@
 package eaf.executor;
 
+import eaf.manager.LogManager;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
@@ -14,7 +16,7 @@ public class ModuleFinder {
         if (projectRoot.exists() && projectRoot.isDirectory()) {
             findModules(projectRoot, modules);
         } else {
-            System.out.println("Invalid project root path provided.");
+            LogManager.println("Invalid project root path provided.");
         }
         return modules;
     }

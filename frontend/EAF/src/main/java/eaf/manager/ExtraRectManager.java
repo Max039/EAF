@@ -51,7 +51,7 @@ public class ExtraRectManager {
             while (iterator.hasNext()) {
                 File file = iterator.next();
                 String filePath = file.getPath();
-                System.out.println("Trying to process: " + filePath);
+                LogManager.println("Trying to process: " + filePath);
 
                 // Generate the package name by removing the base path and modifying the rest
                 String pack = filePath
@@ -68,7 +68,7 @@ public class ExtraRectManager {
                         res = ClassFactory.fromRectFile(FileManager.readJSONFileToJSON(file), pack);
                     }
                     catch (Exception ignored) {
-                        System.out.println(" -> processing " + ColorManager.colorText("failed", ColorManager.errorColor) + " error during rect creating!");
+                        LogManager.println(" -> processing " + ColorManager.colorText("failed", ColorManager.errorColor) + " error during rect creating!");
                         continue;
                     }
 
@@ -76,7 +76,7 @@ public class ExtraRectManager {
                     if (res.getFirst()) {
                         var c = res.getSecond();
 
-                        System.out.println(c.name);
+                        LogManager.println(c.name);
 
                         var exits = false;
                         try {
@@ -87,10 +87,10 @@ public class ExtraRectManager {
                         }
 
                         if (exits) {
-                            System.out.println(" -> processing " + ColorManager.colorText("failed", ColorManager.errorColor) + " rect file name \"" + c.name + "\" already taken!");
+                            LogManager.println(" -> processing " + ColorManager.colorText("failed", ColorManager.errorColor) + " rect file name \"" + c.name + "\" already taken!");
                         }
                         else {
-                            System.out.println(" -> "  + ColorManager.colorText("successfully", ColorManager.sucessColor) +  " created \"" + c.name + "\"");
+                            LogManager.println(" -> "  + ColorManager.colorText("successfully", ColorManager.sucessColor) +  " created \"" + c.name + "\"");
                             processedFile = true;
                             iterator.remove(); // Remove the successfully processed file from the list
                             // Register the ClassType object
@@ -105,7 +105,7 @@ public class ExtraRectManager {
                         }
 
                     } else {
-                        System.out.println(" -> processing " + ColorManager.colorText("failed", ColorManager.errorColor) + " parent not found!");
+                        LogManager.println(" -> processing " + ColorManager.colorText("failed", ColorManager.errorColor) + " parent not found!");
                     }
                 } catch (Exception e) {
                     throw new RuntimeException(e);
@@ -113,13 +113,13 @@ public class ExtraRectManager {
             }
         } while (processedFile && !filesToProcess.isEmpty());
 
-        System.out.println("============================");
+        LogManager.println("============================");
         if (filesToProcess.isEmpty()) {
-            System.out.println(ColorManager.colorText("Successfully", ColorManager.sucessColor) + " loaded all .rect files!");
+            LogManager.println(ColorManager.colorText("Successfully", ColorManager.sucessColor) + " loaded all .rect files!");
         }
         else {
             for (var leftFiles : filesToProcess) {
-                System.out.println(LogManager.error() + " Could not load file: " + leftFiles.getPath());
+                LogManager.println(LogManager.error() + " Could not load file: " + leftFiles.getPath());
             }
         }
 

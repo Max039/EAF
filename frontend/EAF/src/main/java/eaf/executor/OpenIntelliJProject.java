@@ -50,16 +50,16 @@ public class OpenIntelliJProject {
                 // Check if the file exists
                 File ideaExeFile = new File(ideaExePath);
                 if (ideaExeFile.exists()) {
-                    System.out.println(LogManager.intellij() + " Path to the newest version of IntelliJ IDEA: " + ideaExePath);
+                    LogManager.println(LogManager.intellij() + " Path to the newest version of IntelliJ IDEA: " + ideaExePath);
                     ideaPath = ideaExePath;
                 } else {
-                    System.out.println(LogManager.intellij() + LogManager.error() + " idea64.exe not found in the newest version directory.");
+                    LogManager.println(LogManager.intellij() + LogManager.error() + " idea64.exe not found in the newest version directory.");
                 }
             } else {
-                System.out.println(LogManager.intellij() + LogManager.error() + " No IntelliJ IDEA installations found.");
+                LogManager.println(LogManager.intellij() + LogManager.error() + " No IntelliJ IDEA installations found.");
             }
         } else {
-            System.out.println(LogManager.intellij() + LogManager.error() + " JetBrains directory not found.");
+            LogManager.println(LogManager.intellij() + LogManager.error() + " JetBrains directory not found.");
         }
 
     }
@@ -80,13 +80,13 @@ public class OpenIntelliJProject {
             // Start the process
             try {
                 Process process = processBuilder.start();
-                System.out.println(LogManager.intellij() + " IntelliJ IDEA launched successfully.");
+                LogManager.println(LogManager.intellij() + " IntelliJ IDEA launched successfully.");
             } catch (IOException e) {
                 e.printStackTrace();
             }
         }
         else {
-            System.out.println(LogManager.intellij() + LogManager.warning() + " Cannot open project no IntelliJ IDEA found!");
+            LogManager.println(LogManager.intellij() + LogManager.warning() + " Cannot open project no IntelliJ IDEA found!");
         }
 
 

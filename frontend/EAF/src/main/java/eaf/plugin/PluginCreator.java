@@ -56,7 +56,7 @@ public class PluginCreator {
     }
 
     public static void noPluginSelected() {
-        System.out.println(LogManager.plugin() + LogManager.error() + " No plugin selected!");
+        LogManager.println(LogManager.plugin() + LogManager.error() + " No plugin selected!");
         showMessageDialog(Main.mainFrame, "No selected plugin!", "Error", ERROR_MESSAGE);
     }
 
@@ -87,7 +87,7 @@ public class PluginCreator {
                     javaFiles.put(file.getName(), new Pair<>(file.getAbsolutePath(), found)); // Add the .java file path to the list
                 }
                 else {
-                    System.out.println(LogManager.plugin() + LogManager.error() + " Name of example class " + name + " not found in Class Register!");
+                    LogManager.println(LogManager.plugin() + LogManager.error() + " Name of example class " + name + " not found in Class Register!");
                 }
 
             }
@@ -163,7 +163,7 @@ public class PluginCreator {
 
 
     public static void updateCompilerArgs() throws Exception {
-        System.out.println(LogManager.plugin() + " Compiler args in Pom for plugin \"" + currentPlugin.name + "\"");
+        LogManager.println(LogManager.plugin() + " Compiler args in Pom for plugin \"" + currentPlugin.name + "\"");
 
         // Load the XML file
         File pomFile = new File(currentPlugin.path + "/pom.xml");

@@ -96,7 +96,7 @@ public class ClassType implements Comparable {
         }
         else {
             if (printMsg) {
-                System.out.println(LogManager.field() + "Trying to set field \"" + name + "\" of type \"" + currVal.getFirst() + "\" with current value \"" + currVal.getSecond() + "\" to \"" + v + "\"" );
+                LogManager.println(LogManager.field() + "Trying to set field \"" + name + "\" of type \"" + currVal.getFirst() + "\" with current value \"" + currVal.getSecond() + "\" to \"" + v + "\"" );
             }
             boolean typesMatch;
             if (currVal.getFirst().primitive) {

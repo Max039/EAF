@@ -1,5 +1,7 @@
 package eaf.manager;
 
+import eaf.Main;
+
 public class LogManager {
 
     public static String encased(String s) {
@@ -139,6 +141,30 @@ public class LogManager {
 
     public static String preset() {
         return encased(ColorManager.colorText("Preset", ColorManager.preset));
+    }
+
+    public static void println(String s) {
+        if (Main.fulllog) {
+            System.out.println(s);
+        }
+    }
+
+    public static void printf(String format, Object ... s) {
+        if (Main.fulllog) {
+            System.out.printf(format, s);
+        }
+    }
+
+    public static void println() {
+        if (Main.fulllog) {
+            System.out.println();
+        }
+    }
+
+    public static void print(String s) {
+        if (Main.fulllog) {
+            System.out.print(s);
+        }
     }
 
 }

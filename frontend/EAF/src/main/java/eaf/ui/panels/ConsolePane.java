@@ -39,11 +39,17 @@ public class ConsolePane extends JScrollPane {
     // Method to print text without a newline
     public void print(String text) {
         appendStyledText(text, Color.white);
+        if (!Main.fulllog) {
+            System.out.print(text);
+        }
     }
 
     // Method to print text with a newline
     public void println(String text) {
         appendStyledText(text + "\n", Color.white);
+        if (!Main.fulllog) {
+            System.out.println(text);
+        }
     }
 
     // Method to clear the text area

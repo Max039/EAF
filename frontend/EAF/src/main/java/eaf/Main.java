@@ -2,6 +2,7 @@ package eaf;
 
 import eaf.compiler.SyntaxTree;
 import eaf.download.Downloader;
+import eaf.executor.Executor;
 import eaf.executor.OpenIntelliJProject;
 import eaf.input.InputHandler;
 import eaf.intro.DoubleHelixAnimation;
@@ -146,6 +147,8 @@ public class Main extends JPanel {
 
     public static boolean nogui = false;
 
+    public static boolean fulllog = false;
+
     static {
         String osName = System.getProperty("os.name").toLowerCase();
         if (osName.contains("win")) {
@@ -198,23 +201,33 @@ public class Main extends JPanel {
         }
 
         cacheManager = new CacheManager();
-        System.out.println(LogManager.main() + LogManager.args() + " Args:");
+        LogManager.println(LogManager.main() + LogManager.args() + " Args:");
         boolean set = false;
         for (var arg : args) {
             if (arg.startsWith("-")) {
                 switch (arg) {
                     case "-noansi" -> ansi = false;
                     case "-nogui" -> nogui = true;
-                    default -> System.out.println(LogManager.main() + LogManager.args() + " unknown arg: " + arg);
+                    case "-fulllog" -> fulllog = true;
+                    default -> {
+                        if (arg.contains("-sudopwd")) {
+                            var parts = arg.split("=");
+                            Executor.ramVersionOfSudo = parts[1];
+                        }
+                        else {
+                            LogManager.println(LogManager.main() + LogManager.args() + " unknown arg: " + arg);
+                        }
+
+                    }
                 }
             }
             else {
                 if (!set) {
-                    System.out.println(LogManager.main() + LogManager.args() + " " + arg);
+                    LogManager.println(LogManager.main() + LogManager.args() + " " + arg);
                     cacheManager.addToBuffer("filesOpened", arg);
                 }
                 else {
-                    System.out.println(LogManager.main() + LogManager.args() + " unknown arg: " + arg);
+                    LogManager.println(LogManager.main() + LogManager.args() + " unknown arg: " + arg);
                 }
 
             }
@@ -239,7 +252,7 @@ public class Main extends JPanel {
                     intro.setObjective(target);
                 }
                 else {
-                    System.out.println(target);
+                    LogManager.println(target);
                 }
 
                 Downloader.downloadNewestVersionIfNeeded(false);
@@ -260,7 +273,7 @@ public class Main extends JPanel {
                 intro.setObjective(target);
             }
             else {
-                System.out.println(target);
+                LogManager.println(target);
             }
 
 

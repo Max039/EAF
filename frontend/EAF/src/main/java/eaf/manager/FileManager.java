@@ -63,7 +63,7 @@ public class FileManager {
 
     public static void write(String content, String filePath) {
         try {
-            System.out.println(LogManager.fileManager() + LogManager.write() + " Saving to " + filePath);
+            LogManager.println(LogManager.fileManager() + LogManager.write() + " Saving to " + filePath);
             // Create a File object for the specified file path
             File file = new File(filePath);
 
@@ -181,11 +181,11 @@ public class FileManager {
                 loadSave(readJSONFileToJSON(c));
             }
             catch (Exception e) {
-                System.out.println(LogManager.fileManager() + LogManager.file() + LogManager.warning() + " Recent file could not be opened!");
+                LogManager.println(LogManager.fileManager() + LogManager.file() + LogManager.warning() + " Recent file could not be opened!");
             }
         }
         else {
-            System.out.println(LogManager.fileManager() + LogManager.file() + LogManager.warning() + " No recent file in cache!");
+            LogManager.println(LogManager.fileManager() + LogManager.file() + LogManager.warning() + " No recent file in cache!");
         }
     }
 
@@ -193,7 +193,7 @@ public class FileManager {
         String saveName = JOptionPane.showInputDialog(null, "Enter the name for the save:", "Save Name", JOptionPane.QUESTION_MESSAGE);
         if (saveName == null || saveName.trim().isEmpty()) {
             // User canceled the input or entered an empty name
-            System.out.println(LogManager.fileManager() + LogManager.file() + " Save operation " + ColorManager.colorText("canceled", ColorManager.warningColor) + " or no name entered.");
+            LogManager.println(LogManager.fileManager() + LogManager.file() + " Save operation " + ColorManager.colorText("canceled", ColorManager.warningColor) + " or no name entered.");
             return;
         }
         // Construct the full path to the file
@@ -216,7 +216,7 @@ public class FileManager {
         FileManager.emptySave();
         writeJSONToFile(createSave(), file.getAbsolutePath());
         Main.cacheManager.addToBuffer("filesOpened", file.getAbsolutePath());
-        System.out.println(LogManager.fileManager() + LogManager.file() + " File " + file.getName() + " " + ColorManager.colorText("saved", ColorManager.sucessColor) + "!");
+        LogManager.println(LogManager.fileManager() + LogManager.file() + " File " + file.getName() + " " + ColorManager.colorText("saved", ColorManager.sucessColor) + "!");
     }
 
     public static void save() {
@@ -245,7 +245,7 @@ public class FileManager {
             FileManager.writeJSONToFile(FileManager.createSave(), file.getPath());
             Main.cacheManager.addToBuffer("filesOpened", file.getPath());
             InputHandler.actionHandler.saved();
-            System.out.println(LogManager.fileManager() + LogManager.file() + " File " + file.getName() + " " + ColorManager.colorText("saved", ColorManager.sucessColor) + "!");
+            LogManager.println(LogManager.fileManager() + LogManager.file() + " File " + file.getName() + " " + ColorManager.colorText("saved", ColorManager.sucessColor) + "!");
         }
         Main.mainPanel.revalidate();
         Main.mainPanel.repaint();
@@ -256,7 +256,7 @@ public class FileManager {
         Path sourceFolder = Path.of(source);
         Path destinationFolder = Path.of(destination);
 
-        System.out.println(LogManager.fileManager() + LogManager.write() + " Copying folder \"" + sourceFolder + "\" to \"" + destinationFolder + "\"");
+        LogManager.println(LogManager.fileManager() + LogManager.write() + " Copying folder \"" + sourceFolder + "\" to \"" + destinationFolder + "\"");
         // Check if the source folder exists
         if (!Files.exists(sourceFolder) || !Files.isDirectory(sourceFolder)) {
             throw new IllegalArgumentException("Source folder doesn't exist or is not a directory.");
@@ -299,9 +299,9 @@ public class FileManager {
             // Check if the directory exists; if not, create it
             if (targetDirectory != null && !targetDirectory.exists()) {
                 if (targetDirectory.mkdirs()) {
-                    System.out.println(LogManager.fileManager() + LogManager.write() + " Target directory created successfully.");
+                    LogManager.println(LogManager.fileManager() + LogManager.write() + " Target directory created successfully.");
                 } else {
-                    System.out.println(LogManager.fileManager() + LogManager.write()  + LogManager.error()  + " Failed to create target directory.");
+                    LogManager.println(LogManager.fileManager() + LogManager.write()  + LogManager.error()  + " Failed to create target directory.");
                     return null;  // Return null if the directory couldn't be created
                 }
             }
@@ -316,30 +316,30 @@ public class FileManager {
                     fos.write(buffer, 0, bytesRead);
                 }
 
-                System.out.println(LogManager.fileManager() + LogManager.write() + " File copied successfully.");
+                LogManager.println(LogManager.fileManager() + LogManager.write() + " File copied successfully.");
                 return targetFile;
 
             } catch (IOException e) {
-                System.out.println(LogManager.fileManager() + LogManager.write() + LogManager.error() + " Error occurred during file copy: " + e.getMessage());
+                LogManager.println(LogManager.fileManager() + LogManager.write() + LogManager.error() + " Error occurred during file copy: " + e.getMessage());
                 return null;  // Return null in case of error during file writing
             }
 
         } catch (IOException e) {
-            System.out.println(LogManager.fileManager() + LogManager.write() + LogManager.error() + " Error occurred during file copy: " + e.getMessage());
+            LogManager.println(LogManager.fileManager() + LogManager.write() + LogManager.error() + " Error occurred during file copy: " + e.getMessage());
             return null;  // Return null in case of error during file reading
         }
     }
 
 
     public static void replaceContentOfFile(String path, ArrayList<Pair<String, String>> replacements) {
-        System.out.println(LogManager.fileManager() + LogManager.write() + " Replacing parts in File \"" + path + "\"");
+        LogManager.println(LogManager.fileManager() + LogManager.write() + " Replacing parts in File \"" + path + "\"");
         try {
             // Read the file content
             String content = new String(Files.readAllBytes(Paths.get(path)));
 
             // Perform the replacements
             for (Pair<String, String> pair : replacements) {
-                System.out.println(LogManager.fileManager() + LogManager.write() + " Replacing \"" + pair.getFirst() + "\" with \"" + pair.getSecond() + "\"");
+                LogManager.println(LogManager.fileManager() + LogManager.write() + " Replacing \"" + pair.getFirst() + "\" with \"" + pair.getSecond() + "\"");
                 content = content.replace(pair.getFirst(), pair.getSecond());
             }
 
@@ -390,7 +390,7 @@ public class FileManager {
 
         // Check if the provided path is a directory
         if (!Files.isDirectory(dirPath)) {
-            System.out.println("The provided path is not a directory.");
+            LogManager.println("The provided path is not a directory.");
             return false;
         }
 
@@ -428,13 +428,13 @@ public class FileManager {
         // Copy the JAR file to the destination path, replacing it if it already exists
         Files.copy(jarFile.toPath(), destination, StandardCopyOption.REPLACE_EXISTING);
 
-        System.out.println(LogManager.fileManager() + LogManager.write() + " Copied " + jarFile.getName() + " to " + destinationPath + " as " + newFileName);
+        LogManager.println(LogManager.fileManager() + LogManager.write() + " Copied " + jarFile.getName() + " to " + destinationPath + " as " + newFileName);
     }
 
 
     public static void copyFiles(Path sourceDir, Path targetDir) throws IOException {
         if (Files.exists(targetDir)) {
-            System.out.println("Target directory already exists. No files copied.");
+            LogManager.println("Target directory already exists. No files copied.");
             return;
         }
 
@@ -487,6 +487,6 @@ public class FileManager {
         }
         System.setProperty("user.dir", newDir.toAbsolutePath().toString());
         Downloader.updatePaths();
-        System.out.println("Working directory changed to: " + System.getProperty("user.dir"));
+        LogManager.println("Working directory changed to: " + System.getProperty("user.dir"));
     }
 }

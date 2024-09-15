@@ -221,7 +221,7 @@ public class Downloader {
     public static void openExplorer(String path) {
         File file = new File(path);
         if (!file.exists()) {
-            System.out.println(LogManager.downloader() + " Directory or file does not exist.");
+            LogManager.println(LogManager.downloader() + " Directory or file does not exist.");
             return;
         }
 
@@ -229,17 +229,17 @@ public class Downloader {
             if (Desktop.isDesktopSupported()) {
                 Desktop.getDesktop().open(file);
             } else {
-                System.out.println(LogManager.downloader() + " Desktop is not supported.");
+                LogManager.println(LogManager.downloader() + " Desktop is not supported.");
             }
         } catch (IOException e) {
-            System.out.println(LogManager.downloader() + " Error opening file explorer: " + e.getMessage());
+            LogManager.println(LogManager.downloader() + " Error opening file explorer: " + e.getMessage());
         }
     }
 
     public static void checkForUpdate() {
         try {
             JSONArray pipelines = getSuccessfulPipelines(true);
-            System.out.println(LogManager.downloader() + " Retrieved " + pipelines.length() + " successful pipelines. Current limit for successful pipelines is set to: " + numberOfVersionsToShow );
+            LogManager.println(LogManager.downloader() + " Retrieved " + pipelines.length() + " successful pipelines. Current limit for successful pipelines is set to: " + numberOfVersionsToShow );
             for (int i = 0; i < pipelines.length(); i++) {
                 JSONObject pipeline = pipelines.getJSONObject(i);
                 String updatedAt = pipeline.getString("updated_at");
@@ -267,7 +267,7 @@ public class Downloader {
                         // Check the user's choice
                         if (option == JOptionPane.YES_OPTION) {
                             Thread executionThread = new Thread(() -> {
-                                System.out.println(LogManager.downloader() + " New EvoAl version found!");
+                                LogManager.println(LogManager.downloader() + " New EvoAl version found!");
                                 downloadIfNeeded(versionName, true);
                                 SwingUtilities.invokeLater(() -> {
                                     InputHandler.setEvoAlVersion(versionName);
@@ -297,7 +297,7 @@ public class Downloader {
                         return;
                     }
                     else {
-                        System.out.println(LogManager.downloader() + " Newest EvoAl version already downloaded!");
+                        LogManager.println(LogManager.downloader() + " Newest EvoAl version already downloaded!");
                         return;
                     }
                 }
@@ -314,7 +314,7 @@ public class Downloader {
     public static void downloadNewestVersionIfNeeded(boolean downloadWindow) {
         try {
             JSONArray pipelines = getSuccessfulPipelines(true);
-            System.out.println(LogManager.downloader() + " Retrieved " + pipelines.length() + " successful pipelines. Current limit for successful pipelines is set to: " + numberOfVersionsToShow );
+            LogManager.println(LogManager.downloader() + " Retrieved " + pipelines.length() + " successful pipelines. Current limit for successful pipelines is set to: " + numberOfVersionsToShow );
             for (int i = 0; i < pipelines.length(); i++) {
                 JSONObject pipeline = pipelines.getJSONObject(i);
                 String updatedAt = pipeline.getString("updated_at");
@@ -325,7 +325,7 @@ public class Downloader {
                 }
                 catch (Exception e) {
                     if (e instanceof JobNotFoundException) {
-                        System.out.println(LogManager.downloader() + " Skipping version " + versionName);
+                        LogManager.println(LogManager.downloader() + " Skipping version " + versionName);
                         if (i == pipelines.length() - 1) {
                             throw new RuntimeException("No valid version was found!");
                         }
@@ -357,8 +357,8 @@ public class Downloader {
             }
         }
         else {
-            System.out.println(LogManager.downloader() + " " + DOWNLOAD_PATH + versionName);
-            System.out.println(LogManager.downloader() + " Version " + versionName + " already present on filesystem!");
+            LogManager.println(LogManager.downloader() + " " + DOWNLOAD_PATH + versionName);
+            LogManager.println(LogManager.downloader() + " Version " + versionName + " already present on filesystem!");
             JOptionPane.showMessageDialog(frame,
                     "Version " + versionName + " already present on filesystem!", "Info", JOptionPane.INFORMATION_MESSAGE);
         }
@@ -432,8 +432,8 @@ public class Downloader {
             allPipelinesApprovedStings = new ArrayList<>();
             try {
                 JSONArray pipelines = getSuccessfulPipelines(false);
-                System.out.println(LogManager.downloader() + " Retrieved " + pipelines.length() + " successful pipelines. Current limit for successful pipelines is set to: " + numberOfVersionsToShow);
-                System.out.println(LogManager.downloader() + " Indexing pipelines that have valid artifact ...");
+                LogManager.println(LogManager.downloader() + " Retrieved " + pipelines.length() + " successful pipelines. Current limit for successful pipelines is set to: " + numberOfVersionsToShow);
+                LogManager.println(LogManager.downloader() + " Indexing pipelines that have valid artifact ...");
                 CountDownLatch latch = new CountDownLatch(pipelines.length());
                 AtomicInteger count = new AtomicInteger();
 
@@ -477,7 +477,7 @@ public class Downloader {
                 }
 
                 latch.await();  // Wait for all tasks to complete
-                System.out.println();
+                LogManager.println();
             } catch (Exception e) {
                 throw new Exception(e);
             }
@@ -544,7 +544,7 @@ public class Downloader {
 
     private static Pair<Boolean, String> hasAllPackageJob(String webUrl) throws IOException {
         String buildUrl = GITLAB_URL + "/projects/" + PROJECT_ID + "/pipelines" + webUrl.split("pipelines")[1] + "/jobs";
-        //System.out.println("Checking pipeline if artifact " + artifactName + " exists : " + buildUrl);
+        //LogManager.println("Checking pipeline if artifact " + artifactName + " exists : " + buildUrl);
 
         HttpURLConnection connection = (HttpURLConnection) new URL(buildUrl).openConnection();
         connection.setRequestProperty("PRIVATE-TOKEN", PRIVATE_TOKEN);
@@ -604,7 +604,7 @@ public class Downloader {
             url += "&ref=" + defaultBranch;
         }
         url += "&order_by=id&sort=desc&per_page=" + numberOfVersionsToShow;
-        System.out.println(LogManager.downloader() + " Requesting successful pipelines from branch " + defaultBranch + " requiring artifact " + artifactName + " : " + url);
+        LogManager.println(LogManager.downloader() + " Requesting successful pipelines from branch " + defaultBranch + " requiring artifact " + artifactName + " : " + url);
         HttpURLConnection connection = (HttpURLConnection) new URL(url).openConnection();
         connection.setRequestProperty("PRIVATE-TOKEN", PRIVATE_TOKEN);
 
@@ -674,7 +674,7 @@ public class Downloader {
                     "Download Confirmation", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
 
             if (choice == JOptionPane.YES_OPTION) {
-                System.out.println(LogManager.downloader() + " Deleting Artifact " + selectedVersion);
+                LogManager.println(LogManager.downloader() + " Deleting Artifact " + selectedVersion);
                 deleteDirectory(new File(DOWNLOAD_PATH + selectedVersion));
                 _downloadSelectedVersion(selectedVersion, limitBranch, downloadWindow);
             }
@@ -703,11 +703,11 @@ public class Downloader {
 
             if (jobId != -1) {
                 try {
-                    System.out.println(LogManager.downloader() + " Downloading Artifact " + selectedVersion + " ... ");
+                    LogManager.println(LogManager.downloader() + " Downloading Artifact " + selectedVersion + " ... ");
                     downloadArtifact(jobId, outputFilePath, downloadWindow);
                     extractZip(outputFilePath, extractToPath);
                     Files.deleteIfExists(Paths.get(outputFilePath));
-                    System.out.println(LogManager.downloader() + " Download complete");
+                    LogManager.println(LogManager.downloader() + " Download complete");
                     //populateVersions();
                     //JOptionPane.showMessageDialog(Main.mainFrame, "Downloaded and extracted: " + selectedVersion,
                     //       "Success", JOptionPane.INFORMATION_MESSAGE);
@@ -718,7 +718,7 @@ public class Downloader {
                 }
             } else {
                 deleteDirectory(new File(DOWNLOAD_PATH + selectedVersion));
-                System.out.println(LogManager.downloader() + " Job with artifact '" + artifactName + "' not found for version " + selectedVersion + " !");
+                LogManager.println(LogManager.downloader() + " Job with artifact '" + artifactName + "' not found for version " + selectedVersion + " !");
                 throw new JobNotFoundException("Job with artifact '" + artifactName + "' not found for version " + selectedVersion + " !");
                 //JOptionPane.showMessageDialog(Main.mainFrame, "Job with artifact '" + artifactName + "' not found.",
                         //"Error", JOptionPane.ERROR_MESSAGE);
@@ -785,7 +785,7 @@ public class Downloader {
                 int count;
                 long downloadedSize = 0;
 
-                System.out.print(LogManager.downloader() + " Downloading... [");
+                LogManager.print(LogManager.downloader() + " Downloading... [");
 
 
                 final DownloadProgressWindow[] window = new DownloadProgressWindow[1];
@@ -811,7 +811,7 @@ public class Downloader {
                 if (downloadWindow) {
                     window[0].stop();
                 }
-                System.out.println("\n"+ LogManager.downloader() + " Artifact downloaded successfully to " + outputFileName);
+                LogManager.println("\n"+ LogManager.downloader() + " Artifact downloaded successfully to " + outputFileName);
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
             }
@@ -825,7 +825,7 @@ public class Downloader {
         int progressChars = (int) (progress / (100.0 / progressBarWidth));
         String progressBar = "=".repeat(progressChars);
         String emptyProgressBar = " ".repeat(progressBarWidth - progressChars);
-        System.out.printf("\r" + "[%s%s] %.2f%%", progressBar, emptyProgressBar, progress);
+        LogManager.printf("\r" + "[%s%s] %.2f%%", progressBar, emptyProgressBar, progress);
     }
 
     private static void extractZip(String zipFilePath, String destDir) throws IOException {
@@ -856,7 +856,7 @@ public class Downloader {
         }
         zis.closeEntry();
         zis.close();
-        System.out.println(LogManager.downloader() + " Artifact extracted successfully to " + destDir);
+        LogManager.println(LogManager.downloader() + " Artifact extracted successfully to " + destDir);
     }
 
     private static File newFile(File destinationDir, ZipEntry zipEntry) throws IOException {

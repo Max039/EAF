@@ -39,13 +39,13 @@ public class ClassLocator {
 
         evoalModules = new ArrayList<>();
         try {
-            System.out.println(LogManager.classLocator() + " Searching required classes in EvoAl files...");
+            LogManager.println(LogManager.classLocator() + " Searching required classes in EvoAl files...");
 
             HashMap<String, Pair<Class<?>, String>> classMap = loadClassesFromJars(folderPaths, classNames);
 
 
-            System.out.println(LogManager.classLocator() + " =============");
-            System.out.println(LogManager.classLocator() + " Preparing final module list ...");
+            LogManager.println(LogManager.classLocator() + " =============");
+            LogManager.println(LogManager.classLocator() + " Preparing final module list ...");
 
 
             // Print the loaded classes with filtered class names
@@ -56,7 +56,7 @@ public class ClassLocator {
 
                 var module = moduleName + "/" + clazz.getPackageName();
                 evoalModules.add(module);
-                System.out.println(LogManager.classLocator() + " " + module);
+                LogManager.println(LogManager.classLocator() + " " + module);
 
             }
 
@@ -138,7 +138,7 @@ public class ClassLocator {
 
         for (var a : classNames) {
             if (classMap.get(a) == null) {
-                System.out.println(LogManager.classLocator() + LogManager.error() + " Found " + ColorManager.colorText("NO", ColorManager.errorColor) + " Class for: " + a);
+                LogManager.println(LogManager.classLocator() + LogManager.error() + " Found " + ColorManager.colorText("NO", ColorManager.errorColor) + " Class for: " + a);
             }
         }
 
@@ -183,15 +183,15 @@ public class ClassLocator {
 
                     // Check if the class name matches any of the specified names
                     if (classNames.contains(simpleClassName) && className.contains("evoal")) {
-                        System.out.println(LogManager.classLocator() + " =============");
-                        System.out.println(LogManager.classLocator() + " Class found: " + simpleClassName);
-                        System.out.println(LogManager.classLocator() + " In jar: " + jarFile.getName() + " at " + jarFile.getAbsolutePath());
-                        System.out.println(LogManager.classLocator() + " Class Path: " + className);
+                        LogManager.println(LogManager.classLocator() + " =============");
+                        LogManager.println(LogManager.classLocator() + " Class found: " + simpleClassName);
+                        LogManager.println(LogManager.classLocator() + " In jar: " + jarFile.getName() + " at " + jarFile.getAbsolutePath());
+                        LogManager.println(LogManager.classLocator() + " Class Path: " + className);
 
                         JarEntry moduleInfoEntry = jar.getJarEntry("module-info.class");
 
                         if (moduleInfoEntry == null) {
-                            System.out.println(LogManager.classLocator() + LogManager.error() + " No module-info.class found in the JAR file.");
+                            LogManager.println(LogManager.classLocator() + LogManager.error() + " No module-info.class found in the JAR file.");
                             return;
                         }
 
@@ -203,7 +203,7 @@ public class ClassLocator {
                                 @Override
                                 public ModuleVisitor visitModule(String moduleName, int access, String version) {
                                     moduleNames[0] = moduleName;
-                                    System.out.println(LogManager.classLocator() + " Module: " + moduleName);
+                                    LogManager.println(LogManager.classLocator() + " Module: " + moduleName);
                                     return super.visitModule(moduleName, access, version);
                                 }
                             };

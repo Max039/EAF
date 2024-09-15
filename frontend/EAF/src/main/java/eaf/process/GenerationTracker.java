@@ -1,5 +1,7 @@
 package eaf.process;
 
+import eaf.manager.LogManager;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -48,7 +50,7 @@ public class GenerationTracker extends ProcessInfoWorker {
 
     public void generationOver() {
         generation++;
-        System.out.println("Generation: " + generation);
+        LogManager.println("Generation: " + generation);
     }
 
 

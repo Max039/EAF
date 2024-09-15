@@ -141,7 +141,7 @@ public class UiUtil {
                         if (file != null) {
                             String curr = System.getProperty("user.dir");
                             String name = file.getName().split("\\.")[0];
-                            System.out.println(curr + "/" + savesPath + "/" + name + "/" + file.getName());
+                            LogManager.println(curr + "/" + savesPath + "/" + name + "/" + file.getName());
                             var newFile = FileManager.copyFile(file.getAbsolutePath(), curr + "/" + savesPath + "/" + name + "/" + file.getName());
                             FileManager.copyFolder(curr + "/project_base", curr + "/" + savesPath + "/" + name);
                             loadSave(readJSONFileToJSON(newFile));

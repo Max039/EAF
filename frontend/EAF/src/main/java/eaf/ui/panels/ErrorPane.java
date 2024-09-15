@@ -147,7 +147,7 @@ public class ErrorPane extends JScrollPane {
         Main.mainPanel.leftPanel.forceAdjustRects();
         clearErrors();
 
-        System.out.println(LogManager.errorManager() + " Checking for errors");
+        LogManager.println(LogManager.errorManager() + " Checking for errors");
 
         for (var r : Main.mainPanel.leftPanel.getRects()) {
             checkForErrors(r);

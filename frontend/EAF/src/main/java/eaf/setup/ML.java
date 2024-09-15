@@ -31,9 +31,9 @@ public class ML extends Preset {
 
     @Override
     public void generateFiles(String folder, RectPanel panel) {
-        System.out.println(LogManager.preset() + LogManager.write() + LogManager.data() + " Writing EvoAl Data ...");
+        LogManager.println(LogManager.preset() + LogManager.write() + LogManager.data() + " Writing EvoAl Data ...");
         FileManager.write(Main.dataPanel.toString("training"), folder + "/training.ddl");
-        System.out.println(LogManager.preset() + LogManager.write() + LogManager.ol()  + " Writing EvoAl Script ...");
+        LogManager.println(LogManager.preset() + LogManager.write() + LogManager.ol()  + " Writing EvoAl Script ...");
         FileManager.write(rectPanelConversion(panel), folder+ "/training.mll");
     }
 

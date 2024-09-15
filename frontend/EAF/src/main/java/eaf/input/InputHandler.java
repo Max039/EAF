@@ -317,7 +317,7 @@ public class InputHandler {
         Main.evoalVersion = version;
         Main.cacheManager.addToBuffer("build", version);
         SyntaxTree.reload();
-        System.out.println(LogManager.info() + " Changed active EvoAl version to: " + version);
+        LogManager.println(LogManager.info() + " Changed active EvoAl version to: " + version);
     }
 
     public static void setEvoAlVersionNoReload(String version) {
