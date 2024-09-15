@@ -31,4 +31,4 @@ shift
 cd "$EAF_HOME" || exit
 
 # Execute the JAR file with the absolute path and any additional arguments
-java -jar eaf.jar "$ABSOLUTE_PATH" "$@"
+java -jar eaf.jar "$ABSOLUTE_PATH" "$@" -noansi
