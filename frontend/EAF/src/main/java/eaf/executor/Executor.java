@@ -69,10 +69,18 @@ public class Executor {
                     makeExecutable(scriptPath);
                     command = new String[]{"sudo","-S","/bin/bash", scriptPath};
                     if (sudoPwd == null) {
-                        System.out.println(LogManager.executor() + LogManager.process() + LogManager.status() + " PLease enter sudo pwd!");
+                        System.out.println(LogManager.executor() + LogManager.process() + LogManager.status() + " Please enter sudo pwd!");
                         pwdSet = false;
                         ramTempVersionOfSudo = null;
-                        UiUtil.getPasswordFromUser();
+                        if (Main.nogui) {
+                            Console console = System.console();
+                            Executor.ramTempVersionOfSudo = new String(console.readPassword());
+                            Executor.pwdSet = true;
+                        }
+                        else {
+                            UiUtil.getPasswordFromUser();
+                        }
+
                         while (!pwdSet) {
                             Thread.sleep(50);
                         }
