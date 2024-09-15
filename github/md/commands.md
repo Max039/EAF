@@ -4,9 +4,23 @@
     ```bash
     eaf "relative/full eaf-file path"
     ```
-- To run EAF without GUI:
+- To run without GUI:
     ```bash
-    eaf "relative/full eaf-file path" -nogui
+    -nogui
+	```
+	
+- To run with the full log enabled:
+    ```bash
+    -fulllog
+	```
+- To run without ansi encoding (when running via terminal default enabled):
+    ```bash
+    -noansi
+	```
+
+- To run with the sudo password not needing to input it later:
+    ```bash
+    -sudopwd=PASSWORD
 	```
 
 # Disclaimer:
