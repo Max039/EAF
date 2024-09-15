@@ -211,7 +211,7 @@ public class Main extends JPanel {
                     case "-fulllog" -> fulllog = true;
                     default -> {
                         if (arg.contains("-sudopwd")) {
-                            var parts = arg.split("=");
+                            var parts = arg.split("=", 2);
                             Executor.ramVersionOfSudo = parts[1];
                         }
                         else {
