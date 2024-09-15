@@ -48,3 +48,5 @@ if '%errorlevel%' NEQ '0' (
 
 :: At this point, the script is running with admin privileges
 echo Elevated Script Arguments: %ALL_ARGS%
+cd /d %EAF_HOME%
+java -Dfile.encoding=utf-8 -jar "%EAF_HOME%\eaf.jar" %ALL_ARGS%

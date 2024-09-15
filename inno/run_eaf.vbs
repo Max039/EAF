@@ -12,3 +12,5 @@ Next
 ' Trim any trailing space from the argument string
 argsString = Trim(argsString)
 
+WshShell.Run chr(34) & "%EAF_HOME%\eaf.bat" & chr(34) & " " & argsString, 0
+Set WshShell = Nothing

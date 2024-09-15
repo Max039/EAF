@@ -142,6 +142,8 @@ public class Main extends JPanel {
 
     private static boolean updateCheck = false;
 
+    public static boolean ansi = true;
+
     static {
         String osName = System.getProperty("os.name").toLowerCase();
         if (osName.contains("win")) {
@@ -195,13 +197,24 @@ public class Main extends JPanel {
 
         cacheManager = new CacheManager();
         System.out.println(LogManager.main() + LogManager.args() + " Args:");
-        int i = 0;
+        boolean set = false;
         for (var arg : args) {
-            if (i == 0) {
-                System.out.println(LogManager.main() + LogManager.args() + " " + arg);
-                cacheManager.addToBuffer("filesOpened", arg);
+            if (arg.startsWith("-")) {
+                switch (arg) {
+                    case "-noansi" -> ansi = false;
+                    default -> System.out.println(LogManager.main() + LogManager.args() + " unknown arg: " + arg);
+                }
             }
-            i++;
+            else {
+                if (!set) {
+                    System.out.println(LogManager.main() + LogManager.args() + " " + arg);
+                    cacheManager.addToBuffer("filesOpened", arg);
+                }
+                else {
+                    System.out.println(LogManager.main() + LogManager.args() + " unknown arg: " + arg);
+                }
+
+            }
         }
         pluginManager = new PluginManager();
         try {

@@ -15,18 +15,19 @@ SetupIconFile={#SourcePath}\eaf.ico
 
 [Files]
 ; Copy the entire folder to the selected directory
-Source: "{#SourcePath}\..\frontend\EAF\*"; DestDir: "{app}"; Flags: recursesubdirs createallsubdirs; Excludes: "builds,session.cache,projects,pom.xml,.gitignore"; 
+Source: "{#SourcePath}\..\frontend\EAF\*"; DestDir: "{app}"; Flags: recursesubdirs createallsubdirs; Excludes: "builds,session.cache,projects,.gitignore"; 
 
 Source: "{#SourcePath}\vbs.bat"; DestDir: "{app}"; Flags: ignoreversion
-Source: "{#SourcePath}\run_eaf.vbs"; DestDir: "{app}"; Flags: ignoreversion; AfterInstall: FinishVbs
-Source: "{#SourcePath}\eaf.bat"; DestDir: "{app}"; Flags: ignoreversion; AfterInstall: AfterInstall
+Source: "{#SourcePath}\run_eaf.vbs"; DestDir: "{app}"; Flags: ignoreversion
+Source: "{#SourcePath}\eaf.bat"; DestDir: "{app}"; Flags: ignoreversion
+Source: "{#SourcePath}\cmd.bat"; DestDir: "{app}"; Flags: ignoreversion
 
 [Dirs]
 Name: "{app}\projects";
 
 [Icons]
 ; Create a shortcut for the executable in the start menu with the icon
-Name: "{group}\EvoAl Frontend"; Filename: "{app}\run_eaf.vbs"; IconFilename: "{app}\eaf.ico"
+Name: "{group}\EvoAl Frontend"; Filename: "{app}\run_eaf.vbs"; IconFilename: "{#SourcePath}\eaf.ico"
 ; Optionally, create a shortcut on the desktop with the icon
 Name: "{userdesktop}\EvoAl Frontend"; Filename: "{app}\run_eaf.vbs"; IconFilename: "{#SourcePath}\eaf.ico"; Tasks: desktopicon
 Name: "{app}\EvoAl Frontend"; Filename: "{app}\run_eaf.vbs"; IconFilename: "{#SourcePath}\eaf.ico"; WorkingDir: "{app}"
@@ -62,52 +63,6 @@ Root: HKCR; Subkey: "Data Definition Language File\DefaultIcon"; ValueType: stri
 
 
 [Code]
-procedure AfterInstall();
-var
-  FileName: string;
-  FileContent: TStringList;
-begin
-  FileName := ExpandConstant('{app}\eaf.bat');
-  
-  // Load the file into TStringList
-  FileContent := TStringList.Create;
-  try
-    FileContent.LoadFromFile(FileName);
-    FileContent.Add('cd /d ' + ExpandConstant('{app}')); // Change to /d for drive change support
-    // Add lines to the file
-    FileContent.Add('java -Dfile.encoding=utf-8 -jar "' + ExpandConstant('{app}\eaf.jar') + '" %ALL_ARGS%');
-
-    
-    // Save the changes back to the file
-    FileContent.SaveToFile(FileName);
-  finally
-    FileContent.Free;
-  end;
-end;
-
-procedure FinishVbs();
-var
-  FileName: string;
-  FileContent: TStringList;
-begin
-  FileName := ExpandConstant('{app}\run_eaf.vbs');
-  
-  // Load the file into TStringList
-  FileContent := TStringList.Create;
-  try
-    FileContent.LoadFromFile(FileName);
-    FileContent.Add('WshShell.Run chr(34) & "' + ExpandConstant('{app}\eaf.bat') + '" & chr(34) & " " & argsString, 0'); // Change to /d for drive change support
-    // Add lines to the file
-    FileContent.Add('Set WshShell = Nothing');
-
-    
-    // Save the changes back to the file
-    FileContent.SaveToFile(FileName);
-  finally
-    FileContent.Free;
-  end;
-end;
-
 function DeleteDirectory(const Dir: String): Boolean;
 begin
   Result := DelTree(Dir, True, True, True);
@@ -127,13 +82,54 @@ begin
    
 end;
 
+
+
+// Declare necessary constants and function from Windows API
+const
+  WM_SETTINGCHANGE = $1A;
+  SMTO_ABORTIFHUNG = 2;
+
+
+procedure AddToPath;
+var
+  OldPath, NewPath: string;
+begin
+  // Get the current PATH environment variable
+  if RegQueryStringValue(HKLM, 'SYSTEM\CurrentControlSet\Control\Session Manager\Environment', 'Path', OldPath) then
+  begin
+    // Check if our path is already there
+    if Pos(ExpandConstant(';{app}\bin'), OldPath) = 0 then
+    begin
+      // Add the application's installation folder to the system PATH
+      NewPath := OldPath + ExpandConstant(';{app}\bin');
+      RegWriteStringValue(HKLM, 'SYSTEM\CurrentControlSet\Control\Session Manager\Environment', 'Path', NewPath);
+
+    end;
+  end;
+end;
+
+
+procedure AddHome;
+var
+  NewPath: string;
+begin
+  NewPath := ExpandConstant('{app}');
+  RegWriteStringValue(HKLM, 'SYSTEM\CurrentControlSet\Control\Session Manager\Environment', 'EAF_HOME', NewPath);
+end;
+
 procedure CurStepChanged(CurStep: TSetupStep);
 begin
   if CurStep = ssPostInstall then
   begin
+    // Add the application path to the PATH variable after installation
+    AddToPath;
+    AddHome;
     DeleteDirectories;
   end;
 end;
+
+
+
 
 [Run]
 ; Create a VBS script to run the batch file

@@ -1,5 +1,7 @@
 package eaf.manager;
 
+import eaf.Main;
+
 import java.awt.*;
 
 public class ColorManager {
@@ -150,13 +152,24 @@ public class ColorManager {
     public static String colorText(String text, int r, int g, int b) {
         String colorAnsi = rgbToAnsi(r, g, b);
         String resetAnsi = "\033[0m"; // Reset ANSI code to default color
-        return colorAnsi + text + resetAnsi;
+        if (Main.ansi) {
+            return colorAnsi + text + resetAnsi;
+        }
+        else {
+            return text;
+        }
+
     }
 
     public static String colorText(String text, Color c) {
         String colorAnsi = rgbToAnsi(c.getRed(), c.getGreen(), c.getBlue());
         String resetAnsi = "\033[0m"; // Reset ANSI code to default color
-        return colorAnsi + text + resetAnsi;
+        if (Main.ansi) {
+            return colorAnsi + text + resetAnsi;
+        }
+        else {
+            return text;
+        }
     }
 
 

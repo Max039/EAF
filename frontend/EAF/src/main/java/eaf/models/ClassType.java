@@ -1,8 +1,10 @@
 package eaf.models;
 
 import eaf.compiler.SyntaxTree;
+import eaf.manager.ColorManager;
 import eaf.manager.LogManager;
 
+import java.awt.*;
 import java.util.*;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -151,7 +153,7 @@ public class ClassType implements Comparable {
             }
         }
         var childrenSorted = root.children.stream().sorted(Comparator.comparing(t -> SyntaxTree.toSimpleName(t.name))).toList();
-        sb.append(SyntaxTree.toSimpleName(root.name) + " (" + "\u001B[37m" + root.pack  + "\u001B[0m" + ")").append("\n");
+        sb.append(SyntaxTree.toSimpleName(root.name) + " (" + ColorManager.colorText(root.pack, new Color(140, 140, 140)) + ")").append("\n");
         for (int i = 0; i < childrenSorted.size(); i++) {
             sb.append(getClassHierarchy(childrenSorted.get(i), indent, i == childrenSorted.size() - 1, false));
         }
