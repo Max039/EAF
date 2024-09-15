@@ -143,8 +143,8 @@ This project is designed to create a frontend for [EvoAl](https://evoal.de/) tha
      ```bash
      vi ~/.zshenv
      ```
-	 - Start edutubg:
-     - Press `i` to start editing.
+	 - Start editing:
+		- Press `i` to start editing.
    
    - Add the following lines to the file:
      ```bash
