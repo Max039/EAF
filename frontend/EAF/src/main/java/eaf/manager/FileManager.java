@@ -432,7 +432,7 @@ public class FileManager {
     }
 
 
-    public static void copyFilesExcludingJar(Path sourceDir, Path targetDir, String excludeFileName) throws IOException {
+    public static void copyFiles(Path sourceDir, Path targetDir) throws IOException {
         if (Files.exists(targetDir)) {
             System.out.println("Target directory already exists. No files copied.");
             return;
@@ -444,10 +444,8 @@ public class FileManager {
             @Override
             public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
                 Path targetFile = targetDir.resolve(sourceDir.relativize(file));
-                if (!file.getFileName().toString().equals(excludeFileName)) {
-                    Files.createDirectories(targetFile.getParent());
-                    Files.copy(file, targetFile, StandardCopyOption.REPLACE_EXISTING);
-                }
+                Files.createDirectories(targetFile.getParent());
+                Files.copy(file, targetFile, StandardCopyOption.REPLACE_EXISTING);
                 return FileVisitResult.CONTINUE;
             }
 
@@ -473,8 +471,7 @@ public class FileManager {
             File jarFile = new File(location.toURI());
             Path sourceDir = jarFile.getParentFile().toPath();
             Path targetDir = Paths.get(System.getProperty("user.home"), "Documents", "Eaf");
-            String excludeFileName = "eaf.jar";
-            copyFilesExcludingJar(sourceDir, targetDir, excludeFileName);
+            copyFiles(sourceDir, targetDir);
             changeWorkingDirectory(targetDir);
         } catch (IOException e) {
             e.printStackTrace();
