@@ -36,7 +36,8 @@ This project is designed to create a frontend for [EvoAl](https://evoal.de/) tha
 7. [Rect Creation / Editing](#usage)
 8. [Presets](#usage)
 9. [Pre Run Generator Setup](#usage)
-10. [About](github/md/about.md)
+10. [Console Commands](github/md/commands.md)
+11. [About](github/md/about.md)
 
 ---
 
