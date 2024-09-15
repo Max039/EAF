@@ -7,7 +7,7 @@
 - To run EAF without GUI:
     ```bash
     eaf "relative/full eaf-file path" -nogui
-
+	```
 
 # Disclaimer:
 
