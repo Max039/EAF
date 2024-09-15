@@ -1,0 +1,34 @@
+#!/bin/bash
+
+# Check if EAF_HOME is set
+if [ -z "$EAF_HOME" ]; then
+  echo "Error: EAF_HOME is not set."
+  exit 1
+fi
+
+# Check if the first argument is provided
+if [ -z "$1" ]; then
+  echo "Usage: eaf <relative_path_to_file> [additional_arguments...]"
+  exit 1
+fi
+
+# Get the current working directory
+CURRENT_DIR=$(pwd)
+
+# Construct the absolute path
+ABSOLUTE_PATH="$CURRENT_DIR/$1"
+
+# Check if the file exists
+if [ ! -e "$ABSOLUTE_PATH" ]; then
+  echo "Error: File does not exist at '$ABSOLUTE_PATH'."
+  exit 1
+fi
+
+# Shift the arguments so that "$@" will contain any additional arguments
+shift
+
+# Change to the EAF_HOME directory
+cd "$EAF_HOME" || exit
+
+# Execute the JAR file with the absolute path and any additional arguments
+java -jar eaf.jar "$ABSOLUTE_PATH" "$@"
