@@ -2,7 +2,7 @@
 
 - To run EAF:
     ```bash
-    eaf "relative/full eaf-file path"
+    eaf "eaf-file-path"
     ```
 - To run without GUI:
     ```bash
