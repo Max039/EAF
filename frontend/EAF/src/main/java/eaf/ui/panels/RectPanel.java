@@ -1,6 +1,7 @@
 package eaf.ui.panels;
 
 import eaf.compiler.SyntaxTree;
+import eaf.download.Downloader;
 import eaf.executor.Executor;
 import eaf.input.InputHandler;
 import eaf.Main;
@@ -114,7 +115,10 @@ public class RectPanel extends JScrollPane {
             leftButton.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    InputHandler.tryRun();
+                    Thread executionThread = new Thread(() -> {
+                        InputHandler.tryRun();
+                    });
+                    executionThread.start();
                 }
             });
 

@@ -126,7 +126,10 @@ public class InputHandler {
                     FileManager.save();
                 }
                 else if (e.getKeyCode() == KeyEvent.VK_R && isControlPressed) {
-                    InputHandler.tryRun();
+                    Thread executionThread = new Thread(() -> {
+                        InputHandler.tryRun();
+                    });
+                    executionThread.start();
                 }
             }
 

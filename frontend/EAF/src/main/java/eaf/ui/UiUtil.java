@@ -360,7 +360,10 @@ public class UiUtil {
         run.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                InputHandler.tryRun();
+                Thread executionThread = new Thread(() -> {
+                    InputHandler.tryRun();
+                });
+                executionThread.start();
             }
         });
 
