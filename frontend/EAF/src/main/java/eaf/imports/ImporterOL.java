@@ -43,6 +43,9 @@ public class ImporterOL extends Importer {
         LogManager.println(ea);
         LogManager.println(documenting);
 
+        var prob = SyntaxTree.processContentOfType(SyntaxTree.get("de.evoal.optimisation.core.problem").instance(), problem, tempModule);
+        var probrec = RectFactory.getRectFromClassType(prob.instance);
+        Main.mainPanel.leftPanel.addRect(probrec);
 
         var al = SyntaxTree.processContentOfType(SyntaxTree.get("de.evoal.optimisation.ea.optimisation.evolutionary-algorithm").instance(), ea, tempModule);
         var rec = RectFactory.getRectFromClassType(al.instance);
