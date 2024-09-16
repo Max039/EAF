@@ -15,7 +15,7 @@ public class ImporterEAF extends Importer{
         String curr = System.getProperty("user.dir");
         String name = file.getName().split("\\.")[0];
         LogManager.println(curr + "/" + savesPath + "/" + name + "/" + file.getName());
-        var newFile = FileManager.copyFile(file.getAbsolutePath(), curr + "/" + savesPath + "/" + name + "/" + file.getName());
+        var newFile = FileManager.copyFile(file.getAbsolutePath(), curr + savesPath + "/" + name + "/" + file.getName());
         FileManager.copyFolder(curr + "/project_base", curr + "/" + savesPath + "/" + name);
         loadSave(readJSONFileToJSON(newFile));
         Main.cacheManager.addToBuffer("filesOpened", newFile.getPath());

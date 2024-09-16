@@ -24,7 +24,7 @@ public class ImporterOL extends Importer {
         FileManager.emptySave();
         String curr = System.getProperty("user.dir");
         String filename = file.getName().split("\\.")[0];
-        String path = curr + "/" + savesPath + "/" + filename + "/" + filename + ".eaf";
+        String path = curr + savesPath + "/" + filename + "/" + filename + ".eaf";
         LogManager.println(LogManager.importer() + LogManager.file() + " " +path);
 
         var imps = new ArrayList<Module>();
