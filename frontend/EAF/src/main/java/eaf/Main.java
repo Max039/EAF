@@ -4,6 +4,7 @@ import eaf.compiler.SyntaxTree;
 import eaf.download.Downloader;
 import eaf.executor.Executor;
 import eaf.executor.OpenIntelliJProject;
+import eaf.imports.Importer;
 import eaf.input.InputHandler;
 import eaf.intro.DoubleHelixAnimation;
 import eaf.intro.Intro;
@@ -195,6 +196,7 @@ public class Main extends JPanel {
         UIManager.put("Tree.font", font);
 
         Preset.prepareSetups();
+        Importer.prepareImporter();
 
         if (os == OS.MAC) {
             FileManager.copyToDocuments();

@@ -5,6 +5,7 @@ import eaf.*;
 import eaf.download.Downloader;
 import eaf.executor.Executor;
 import eaf.executor.OpenIntelliJProject;
+import eaf.imports.Importer;
 import eaf.input.InputHandler;
 import eaf.manager.ExtraRectManager;
 import eaf.manager.FileManager;
@@ -116,7 +117,7 @@ public class UiUtil {
                 try {
                     var cancle = showUnsaveDialog();
                     if (!cancle) {
-                        var file = FileManager.chooseJavaFile(Main.savesPath, Main.saveFormat);
+                        var file = FileManager.chooseJavaFile(Main.savesPath, ".eaf", Main.saveFormat);
                         if (file != null) {
                             loadSave(readJSONFileToJSON(file));
                             Main.cacheManager.addToBuffer("filesOpened", file.getPath());
@@ -137,18 +138,12 @@ public class UiUtil {
                 try {
                     var cancle = showUnsaveDialog();
                     if (!cancle) {
-                        var file = FileManager.chooseJavaFile(Main.savesPath, Main.saveFormat);
+                        var file = FileManager.chooseJavaFile(Main.savesPath, ".ddl " + Main.saveFormat + " .generator .mll .ol", Main.saveFormat, "ddl", "ol", "generator", "mll");
                         if (file != null) {
-                            String curr = System.getProperty("user.dir");
-                            String name = file.getName().split("\\.")[0];
-                            LogManager.println(curr + "/" + savesPath + "/" + name + "/" + file.getName());
-                            var newFile = FileManager.copyFile(file.getAbsolutePath(), curr + "/" + savesPath + "/" + name + "/" + file.getName());
-                            FileManager.copyFolder(curr + "/project_base", curr + "/" + savesPath + "/" + name);
-                            loadSave(readJSONFileToJSON(newFile));
-                            Main.cacheManager.addToBuffer("filesOpened", newFile.getPath());
+                            Importer.importer.get(file.getName().split("\\.", 2)[1]).importFile(file);
                         }
                     }
-                } catch (IOException ex) {
+                } catch (Exception ex) {
                     throw new RuntimeException(ex);
                 }
             }

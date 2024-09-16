@@ -110,7 +110,7 @@ public class FileManager {
         }
     }
 
-    public static File chooseJavaFile(String path, String filter) {
+    public static File chooseJavaFile(String path, String header, String ... filter) {
         String currentDirectory = System.getProperty("user.dir");
 
         // Specify the starting directory
@@ -120,7 +120,7 @@ public class FileManager {
         JFileChooser fileChooser = new JFileChooser(startingDirectory);
 
         // Set up the filter to only allow .json files
-        FileNameExtensionFilter jsonFilter = new FileNameExtensionFilter(filter + " Files", filter);
+        FileNameExtensionFilter jsonFilter = new FileNameExtensionFilter(header, filter);
         fileChooser.setFileFilter(jsonFilter);
 
         // Optionally set it to only show files with the given extension and hide others
