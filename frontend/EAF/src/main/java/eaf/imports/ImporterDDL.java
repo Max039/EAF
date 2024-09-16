@@ -24,6 +24,7 @@ public class ImporterDDL extends Importer{
         SyntaxTree.getImports(file.getAbsolutePath(), imps);
         var tempModule = new eaf.models.Module("temp", imps);
         var content = FileManager.getContentOfFile(file).replace("'", "");
+        content = SyntaxTree.removeComments(content);
 
         // Regex to match type, name, and instance flag
         String regex = "data\\s+(?:(?<name>[\\w\\-]+)\\s+of\\s+instance\\s+(?<typeinstance>\\w+))|(?<type>[\\w\\s]+)\\s+data\\s+(?<name2>\\S+);";

@@ -5,6 +5,7 @@ import eaf.compiler.SyntaxTree;
 import eaf.input.InputHandler;
 import eaf.manager.FileManager;
 import eaf.manager.LogManager;
+import eaf.models.ClassType;
 import eaf.models.DataField;
 import eaf.models.Module;
 import eaf.rects.RectFactory;
@@ -31,13 +32,15 @@ public class ImporterOL extends Importer {
         SyntaxTree.getImports(file.getAbsolutePath(), imps);
         var tempModule = new eaf.models.Module("temp", imps);
         var content = FileManager.getContentOfFile(file).replace("'", "");
+        content = SyntaxTree.removeComments(content);
+
         var problem = SyntaxTree.extractBlock(content, "specify");
         var ea = SyntaxTree.extractBlock(content, "configure");
         var documenting = "";
         if (ea.contains("documenting")) {
             var parts = ea.split("documenting", 2);
             ea = parts[0] + "}";
-            documenting = parts[1].substring(0, parts[1].length()-2);
+            documenting = "{ \n documentors" + parts[1];
         }
         LogManager.println(problem);
         LogManager.println(ea);
@@ -51,7 +54,13 @@ public class ImporterOL extends Importer {
         var rec = RectFactory.getRectFromClassType(al.instance);
         Main.mainPanel.leftPanel.addRect(rec);
 
+        var doc = SyntaxTree.processContentOfType(SyntaxTree.get("de.eaf.base.documentor").instance(), documenting, tempModule);
+        var docrec = RectFactory.getRectFromClassType(doc.instance);
+        Main.mainPanel.leftPanel.addRect(docrec);
+
         loadDDLFiles(file);
+
+        FileManager.copyFilesWithEndings(file.getParentFile().getAbsolutePath(), curr + savesPath + "/" + filename, ".csv", ".pson", ".xlsx");
 
         Main.preset = Preset.getPreset("ea");
         FileManager.writeJSONToFile(FileManager.createSave(), path);

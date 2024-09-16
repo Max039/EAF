@@ -19,6 +19,7 @@ import java.nio.file.attribute.BasicFileAttributes;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
+import java.util.List;
 
 public class FileManager {
 
@@ -496,6 +497,9 @@ public class FileManager {
         try {
             var reader = new BufferedReader(new FileReader(file.getAbsolutePath()));
             while ((line = reader.readLine()) != null) {
+                if (line.contains("//")) {
+                    line = line.split("//", 2)[0];
+                }
                 contentBuilder.append(line).append("\n");
             }
         }
@@ -504,5 +508,45 @@ public class FileManager {
         }
 
         return contentBuilder.toString();
+    }
+
+    // Function that copies files with any of the specified endings
+    public static void copyFilesWithEndings(String sourceDir, String targetDir, String... fileEndings) throws IOException {
+        // Create File objects for source and target directories
+        File sourceFolder = new File(sourceDir);
+        File targetFolder = new File(targetDir);
+
+        // Check if source directory exists and is a directory
+        if (!sourceFolder.exists() || !sourceFolder.isDirectory()) {
+            throw new IllegalArgumentException("Source directory doesn't exist or is not a directory");
+        }
+
+        // Check if target directory exists, if not, create it
+        if (!targetFolder.exists()) {
+            targetFolder.mkdirs();
+        }
+
+        // Convert the varargs into a List for easier processing
+        List<String> endingsList = Arrays.asList(fileEndings);
+
+        // Iterate through all files in the source directory
+        for (File file : sourceFolder.listFiles()) {
+            // Only process files (ignore folders)
+            if (file.isFile()) {
+                // Check if the file name ends with any of the specified endings
+                for (String ending : endingsList) {
+                    if (file.getName().endsWith(ending)) {
+                        // Define the target file path in the destination directory
+                        Path targetPath = Paths.get(targetDir, file.getName());
+
+                        // Copy the file to the destination
+                        Files.copy(file.toPath(), targetPath, StandardCopyOption.REPLACE_EXISTING);
+
+                        LogManager.println(LogManager.fileManager() + LogManager.write() + " Copied: " + file.getName());
+                        break; // Exit the loop once we find a matching ending
+                    }
+                }
+            }
+        }
     }
 }

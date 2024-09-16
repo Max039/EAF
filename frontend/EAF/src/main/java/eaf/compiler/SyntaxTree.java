@@ -463,7 +463,7 @@ public class SyntaxTree {
         return newModule;
     }
 
-    private static String removeComments(String content) {
+    public static String removeComments(String content) {
         return content.replaceAll("(?s)/\\*\\*.*?\\*/", "");
     }
 
