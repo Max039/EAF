@@ -141,6 +141,7 @@ public class UiUtil {
                         var file = FileManager.chooseJavaFile(Main.savesPath, ".ddl " + Main.saveFormat + " .generator .mll .ol", Main.saveFormat, "ddl", "ol", "generator", "mll");
                         if (file != null) {
                             Importer.importer.get(file.getName().split("\\.", 2)[1]).importFile(file);
+                            ErrorPane.checkForErrors();
                         }
                     }
                 } catch (Exception ex) {

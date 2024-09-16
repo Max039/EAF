@@ -32,9 +32,9 @@ public class FieldValue {
 
     //Array Constructor
     public FieldValue(FieldType type, ArrayList<FieldValue> values) {
-        this.values = new ArrayList<>(values); // Create a copy of the values list
+        this.values = new ArrayList<>(); // Create a copy of the values list
         this.type = type;
-        for (var v : new ArrayList<>(values)) { // Iterate over the copy of the values list
+        for (var v : values) { // Iterate over the copy of the values list
             try {
                 addArrayElement(v);
             } catch (SyntaxTree.FieldTypeMismatchException e) {

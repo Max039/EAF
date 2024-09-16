@@ -605,7 +605,6 @@ public class SyntaxTree {
             }
 
         }
-
         return substrings;
     }
 
