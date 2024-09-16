@@ -75,8 +75,17 @@ public class Module {
     }
 
     public ClassType resolveClass(String className) {
-        LogManager.println(LogManager.syntax() + " Trying to resolve " + className + " in module " + name);
-        return classesLoaded.get(className);
+        try {
+            LogManager.println(LogManager.syntax() + " Trying to resolve " + className + " in module " + name);
+            var res = classesLoaded.get(className);
+            if (res == null) {
+                throw new ClassNotFoundException("Class " + className + " was not found in module " + name + " !");
+            }
+            return res;
+        }
+        catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public static class ModuleDomainException extends RuntimeException {

@@ -7,6 +7,7 @@ import eaf.manager.FileManager;
 import eaf.manager.LogManager;
 import eaf.models.DataField;
 import eaf.models.Module;
+import eaf.rects.RectFactory;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -40,6 +41,11 @@ public class ImporterOL extends Importer {
         LogManager.println(problem);
         LogManager.println(ea);
         LogManager.println(documenting);
+
+
+        var al = SyntaxTree.processContentOfType(SyntaxTree.get("de.evoal.optimisation.ea.optimisation.evolutionary-algorithm").instance(), ea, tempModule);
+        var rec = RectFactory.getRectFromClassType(al.instance);
+        Main.mainPanel.leftPanel.addRect(rec);
 
         // Regex to match type, name, and instance flag
         String regex = "data\\s+(?:(?<name>[\\w\\-]+)\\s+of\\s+instance\\s+(?<typeinstance>\\w+))|(?<type>[\\w\\s]+)\\s+data\\s+(?<name2>\\S+);";
