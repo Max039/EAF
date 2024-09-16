@@ -489,4 +489,20 @@ public class FileManager {
         Downloader.updatePaths();
         LogManager.println("Working directory changed to: " + System.getProperty("user.dir"));
     }
+
+    public static String getContentOfFile(File file) {
+        StringBuilder contentBuilder = new StringBuilder();
+        String line;
+        try {
+            var reader = new BufferedReader(new FileReader(file.getAbsolutePath()));
+            while ((line = reader.readLine()) != null) {
+                contentBuilder.append(line).append("\n");
+            }
+        }
+        catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+
+        return contentBuilder.toString();
+    }
 }

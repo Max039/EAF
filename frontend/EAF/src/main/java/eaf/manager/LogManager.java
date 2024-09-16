@@ -143,6 +143,10 @@ public class LogManager {
         return encased(ColorManager.colorText("Preset", ColorManager.preset));
     }
 
+    public static String importer() {
+        return encased(ColorManager.colorText("Importer", ColorManager.importer));
+    }
+
     public static void println(String s) {
         if (Main.fulllog) {
             System.out.println(s);

@@ -262,52 +262,56 @@ public class SyntaxTree {
             ArrayList<Module> modulesImported = new ArrayList<>();
             LogManager.println(LogManager.imp() + " \"" + definitionName + "\"" + ColorManager.colorText(" is not ", ColorManager.errorColor) + "yet in memory!");
             LogManager.println(LogManager.imp() + " Processing definition " + definitionName + " under path " + filename);
-            try (BufferedReader reader = new BufferedReader(new FileReader(filename))) {
-                String line;
-                while ((line = reader.readLine()) != null) {
-                    line = line.trim();  // Trim leading and trailing whitespace
-
-                    // Check if the line is empty
-                    if (line.isEmpty()) {
-                        continue;  // Skip empty lines
-                    }
-
-                    // Define a regex pattern to match "import ... from ..."
-                    String regex = "^import \"([^\"]+)\" from ([^;]+);$";
-                    Pattern pattern = Pattern.compile(regex);
-                    Matcher matcher = pattern.matcher(line);
-
-                    // If line matches the pattern, process it
-                    if (matcher.matches()) {
-                        String definitions = matcher.group(1);
-                        String generator = matcher.group(2);
-
-                        // Remove single quotes
-                        definitions = definitions.replace("'", "");
-                        generator = generator.replace("'", "");
-
-
-
-                        // Call your function and print the line
-                        var res2 = processImport(line, definitions, generator);
-
-                        if (res2 != null) {
-                            modulesImported.add(res2);
-                        }
-
-                        //LogManager.println(line);
-                    } else {
-                        break;  // Stop processing on the first non-matching line
-                    }
-                }
-                var newModule = processContentOfModule(new BufferedReader(new FileReader(filename)), modulesImported);
-                moduleRegister.put(definitionName, newModule);
-                return newModule;
-            }
+            getImports(filename, modulesImported);
+            var newModule= processContentOfModule(new BufferedReader(new FileReader(filename)), modulesImported);
+            moduleRegister.put(definitionName, newModule);
+            return newModule;
         }
         else {
             LogManager.println(LogManager.imp() + " Skipping \"" + definitionName +"\"" +  ColorManager.colorText(" is ", ColorManager.sucessColor) + "already in memory!");
             return res;
+        }
+    }
+
+    public static void getImports(String filename, ArrayList<Module> modulesImported) throws IOException {
+        try (BufferedReader reader = new BufferedReader(new FileReader(filename))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                line = line.trim();  // Trim leading and trailing whitespace
+
+                // Check if the line is empty
+                if (line.isEmpty()) {
+                    continue;  // Skip empty lines
+                }
+
+                // Define a regex pattern to match "import ... from ..."
+                String regex = "^import \"([^\"]+)\" from ([^;]+);$";
+                Pattern pattern = Pattern.compile(regex);
+                Matcher matcher = pattern.matcher(line);
+
+                // If line matches the pattern, process it
+                if (matcher.matches()) {
+                    String definitions = matcher.group(1);
+                    String generator = matcher.group(2);
+
+                    // Remove single quotes
+                    definitions = definitions.replace("'", "");
+                    generator = generator.replace("'", "");
+
+
+
+                    // Call your function and print the line
+                    var res2 = processImport(line, definitions, generator);
+
+                    if (res2 != null) {
+                        modulesImported.add(res2);
+                    }
+
+                    //LogManager.println(line);
+                } else {
+                    break;  // Stop processing on the first non-matching line
+                }
+            }
         }
     }
 
@@ -890,4 +894,5 @@ public class SyntaxTree {
             throw new ClassDomainAlreadyUsedException("The class domain " + bridge.name + " is already used!");
         }
     }
+
 }
