@@ -72,8 +72,8 @@ public class ImporterDDL extends Importer{
         }
 
 
-        //FileManager.writeJSONToFile(FileManager.createSave(), path);
-        //Main.cacheManager.addToBuffer("filesOpened", path);
-        //InputHandler.actionHandler.saved();
+        FileManager.writeJSONToFile(FileManager.createSave(), path);
+        Main.cacheManager.addToBuffer("filesOpened", path);
+        InputHandler.actionHandler.saved();
     }
 }
