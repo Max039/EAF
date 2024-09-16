@@ -15,4 +15,29 @@ public abstract class Importer {
     }
 
     public abstract void importFile(File file) throws Exception;
+
+    public static void loadDDLFiles(File in) {
+        // Create a File object for the parent directory
+        File folder = in.getParentFile();
+        // Check if the folder exists and is a directory
+        if (folder.exists() && folder.isDirectory()) {
+            // List all files in the directory
+            File[] files = folder.listFiles();
+
+            if (files != null) {
+                // Loop through the files and print those ending with '.ddl'
+                for (File file : files) {
+                    if (file.isFile() && file.getName().endsWith(".ddl")) {
+                        try {
+                            importer.get("ddl").importFile(file);
+                        }
+                        catch (Exception e) {
+                            throw new RuntimeException(e);
+                        }
+                    }
+                }
+            }
+        }
+    }
+
 }

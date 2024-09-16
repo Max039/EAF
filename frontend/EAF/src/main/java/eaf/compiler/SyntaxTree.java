@@ -500,6 +500,9 @@ public class SyntaxTree {
     static void PrimitiveFieldSetter(ClassType context, String field, String typename, String rawValue) {
         typename = getFieldTypeIfNull(context, field, typename);
         LogManager.println(LogManager.field() + " FieldSetterPrimitive called with field: " + field + ", typename: " + typename + ", value: " + rawValue);
+        if (typename.contains("data")) {
+            rawValue = rawValue.split("data", 2)[1];
+        }
         context.setField(field, primitiveStringToFieldValue(typename, rawValue), true);
     }
 

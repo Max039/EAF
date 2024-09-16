@@ -8,6 +8,7 @@ import eaf.manager.LogManager;
 import eaf.models.DataField;
 import eaf.models.Module;
 import eaf.rects.RectFactory;
+import eaf.setup.Preset;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -47,17 +48,9 @@ public class ImporterOL extends Importer {
         var rec = RectFactory.getRectFromClassType(al.instance);
         Main.mainPanel.leftPanel.addRect(rec);
 
-        // Regex to match type, name, and instance flag
-        String regex = "data\\s+(?:(?<name>[\\w\\-]+)\\s+of\\s+instance\\s+(?<typeinstance>\\w+))|(?<type>[\\w\\s]+)\\s+data\\s+(?<name2>\\S+);";
-        Pattern pattern = Pattern.compile(regex);
+        loadDDLFiles(file);
 
-
-        Matcher matcher = pattern.matcher(content);
-
-        while (matcher.find()) {
-
-        }
-
+        Main.preset = Preset.getPreset("ea");
         FileManager.writeJSONToFile(FileManager.createSave(), path);
         Main.cacheManager.addToBuffer("filesOpened", path);
         InputHandler.actionHandler.saved();

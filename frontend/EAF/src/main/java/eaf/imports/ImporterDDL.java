@@ -20,8 +20,6 @@ import static eaf.Main.savesPath;
 public class ImporterDDL extends Importer{
 
     public void importFile(File file) throws Exception {
-        FileManager.emptySave();
-
         var imps = new ArrayList<eaf.models.Module>();
         SyntaxTree.getImports(file.getAbsolutePath(), imps);
         var tempModule = new eaf.models.Module("temp", imps);
