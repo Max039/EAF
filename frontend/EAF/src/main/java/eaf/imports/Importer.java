@@ -11,6 +11,7 @@ public abstract class Importer {
         importer = new HashMap<>();
         importer.put("eaf", new ImporterEAF());
         importer.put("ddl", new ImporterDDL());
+        importer.put("ol", new ImporterOL());
     }
 
     public abstract void importFile(File file) throws Exception;

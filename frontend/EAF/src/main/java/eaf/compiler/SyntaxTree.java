@@ -141,6 +141,9 @@ public class SyntaxTree {
         while (!fileQueue.isEmpty()) {
             File file = fileQueue.poll();
             String relativePath = new File(currentPath).toURI().relativize(file.toURI()).getPath();
+            if (relativePath.startsWith("plugins")) {
+                relativePath = relativePath.split("src.main.resources.", 2)[1];
+            }
             processDlFileForImports(file.getAbsolutePath(), makeModuleName(relativePath));
         }
 
@@ -895,4 +898,48 @@ public class SyntaxTree {
         }
     }
 
+    public static String extractBlock(String text, String target) {
+        // Find the index of the target string in the input text
+        int targetIndex = text.indexOf(target);
+
+        // If the target string is not found, return null
+        if (targetIndex == -1) {
+            return null;
+        }
+
+        // Find the index of the first '{' after the target string
+        int startIndex = text.indexOf("{", targetIndex);
+
+        // If there's no '{' after the target string, return null
+        if (startIndex == -1) {
+            return null;
+        }
+
+        // Initialize a StringBuilder to store the block content
+        StringBuilder block = new StringBuilder();
+
+        // Initialize a counter for tracking curly braces
+        int braceCounter = 0;
+
+        // Iterate over the characters starting from the first '{'
+        for (int i = startIndex; i < text.length(); i++) {
+            char currentChar = text.charAt(i);
+            block.append(currentChar); // Add the character to the block
+
+            // Increment or decrement braceCounter based on the character
+            if (currentChar == '{') {
+                braceCounter++;
+            } else if (currentChar == '}') {
+                braceCounter--;
+            }
+
+            // If the braceCounter reaches 0, return the block
+            if (braceCounter == 0) {
+                return block.toString();
+            }
+        }
+
+        // If the loop ends and the counter never reached 0, return null (invalid block)
+        return null;
+    }
 }

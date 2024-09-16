@@ -21,17 +21,11 @@ public class ImporterDDL extends Importer{
 
     public void importFile(File file) throws Exception {
         FileManager.emptySave();
-        String curr = System.getProperty("user.dir");
-        String filename = file.getName().split("\\.")[0];
-        String path = curr + "/" + savesPath + "/" + filename + "/" + filename + ".eaf";
-        LogManager.println(LogManager.importer() + LogManager.file() + " " +path);
 
         var imps = new ArrayList<eaf.models.Module>();
         SyntaxTree.getImports(file.getAbsolutePath(), imps);
         var tempModule = new eaf.models.Module("temp", imps);
         var content = FileManager.getContentOfFile(file).replace("'", "");
-
-
 
         // Regex to match type, name, and instance flag
         String regex = "data\\s+(?:(?<name>[\\w\\-]+)\\s+of\\s+instance\\s+(?<typeinstance>\\w+))|(?<type>[\\w\\s]+)\\s+data\\s+(?<name2>\\S+);";
@@ -70,10 +64,5 @@ public class ImporterDDL extends Importer{
             LogManager.println(LogManager.importer() + LogManager.syntax() + LogManager.data() + " name = " + name + ", type = " + type + ", instance = " + isInstance);
             dataPanel.addDataField(new DataField(name, type, isInstance));
         }
-
-        // === Only used for import of ml, ol and generator
-        //FileManager.writeJSONToFile(FileManager.createSave(), path);
-        //Main.cacheManager.addToBuffer("filesOpened", path);
-        //InputHandler.actionHandler.saved();
     }
 }
