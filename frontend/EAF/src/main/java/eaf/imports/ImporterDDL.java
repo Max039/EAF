@@ -71,9 +71,9 @@ public class ImporterDDL extends Importer{
             dataPanel.addDataField(new DataField(name, type, isInstance));
         }
 
-
-        FileManager.writeJSONToFile(FileManager.createSave(), path);
-        Main.cacheManager.addToBuffer("filesOpened", path);
-        InputHandler.actionHandler.saved();
+        // === Only used for import of ml, ol and generator
+        //FileManager.writeJSONToFile(FileManager.createSave(), path);
+        //Main.cacheManager.addToBuffer("filesOpened", path);
+        //InputHandler.actionHandler.saved();
     }
 }
