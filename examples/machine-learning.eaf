@@ -52,21 +52,6 @@
         "sub-type": "de.eaf.mll.machine-learning",
         "value": [
             {
-                "field-name": "measures",
-                "package": "Array",
-                "primitive": false,
-                "count": 0,
-                "type": "array",
-                "sub-type": "de.eaf.base.func",
-                "value": [{
-                    "field-name": "",
-                    "package": "de.evoal.surrogate.ml",
-                    "type": "instance",
-                    "sub-type": "de.evoal.surrogate.ml.R²",
-                    "value": []
-                }]
-            },
-            {
                 "field-name": "maps",
                 "package": "Array",
                 "primitive": false,
@@ -556,18 +541,62 @@
                 }]
             },
             {
-                "field-name": "data-output-path",
-                "editable": true,
-                "type": "text-field",
-                "sub-type": "string",
-                "value": "svr.pson"
-            },
-            {
-                "field-name": "data-input-path",
-                "editable": true,
-                "type": "text-field",
-                "sub-type": "string",
-                "value": "data.json"
+                "field-name": "config",
+                "package": "de.eaf.mll.advanced-config",
+                "type": "instance",
+                "sub-type": "de.eaf.mll.advanced-config",
+                "value": [
+                    {
+                        "field-name": "loop-start",
+                        "editable": true,
+                        "type": "text-field",
+                        "sub-type": "int",
+                        "value": "1"
+                    },
+                    {
+                        "field-name": "measures",
+                        "package": "Array",
+                        "primitive": false,
+                        "count": 0,
+                        "type": "array",
+                        "sub-type": "de.eaf.base.func",
+                        "value": [{
+                            "field-name": "",
+                            "package": "de.evoal.surrogate.ml",
+                            "type": "instance",
+                            "sub-type": "de.evoal.surrogate.ml.R²",
+                            "value": []
+                        }]
+                    },
+                    {
+                        "field-name": "data-output-path",
+                        "editable": true,
+                        "type": "text-field",
+                        "sub-type": "string",
+                        "value": "output/svr${counter}.pson"
+                    },
+                    {
+                        "field-name": "$loop-counter",
+                        "editable": true,
+                        "type": "text-field",
+                        "sub-type": "string",
+                        "value": "counter"
+                    },
+                    {
+                        "field-name": "data-input-path",
+                        "editable": true,
+                        "type": "text-field",
+                        "sub-type": "string",
+                        "value": "data.json"
+                    },
+                    {
+                        "field-name": "loop-end",
+                        "editable": true,
+                        "type": "text-field",
+                        "sub-type": "int",
+                        "value": "10"
+                    }
+                ]
             }
         ]
     }],

@@ -115,11 +115,17 @@ public class ML extends Preset {
 
         ClassRect config  = (ClassRect) base.getSubRectByName("config");
 
-        res += repeatString(stringPadding, 2) + "predict svr from " + config.getSubRectByName("data-input-path").toString(0) + "\n";
-        res += repeatString(stringPadding, 2) + "and measure\n";
+
+        int padding = config.clazz.name.endsWith("advanced-config") ? 3 : 2;
+        if (padding == 3) {
+            res += repeatString(stringPadding, 2) + "for " + config.getSubRectByName("$loop-counter").toString(0).replace("\"", "") + " in [" +  config.getSubRectByName("loop-start").toString(0) + " to " + config.getSubRectByName("loop-end").toString(0) + "] loop\n";
+        }
+
+        res += repeatString(stringPadding, padding) + "predict svr from " + config.getSubRectByName("data-input-path").toString(0) + "\n";
+        res += repeatString(stringPadding, padding) + "and measure\n";
         for (var _measure : ((ArrayRect)config.getSubRectByName("measures")).getSubRects()) {
             var measure = (ClassRect) _measure;
-            res += repeatString(stringPadding, 3) + "'" + SyntaxTree.toSimpleName(measure.clazz.name) + "'" + "(";
+            res += repeatString(stringPadding, padding + 1) + "'" + SyntaxTree.toSimpleName(measure.clazz.name) + "'" + "(";
             int i = 0;
             for (var _param :  measure.getSubRects()) {
                 if (i > 0) {
@@ -131,12 +137,11 @@ public class ML extends Preset {
             }
             res += ");\n";
         }
-        res += repeatString(stringPadding, 2) + "end\n";
-        res += repeatString(stringPadding, 2) + "and store to " + config.getSubRectByName("data-output-path").toString(0) + "\n";
-
-
-
-
+        res += repeatString(stringPadding, padding) + "end\n";
+        res += repeatString(stringPadding, padding) + "and store to " + config.getSubRectByName("data-output-path").toString(0) + "\n";
+        if (padding == 3) {
+            res += repeatString(stringPadding, 2) + "end\n";
+        }
 
 
         res += "}";
