@@ -29,10 +29,8 @@ import java.awt.font.FontRenderContext;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.Comparator;
+import java.util.*;
 import java.util.List;
-import java.util.Objects;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import javax.imageio.ImageIO;
@@ -840,5 +838,17 @@ public abstract class RectWithRects extends Rect {
         return null;
     }
 
+    public ArrayList<String> variables() {
+        var res = new ArrayList<String>();
+        if (parent != null) {
+            res.addAll(parent.variables());
+        }
+        for (int i = 0; i < subRects.length; i++) {
+            if (names[i].startsWith("$")) {
+                res.add(subRects[i].toString(0).replace("\"", ""));
+            }
+        }
+        return res;
+    }
 
 }
