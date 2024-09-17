@@ -3,6 +3,7 @@ package eaf.rects;
 import eaf.action.TextFieldAction;
 import eaf.input.InputHandler;
 import eaf.models.ClassType;
+import eaf.ui.panels.RectPanel;
 import org.json.JSONObject;
 import eaf.*;
 import eaf.models.Pair;
@@ -31,6 +32,7 @@ public class TextFieldRect extends Rect {
 
     public static  Color defaultTextColor = new Color(255, 255, 255);
 
+    boolean containsVariable = false;
 
     Color  textColor = defaultTextColor;
 
@@ -39,6 +41,8 @@ public class TextFieldRect extends Rect {
     public static Color  borderColor = new Color(85, 85, 85);
 
     public static Color selectedColor = new Color(0, 0, 0);
+
+    public static Color variableColor = new Color(RectPanel.primitiveColor.getRed() + 20, RectPanel.primitiveColor.getGreen() + 20, RectPanel.primitiveColor.getBlue() + 50);
 
     public static Color selectionColor = new Color(255, 255, 255);
 
@@ -165,7 +169,12 @@ public class TextFieldRect extends Rect {
                     g2.setColor(new Color(warningColor.getRed(), warningColor.getGreen(), warningColor.getBlue(), (int)(255 * a)));
                 }
                 else {
-                    g2.setColor(new Color(color.getRed(), color.getGreen(), color.getBlue(), (int)(255 * a)));
+                    if (containsVariable) {
+                        g2.setColor(new Color(variableColor.getRed(), variableColor.getGreen(), variableColor.getBlue(), (int)(255 * a)));
+                    }
+                    else {
+                        g2.setColor(new Color(color.getRed(), color.getGreen(), color.getBlue(), (int)(255 * a)));
+                    }
                 }
 
             }
@@ -235,6 +244,7 @@ public class TextFieldRect extends Rect {
         String fieldName = parent.names[parentIndex];
         valid = true;
         warning = false;
+        containsVariable = false;
         if (clazz.name.contains("string")) {
             warning = textBox.getText().isBlank();
             if (warning) {
@@ -245,6 +255,16 @@ public class TextFieldRect extends Rect {
             warning = textBox.getText().equals("Enter String here!");
             if (warning) {
                 ErrorPane.warningRects.put(this, new Pair<>(getY(), fieldName + ": Default String!"));
+            }
+            else {
+                if (!parent.names[parentIndex].startsWith("$")) {
+                    for (var i : parent.variables()) {
+                        if (textBox.getText().contains(i)) {
+                            containsVariable = true;
+                            return;
+                        }
+                    }
+                }
             }
         }
         else if (clazz.name.contains("literal")) {
@@ -270,6 +290,16 @@ public class TextFieldRect extends Rect {
             if (warning) {
                 ErrorPane.warningRects.put(this, new Pair<>(getY(), fieldName + ": Number value 0!"));
                 return;
+            }
+            else {
+                if (!parent.names[parentIndex].startsWith("$")) {
+                    for (var i : parent.variables()) {
+                        if (textBox.getText().contains(i)) {
+                            containsVariable = true;
+                            return;
+                        }
+                    }
+                }
             }
         }
 
