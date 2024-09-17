@@ -309,7 +309,7 @@ public class TextFieldRect extends Rect {
         // Create regex pattern based on the value of allowFloatingPoint
         String numberPattern = allowFloatingPoint ? "\\d*\\.\\d+|\\d+" : "\\d+";
         String constantsPattern = String.join("|", constants);
-        String variablesPattern = String.join("|", variables);
+        String variablesPattern = String.join("|", variables.stream().map(t -> "$(" + t + ")").toList());
 
         // Build the regex pattern
         String regex = "^(" + numberPattern + "|" + constantsPattern + "|" + variablesPattern + ")([+\\-*/](" + numberPattern + "|" + constantsPattern + "|" + variablesPattern + "))*$";

@@ -966,6 +966,8 @@ public class SyntaxTree {
         ArrayList<String> result = new ArrayList<>();
         int index = 0;
 
+        startString = " " + startString + " ";
+
         // Loop through the input string
         while (index < input.length()) {
             // Find the next occurrence of the startString
