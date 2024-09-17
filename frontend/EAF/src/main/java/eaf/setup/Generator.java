@@ -50,11 +50,10 @@ public class Generator extends Preset {
         String constants = "";
         ArrayList<ClassType> filterImports = new ArrayList<>();
         for (var i : classesNeededForScript) {
-            if (!i.pack.contains("de.eaf.generator") && !i.pack.contains("de.eaf.bridge") ) {
+            if (!i.pack.contains("de.eaf")) {
                 filterImports.add(i);
             }
         }
-
         var imports = getUniqueImports(filterImports);
         for (var r : ConstantPane.getUsedConstants()) {
             if (!r.pack.isEmpty()) {

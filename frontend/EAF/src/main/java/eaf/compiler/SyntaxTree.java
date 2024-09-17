@@ -17,6 +17,7 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.lang.reflect.Array;
+import java.rmi.RemoteException;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -667,7 +668,7 @@ public class SyntaxTree {
         LogManager.println(input);
 
         Pattern definingFieldPattern = Pattern.compile("\\b\\b.+:\\b.");
-        Pattern fieldSetterPrimitivePattern = Pattern.compile("\\b\\w+:=\"?[\\w\\p{L}-]+(\\.[\\w\\p{L}-]+)*\"?\\b");
+        Pattern fieldSetterPrimitivePattern = Pattern.compile("\\b[^\\s\\+]+:=\"?[\\w\\p{L}-]+(\\.[\\w\\p{L}-]+)*\"?\\b");
         Pattern fieldSetterInstancePattern = Pattern.compile("\\w+(?::=\\w+)?(?:\\{(?:[^{}]*\\{[^{}]*\\}[^{}]*)*\\})?");
         Pattern arrayDefinerPattern = Pattern.compile("(\\b.+):(\\b.+):=\\[(?s)(.*?)\\]");
         Pattern arraySetterPattern = Pattern.compile("(\\b.+):=\\[(?s)(.*?)\\]");
@@ -692,6 +693,10 @@ public class SyntaxTree {
             else if (fieldSetterInstancePatternMatcher.find() && item.endsWith("}")) {
                 var headAndValue = item.split(":=", 2);
                 var typeAndValue = headAndValue[1].split("\\{", 2);
+                System.out.println("head:");
+                System.out.println(headAndValue[0]);
+                System.out.println("value:");
+                System.out.println(headAndValue[1]);
                 InstanceFieldSetter(context, headAndValue[0], typeAndValue[0].replace("instance", ""), "{" + typeAndValue[1], newModule);
             }
             else if (fieldSetterPrimitivePatternMatcher.find()) {
@@ -728,6 +733,9 @@ public class SyntaxTree {
         switch (definitions) {
             case "definitions" :
                 TreeNode foundNode = root.findNodeByPath(generator);
+                if (foundNode == null) {
+                    throw new RuntimeException("Node not found: " + generator);
+                }
                 return processDlFileForImports(foundNode.fullPath, generator);
             case "data" :
                 return null;
@@ -952,4 +960,45 @@ public class SyntaxTree {
         // If the loop ends and the counter never reached 0, return null (invalid block)
         return null;
     }
+
+
+    public static ArrayList<String> getFormatParts(String input, String startString, String ... endingStrings) {
+        ArrayList<String> result = new ArrayList<>();
+        int index = 0;
+
+        // Loop through the input string
+        while (index < input.length()) {
+            // Find the next occurrence of the startString
+            int startIndex = input.indexOf(startString, index);
+            if (startIndex == -1) {
+                // No more startString found, break out of the loop
+                break;
+            }
+
+            // Move the index to the character after the found startString
+            startIndex += startString.length();
+
+            // Find the nearest endingString from the current startIndex
+            int endIndex = -1;
+            for (String end : endingStrings) {
+                int tempEndIndex = input.indexOf(end, startIndex);
+                if (tempEndIndex != -1 && (endIndex == -1 || tempEndIndex < endIndex)) {
+                    endIndex = tempEndIndex;
+                }
+            }
+
+            // If an endingString is found, extract the part between startString and the endingString
+            if (endIndex != -1) {
+                result.add(input.substring(startIndex, endIndex));
+                // Move the index to the character after the found endingString
+                index = endIndex + 1;
+            } else {
+                // No endingString found, stop processing
+                break;
+            }
+        }
+
+        return result;
+    }
+
 }

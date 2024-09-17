@@ -12,6 +12,8 @@ public abstract class Importer {
         importer.put("eaf", new ImporterEAF());
         importer.put("ddl", new ImporterDDL());
         importer.put("ol", new ImporterOL());
+        importer.put("mll", new ImporterMLL());
+        importer.put("generator", new ImporterGENERATOR());
     }
 
     public abstract void importFile(File file) throws Exception;

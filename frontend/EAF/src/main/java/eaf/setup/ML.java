@@ -52,7 +52,7 @@ public class ML extends Preset {
         String constants = "";
         ArrayList<ClassType> filterImports = new ArrayList<>();
         for (var i : classesNeededForScript) {
-            if (!i.pack.contains("de.eaf.mll")) {
+            if (!i.pack.contains("de.eaf")) {
                 filterImports.add(i);
             }
         }
