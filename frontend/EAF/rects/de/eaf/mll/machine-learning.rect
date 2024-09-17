@@ -4,11 +4,11 @@
     "abstract": false,
     "fields": [
         {
-            "field-name": "measures",
-            "array-count": 1,
+            "field-name": "config",
+            "array-count": 0,
             "primitive": false,
             "value": "",
-            "type-name": "de.eaf.base.func"
+            "type-name": "de.eaf.mll.simple-config"
         },
         {
             "field-name": "maps",
@@ -16,20 +16,6 @@
             "primitive": false,
             "value": "",
             "type-name": "de.eaf.mll.maps"
-        },
-        {
-            "field-name": "data-output-path",
-            "array-count": 0,
-            "primitive": true,
-            "value": "",
-            "type-name": "string"
-        },
-        {
-            "field-name": "data-input-path",
-            "array-count": 0,
-            "primitive": true,
-            "value": "",
-            "type-name": "string"
         }
     ]
 }

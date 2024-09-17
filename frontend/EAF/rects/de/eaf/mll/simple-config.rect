@@ -1,0 +1,28 @@
+{
+    "parent": "",
+    "name": "simple-config",
+    "abstract": false,
+    "fields": [
+        {
+            "field-name": "measures",
+            "array-count": 1,
+            "primitive": false,
+            "value": "",
+            "type-name": "de.eaf.base.func"
+        },
+        {
+            "field-name": "data-output-path",
+            "array-count": 0,
+            "primitive": true,
+            "value": "",
+            "type-name": "string"
+        },
+        {
+            "field-name": "data-input-path",
+            "array-count": 0,
+            "primitive": true,
+            "value": "",
+            "type-name": "string"
+        }
+    ]
+}
