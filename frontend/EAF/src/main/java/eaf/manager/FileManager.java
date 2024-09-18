@@ -617,14 +617,18 @@ public class FileManager {
         }
         try {
             Importer.importer.get(file.getName().split("\\.", 2)[1]).importFile(file, path);
+            FileManager.copyFolder(curr + "/project_base", curr + "/" + savesPath + "/" + filename);
+            FileManager.copyFilesWithEndings(file.getParentFile().getAbsolutePath(), curr + savesPath + "/" + filename, ".csv", ".pson", ".xlsx");
         }
         catch (Exception e) {
             throw new RuntimeException(e);
         }
         ErrorPane.checkForErrors();
+
     }
 
     public static void convert(File file) {
+        String curr = System.getProperty("user.dir");
         String filename = file.getName().split("\\.")[0];
         String path = file.getParentFile().getAbsolutePath() + "/" + filename + ".eaf";
         if (!Main.nogui) {

@@ -57,7 +57,6 @@ public class ImporterMLL extends  Importer {
 
         //loadDDLFiles(file);
 
-        //FileManager.copyFilesWithEndings(file.getParentFile().getAbsolutePath(), curr + savesPath + "/" + filename, ".csv", ".pson", ".xlsx");
 
         //Main.preset = Preset.getPreset("ea");
         //FileManager.writeJSONToFile(FileManager.createSave(), path);
