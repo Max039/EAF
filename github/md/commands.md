@@ -2,9 +2,9 @@
 
 ![](../gifs/console.gif)
 
-- To run EAF:
+- To run EAF (Accepts .eaf, .generator, .mll, .ol):
     ```bash
-    eaf "eaf-file-path"
+    eaf "file-path"
     ```
 - To run without GUI:
     ```bash

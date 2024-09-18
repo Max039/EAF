@@ -48,14 +48,20 @@ Root: HKCR; Subkey: "EvoAl Frontend File\shell\open\command"; ValueType: string;
 Root: HKCR; Subkey: ".generator"; ValueType: string; ValueName: ""; ValueData: "Generator File"; Flags: uninsdeletevalue
 Root: HKCR; Subkey: "Generator File"; ValueType: string; ValueName: ""; ValueData: "Generator File"; Flags: uninsdeletekey
 Root: HKCR; Subkey: "Generator File\DefaultIcon"; ValueType: string; ValueName: ""; ValueData: "{#SourcePath}\generator.ico"; Flags: uninsdeletekey
+Root: HKCR; Subkey: "Generator File\shell\open\command"; ValueType: string; ValueName: ""; ValueData: """{app}\vbs.bat"" ""%1"""; Flags: uninsdeletekey
+
 
 Root: HKCR; Subkey: ".mll"; ValueType: string; ValueName: ""; ValueData: "Machine Learning Language File"; Flags: uninsdeletevalue
 Root: HKCR; Subkey: "Machine Learning Language File"; ValueType: string; ValueName: ""; ValueData: "Machine Learning Language File"; Flags: uninsdeletekey
 Root: HKCR; Subkey: "Machine Learning Language File\DefaultIcon"; ValueType: string; ValueName: ""; ValueData: "{#SourcePath}\mll.ico"; Flags: uninsdeletekey
+Root: HKCR; Subkey: "Machine Learning Language File\shell\open\command"; ValueType: string; ValueName: ""; ValueData: """{app}\vbs.bat"" ""%1"""; Flags: uninsdeletekey
+
 
 Root: HKCR; Subkey: ".ol"; ValueType: string; ValueName: ""; ValueData: "Optimization Language File"; Flags: uninsdeletevalue
 Root: HKCR; Subkey: "Optimization Language File"; ValueType: string; ValueName: ""; ValueData: "Optimization Language File"; Flags: uninsdeletekey
 Root: HKCR; Subkey: "Optimization Language File\DefaultIcon"; ValueType: string; ValueName: ""; ValueData: "{#SourcePath}\ol.ico"; Flags: uninsdeletekey
+Root: HKCR; Subkey: "Optimization Language File\shell\open\command"; ValueType: string; ValueName: ""; ValueData: """{app}\vbs.bat"" ""%1"""; Flags: uninsdeletekey
+
 
 Root: HKCR; Subkey: ".ddl"; ValueType: string; ValueName: ""; ValueData: "Data Definition Language File"; Flags: uninsdeletevalue
 Root: HKCR; Subkey: "Data Definition Language File"; ValueType: string; ValueName: ""; ValueData: "Data Definition Language File"; Flags: uninsdeletekey

@@ -22,12 +22,23 @@ if "%~1"=="" (
     exit /b 1
 )
 
-:: Check if the provided file ends with .eaf
+:: Check if the provided file has an accepted extension (.eaf, .mll, .generator, .ol)
 set "file=%~1"
-if /i not "%file:~-4%"==".eaf" (
-    echo The file must end with .eaf
+
+if /i "%file:~-4%"==".eaf" (
+    goto :file_ok
+) else if /i "%file:~-4%"==".mll" (
+    goto :file_ok
+) else if /i "%file:~-3%"==".ol" (
+    goto :file_ok
+) else if /i "%file:~-10%"==".generator" (
+    goto :file_ok
+) else (
+    echo The file must end with .eaf, .generator, .mll, or .ol
     exit /b 1
 )
+
+:file_ok
 
 :: Check if the file exists
 if not exist "%file%" (

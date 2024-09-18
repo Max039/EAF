@@ -14,8 +14,14 @@ public class ImporterEAF extends Importer{
     public void importFile(File file) throws Exception {
         String curr = System.getProperty("user.dir");
         String name = file.getName().split("\\.")[0];
-        LogManager.println(curr + "/" + savesPath + "/" + name + "/" + file.getName());
-        var newFile = FileManager.copyFile(file.getAbsolutePath(), curr + savesPath + "/" + name + "/" + file.getName());
+        var path = curr + savesPath + "/" + name + "/" + file.getName();
+        path = FileManager.checkFilePath(path, true);
+        if (path == null) {
+            return;
+        }
+        LogManager.println(LogManager.importer() + LogManager.file() + " " +path);
+
+        var newFile = FileManager.copyFile(file.getAbsolutePath(), path);
         FileManager.copyFolder(curr + "/project_base", curr + "/" + savesPath + "/" + name);
         loadSave(readJSONFileToJSON(newFile));
         Main.cacheManager.addToBuffer("filesOpened", newFile.getPath());

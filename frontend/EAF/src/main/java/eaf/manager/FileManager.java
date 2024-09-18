@@ -549,4 +549,49 @@ public class FileManager {
             }
         }
     }
+
+    public static String checkFilePath(String filePath, boolean folderNameOfFile) {
+        // Check if the given file path exists
+        File file = new File(filePath);
+        if (!file.exists()) {
+            return filePath;
+        }
+
+        // Retrieve the parent directory
+        File parentDirectory = file.getParentFile();
+
+        if (folderNameOfFile) {
+            parentDirectory = parentDirectory.getParentFile();
+        }
+
+        // Loop until a valid file is found or user exits
+        while (true) {
+            // Show an input dialog to the user to enter a file name
+            String fileName = JOptionPane.showInputDialog(null,
+                    "Please enter the name for the file:",
+                    "Enter File Name", JOptionPane.QUESTION_MESSAGE);
+
+            // If the user presses cancel or closes the window, return null (exit the program)
+            if (fileName == null) {
+                return null;
+            }
+
+            // Check if the file with the entered name exists in the parent directory
+            File parentFile;
+            if (folderNameOfFile) {
+                parentFile = new File(parentDirectory, fileName);
+                parentFile = new File(parentFile, fileName + "." + Main.saveFormat);
+            }
+            else {
+                parentFile = new File(parentDirectory, fileName + "." + Main.saveFormat);
+            }
+            if (parentFile.exists()) {
+                JOptionPane.showMessageDialog(null, "File already exists!", "Error", JOptionPane.ERROR_MESSAGE);
+
+            } else {
+                return parentFile.getAbsolutePath();
+            }
+        }
+    }
+
 }
