@@ -372,7 +372,12 @@ public class Main extends JPanel {
         mainFrame.setLocationRelativeTo(null);
 
         if (nogui) {
-            runAndStop();
+            if (!convert) {
+                runAndStop();
+            }
+            else {
+                System.exit(0);
+            }
         }
         else {
             mainFrame.setVisible(true);
