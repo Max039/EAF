@@ -5,17 +5,14 @@ import eaf.*;
 import eaf.download.Downloader;
 import eaf.executor.Executor;
 import eaf.executor.OpenIntelliJProject;
-import eaf.imports.Importer;
 import eaf.input.InputHandler;
 import eaf.manager.ExtraRectManager;
 import eaf.manager.FileManager;
-import eaf.manager.LogManager;
 import eaf.models.ClassType;
 import eaf.models.FieldType;
 import eaf.models.FieldValue;
 import eaf.models.Pair;
 import eaf.plugin.PluginCreator;
-import eaf.plugin.PluginManager;
 import eaf.rects.Rect;
 import eaf.rects.RectFactory;
 import eaf.rects.multi.ClassRect;
@@ -41,8 +38,6 @@ import java.util.List;
 import java.util.Stack;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
-import java.util.logging.ErrorManager;
-import java.util.stream.Collectors;
 
 import static eaf.Main.*;
 import static eaf.manager.FileManager.*;
@@ -138,10 +133,9 @@ public class UiUtil {
                 try {
                     var cancle = showUnsaveDialog();
                     if (!cancle) {
-                        var file = FileManager.chooseJavaFile(Main.savesPath, ".ddl " + Main.saveFormat + " .generator .mll .ol", Main.saveFormat, "ddl", "ol", "generator", "mll");
+                        var file = FileManager.chooseJavaFile("/" + evoalBuildFolder + "/" + evoalVersion + "/evoal/examples", ".ddl " + Main.saveFormat + " .generator .mll .ol", Main.saveFormat, "ddl", "ol", "generator", "mll");
                         if (file != null) {
-                            Importer.importer.get(file.getName().split("\\.", 2)[1]).importFile(file);
-                            ErrorPane.checkForErrors();
+                            tryImport(file);
                         }
                     }
                 } catch (Exception ex) {

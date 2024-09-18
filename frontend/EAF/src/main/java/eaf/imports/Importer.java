@@ -16,7 +16,7 @@ public abstract class Importer {
         importer.put("generator", new ImporterGENERATOR());
     }
 
-    public abstract void importFile(File file) throws Exception;
+    public abstract void importFile(File file, String target) throws Exception;
 
     public static void loadDDLFiles(File in) {
         // Create a File object for the parent directory
@@ -31,7 +31,7 @@ public abstract class Importer {
                 for (File file : files) {
                     if (file.isFile() && file.getName().endsWith(".ddl")) {
                         try {
-                            importer.get("ddl").importFile(file);
+                            importer.get("ddl").importFile(file, "");
                         }
                         catch (Exception e) {
                             throw new RuntimeException(e);

@@ -12,15 +12,11 @@ import static eaf.Main.savesPath;
 
 public class ImporterGENERATOR extends Importer {
 
-    public void importFile(File file) throws Exception {
+    public void importFile(File file, String path) throws Exception {
         FileManager.emptySave();
         String curr = System.getProperty("user.dir");
         String filename = file.getName().split("\\.")[0];
-        String path = curr + savesPath + "/" + filename + "/" + filename + ".eaf";
-        path = FileManager.checkFilePath(path, true);
-        if (path == null) {
-            return;
-        }
+
         LogManager.println(LogManager.importer() + LogManager.file() + " " +path);
 
         var imps = new ArrayList<Module>();

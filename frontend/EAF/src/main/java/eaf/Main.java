@@ -150,6 +150,10 @@ public class Main extends JPanel {
 
     public static boolean fulllog = false;
 
+    public static boolean pathArgument = false;
+
+    public static boolean convert = false;
+
     static {
         String osName = System.getProperty("os.name").toLowerCase();
         if (osName.contains("win")) {
@@ -161,39 +165,7 @@ public class Main extends JPanel {
     }
 
     public static void main(String[] args) throws Exception {
-        Font font = new Font("Arial", Font.PLAIN, 14);
-
-        UIManager.put("Button.font", font);
-        UIManager.put("ToggleButton.font", font);
-        UIManager.put("RadioButton.font", font);
-        UIManager.put("CheckBox.font", font);
-        UIManager.put("ColorChooser.font", font);
-        UIManager.put("ComboBox.font", font);
-        UIManager.put("Label.font", font);
-        UIManager.put("List.font", font);
-        UIManager.put("MenuBar.font", font);
-        UIManager.put("MenuItem.font", font);
-        UIManager.put("RadioButtonMenuItem.font", font);
-        UIManager.put("CheckBoxMenuItem.font", font);
-        UIManager.put("Menu.font", font);
-        UIManager.put("PopupMenu.font", font);
-        UIManager.put("OptionPane.font", font);
-        UIManager.put("Panel.font", font);
-        UIManager.put("ProgressBar.font", font);
-        UIManager.put("ScrollPane.font", font);
-        UIManager.put("Viewport.font", font);
-        UIManager.put("TabbedPane.font", font);
-        UIManager.put("Table.font", font);
-        UIManager.put("TableHeader.font", font);
-        UIManager.put("TextField.font", font);
-        UIManager.put("PasswordField.font", font);
-        UIManager.put("TextArea.font", font);
-        UIManager.put("TextPane.font", font);
-        UIManager.put("EditorPane.font", font);
-        UIManager.put("TitledBorder.font", font);
-        UIManager.put("ToolBar.font", font);
-        UIManager.put("ToolTip.font", font);
-        UIManager.put("Tree.font", font);
+        setFont();
 
         Preset.prepareSetups();
         Importer.prepareImporter();
@@ -210,6 +182,10 @@ public class Main extends JPanel {
                 switch (arg) {
                     case "-noansi" -> ansi = false;
                     case "-nogui" -> nogui = true;
+                    case "-convert" -> {
+                        convert = true;
+                        nogui = true;
+                    }
                     case "-fulllog" -> fulllog = true;
                     default -> {
                         if (arg.contains("-sudopwd")) {
@@ -227,6 +203,7 @@ public class Main extends JPanel {
                 if (!set) {
                     LogManager.println(LogManager.main() + LogManager.args() + " " + arg);
                     cacheManager.addToBuffer("filesOpened", arg);
+                    pathArgument = true;
                 }
                 else {
                     LogManager.println(LogManager.main() + LogManager.args() + " unknown arg: " + arg);
@@ -292,6 +269,42 @@ public class Main extends JPanel {
         }
 
         SwingUtilities.invokeLater(() -> createAndShowGUI());
+    }
+
+    private static void setFont() {
+        Font font = new Font("Arial", Font.PLAIN, 14);
+
+        UIManager.put("Button.font", font);
+        UIManager.put("ToggleButton.font", font);
+        UIManager.put("RadioButton.font", font);
+        UIManager.put("CheckBox.font", font);
+        UIManager.put("ColorChooser.font", font);
+        UIManager.put("ComboBox.font", font);
+        UIManager.put("Label.font", font);
+        UIManager.put("List.font", font);
+        UIManager.put("MenuBar.font", font);
+        UIManager.put("MenuItem.font", font);
+        UIManager.put("RadioButtonMenuItem.font", font);
+        UIManager.put("CheckBoxMenuItem.font", font);
+        UIManager.put("Menu.font", font);
+        UIManager.put("PopupMenu.font", font);
+        UIManager.put("OptionPane.font", font);
+        UIManager.put("Panel.font", font);
+        UIManager.put("ProgressBar.font", font);
+        UIManager.put("ScrollPane.font", font);
+        UIManager.put("Viewport.font", font);
+        UIManager.put("TabbedPane.font", font);
+        UIManager.put("Table.font", font);
+        UIManager.put("TableHeader.font", font);
+        UIManager.put("TextField.font", font);
+        UIManager.put("PasswordField.font", font);
+        UIManager.put("TextArea.font", font);
+        UIManager.put("TextPane.font", font);
+        UIManager.put("EditorPane.font", font);
+        UIManager.put("TitledBorder.font", font);
+        UIManager.put("ToolBar.font", font);
+        UIManager.put("ToolTip.font", font);
+        UIManager.put("Tree.font", font);
     }
 
 

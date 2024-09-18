@@ -1,6 +1,7 @@
 package eaf.manager;
 
 import eaf.download.Downloader;
+import eaf.imports.Importer;
 import eaf.models.Pair;
 import eaf.setup.Preset;
 import org.json.JSONArray;
@@ -20,6 +21,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
+
+import static eaf.Main.cacheManager;
+import static eaf.Main.savesPath;
 
 public class FileManager {
 
@@ -178,6 +182,15 @@ public class FileManager {
     public static void loadRecent() {
         var c = Main.cacheManager.getFirstElement(String.class, "filesOpened");
         if (c != null) {
+            if (c.endsWith(".ol") || c.endsWith(".mll") ||c.endsWith(".generator")) {
+                if (!Main.convert) {
+                    tryImport(new File(c));
+                }
+                else {
+                    convert(new File(c));
+                }
+            }
+
             try {
                 loadSave(readJSONFileToJSON(c));
             }
@@ -594,4 +607,38 @@ public class FileManager {
         }
     }
 
+    public static void tryImport(File file) {
+        String curr = System.getProperty("user.dir");
+        String filename = file.getName().split("\\.")[0];
+        String path = curr + savesPath + "/" + filename + "/" + filename + ".eaf";
+        path = FileManager.checkFilePath(path, true);
+        if (path == null) {
+            return;
+        }
+        try {
+            Importer.importer.get(file.getName().split("\\.", 2)[1]).importFile(file, path);
+        }
+        catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+        ErrorPane.checkForErrors();
+    }
+
+    public static void convert(File file) {
+        String filename = file.getName().split("\\.")[0];
+        String path = file.getParentFile().getAbsolutePath() + "/" + filename + ".eaf";
+        if (!Main.nogui) {
+            path = FileManager.checkFilePath(path, false);
+            if (path == null) {
+                return;
+            }
+        }
+        try {
+            Importer.importer.get(file.getName().split("\\.", 2)[1]).importFile(file, path);
+        }
+        catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+        ErrorPane.checkForErrors();
+    }
 }
