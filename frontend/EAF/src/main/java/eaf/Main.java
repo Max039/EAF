@@ -233,7 +233,9 @@ public class Main extends JPanel {
                 else {
                     LogManager.println(target);
                 }
-
+                if (nogui) {
+                    System.out.println("Downloading evoal build ...");
+                };
                 Downloader.downloadNewestVersionIfNeeded(false);
                 var build = FileManager.findFirstFileInReverseOrder(currentPath + "/" + evoalBuildFolder);
                 InputHandler.setEvoAlVersionNoReload(build.getName());
