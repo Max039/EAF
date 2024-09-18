@@ -154,6 +154,8 @@ public class Main extends JPanel {
 
     public static boolean convert = false;
 
+    public static boolean imp = false;
+
     static {
         String osName = System.getProperty("os.name").toLowerCase();
         if (osName.contains("win")) {
@@ -182,6 +184,7 @@ public class Main extends JPanel {
                 switch (arg) {
                     case "-noansi" -> ansi = false;
                     case "-nogui" -> nogui = true;
+                    case "-import" -> imp = true;
                     case "-convert" -> {
                         convert = true;
                         nogui = true;

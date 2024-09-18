@@ -182,13 +182,11 @@ public class FileManager {
     public static void loadRecent() {
         var c = Main.cacheManager.getFirstElement(String.class, "filesOpened");
         if (c != null) {
-            if (c.endsWith(".ol") || c.endsWith(".mll") ||c.endsWith(".generator")) {
-                if (!Main.convert) {
-                    tryImport(new File(c));
-                }
-                else {
-                    convert(new File(c));
-                }
+            if (Main.imp) {
+                tryImport(new File(c));
+            }
+            else if (c.endsWith(".ol") || c.endsWith(".mll") || c.endsWith(".generator")) {
+                convert(new File(c));
             }
 
             try {
