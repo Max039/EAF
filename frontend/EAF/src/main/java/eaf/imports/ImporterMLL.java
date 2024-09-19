@@ -51,7 +51,6 @@ public class ImporterMLL extends  Importer {
             var al = SyntaxTree.processContentOfType(resolve.instance(), clazz, tempModule);
             var rec = RectFactory.getRectFromClassType(al.instance);
             Main.mainPanel.leftPanel.addRect(rec);
-            LogManager.println("============");
         }
 
 

@@ -40,9 +40,6 @@ public class ImporterOL extends Importer {
             ea = parts[0] + "}";
             documenting = "{ \n documentors" + parts[1];
         }
-        LogManager.println(problem);
-        LogManager.println(ea);
-        LogManager.println(documenting);
 
         var prob = SyntaxTree.processContentOfType(SyntaxTree.get("de.evoal.optimisation.core.problem").instance(), problem, tempModule);
         var probrec = RectFactory.getRectFromClassType(prob.instance);

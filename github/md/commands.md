@@ -2,7 +2,7 @@
 
 ![](../gifs/console.gif)
 
-- To run EAF (Accepts .eaf, .generator, .mll, .ol):
+- To run EAF (accepts .eaf, .generator, .mll, .ol):
     ```bash
     eaf "file-path"
     ```
@@ -19,7 +19,17 @@
     ```bash
     -noansi
 	```
-
+	
+- To convert a .generator, .mll, .ol to a .eaf file in the same folder:
+    ```bash
+    -convert
+	```
+	
+- To copy a version into eaf installation folder/project (can be used in conjunction with -convert to directly move the eaf into projects):
+    ```bash
+    -import
+	```
+	
 - To run with the sudo password not needing to input it later:
     ```bash
     -sudopwd=PASSWORD

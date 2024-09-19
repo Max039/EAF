@@ -693,10 +693,6 @@ public class SyntaxTree {
             else if (fieldSetterInstancePatternMatcher.find() && item.endsWith("}")) {
                 var headAndValue = item.split(":=", 2);
                 var typeAndValue = headAndValue[1].split("\\{", 2);
-                System.out.println("head:");
-                System.out.println(headAndValue[0]);
-                System.out.println("value:");
-                System.out.println(headAndValue[1]);
                 InstanceFieldSetter(context, headAndValue[0], typeAndValue[0].replace("instance", ""), "{" + typeAndValue[1], newModule);
             }
             else if (fieldSetterPrimitivePatternMatcher.find()) {
