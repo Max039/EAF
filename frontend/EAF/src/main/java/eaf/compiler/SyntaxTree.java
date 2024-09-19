@@ -962,19 +962,28 @@ public class SyntaxTree {
         ArrayList<String> result = new ArrayList<>();
         int index = 0;
 
-        startString = " " + startString + " ";
+
 
         // Loop through the input string
         while (index < input.length()) {
+
             // Find the next occurrence of the startString
-            int startIndex = input.indexOf(startString, index);
+            int startIndex = input.indexOf(" " + startString, index);
+            int startIndex2 = input.indexOf("\t" + startString, index);
+            int startIndex3 = input.indexOf("\n" + startString, index);
+            if ((startIndex == -1 && startIndex2 != -1) || (startIndex != -1 && startIndex2 != -1 && startIndex > startIndex2)) {
+                startIndex = startIndex2;
+            }
+            if ((startIndex == -1 && startIndex3 != -1) || (startIndex != -1 && startIndex3 != -1 && startIndex > startIndex3)) {
+                startIndex = startIndex3;
+            }
             if (startIndex == -1) {
                 // No more startString found, break out of the loop
                 break;
             }
 
             // Move the index to the character after the found startString
-            startIndex += startString.length();
+            startIndex += startString.length() + 1;
 
             // Find the nearest endingString from the current startIndex
             int endIndex = -1;
@@ -987,16 +996,16 @@ public class SyntaxTree {
 
             // If an endingString is found, extract the part between startString and the endingString
             if (endIndex != -1) {
+                // Extract the substring from after startString to just before the first char of the ending string
                 result.add(input.substring(startIndex, endIndex));
-                // Move the index to the character after the found endingString
-                index = endIndex + 1;
+                index = endIndex - 1;
             } else {
-                // No endingString found, stop processing
                 break;
             }
         }
 
         return result;
     }
+
 
 }

@@ -17,6 +17,8 @@ public class ImporterGENERATOR extends Importer {
         String curr = System.getProperty("user.dir");
         String filename = file.getName().split("\\.")[0];
 
+        loadDDLFiles(file);
+
         LogManager.println(LogManager.importer() + LogManager.file() + " " +path);
 
         var imps = new ArrayList<Module>();
@@ -28,7 +30,7 @@ public class ImporterGENERATOR extends Importer {
 
 
 
-        //loadDDLFiles(file);
+
 
         //Main.preset = Preset.getPreset("ea");
         //FileManager.writeJSONToFile(FileManager.createSave(), path);
