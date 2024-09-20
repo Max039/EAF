@@ -41,13 +41,6 @@ public class SyntaxTree {
 
     public static String buildPath = "/" + Main.evoalBuildFolder + "/" + evoalBuild + "/evoal/definitions/de";
 
-    //=======================================================================
-    //                  class name      fieldname     FieldType   Value
-
-    // Next use this to make class trees by when calling extends add a child (but also put new entry that is the same object so same refference in child as in hashmap)
-    // When only new type and no extend only put
-    //=======================================================================
-
     private static Deque<File> fileQueue = new ArrayDeque<>();
 
     public static List<ClassType> getBasedClasses() {
