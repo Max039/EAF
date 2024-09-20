@@ -864,7 +864,7 @@ public class SyntaxTree {
         }
     }
 
-    public static String extractBlock(String text, String target) {
+    public static String extractBlock(String text, String target, char start, char end) {
         // Find the index of the target string in the input text
         int targetIndex = text.indexOf(target);
 
@@ -874,7 +874,7 @@ public class SyntaxTree {
         }
 
         // Find the index of the first '{' after the target string
-        int startIndex = text.indexOf("{", targetIndex);
+        int startIndex = text.indexOf(start, targetIndex);
 
         // If there's no '{' after the target string, return null
         if (startIndex == -1) {
@@ -893,9 +893,9 @@ public class SyntaxTree {
             block.append(currentChar); // Add the character to the block
 
             // Increment or decrement braceCounter based on the character
-            if (currentChar == '{') {
+            if (currentChar == start) {
                 braceCounter++;
-            } else if (currentChar == '}') {
+            } else if (currentChar == end) {
                 braceCounter--;
             }
 
@@ -959,5 +959,31 @@ public class SyntaxTree {
         return result;
     }
 
+
+    public static String removeSubstring(String input, String startString, String endString) {
+        // Find the index where the startString begins
+        int startIndex = input.indexOf(startString);
+
+        // If startString is not found, return the original input
+        if (startIndex == -1) {
+            return input;
+        }
+
+        // Find the index where the endString ends
+        int endIndex = input.indexOf(endString, startIndex + startString.length());
+
+        // If endString is not found, return the original input
+        if (endIndex == -1) {
+            return input;
+        }
+
+        // endIndex needs to include the length of endString, so add that to remove the endString
+        endIndex += endString.length();
+
+        // Create a new string by excluding the part between startIndex and endIndex
+        String result = input.substring(0, startIndex) + input.substring(endIndex);
+
+        return result;
+    }
 
 }

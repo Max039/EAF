@@ -35,8 +35,8 @@ public class ImporterOL extends Importer {
         var content = FileManager.getContentOfFile(file).replace("'", "");
         content = SyntaxTree.removeComments(content);
 
-        var problem = SyntaxTree.extractBlock(content, "specify");
-        var ea = SyntaxTree.extractBlock(content, "configure");
+        var problem = SyntaxTree.extractBlock(content, "specify", '{', '}');
+        var ea = SyntaxTree.extractBlock(content, "configure", '{', '}');
         var documenting = "";
         if (ea.contains("documenting")) {
             var parts = ea.split("documenting", 2);
