@@ -2,13 +2,16 @@ package eaf.imports;
 
 import eaf.Main;
 import eaf.compiler.SyntaxTree;
+import eaf.input.InputHandler;
 import eaf.manager.FileManager;
 import eaf.manager.LogManager;
 import eaf.models.Module;
 import eaf.rects.OptionsFieldRect;
 import eaf.rects.RectFactory;
+import eaf.rects.TextFieldRect;
 import eaf.rects.multi.ArrayRect;
 import eaf.rects.multi.ClassRect;
+import eaf.setup.Preset;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -37,7 +40,8 @@ public class ImporterGENERATOR extends Importer {
         var steps = (ArrayRect) piperec.getSubRectByName("steps");
         steps.removeLast();
 
-
+        var name = SyntaxTree.getFormatParts(content, "pipeline", "[").get(0).trim();
+        ((TextFieldRect)piperec.getSubRectByName("name")).setTextBox(name);
 
         var pipeline = SyntaxTree.extractBlock(content, "pipeline", '[', ']').trim();
         pipeline = pipeline.substring(1, pipeline.length() - 2);
@@ -78,7 +82,7 @@ public class ImporterGENERATOR extends Importer {
                 p = SyntaxTree.removeSubstring(p, "writes", ";");
                 p = SyntaxTree.removeSubstring(p, "reads", ";");
                 p = p.trim();
-                
+
                 var pparts = p.split("\\{", 2);
                 var head = pparts[0].replace("component", "").trim();
                 var body = pparts[1].replace("}", "").trim();
@@ -92,17 +96,21 @@ public class ImporterGENERATOR extends Importer {
 
         }
 
+        var to = SyntaxTree.getFormatParts(content, "write ", "with").get(0).replace("\"", "").trim();
+        ((TextFieldRect)base.getSubRectByName("output")).setTextBox(to);
 
+        var samples = SyntaxTree.getFormatParts(content, "with", "samples").get(0).trim();
+        ((TextFieldRect)base.getSubRectByName("samples")).setTextBox(samples);
 
         Main.mainPanel.leftPanel.addRect(base);
-        //Main.preset = Preset.getPreset("generator");
-        //FileManager.writeJSONToFile(FileManager.createSave(), path);
-        //Main.cacheManager.addToBuffer("filesOpened", path);
-        //InputHandler.actionHandler.saved();
+        Main.preset = Preset.getPreset("generator");
+        FileManager.writeJSONToFile(FileManager.createSave(), path);
+        Main.cacheManager.addToBuffer("filesOpened", path);
+        InputHandler.actionHandler.saved();
 
-        //if (!Main.nogui) {
-        //    FileManager.loadSave(FileManager.readJSONFileToJSON(path));
-        //}
+        if (!Main.nogui) {
+            FileManager.loadSave(FileManager.readJSONFileToJSON(path));
+        }
     }
 
 }

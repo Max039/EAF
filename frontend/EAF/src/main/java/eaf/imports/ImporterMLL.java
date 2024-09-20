@@ -56,17 +56,18 @@ public class ImporterMLL extends  Importer {
             var mapping = mappingAndRest[0].trim().replace("\n", "");
             var to = toAndRest[0].trim().replace("\n", "");
 
-
-            var parametersParts = toAndRest[1].split("parameters", 2)[1];
-            var parameters = parametersParts.split(";");
-
             var resolve = tempModule.resolveClass(name);
             String clazz = "";
 
-            for (var p : parameters) {
-                p = p.trim().replace("\n", "");
-                if (!p.isEmpty()) {
-                    clazz += p + ";\n";
+            if (toAndRest.length > 1) {
+                var parametersParts = toAndRest[1].split("parameters", 2)[1];
+                var parameters = parametersParts.split(";");
+
+                for (var p : parameters) {
+                    p = p.trim().replace("\n", "");
+                    if (!p.isEmpty()) {
+                        clazz += p + ";\n";
+                    }
                 }
             }
 
