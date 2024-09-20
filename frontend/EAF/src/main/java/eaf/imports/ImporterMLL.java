@@ -8,6 +8,7 @@ import eaf.manager.LogManager;
 import eaf.models.Module;
 import eaf.rects.OptionsFieldRect;
 import eaf.rects.RectFactory;
+import eaf.rects.TextFieldRect;
 import eaf.rects.multi.ArrayRect;
 import eaf.rects.multi.ClassRect;
 import eaf.setup.Preset;
@@ -33,7 +34,7 @@ public class ImporterMLL extends  Importer {
         content = SyntaxTree.removeComments(content);
 
         var base = (ClassRect) RectFactory.getRectFromClassType(SyntaxTree.get("de.eaf.mll.machine-learning"));
-        Main.mainPanel.leftPanel.addRect(base);
+
         var maps = (ClassRect) ((ArrayRect) base.getSubRectByName("maps")).getSubRects()[0];
 
 
@@ -42,11 +43,10 @@ public class ImporterMLL extends  Importer {
 
         var source = ((OptionsFieldRect) maps.getSubRectByName("source"));
         source.refreshComboBoxOptions();
-        source.comboBox.setSelectedItem(SyntaxTree.getFormatParts(content, "maps", "to").get(0).trim().replace("\n", "")); //<---- "test"
+        source.comboBox.setSelectedItem(SyntaxTree.getFormatParts(content, "maps", "to").get(0).trim().replace("\n", ""));
         source.refreshComboBoxOptions();
         int i = 1;
         for (var function : SyntaxTree.getFormatParts(content, "function", "predict", "for", "function")) {
-            System.out.println("i: "+ i);
             i++;
             var nameAndRest = function.split("mapping", 2);
             var mappingAndRest = nameAndRest[1].split("to", 2);
@@ -86,8 +86,57 @@ public class ImporterMLL extends  Importer {
         }
 
 
+        var var = SyntaxTree.getFormatParts(content, "for", "loop");
+        ClassRect config;
+
+        if (!var.isEmpty()) {
+            config = RectFactory.getRectFromClassType(SyntaxTree.get("de.eaf.mll.advanced-config"));
+            var parts = var.get(0).split("in");
+            var varname = parts[0];
+            var in = parts[1].replace("[", "").replace("]", "").split("to");
 
 
+            var cnt = ((TextFieldRect) config.getSubRectByName("$loop-counter"));
+            cnt.setTextBox(varname.trim().replace("\n", ""));
+
+            var start = ((TextFieldRect) config.getSubRectByName("loop-start"));
+            start.setTextBox(in[0].trim().replace("\n", ""));
+
+            var end = ((TextFieldRect) config.getSubRectByName("loop-end"));
+            end.setTextBox(in[1].trim().replace("\n", ""));
+        }
+        else {
+            config = RectFactory.getRectFromClassType(SyntaxTree.get("de.eaf.mll.simple-config"));
+        }
+
+
+        var measure = SyntaxTree.getFormatParts(content, "measure", "end");
+        var arr = ((ArrayRect) config.getSubRectByName("measures"));
+        arr.removeLast();
+        for (var func : measure.get(0).split(";")) {
+            func = func.trim();
+            if (func.contains("(")) {
+                var funcparts = func.split("\\(");
+                ClassRect funcrec = RectFactory.getRectFromClassType(tempModule.resolveClass(funcparts[0].trim()));
+                if (!funcparts[1].trim().isEmpty()) {
+                    var args = funcparts[1].split(",");
+                    for (int j = 0; j < args.length; j++) {
+                        var v = args[j].replace(")", "").trim();
+                        if (!v.isEmpty()) {
+                            ((TextFieldRect)funcrec.getSubRects()[j]).setTextBox(v);
+                        }
+                    }
+                }
+                arr.addElement(funcrec, arr.getSubRects().length);
+            }
+
+
+        }
+
+
+        base.setIndex(1, config);
+
+        Main.mainPanel.leftPanel.addRect(base);
 
         //Main.preset = Preset.getPreset("ea");
         //FileManager.writeJSONToFile(FileManager.createSave(), path);

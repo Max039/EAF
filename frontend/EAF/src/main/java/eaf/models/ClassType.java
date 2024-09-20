@@ -109,7 +109,7 @@ public class ClassType implements Comparable {
                 fields.put(name, new Pair<>(v.type, v));
             }
             else {
-                throw new SyntaxTree.FieldTypeMismatchException("Tried to add array element to type but types are not compatible \n\"" + currVal.getFirst().toString() + "\" != \n\"" + v.type.toString() + "\"");
+                throw new SyntaxTree.FieldTypeMismatchException(" Tried to add array element to type but types are not compatible \n\"" + currVal.getFirst().toString() + "\" != \n\"" + v.type.toString() + "\"");
             }
         }
 
