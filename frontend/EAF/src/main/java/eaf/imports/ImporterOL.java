@@ -13,6 +13,7 @@ import eaf.setup.Preset;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.logging.ErrorManager;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -61,5 +62,9 @@ public class ImporterOL extends Importer {
         FileManager.writeJSONToFile(FileManager.createSave(), path);
         Main.cacheManager.addToBuffer("filesOpened", path);
         InputHandler.actionHandler.saved();
+
+        if (!Main.nogui) {
+            FileManager.loadSave(FileManager.readJSONFileToJSON(path));
+        }
     }
 }
