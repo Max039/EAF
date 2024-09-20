@@ -32,7 +32,7 @@ public class ImporterGENERATOR extends Importer {
 
 
 
-        //Main.preset = Preset.getPreset("ea");
+        //Main.preset = Preset.getPreset("generator");
         //FileManager.writeJSONToFile(FileManager.createSave(), path);
         //Main.cacheManager.addToBuffer("filesOpened", path);
         //InputHandler.actionHandler.saved();

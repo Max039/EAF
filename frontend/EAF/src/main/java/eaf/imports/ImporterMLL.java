@@ -133,18 +133,27 @@ public class ImporterMLL extends  Importer {
 
         }
 
+        var input = SyntaxTree.getFormatParts(content, "predict", "and").get(0).split("\"")[1];
+
+        ((TextFieldRect)config.getSubRectByName("data-input-path")).setTextBox(input);
+
+        var output = SyntaxTree.getFormatParts(content, "store", "end", "\n").get(0).split("\"")[1];
+
+        ((TextFieldRect)config.getSubRectByName("data-output-path")).setTextBox(output);
 
         base.setIndex(1, config);
 
+
+
         Main.mainPanel.leftPanel.addRect(base);
 
-        //Main.preset = Preset.getPreset("ea");
-        //FileManager.writeJSONToFile(FileManager.createSave(), path);
-        //Main.cacheManager.addToBuffer("filesOpened", path);
-        //InputHandler.actionHandler.saved();
+        Main.preset = Preset.getPreset("ml");
+        FileManager.writeJSONToFile(FileManager.createSave(), path);
+        Main.cacheManager.addToBuffer("filesOpened", path);
+        InputHandler.actionHandler.saved();
 
-        //if (!Main.nogui) {
-        //    FileManager.loadSave(FileManager.readJSONFileToJSON(path));
-        //}
+        if (!Main.nogui) {
+            FileManager.loadSave(FileManager.readJSONFileToJSON(path));
+        }
     }
 }

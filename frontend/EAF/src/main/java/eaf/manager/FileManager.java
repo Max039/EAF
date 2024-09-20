@@ -613,10 +613,12 @@ public class FileManager {
         if (path == null) {
             return;
         }
+        var parts = path.replace("\\", "/").split("/");
+        filename = parts[parts.length - 1].split("\\.")[0];
         try {
             Importer.importer.get(file.getName().split("\\.", 2)[1]).importFile(file, path);
             FileManager.copyFolder(curr + "/project_base", curr + "/" + savesPath + "/" + filename);
-            FileManager.copyFilesWithEndings(file.getParentFile().getAbsolutePath(), curr + savesPath + "/" + filename, ".csv", ".pson", ".xlsx");
+            FileManager.copyFilesWithEndings(file.getParentFile().getAbsolutePath(), curr + savesPath + "/" + filename, ".csv", ".pson", ".xlsx", ".json");
         }
         catch (Exception e) {
             throw new RuntimeException(e);
