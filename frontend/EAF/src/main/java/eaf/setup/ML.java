@@ -132,7 +132,7 @@ public class ML extends Preset {
                     res += ", ";
                 }
                 var param = (TextFieldRect) _param;
-                res += param.textBox.getText() + "\n";
+                res += param.textBox.getText();
                 i++;
             }
             res += ");\n";
