@@ -140,48 +140,7 @@ public class SyntaxTree {
             }
             processDlFileForImports(file.getAbsolutePath(), makeModuleName(relativePath));
         }
-
-
-        //processFile("EvoAlScripts\\genetic-programming\\config.ol", "script", false);
-
         LogManager.println("============================");
-        /**
-        ClassType type = new ClassType("ZeTestType", null, "TestPackage");
-        processContentOfType(type, "{ " +
-                "    test : int := 5;\n" +
-                "    alterers := alterers {\n" +
-                "      crossover := [\n" +
-                "        'single-point-crossover' {\n" +
-                "          probability := 0.3;\n" +
-                "        }\n" +
-                "      ];\n" +
-                "      mutator := [\n" +
-                "        'probability-mutator' {\n" +
-                "          probability := 0.2;\n" +
-                "        },\n" +
-                "        'probability-mutator' {\n" +
-                "          probability := 0.4;\n" +
-                "        }\n" +
-                "      ];      \n" +
-                "    }; \n" +
-                "    tes2t : int; \n" +
-                "    tes2t := 7; \n" +
-                //"    arr : array int; \n" +
-                //"    arr := [50, 25]; \n" +
-                "    arr2 : array string; \n" +
-                "    arr2 := [\"tests\", \"tests2\"]; \n" +
-                "    test3 : array real := [50.8, 25.9]; \n" +
-                //"    lol := [[\"tests\"], \"tests2\"]; \n" +
-                //"    lol2 : array int := [[1, [2, 3]], 25.9]; \n" +
-                "    zzz : instance 'single-point-crossover'" +
-                "    zzz := 'single-point-crossover' {\n" +
-                "       probability := 0.4;\n" +
-                "     };\n" +
-                "     ooo : string;\n" +
-                "     ooo := test;\n" +
-                "}");
-         **/
-
         createBridges();
 
         LogManager.println("============================");
