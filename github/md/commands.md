@@ -24,6 +24,8 @@
     ```bash
     -convert
 	```
+
+![](../gifs/convert.gif)
 	
 - To copy a version into eaf installation folder/project (can be used in conjunction with -convert to directly move the eaf into projects):
     ```bash

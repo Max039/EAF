@@ -1,0 +1,1 @@
+Presets are used to determine the output file format and to validate the configuration settings. These can be modified under the "Preset" tab.
