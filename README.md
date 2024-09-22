@@ -122,10 +122,10 @@ This project is designed to create a frontend for [EvoAl](https://evoal.de/) tha
    Install IntelliJ IDEA from [JetBrains](https://www.jetbrains.com/idea/download/) and ensure it's installed in the default location:  
    `C:\Program Files\JetBrains`.
 
-5. **Download the EvoAl Frontend**
+4. **Download the EvoAl Frontend**  
 	Download the EvoAl Frontend eaf-setup.exe from the [latest release](https://github.com/Max039/EAF/releases/latest).
 
-5. **Install the EvoAl Frontend**
+5. **Install the EvoAl Frontend**  
 	Run the install eaf-setup.exe.
 
 ---
