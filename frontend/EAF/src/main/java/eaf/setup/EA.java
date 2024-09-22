@@ -85,6 +85,7 @@ public class EA extends Preset {
 
     @Override
     public boolean postStart() {
+        /**
         try {
             GenerationTracker.connect();
             LogManager.println(LogManager.executor() + LogManager.process() + LogManager.status() + " Connected to EvoAl!");
@@ -93,10 +94,13 @@ public class EA extends Preset {
             // Handle exception as necessary
             return false;
         }
+         **/
+        return true;
     }
 
     @Override
     public void postStop() {
+        /**
         LogManager.println(LogManager.executor() + LogManager.process() + LogManager.status() + " Eaf closing port!");
         try {
             GenerationTracker.disconnect();
@@ -104,6 +108,7 @@ public class EA extends Preset {
         catch (Exception e) {
             throw new RuntimeException(e);
         }
+         **/
     }
     @Override
     public String getName() {

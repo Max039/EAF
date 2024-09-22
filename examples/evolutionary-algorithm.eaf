@@ -529,44 +529,35 @@
                 "count": 0,
                 "type": "array",
                 "sub-type": "de.evoal.optimisation.core.statistics-writer",
-                "value": [
-                    {
-                        "field-name": "",
-                        "package": "de.evoal.optimisation.core",
-                        "type": "instance",
-                        "sub-type": "de.evoal.optimisation.core.best-candidate-per-generation",
-                        "value": [
-                            {
-                                "field-name": "store-optimisation-space",
-                                "editable": true,
-                                "type": "option-field",
-                                "sub-type": "boolean",
-                                "value": "true"
-                            },
-                            {
-                                "field-name": "prefix-data",
-                                "editable": true,
-                                "type": "option-field",
-                                "sub-type": "boolean",
-                                "value": "false"
-                            },
-                            {
-                                "field-name": "store-search-space",
-                                "editable": true,
-                                "type": "option-field",
-                                "sub-type": "boolean",
-                                "value": "true"
-                            }
-                        ]
-                    },
-                    {
-                        "field-name": "",
-                        "package": "de.eaf.statistics.hook",
-                        "type": "instance",
-                        "sub-type": "de.eaf.statistics.hook.eaf-hook",
-                        "value": []
-                    }
-                ]
+                "value": [{
+                    "field-name": "",
+                    "package": "de.evoal.optimisation.core",
+                    "type": "instance",
+                    "sub-type": "de.evoal.optimisation.core.best-candidate-per-generation",
+                    "value": [
+                        {
+                            "field-name": "store-optimisation-space",
+                            "editable": true,
+                            "type": "option-field",
+                            "sub-type": "boolean",
+                            "value": "true"
+                        },
+                        {
+                            "field-name": "prefix-data",
+                            "editable": true,
+                            "type": "option-field",
+                            "sub-type": "boolean",
+                            "value": "false"
+                        },
+                        {
+                            "field-name": "store-search-space",
+                            "editable": true,
+                            "type": "option-field",
+                            "sub-type": "boolean",
+                            "value": "true"
+                        }
+                    ]
+                }]
             }]
         }
     ],
