@@ -1,0 +1,49 @@
+{
+    "parent": "de.eaf.mll.simple-config",
+    "name": "advanced-config",
+    "abstract": false,
+    "fields": [
+        {
+            "field-name": "loop-start",
+            "array-count": 0,
+            "primitive": true,
+            "value": "",
+            "type-name": "int"
+        },
+        {
+            "field-name": "measures",
+            "array-count": 1,
+            "primitive": false,
+            "value": "",
+            "type-name": "de.eaf.base.func"
+        },
+        {
+            "field-name": "data-output-path",
+            "array-count": 0,
+            "primitive": true,
+            "value": "",
+            "type-name": "string"
+        },
+        {
+            "field-name": "$loop-counter",
+            "array-count": 0,
+            "primitive": true,
+            "value": "",
+            "type-name": "string"
+        },
+        {
+            "field-name": "data-input-path",
+            "array-count": 0,
+            "primitive": true,
+            "value": "",
+            "type-name": "string"
+        },
+        {
+            "field-name": "loop-end",
+            "array-count": 0,
+            "primitive": true,
+            "value": "",
+            "type-name": "int"
+        }
+    ]
+}
