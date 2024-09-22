@@ -4,14 +4,14 @@ import eaf.Main;
 import eaf.rects.Rect;
 import eaf.rects.multi.RectWithRects;
 
-public class DeletedRectAction extends  Action {
+public class RemovedRect extends  Action {
 
     private RectWithRects parent;
     private Rect deleted;
     private int index;
 
 
-    public DeletedRectAction(RectWithRects parent, Rect deleted, int index) {
+    public RemovedRect(RectWithRects parent, Rect deleted, int index) {
         this.parent = parent;
         this.deleted = deleted;
         this.index = index;

@@ -3,7 +3,7 @@ package eaf.input;
 import eaf.Main;
 import eaf.action.ActionHandler;
 import eaf.action.AddedRectAction;
-import eaf.action.DeletedRectAction;
+import eaf.action.RemovedRect;
 import eaf.action.MovedRectAction;
 import eaf.compiler.SyntaxTree;
 import eaf.executor.Executor;
@@ -13,7 +13,6 @@ import eaf.rects.Rect;
 import eaf.rects.multi.ClassRect;
 import eaf.rects.multi.RectWithRects;
 import eaf.sound.SoundManager;
-import org.json.JSONString;
 
 import javax.swing.*;
 import java.awt.*;
@@ -109,12 +108,11 @@ public class InputHandler {
                     if (selected.parent != null) {
                         selected.parent.setIndex(selected.parentIndex, null);
                         selected.removeFrom(leftPanel.drawingPanel);
-                        actionHandler.action(new DeletedRectAction(selected.parent, selected, selected.parentIndex));
+                        actionHandler.action(new RemovedRect(selected.parent, selected, selected.parentIndex));
                     }
                     else {
+                        actionHandler.action(new RemovedRect(null, selected, leftPanel.getRects().indexOf(selected)));
                         leftPanel.removeRect(selected);
-                        actionHandler.action(new DeletedRectAction(null, selected, leftPanel.getRects().indexOf(selected)));
-
                     }
                     clipBoard = selected;
 
@@ -234,7 +232,7 @@ public class InputHandler {
                         }
                     }
                     else {
-                        actionHandler.action(new DeletedRectAction(draggingSource, draggedRect, p));
+                        actionHandler.action(new RemovedRect(draggingSource, draggedRect, p));
                     }
 
                 }
@@ -248,7 +246,7 @@ public class InputHandler {
                     }
                 }
                 else {
-                    actionHandler.action(new DeletedRectAction(draggingSource, draggedRect, draggedRect.parentIndex));
+                    actionHandler.action(new RemovedRect(draggingSource, draggedRect, draggedRect.parentIndex));
                 }
                 leftPanel.requestFocusInWindow();
             }

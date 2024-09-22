@@ -1,7 +1,7 @@
 package eaf.rects.multi;
 
 import eaf.action.AddedRectAction;
-import eaf.action.DeletedRectAction;
+import eaf.action.RemovedRect;
 import eaf.input.InputHandler;
 import eaf.models.ClassType;
 import eaf.models.FieldType;
@@ -34,7 +34,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import javax.imageio.ImageIO;
-import javax.swing.text.Utilities;
 
 import static eaf.models.FieldValue.doesTypesMatch;
 
@@ -706,7 +705,7 @@ public abstract class RectWithRects extends Rect {
                             }
 
                             Main.mainPanel.leftPanel.removeRect(RectWithRects.this);
-                            InputHandler.actionHandler.action(new DeletedRectAction(parent, RectWithRects.this, index));
+                            InputHandler.actionHandler.action(new RemovedRect(parent, RectWithRects.this, index));
                             Main.mainPanel.leftPanel.revalidate();
                             Main.mainPanel.leftPanel.repaint();
                         }
