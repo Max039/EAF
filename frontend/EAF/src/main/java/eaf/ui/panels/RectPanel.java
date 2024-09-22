@@ -1,8 +1,6 @@
 package eaf.ui.panels;
 
 import eaf.compiler.SyntaxTree;
-import eaf.download.Downloader;
-import eaf.executor.Executor;
 import eaf.input.InputHandler;
 import eaf.Main;
 import eaf.manager.FileManager;
@@ -19,10 +17,10 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Optional;
-
-import static eaf.models.ClassType.getUniqueImports;
 
 
 public class RectPanel extends JScrollPane {
@@ -324,7 +322,13 @@ public class RectPanel extends JScrollPane {
             super.paintComponent(g);
             int y = verticalSpacing;
             Optional<Integer> minSpac = rects.stream().map(t -> (this.getWidth() - t.getWidth()) / 2).min(Integer::compareTo);
-            for (Rect rect : rects) {
+
+            List<Rect> sorted = rects;
+            if (RectPanel.this == Main.mainPanel.rightPanel) {
+                sorted = rects.stream().sorted(Comparator.comparing(t -> SyntaxTree.toSimpleName(t.clazz.name))).toList();
+            }
+
+            for (Rect rect : sorted) {
                 if (filter.isEmpty()) {
                     rect.setPosition(minSpac.get(), y);
                     rect.draw(g);

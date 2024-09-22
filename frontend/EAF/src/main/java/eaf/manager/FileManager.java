@@ -201,12 +201,12 @@ public class FileManager {
         }
     }
 
-    public static void newFile() {
+    public static boolean newFile() {
         String saveName = JOptionPane.showInputDialog(null, "Enter the name for the save:", "Save Name", JOptionPane.QUESTION_MESSAGE);
         if (saveName == null || saveName.trim().isEmpty()) {
             // User canceled the input or entered an empty name
             LogManager.println(LogManager.fileManager() + LogManager.file() + " Save operation " + ColorManager.colorText("canceled", ColorManager.warningColor) + " or no name entered.");
-            return;
+            return false;
         }
         // Construct the full path to the file
         String currentDirectory = System.getProperty("user.dir");
@@ -216,8 +216,7 @@ public class FileManager {
         // Check if a file with the given name already exists
         if (file.exists()) {
             JOptionPane.showMessageDialog(null, "A file with that name already exists. Please choose a different name.", "Error", JOptionPane.ERROR_MESSAGE);
-            newFile();
-            return;
+            return newFile();
         }
         try {
             copyFolder(currentDirectory + "/project_base", currentDirectory  + Main.savesPath + "/" + saveName);
@@ -229,6 +228,7 @@ public class FileManager {
         writeJSONToFile(createSave(), file.getAbsolutePath());
         Main.cacheManager.addToBuffer("filesOpened", file.getAbsolutePath());
         LogManager.println(LogManager.fileManager() + LogManager.file() + " File " + file.getName() + " " + ColorManager.colorText("saved", ColorManager.sucessColor) + "!");
+        return true;
     }
 
     public static void save() {

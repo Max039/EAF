@@ -2367,16 +2367,17 @@ public class UiUtil {
                     // Print the name of the folder and close the window
                     var cancle = showUnsaveDialog();
                     if (!cancle) {
-                        FileManager.newFile();
-                        Main.preset = preset;
-                        for (var r : preset.requiredRectNames) {
-                            mainPanel.leftPanel.addRect(RectFactory.getRectFromClassType(SyntaxTree.get(r)));
+                        if (FileManager.newFile()) {
+                            Main.preset = preset;
+                            for (var r : preset.requiredRectNames) {
+                                mainPanel.leftPanel.addRect(RectFactory.getRectFromClassType(SyntaxTree.get(r)));
+                            }
+                            FileManager.save();
+                            frame.dispose();
+                            ErrorPane.checkForErrors();
+                            mainFrame.revalidate();
+                            mainFrame.repaint();
                         }
-                        FileManager.save();
-                        frame.dispose();
-                        ErrorPane.checkForErrors();
-                        mainFrame.revalidate();
-                        mainFrame.repaint();
                     }
                 }
             });
