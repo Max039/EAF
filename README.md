@@ -162,10 +162,10 @@ This project is designed to create a frontend for [EvoAl](https://evoal.de/) tha
    Download and install IntelliJ IDEA from [JetBrains](https://www.jetbrains.com/idea/download/).
 
 4. **Download the EvoAl Frontend**
-	Download the EvoAl Frontend Eaf-Installer.dmg from the [latest release](https://github.com/Max039/EAF/releases/latest).
+   Download the EvoAl Frontend Eaf-Installer.dmg from the [latest release](https://github.com/Max039/EAF/releases/latest).
 
 5. **Install the EvoAl Frontend**
-	Open the dmg and move the Eaf.app into your application folder. Afterwards detach the dmg installer.
+   Open the dmg and move the Eaf.app into your application folder. Afterwards detach the dmg installer.
 	
 
 
