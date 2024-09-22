@@ -14,7 +14,7 @@ This project is designed to create a frontend for [EvoAl](https://evoal.de/) tha
 
 ## Table of Contents
 1. [Installation](#installation)
-2. [Project](#usage)
+2. [Project](github/md/project.md)
 	- [Examples](https://github.com/Max039/EAF/tree/main/examples)
 3. [Guides](#guides)
    - [Create new from preset](#create-new-from-preset)
