@@ -37,7 +37,8 @@ This project is designed to create a frontend for [EvoAl](https://evoal.de/) tha
 8. [Presets](github/md/presets.md)
 9. [Pre Run Generator Setup](github/md/prerun.md)
 10. [Console Commands](github/md/commands.md)
-11. [About](github/md/about.md)
+11. [Remote JVM](github/md/remotejvm.md)
+12. [About](github/md/about.md)
 
 ---
 

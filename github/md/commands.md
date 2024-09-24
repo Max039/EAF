@@ -32,6 +32,11 @@
     -import
 	```
 	
+- To enable further EvoAl logging:
+    ```bash
+    -debug
+	```
+	
 - To run with the sudo password not needing to input it later:
     ```bash
     -sudopwd=PASSWORD
