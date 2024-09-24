@@ -11,7 +11,7 @@
 ![Mac](../imgs/mac_externaltool.jpeg)
 
 ### 4. Setup a compound run configuration:
-![](../imgs/sh_script.png)
+![](../imgs/compund.png)
 
 ### 5. Run the compound run configuration.
-![](../imgs/compund.png)
+
