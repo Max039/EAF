@@ -88,6 +88,8 @@ This project is designed to create a frontend for [EvoAl](https://evoal.de/) tha
 
 # Installation
 
+## Schould there be a problem with the automatic download of the EvoAl please refere to the [manual installation](github/md/versions.md)
+
 ## Windows Installation
 
 **!!! Note that currently neither the path of the Eaf installation nor the path to a .eaf file can contain spaces (' ') or sepcial characters !!!**
