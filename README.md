@@ -88,7 +88,7 @@ This project is designed to create a frontend for [EvoAl](https://evoal.de/) tha
 
 # Installation
 
-## Schould there be a problem with the automatic download of the EvoAl please refere to the [manual installation](github/md/versions.md)
+## Schould there be a problem with the automatic download of EvoAl please refere to the [manual installation](github/md/versions.md)
 
 ## Windows Installation
 
