@@ -95,6 +95,7 @@ public class ScriptWriter {
 
         return "#!/bin/sh\n" +
                 "export DISPLAY=localhost:0.0\n" +
+                debugLine() +
                 "export EVOAL_HOME=$( cd -- \"" + currentDir + "/" + Main.evoalBuildFolder + "/" + build + "/evoal\" >/dev/null 2>&1 ; pwd -P )\n" +
                 "# Print the current working directory for debugging\n" +
                 "echo \"Current working directory in second script: $(pwd)\"\n" +
@@ -105,6 +106,14 @@ public class ScriptWriter {
                 "# Change the working directory to the script's directory\n" +
                 "cd \"$SCRIPT_DIR\"\n" +
                 getExecutionLine();
+    }
+
+    private static String debugLine() {
+        if (Main.debug) {
+            return "export EVOAL_DEBUG=true";
+        } else {
+            return "";
+        }
     }
 
     private static String getExecutionLine() {

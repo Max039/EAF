@@ -156,6 +156,8 @@ public class Main extends JPanel {
 
     public static boolean imp = false;
 
+    public static boolean debug = false;
+
     static {
         String osName = System.getProperty("os.name").toLowerCase();
         if (osName.contains("win")) {
@@ -190,6 +192,7 @@ public class Main extends JPanel {
                         nogui = true;
                     }
                     case "-fulllog" -> fulllog = true;
+                    case "-debug" -> debug = true;
                     default -> {
                         if (arg.contains("-sudopwd")) {
                             var parts = arg.split("=", 2);
