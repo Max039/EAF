@@ -18,3 +18,6 @@ EvoAl versions can be managed manually under the **EvoAl** menu by selecting **M
 - In EAF_HOME/builds (might not exist) create a new directory with a name for your evoal build
 - Unzip the artifact and move the "evoal" directory inside the artifact into your directory in the builds directory
 - The build will now be selectable under the tab EvoAl ... select version
+
+### Example of manual installation for fixing infinit start loop
+![](../gifs/nodownload.gif)
