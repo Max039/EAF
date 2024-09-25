@@ -189,7 +189,7 @@ public class Downloader {
         JButton mostRecentButton = new JButton("Download newest version");
         mostRecentButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                downloadNewestVersionIfNeeded(true);
+                downloadNewestVersionIfNeeded(true, true);
                 populateVersions();
             }
         });
@@ -268,7 +268,7 @@ public class Downloader {
                         if (option == JOptionPane.YES_OPTION) {
                             Thread executionThread = new Thread(() -> {
                                 LogManager.println(LogManager.downloader() + " New EvoAl version found!");
-                                downloadIfNeeded(versionName, true);
+                                downloadIfNeeded(versionName, true, true);
                                 SwingUtilities.invokeLater(() -> {
                                     InputHandler.setEvoAlVersion(versionName);
                                 });
@@ -311,22 +311,22 @@ public class Downloader {
 
 
     //Gets the newest nersion
-    public static void downloadNewestVersionIfNeeded(boolean downloadWindow) {
+    public static void downloadNewestVersionIfNeeded(boolean downloadWindow, boolean limitBranches) {
         try {
-            JSONArray pipelines = getSuccessfulPipelines(true);
+            JSONArray pipelines = getSuccessfulPipelines(limitBranches);
             LogManager.println(LogManager.downloader() + " Retrieved " + pipelines.length() + " successful pipelines. Current limit for successful pipelines is set to: " + numberOfVersionsToShow );
             for (int i = 0; i < pipelines.length(); i++) {
                 JSONObject pipeline = pipelines.getJSONObject(i);
                 String updatedAt = pipeline.getString("updated_at");
                 String versionName = getVersionNameFromDate(updatedAt);
                 try {
-                    downloadIfNeeded(versionName, downloadWindow);
+                    downloadIfNeeded(versionName, downloadWindow, limitBranches);
                     return;
                 }
                 catch (Exception e) {
-                    if (e instanceof JobNotFoundException) {
+                    if (e instanceof JobNotFoundException || e instanceof  DownloadFailedException) {
                         LogManager.println(LogManager.downloader() + " Skipping version " + versionName);
-                        if (i == pipelines.length() - 1) {
+                        if (i == pipelines.length() - 1 && !limitBranches) {
                             throw new RuntimeException("No valid version was found!");
                         }
                     }
@@ -335,20 +335,24 @@ public class Downloader {
                     }
                 }
             }
-
-
+            if (limitBranches) {
+                downloadNewestVersionIfNeeded(downloadWindow, false);
+            }
         } catch (Exception ex) {
             throw new RuntimeException(ex);
         }
     }
 
-    private static void downloadIfNeeded(String versionName, boolean downloadWindow) {
+    private static void downloadIfNeeded(String versionName, boolean downloadWindow, boolean limitBranches) {
         if (!Files.exists(Paths.get(DOWNLOAD_PATH + versionName))) {
             try {
-                downloadSelectedVersion(versionName, true, downloadWindow);
+                downloadSelectedVersion(versionName, limitBranches, downloadWindow);
             } catch (Exception ex) {
                 if (ex instanceof JobNotFoundException) {
                     throw new JobNotFoundException(ex.getMessage());
+                }
+                else if (ex instanceof DownloadFailedException) {
+                    throw new DownloadFailedException(ex.getMessage());
                 }
                 else {
                     throw new RuntimeException(ex);
@@ -704,7 +708,13 @@ public class Downloader {
             if (jobId != -1) {
                 try {
                     LogManager.println(LogManager.downloader() + " Downloading Artifact " + selectedVersion + " ... ");
-                    downloadArtifact(jobId, outputFilePath, downloadWindow);
+                    try {
+                        downloadArtifact(jobId, outputFilePath, downloadWindow);
+                    }
+                    catch (Exception e) {
+                        throw new DownloadFailedException(e.getMessage());
+                    }
+
                     extractZip(outputFilePath, extractToPath);
                     Files.deleteIfExists(Paths.get(outputFilePath));
                     LogManager.println(LogManager.downloader() + " Download complete");
@@ -714,7 +724,13 @@ public class Downloader {
                 }
                 catch (Exception e) {
                     deleteDirectory(new File(DOWNLOAD_PATH + selectedVersion));
-                    throw new Exception(e);
+
+                    if (e instanceof DownloadFailedException) {
+                        throw new DownloadFailedException(e.getMessage());
+                    }
+                    else {
+                        throw new Exception(e);
+                    }
                 }
             } else {
                 deleteDirectory(new File(DOWNLOAD_PATH + selectedVersion));
@@ -727,6 +743,12 @@ public class Downloader {
         else {
             JOptionPane.showMessageDialog(Main.mainFrame, "Artifact " + selectedVersion + " already downloaded!",
                     "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+    public static class DownloadFailedException extends RuntimeException {
+        public DownloadFailedException(String s) {
+            super(s);
         }
     }
 
