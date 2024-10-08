@@ -119,8 +119,12 @@ procedure AddHome;
 var
   NewPath: string;
 begin
+  // System Environment Variable (HKLM) - Available to all users
   NewPath := ExpandConstant('{app}');
   RegWriteStringValue(HKLM, 'SYSTEM\CurrentControlSet\Control\Session Manager\Environment', 'EAF_HOME', NewPath);
+
+  // User Environment Variable (HKCU) - Available only to the current user
+  RegWriteStringValue(HKCU, 'Environment', 'EAF_HOME', NewPath);
 end;
 
 procedure CurStepChanged(CurStep: TSetupStep);
